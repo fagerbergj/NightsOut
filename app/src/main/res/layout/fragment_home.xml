@@ -13,16 +13,7 @@
         android:layout_height="wrap_content"
         android:background="@color/colorPrimary"
         app:title="@string/fragment_home_name"
-        app:titleTextColor="@color/colorWhite">
-        <ImageButton
-            android:id="@+id/btnLogSession"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right"
-            android:src="@drawable/done_white_24dp"
-            android:paddingRight="16dp"
-            android:background="?android:selectableItemBackground"/>
-    </android.support.v7.widget.Toolbar>
+        app:titleTextColor="@color/colorWhite"/>
 
     <android.support.design.button.MaterialButton
         android:id="@+id/btnAddDrink"

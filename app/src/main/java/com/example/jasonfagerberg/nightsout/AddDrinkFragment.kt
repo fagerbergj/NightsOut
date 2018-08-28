@@ -10,8 +10,15 @@ class AddDrinkFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
+        // inflate view
+        val view = inflater.inflate(R.layout.fragment_add_drink, container, false)
+
+        //toolbar setup
+        val toolbar:android.support.v7.widget.Toolbar = view!!.findViewById(R.id.toolbarAddDrink)
+        toolbar.inflateMenu(R.menu.empty_menu)
+
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_add_drink, container, false)
+        return view
     }
 
     companion object {

@@ -12,7 +12,13 @@ class LogFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_log, container, false)
+        val view = inflater.inflate(R.layout.fragment_log, container, false)
+
+        //toolbar setup
+        val toolbar:android.support.v7.widget.Toolbar = view!!.findViewById(R.id.toolbarLog)
+        toolbar.inflateMenu(R.menu.empty_menu)
+
+        return view
     }
 
     companion object {
