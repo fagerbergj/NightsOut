@@ -75,29 +75,31 @@
             android:textAlignment="center"
             android:inputType="time"/>
     </LinearLayout>
-    
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerDrinkList"
         android:layout_width="match_parent"
-        android:layout_height="300dp"
+        android:layout_height="match_parent"
         android:layout_below="@id/layoutStartDrinking"
-        android:paddingTop="8dp"
-        android:paddingRight="16dp"
-        android:paddingLeft="16dp">
-
-    </android.support.v7.widget.RecyclerView>
+        android:layout_marginEnd="6dp"
+        android:layout_marginStart="6dp"
+        android:background="#d1d1d1"
+        android:paddingBottom="2dp"
+        android:paddingEnd="2dp"
+        android:paddingStart="2dp"
+        android:paddingTop="2dp"
+        android:layout_above="@+id/textBACValue"/>
 
     <TextView
         android:id="@+id/textBACValue"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/recyclerDrinkList"
+        android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:paddingBottom="8dp"
-        android:paddingTop="8dp"
+        android:paddingBottom="4dp"
         android:text="@string/test_bac_value"
         android:textColor="@color/colorGreen"
-        android:textSize="72sp"
+        android:textSize="60sp"
         android:textStyle="bold" />
 
     <TextView
@@ -112,7 +114,6 @@
         android:paddingBottom="16dp"
         android:textColor="@color/colorGreen"
         android:textSize="24sp"
-        android:text="@string/test_user_status"
-        />
+        android:text="@string/test_user_status" />
 
 </RelativeLayout>

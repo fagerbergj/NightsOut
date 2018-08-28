@@ -13,7 +13,13 @@
     <string name="text_drinks_label">Drinks</string>
     <string name="text_bac_label">B.A.C</string>
     <string name="text_log_session">Log Session</string>
+    <string name="text_remove">Remove</string>
 
     <string name="test_bac_value">0.00%</string>
     <string name="test_user_status">Sober</string>
+    <string name="test_drink_name">Example Drink Name</string>
+    <string name="test_drink_AAV">AAV: 12.5%</string>
+    <string name="test_drink_amount">16oz</string>
+
+
 </resources>
