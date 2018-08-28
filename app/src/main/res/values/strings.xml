@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Nights Out</string>
+    <string name="fragment_home_name">Home</string>
+    <string name="fragment_log_name">Log</string>
+    <string name="fragment_profile_name">Profile</string>
+    <string name="fragment_add_drink_name">Add Drink</string>
+
+</resources>
