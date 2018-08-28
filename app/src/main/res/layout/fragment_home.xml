@@ -8,16 +8,110 @@
     tools:context=".HomeFragment">
 
     <android.support.v7.widget.Toolbar
-        android:id="@+id/mealsTopBar"
+        android:id="@+id/toolbarHome"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorPrimary"
         app:title="@string/fragment_home_name"
         app:titleTextColor="@color/colorWhite"/>
-    <android.support.design.widget.FloatingActionButton
+
+    <android.support.design.button.MaterialButton
         android:id="@+id/btnAddDrink"
-        android:layout_width="56dp"
-        android:layout_height="56dp"
-        android:src="@drawable/add_white_24dp"/>
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/toolbarHome"
+        android:layout_marginTop="8dp"
+        android:text="@string/button_add_drink"
+        android:background="@color/colorGreen"
+        android:textColor="@color/colorWhite"
+        android:layout_centerHorizontal="true"/>
+
+    <LinearLayout
+        android:id="@+id/layoutStartDrinking"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/btnAddDrink"
+        android:layout_centerHorizontal="true"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:paddingRight="200dp"
+        android:paddingTop="8dp">
+
+        <TextView
+            android:id="@+id/textStartDrinking"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/text_start_drinking" />
+
+        <EditText
+            android:id="@+id/editStartTime"
+            android:layout_width="112dp"
+            android:layout_height="40dp"
+            android:textAlignment="center"
+            android:inputType="time"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layoutEndDrinking"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/btnAddDrink"
+        android:layout_centerHorizontal="true"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:paddingLeft="200dp"
+        android:paddingTop="8dp">
+
+        <TextView
+            android:id="@+id/textEndDrinking"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/text_end_drinking" />
+
+        <EditText
+            android:id="@+id/editEndTime"
+            android:layout_width="112dp"
+            android:layout_height="40dp"
+            android:textAlignment="center"
+            android:inputType="time"/>
+    </LinearLayout>
+    
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recyclerDrinkList"
+        android:layout_width="match_parent"
+        android:layout_height="316dp"
+        android:layout_below="@id/layoutStartDrinking"
+        android:paddingTop="8dp"
+        android:paddingRight="16dp"
+        android:paddingLeft="16dp">
+
+    </android.support.v7.widget.RecyclerView>
+
+    <TextView
+        android:id="@+id/textBACValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/recyclerDrinkList"
+        android:textStyle="bold"
+        android:textSize="72sp"
+        android:textColor="@color/colorGreen"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="8dp"
+        android:text="0.00%"/>
+
+    <TextView
+        android:id="@+id/textUserStatus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:paddingRight="16dp"
+        android:paddingLeft="16dp"
+        android:layout_alignParentBottom="true"
+        android:paddingBottom="16dp"
+        android:textColor="@color/colorGreen"
+        android:textSize="24sp"
+        android:text="Sober"
+        />
 
 </RelativeLayout>

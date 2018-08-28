@@ -5,4 +5,8 @@
     <string name="fragment_profile_name">Profile</string>
     <string name="fragment_add_drink_name">Add Drink</string>
 
+    <string name="button_add_drink">Add A Drink</string>
+
+    <string name="text_start_drinking">Start Drinking</string>
+    <string name="text_end_drinking">End Drinking</string>
 </resources>
