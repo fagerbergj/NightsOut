@@ -13,7 +13,16 @@
         android:layout_height="wrap_content"
         android:background="@color/colorPrimary"
         app:title="@string/fragment_home_name"
-        app:titleTextColor="@color/colorWhite"/>
+        app:titleTextColor="@color/colorWhite">
+        <ImageButton
+            android:id="@+id/btnLogSession"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:src="@drawable/done_white_24dp"
+            android:paddingRight="16dp"
+            android:background="?android:selectableItemBackground"/>
+    </android.support.v7.widget.Toolbar>
 
     <android.support.design.button.MaterialButton
         android:id="@+id/btnAddDrink"
@@ -79,7 +88,7 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerDrinkList"
         android:layout_width="match_parent"
-        android:layout_height="316dp"
+        android:layout_height="300dp"
         android:layout_below="@id/layoutStartDrinking"
         android:paddingTop="8dp"
         android:paddingRight="16dp"
@@ -92,12 +101,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/recyclerDrinkList"
-        android:textStyle="bold"
-        android:textSize="72sp"
-        android:textColor="@color/colorGreen"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="8dp"
-        android:text="0.00%"/>
+        android:paddingBottom="8dp"
+        android:paddingTop="8dp"
+        android:text="@string/test_bac_value"
+        android:textColor="@color/colorGreen"
+        android:textSize="72sp"
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/textUserStatus"
@@ -111,7 +121,7 @@
         android:paddingBottom="16dp"
         android:textColor="@color/colorGreen"
         android:textSize="24sp"
-        android:text="Sober"
+        android:text="@string/test_user_status"
         />
 
 </RelativeLayout>
