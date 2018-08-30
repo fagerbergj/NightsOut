@@ -18,25 +18,33 @@
         android:paddingBottom="4dp"
         android:paddingTop="4dp">
 
-        <ImageView
-            android:id="@+id/image_delete"
-            android:layout_width="@dimen/ic_delete"
-            android:layout_height="@dimen/ic_delete"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:src="@drawable/ic_baseline_delete_white_24dp" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <ImageView
+                android:id="@+id/image_delete"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/ic_baseline_delete_white_24dp"
+                android:layout_toStartOf="@id/text_remove"
+                android:paddingEnd="8dp"
+                android:layout_centerVertical="true"/>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_toLeftOf="@+id/image_delete"
-            android:layout_toStartOf="@id/image_delete"
-            android:text="@string/text_remove"
-            android:textColor="#fff"
-            android:textSize="16sp"
-            android:textStyle="bold" />
+            <TextView
+                android:id="@+id/text_remove"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/text_remove"
+                android:textColor="#fff"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:paddingEnd="16dp"/>
+
+        </RelativeLayout>
+
+
 
     </LinearLayout>
 

@@ -14,7 +14,7 @@ class ProfileFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_profile, container, false)
 
         //toolbar setup
-        val toolbar: android.support.v7.widget.Toolbar = view!!.findViewById(R.id.toolbarProfile)
+        val toolbar: android.support.v7.widget.Toolbar = view!!.findViewById(R.id.toolbar_profile)
         toolbar.inflateMenu(R.menu.empty_menu)
 
         return view

@@ -15,7 +15,7 @@ class LogFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_log, container, false)
 
         //toolbar setup
-        val toolbar:android.support.v7.widget.Toolbar = view!!.findViewById(R.id.toolbarLog)
+        val toolbar:android.support.v7.widget.Toolbar = view!!.findViewById(R.id.toolbar_log)
         toolbar.inflateMenu(R.menu.empty_menu)
 
         return view

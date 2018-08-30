@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
+    android:id="@+id/layout_home"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -8,7 +9,7 @@
     tools:context=".HomeFragment">
 
     <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbarHome"
+        android:id="@+id/toolbar_home"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorPrimary"
@@ -16,21 +17,21 @@
         app:titleTextColor="@color/colorWhite"/>
 
     <android.support.design.button.MaterialButton
-        android:id="@+id/btnAddDrink"
+        android:id="@+id/btn_add_drink"
         android:layout_width="250dp"
         android:layout_height="wrap_content"
-        android:layout_below="@id/toolbarHome"
+        android:layout_below="@id/toolbar_home"
         android:layout_marginTop="8dp"
         android:text="@string/button_add_drink"
-        android:background="@color/colorGreen"
+        android:backgroundTint="@color/colorGreen"
         android:textColor="@color/colorWhite"
         android:layout_centerHorizontal="true"/>
 
     <LinearLayout
-        android:id="@+id/layoutStartDrinking"
+        android:id="@+id/layout_start_drinking"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/btnAddDrink"
+        android:layout_below="@id/btn_add_drink"
         android:layout_centerHorizontal="true"
         android:gravity="center_horizontal"
         android:orientation="vertical"
@@ -38,13 +39,13 @@
         android:paddingTop="8dp">
 
         <TextView
-            android:id="@+id/textStartDrinking"
+            android:id="@+id/text_start_drinking"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/text_start_drinking" />
 
         <EditText
-            android:id="@+id/editStartTime"
+            android:id="@+id/edit_start_time"
             android:layout_width="112dp"
             android:layout_height="40dp"
             android:textAlignment="center"
@@ -52,10 +53,10 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/layoutEndDrinking"
+        android:id="@+id/layout_end_drinking"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/btnAddDrink"
+        android:layout_below="@id/btn_add_drink"
         android:layout_centerHorizontal="true"
         android:gravity="center_horizontal"
         android:orientation="vertical"
@@ -63,13 +64,13 @@
         android:paddingTop="8dp">
 
         <TextView
-            android:id="@+id/textEndDrinking"
+            android:id="@+id/text_end_drinking"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/text_end_drinking" />
 
         <EditText
-            android:id="@+id/editEndTime"
+            android:id="@+id/edit_end_time"
             android:layout_width="112dp"
             android:layout_height="40dp"
             android:textAlignment="center"
@@ -77,10 +78,10 @@
     </LinearLayout>
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/recyclerDrinkList"
+        android:id="@+id/recycler_drink_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/layoutStartDrinking"
+        android:layout_below="@id/layout_start_drinking"
         android:layout_marginEnd="6dp"
         android:layout_marginStart="6dp"
         android:background="#d1d1d1"
@@ -88,10 +89,10 @@
         android:paddingEnd="2dp"
         android:paddingStart="2dp"
         android:paddingTop="2dp"
-        android:layout_above="@+id/textBACValue"/>
+        android:layout_above="@+id/text_BAC_value"/>
 
     <TextView
-        android:id="@+id/textBACValue"
+        android:id="@+id/text_BAC_value"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
@@ -103,7 +104,7 @@
         android:textStyle="bold" />
 
     <TextView
-        android:id="@+id/textUserStatus"
+        android:id="@+id/text_user_status"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
