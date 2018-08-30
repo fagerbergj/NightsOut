@@ -65,7 +65,7 @@ RecyclerView.Adapter<LogFragmentAdapter.ViewHolder>() {
                 val dayOfWeek = simpleDateFormat.format(session.date)
 
                 val dayDate = "$dayOfWeek $date"
-                Log.v(TAG, getItemViewType(position).toString())
+                // Log.v(TAG, getItemViewType(position).toString())
                 holder.day!!.text = dayDate
 
                 val duration = "Duration: ${session.duration}"

@@ -15,5 +15,134 @@
         app:title="@string/fragment_profile_name"
         app:titleTextColor="@color/colorWhite"/>
 
+    <TextView
+        android:id="@+id/text_profile_favorites"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_below="@id/toolbar_profile"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="24dp"
+        android:text="@string/text_favorites"
+        android:textSize="18sp" />
+
+    <LinearLayout
+        android:id="@+id/layout_foreground"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/text_profile_favorites"
+        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="8dp"
+        android:background="#d1d1d1"
+        android:orientation="vertical">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler_profile_favorites_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="2dp"
+            android:layout_marginTop="2dp"
+            android:background="@color/colorWhite"
+            android:orientation="horizontal"
+            android:paddingBottom="8dp"
+            android:paddingTop="8dp" />
+    </LinearLayout>
+
+
+    <TextView
+        android:id="@+id/text_profile_sex"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/layout_foreground"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="24dp"
+        android:text="@string/text_sex"
+        android:textSize="18sp" />
+
+    <LinearLayout
+        android:id="@+id/layout_profile_sex"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/text_profile_sex"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <android.support.design.button.MaterialButton
+            android:id="@+id/btn_profile_male"
+            android:layout_width="135dp"
+            android:layout_height="60dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="20dp"
+            android:text="@string/text_male"
+            android:theme="@style/ProfileRadioTheme"
+            android:textSize="18sp"/>
+
+        <android.support.design.button.MaterialButton
+            android:id="@+id/btn_profile_female"
+            android:layout_width="135dp"
+            android:layout_height="60dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="16dp"
+            android:text="@string/text_female"
+            android:theme="@style/ProfileRadioTheme"
+            android:textSize="18sp"/>
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/text_profile_weight"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_below="@id/layout_profile_sex"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="32dp"
+        android:text="@string/text_weight"
+        android:textSize="18sp" />
+
+    <LinearLayout
+        android:id="@+id/layout_profile_weight"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/text_profile_weight"
+        android:layout_toEndOf="@+id/text_profile_weight"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/edit_profile_weight"
+            android:layout_width="200dp"
+            android:layout_height="50dp"
+            android:gravity="center_horizontal"
+            android:inputType="numberDecimal" />
+
+        <Spinner
+            android:id="@+id/spinner_profile"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:spinnerMode="dropdown" />
+
+    </LinearLayout>
+
+    <android.support.design.button.MaterialButton
+        android:id="@+id/btn_profile_save"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="32dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="32dp"
+        android:text="@string/text_save_profile"
+        android:theme="@style/HomeButtonTheme"
+        android:textSize="18sp"/>
+
 
 </RelativeLayout>

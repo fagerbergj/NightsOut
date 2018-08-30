@@ -18,14 +18,9 @@ class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: Ar
         RecyclerView.Adapter<HomeFragmentDrinkListAdapter.ViewHolder>() {
 
     // vars
-    private val mDrinksList: MutableList<Drink>
+    private val mDrinksList: MutableList<Drink> = drinksList
 
-    private val mMainActivity: MainActivity
-
-    init {
-        this.mDrinksList = drinksList
-        mMainActivity = mContext as MainActivity
-    }
+    private val mMainActivity: MainActivity = mContext as MainActivity
 
     // set layout inflater & inflate layout
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {

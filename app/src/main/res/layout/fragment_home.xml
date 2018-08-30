@@ -23,9 +23,9 @@
         android:layout_below="@id/toolbar_home"
         android:layout_marginTop="8dp"
         android:text="@string/button_add_drink"
-        android:backgroundTint="@color/colorGreen"
         android:textColor="@color/colorWhite"
-        android:layout_centerHorizontal="true"/>
+        android:layout_centerHorizontal="true"
+        android:theme="@style/HomeButtonTheme"/>
 
     <LinearLayout
         android:id="@+id/layout_start_drinking"

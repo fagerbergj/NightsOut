@@ -10,4 +10,12 @@
     <style name="ToolbarTheme" parent="ThemeOverlay.AppCompat.ActionBar">
         <item name="android:textColorSecondary">@android:color/black</item>
     </style>
+
+    <style name="HomeButtonTheme" parent="Theme.MaterialComponents.Light">
+        <item name="colorPrimary">@color/colorGreen</item>
+    </style>
+    
+    <style name="ProfileRadioTheme" parent="Theme.MaterialComponents.Light">
+        <item name="colorPrimary">@color/colorLightRed</item>
+    </style>
 </resources>
