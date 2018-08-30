@@ -39,7 +39,7 @@ class ProfileFragmentFavoriesListAdapter(private val mContext: Context, drinksLi
                 toast.show()
 
                 holder.image.setImageResource(R.drawable.favorite_white_24dp)
-                mFavoriteDrinksList.add(drink)
+                //mFavoriteDrinksList.add(drink)
             }else{
                 // make the toast
                 val toast = Toast.makeText(mContext, "${holder.name.text} unfavorited", Toast.LENGTH_SHORT)
@@ -47,7 +47,7 @@ class ProfileFragmentFavoriesListAdapter(private val mContext: Context, drinksLi
                 toast.show()
 
                 holder.image.setImageResource(R.drawable.favorite_border_white_24dp)
-                mFavoriteDrinksList.remove(drink)
+                //mFavoriteDrinksList.remove(drink)
             }
         }
     }
