@@ -22,7 +22,7 @@
         android:layout_below="@id/toolbar_profile"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="24dp"
         android:text="@string/text_sex"
         android:textSize="18sp" />
 
@@ -41,8 +41,8 @@
             android:layout_marginLeft="16dp"
             android:layout_marginRight="20dp"
             android:text="@string/text_male"
-            android:theme="@style/ProfileRadioTheme"
-            android:textSize="18sp"/>
+            android:textSize="18sp"
+            android:theme="@style/ProfileRadioTheme" />
 
         <android.support.design.button.MaterialButton
             android:id="@+id/btn_profile_female"
@@ -72,6 +72,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/text_profile_weight"
+        android:layout_marginTop="10dp"
         android:layout_toEndOf="@+id/text_profile_weight"
         android:gravity="center"
         android:orientation="horizontal">
@@ -110,10 +111,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/text_profile_favorites"
-        android:layout_marginBottom="8dp"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
         android:background="#d1d1d1"
         android:orientation="vertical">
 
