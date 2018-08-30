@@ -1,6 +1,7 @@
 package com.example.jasonfagerberg.nightsout
 
 import android.os.Bundle
+import android.support.design.button.MaterialButton
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -48,6 +49,20 @@ class ProfileFragment : Fragment() {
         // adapter setup
         mFavoritesListAdapter = ProfileFragmentFavoriesListAdapter(context!!, mFavoritesList)
         favoriteListView.adapter = mFavoritesListAdapter
+
+        // button setup
+        val btnMale: MaterialButton = view.findViewById(R.id.btn_profile_male)
+        val btnFemale: MaterialButton = view.findViewById(R.id.btn_profile_female)
+
+        btnMale.setOnClickListener{ _ ->
+            btnMale.setEnabled(false)
+            btnFemale.setEnabled(true)
+        }
+
+        btnFemale.setOnClickListener{ _ ->
+            btnFemale.setEnabled(false)
+            btnMale.setEnabled(true)
+        }
         return view
     }
 

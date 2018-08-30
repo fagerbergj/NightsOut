@@ -10,7 +10,7 @@
         android:id="@+id/card_profile_favorite_item"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:cardBackgroundColor="@color/colorGreen"
+        app:cardBackgroundColor="@color/colorLightRed"
         app:cardCornerRadius="10dp"
         app:cardElevation="1dp"
         app:cardMaxElevation="2dp">
