@@ -7,30 +7,28 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
 
+// log tag
 private const val TAG = "LogFragmentAdapter"
+
+// view type identifier
 private const val DRINK = 0
 private const val HEADER = 1
 
 class LogFragmentAdapter(private val mContext: Context, logList: ArrayList<Any>) :
 RecyclerView.Adapter<LogFragmentAdapter.ViewHolder>() {
 
-    // vars
-    private val mLogList: MutableList<Any>
+    // log to display
+    private val mLogList: MutableList<Any> = logList
 
-    private val mMainActivity: MainActivity
+    // main activity
+    private val mMainActivity: MainActivity = mContext as MainActivity
 
-    init {
-        this.mLogList = logList
-        mMainActivity = mContext as MainActivity
-    }
-
+    // inflate correct layout
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LogFragmentAdapter.ViewHolder {
         val inflater = LayoutInflater.from(mContext)
-        //Log.v(TAG, "onCreateViewHolder called....... viewType = " + viewType);
         when (viewType) {
             DRINK -> return ViewHolder(inflater.inflate(R.layout.fragment_log_list_drink_item,
                     parent, false))
@@ -40,7 +38,7 @@ RecyclerView.Adapter<LogFragmentAdapter.ViewHolder>() {
         return ViewHolder(View(mContext))
     }
 
-    // When view is rendered bind the correct holder to it
+    // When view is rendered set appropriate elements in the view holder
     override fun onBindViewHolder(holder: LogFragmentAdapter.ViewHolder, position: Int) {
         val viewType = getItemViewType(position)
         when(viewType){
@@ -78,9 +76,9 @@ RecyclerView.Adapter<LogFragmentAdapter.ViewHolder>() {
 
             }
         }
-
     }
 
+    // read element fro log, determine if drink or header
     override fun getItemViewType(position: Int): Int {
         return if (mLogList[position] is Drink) {
             DRINK
@@ -93,14 +91,16 @@ RecyclerView.Adapter<LogFragmentAdapter.ViewHolder>() {
         return mLogList.size
     }
 
+    // holder, elements may be null depending on which layout is inflated
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        // drink views
         internal var name: TextView ?= itemView.findViewById(R.id.text_log_drink_name)
         internal var aav: TextView ?= itemView.findViewById(R.id.text_log_drink_aav)
         internal var amount: TextView ?= itemView.findViewById(R.id.text_log_drink_amount)
 
+        // header views
         internal var day: TextView ?= itemView.findViewById(R.id.text_log_day)
         internal var duration: TextView ?= itemView.findViewById(R.id.text_log_duration)
         internal var maxBAC: TextView ?= itemView.findViewById(R.id.text_log_max_BAC)
-
     }
 }
