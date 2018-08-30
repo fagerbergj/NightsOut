@@ -9,37 +9,40 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 
 import java.util.ArrayList
 
 
-class HomeFragmentDrinkListAdapter//constructor
-(private val mContext: Context, drinksList: ArrayList<Drink>) : RecyclerView.Adapter<HomeFragmentDrinkListAdapter.ViewHolder>() {
+class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: ArrayList<Drink>) :
+        RecyclerView.Adapter<HomeFragmentDrinkListAdapter.ViewHolder>() {
 
-    //vars
-    private val drinksList: MutableList<Drink>
+    // vars
+    private val mDrinksList: MutableList<Drink>
 
-    private val mainActivity: MainActivity
+    private val mMainActivity: MainActivity
 
     init {
-        this.drinksList = drinksList
-        mainActivity = mContext as MainActivity
+        this.mDrinksList = drinksList
+        mMainActivity = mContext as MainActivity
     }
 
-    //set layout inflater & inflate layout
+    // set layout inflater & inflate layout
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(mContext)
         val view = inflater.inflate(R.layout.fragment_home_list_item, parent, false)
         return ViewHolder(view)
     }
 
-    //When view is rendered bind the correct holder to it
+    // When view is rendered bind the correct holder to it
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val drink = drinksList[position]
+        val drink = mDrinksList[position]
         if (!drink.image.isEmpty()) {
-            holder.image.setImageBitmap(BitmapFactory.decodeByteArray(drink.image, 0, drink.image.size))
+            holder.image.setImageBitmap(BitmapFactory.decodeByteArray(drink.image, 0,
+                    drink.image.size))
         } else {
-            holder.image.setImageBitmap(BitmapFactory.decodeResource(mContext.resources, R.drawable.beer))
+            holder.image.setImageBitmap(BitmapFactory.decodeResource(mContext.resources,
+                    R.drawable.beer))
         }
         holder.name.text = drink.name
 
@@ -48,45 +51,36 @@ class HomeFragmentDrinkListAdapter//constructor
         val amount = "%.1f".format(drink.amount) + drink.measurement
         holder.amount.text = amount
 
-        holder.foreground.setOnClickListener { v: View ->
+        holder.foreground.setOnClickListener { _ ->
+            Toast.makeText(mContext, "Drink: ${holder.name} clicked", Toast.LENGTH_SHORT).show()
         }
     }
 
     override fun getItemCount(): Int {
-        return drinksList.size
+        return mDrinksList.size
     }
 
-    //ViewHolder for each item in list
+    // ViewHolder for each item in list
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-        internal var image: ImageView
-        internal var name: TextView
-        internal var aav: TextView
-        internal var amount: TextView
-        internal var foreground: LinearLayout
-        internal var background: LinearLayout
-
-        init {
-            image = itemView.findViewById(R.id.image_drink)
-            name = itemView.findViewById(R.id.drink_name)
-            aav = itemView.findViewById(R.id.drink_aav)
-            amount = itemView.findViewById(R.id.drink_amount)
-
-            foreground = itemView.findViewById(R.id.layout_foreground)
-            background = itemView.findViewById(R.id.layout_background)
-        }
+        internal var image: ImageView = itemView.findViewById(R.id.image_drink)
+        internal var name: TextView = itemView.findViewById(R.id.text_home_drink_name)
+        internal var aav: TextView = itemView.findViewById(R.id.text_home_drink_aav)
+        internal var amount: TextView = itemView.findViewById(R.id.text_home_drink_amount)
+        internal var foreground: LinearLayout = itemView.findViewById(R.id.layout_foreground)
+        internal var background: LinearLayout = itemView.findViewById(R.id.layout_background)
 
     }
 
-    //swipe remove
+    // swipe remove
     fun removeItem(position: Int) {
-        drinksList.removeAt(position)
+        mDrinksList.removeAt(position)
         notifyItemRemoved(position)
     }
 
-    //undo swipe remove
+    // undo swipe remove
     fun restoreItem(item: Drink, position: Int) {
-        drinksList.add(position, item)
+        mDrinksList.add(position, item)
         // notify item added by position
         notifyItemInserted(position)
     }

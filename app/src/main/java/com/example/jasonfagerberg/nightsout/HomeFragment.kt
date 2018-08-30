@@ -78,11 +78,14 @@ class HomeFragment : Fragment(), HomeFragmentRecyclerItemTouchHelper.RecyclerIte
             mDrinkListAdapter.removeItem(viewHolder.adapterPosition)
 
             // showing snack bar with Undo option
-            val snackbar = Snackbar.make(mRelativeLayout, name + " removed from meal list!", Snackbar.LENGTH_LONG)
-            snackbar.setAction("UNDO", { v: View ->
-                // undo is selected, restore the deleted item
+            val snackbar = Snackbar.make(mRelativeLayout, "$name removed from meal list!",
+                    Snackbar.LENGTH_LONG)
+
+            // undo is selected, restore the deleted item
+            snackbar.setAction("UNDO", { _ ->
                 mDrinkListAdapter.restoreItem(deletedItem, deletedIndex)
             })
+
             snackbar.setActionTextColor(Color.YELLOW)
             snackbar.show()
         }

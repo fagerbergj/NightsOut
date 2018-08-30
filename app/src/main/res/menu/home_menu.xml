@@ -2,7 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/mainActionCamera"
+        android:id="@+id/btn_toolbar_home_done"
         android:icon="@drawable/done_white_24dp"
         android:title="@string/text_log_session"
         app:showAsAction="ifRoom"/>

@@ -78,7 +78,7 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/drink_name"
+                android:id="@+id/text_home_drink_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical|center_horizontal"
@@ -93,7 +93,7 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:id="@+id/drink_aav"
+                    android:id="@+id/text_home_drink_aav"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="32dp"
@@ -101,7 +101,7 @@
                     android:textSize="16sp" />
 
                 <TextView
-                    android:id="@+id/drink_amount"
+                    android:id="@+id/text_home_drink_amount"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="32dp"
