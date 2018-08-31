@@ -18,14 +18,17 @@
 
     <android.support.design.button.MaterialButton
         android:id="@+id/btn_home_add_drink"
-        android:layout_width="250dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/toolbar_home"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
         android:layout_marginTop="8dp"
         android:text="@string/button_add_drink"
         android:textColor="@color/colorWhite"
-        android:layout_centerHorizontal="true"
-        android:theme="@style/HomeButtonTheme"/>
+        android:theme="@style/HomeButtonTheme"
+        android:textSize="18sp"/>
 
     <LinearLayout
         android:id="@+id/layout_start_drinking"

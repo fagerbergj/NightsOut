@@ -20,7 +20,8 @@
     <string name="text_weight">Weight</string>
     <string name="text_favorites">Favorites</string>
     <string name="text_save_profile">Save Profile</string>
-    <string name="text_quick_fill">Quick Fill</string>
+    <string name="text_quick_fill_favorites">Favorites - Quick Fill</string>
+    <string name="text_quick_fill_recents">Recents - Quick Fill</string>
     <string name="text_recents">Recents</string>
     <string name="text_name">Name</string>
     <string name="text_aav">A.A.V</string>

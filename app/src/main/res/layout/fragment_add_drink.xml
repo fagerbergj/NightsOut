@@ -22,26 +22,14 @@
             app:titleTextColor="@color/colorWhite"/>
 
         <TextView
-            android:id="@+id/text_add_drink_quick_add"
+            android:id="@+id/text_add_drink_recents"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/toolbar_add_drink"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
             android:layout_marginTop="8dp"
-            android:text="@string/text_quick_fill"
-            android:textSize="20sp"
-            android:textColor="@color/colorBlack"/>
-
-        <TextView
-            android:id="@+id/text_add_drink_recents"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/text_add_drink_quick_add"
-            android:layout_marginLeft="32dp"
-            android:layout_marginRight="32dp"
-            android:layout_marginTop="8dp"
-            android:text="@string/text_recents"
+            android:text="@string/text_quick_fill_recents"
             android:textSize="16sp" />
 
         <LinearLayout
@@ -72,10 +60,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/layout_recents_foreground"
-            android:layout_marginLeft="32dp"
-            android:layout_marginRight="32dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
             android:layout_marginTop="8dp"
-            android:text="@string/text_favorites"
+            android:text="@string/text_quick_fill_favorites"
             android:textSize="16sp" />
 
         <LinearLayout
@@ -205,13 +193,16 @@
 
         <android.support.design.button.MaterialButton
             android:id="@+id/btn_add_drink_add"
-            android:layout_width="133dp"
-            android:layout_height="100dp"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
             android:layout_below="@id/layout_add_drink_amount"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="16dp"
+            android:layout_marginBottom="32dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="64dp"
             android:text="@string/text_add"
-            android:textSize="20sp"
+            android:textSize="18sp"
             android:theme="@style/HomeButtonTheme" />
     </RelativeLayout>
 </ScrollView>
