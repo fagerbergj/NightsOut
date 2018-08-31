@@ -57,13 +57,13 @@ class ProfileFragment : Fragment() {
         val btnFemale: MaterialButton = view.findViewById(R.id.btn_profile_female)
 
         btnMale.setOnClickListener{ _ ->
-            btnMale.setEnabled(false)
-            btnFemale.setEnabled(true)
+            btnMale.isEnabled = false
+            btnFemale.isEnabled = true
         }
 
         btnFemale.setOnClickListener{ _ ->
-            btnFemale.setEnabled(false)
-            btnMale.setEnabled(true)
+            btnFemale.isEnabled = false
+            btnMale.isEnabled = true
         }
 
         // setup bottom nav bar

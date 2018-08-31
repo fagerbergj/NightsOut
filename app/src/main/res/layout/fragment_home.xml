@@ -54,7 +54,7 @@
             android:layout_height="40dp"
             android:textAlignment="center"
             android:inputType="time"
-            android:hint="@string/text_start_drinking"/>
+            android:hint="@string/text_empty"/>
     </LinearLayout>
 
     <LinearLayout
@@ -81,7 +81,7 @@
             android:layout_height="40dp"
             android:textAlignment="center"
             android:inputType="time"
-            android:hint="@string/text_end_drinking"/>
+            android:hint="@string/text_empty"/>
     </LinearLayout>
 
     <android.support.v7.widget.RecyclerView

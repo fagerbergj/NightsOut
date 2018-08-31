@@ -16,7 +16,6 @@ class ProfileFragmentFavoritesListAdapter(private val mContext: Context, drinksL
         RecyclerView.Adapter<ProfileFragmentFavoritesListAdapter.ViewHolder>() {
     // vars
     private val mFavoriteDrinksList: MutableList<Drink> = drinksList
-    private val mMainActivity: MainActivity = mContext as MainActivity
 
     // set layout inflater & inflate layout
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {

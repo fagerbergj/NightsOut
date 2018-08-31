@@ -6,10 +6,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 
 import java.util.ArrayList
 
@@ -19,8 +16,6 @@ class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: Ar
 
     // vars
     private val mDrinksList: MutableList<Drink> = drinksList
-
-    private val mMainActivity: MainActivity = mContext as MainActivity
 
     // set layout inflater & inflate layout
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -63,7 +58,6 @@ class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: Ar
         internal var aav: TextView = itemView.findViewById(R.id.text_home_drink_aav)
         internal var amount: TextView = itemView.findViewById(R.id.text_home_drink_amount)
         internal var foreground: LinearLayout = itemView.findViewById(R.id.layout_foreground)
-        internal var background: LinearLayout = itemView.findViewById(R.id.layout_background)
 
     }
 

@@ -3,14 +3,14 @@ package com.example.jasonfagerberg.nightsout
 import java.text.SimpleDateFormat
 import java.util.*
 
-private val TAG = "Session"
+private const val TAG = "Session"
 
 class Session(var date: Date, var duration: Double, var maxBAC: Double){
     val dateString: String
 
     init {
         var pattern = "MM/dd"
-        var simpleDateFormat = SimpleDateFormat(pattern)
+        var simpleDateFormat = SimpleDateFormat(pattern, Locale("US"))
         val myDate = simpleDateFormat.format(date)
 
         pattern = "EEEE"

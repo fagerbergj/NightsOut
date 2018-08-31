@@ -115,7 +115,8 @@
                 android:layout_width="225dp"
                 android:layout_height="50dp"
                 android:gravity="center_horizontal"
-                android:inputType="text" />
+                android:inputType="text"
+                android:hint="@string/text_empty"/>
 
         </LinearLayout>
 
@@ -145,13 +146,13 @@
                 android:layout_height="50dp"
                 android:gravity="center_horizontal"
                 android:inputType="numberDecimal"
-                android:hint="@string/text_aav"/>
+                android:hint="@string/text_empty"/>
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="%"
+                android:text="@string/text_percent"
                 android:textColor="@color/colorBlack"
                 android:textSize="24sp" />
 
@@ -183,7 +184,7 @@
                 android:layout_height="50dp"
                 android:gravity="center_horizontal"
                 android:inputType="number"
-                android:hint="@string/text_amount"/>
+                android:hint="@string/text_empty"/>
 
             <Spinner
                 android:id="@+id/spinner_add_drink_amount"

@@ -17,9 +17,9 @@ import android.content.DialogInterface
 import android.support.v7.app.AlertDialog
 import android.widget.Toast
 
+private const val TAG = "HomeFragment"
 
 class HomeFragment : Fragment(), HomeFragmentRecyclerItemTouchHelper.RecyclerItemTouchHelperListener {
-    private val TAG = "HomeFragment"
     private val mDrinkList: ArrayList<Drink> = ArrayList()
     private lateinit var mDrinkListAdapter: HomeFragmentDrinkListAdapter
     private lateinit var mRelativeLayout: RelativeLayout

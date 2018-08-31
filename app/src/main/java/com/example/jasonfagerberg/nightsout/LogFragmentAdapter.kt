@@ -7,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import java.text.SimpleDateFormat
 import java.util.*
 
 // log tag
@@ -22,9 +21,6 @@ RecyclerView.Adapter<LogFragmentAdapter.ViewHolder>() {
 
     // log to display
     private val mLogList: MutableList<Any> = logList
-
-    // main activity
-    private val mMainActivity: MainActivity = mContext as MainActivity
 
     // inflate correct layout
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LogFragmentAdapter.ViewHolder {
