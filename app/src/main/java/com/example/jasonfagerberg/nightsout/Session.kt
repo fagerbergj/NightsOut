@@ -6,7 +6,9 @@ import java.util.*
 private val TAG = "Session"
 
 class Session(var date: Date, var duration: Double, var maxBAC: Double){
-    override fun toString(): String {
+    val dateString: String
+
+    init {
         var pattern = "MM/dd"
         var simpleDateFormat = SimpleDateFormat(pattern)
         val myDate = simpleDateFormat.format(date)
@@ -15,8 +17,18 @@ class Session(var date: Date, var duration: Double, var maxBAC: Double){
         simpleDateFormat = SimpleDateFormat(pattern, Locale("US"))
         val dayOfWeek = simpleDateFormat.format(date)
 
-        val dayDate = "$dayOfWeek $myDate"
+        dateString = "$dayOfWeek $myDate"
+    }
 
-        return "{Date: $dayDate, Duration: $duration, maxBAC $maxBAC}"
+    override fun toString(): String {
+        return "{Date: $dateString, Duration: $duration, maxBAC $maxBAC}"
+    }
+
+    override fun equals(other: Any?): Boolean {
+        return this.dateString == (other as Session).dateString
+    }
+
+    override fun hashCode(): Int {
+        return this.dateString.hashCode()
     }
 }

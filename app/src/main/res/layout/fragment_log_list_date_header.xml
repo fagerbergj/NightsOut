@@ -12,10 +12,6 @@
         android:id="@+id/layout_foreground"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="2dp"
-        android:layout_marginLeft="4dp"
-        android:layout_marginRight="4dp"
-        android:layout_marginTop="2dp"
         android:background="@color/colorPrimaryDark"
         android:gravity="center"
         android:orientation="horizontal">
@@ -24,14 +20,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:orientation="vertical"
-            android:padding="8dp">
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/text_log_day"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:paddingEnd="16dp"
+                android:paddingTop="2dp"
                 android:text="Saturday 12/30/20"
                 android:textColor="@color/colorWhite"
                 android:textSize="20sp"
@@ -40,7 +36,8 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:paddingBottom="2dp">
 
                 <TextView
                     android:id="@+id/text_log_duration"

@@ -55,18 +55,8 @@ RecyclerView.Adapter<LogFragmentAdapter.ViewHolder>() {
             HEADER -> {
                 val session: Session = mLogList[position] as Session
 
-                var pattern = "MM/dd"
-                val current = mMainActivity.resources.configuration.locale
-                var simpleDateFormat = SimpleDateFormat(pattern, current)
-                val date = simpleDateFormat.format(session.date)
-
-                pattern = "EEEE"
-                simpleDateFormat = SimpleDateFormat(pattern, Locale("US"))
-                val dayOfWeek = simpleDateFormat.format(session.date)
-
-                val dayDate = "$dayOfWeek $date"
                 // Log.v(TAG, getItemViewType(position).toString())
-                holder.day!!.text = dayDate
+                holder.day!!.text = session.dateString
 
                 val duration = "Duration: ${session.duration}"
                 holder.duration!!.text = duration
