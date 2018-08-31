@@ -20,8 +20,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/toolbar_profile"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         android:layout_marginTop="24dp"
         android:text="@string/text_sex"
         android:textSize="18sp" />
@@ -38,8 +38,8 @@
             android:id="@+id/btn_profile_male"
             android:layout_width="135dp"
             android:layout_height="60dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="20dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="20dp"
             android:text="@string/text_male"
             android:textSize="18sp"
             android:theme="@style/ProfileRadioTheme" />
@@ -48,8 +48,8 @@
             android:id="@+id/btn_profile_female"
             android:layout_width="135dp"
             android:layout_height="60dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="16dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="16dp"
             android:text="@string/text_female"
             android:theme="@style/ProfileRadioTheme"
             android:textSize="18sp"/>
@@ -61,8 +61,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_below="@id/layout_profile_sex"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         android:layout_marginTop="32dp"
         android:text="@string/text_weight"
         android:textSize="18sp" />
@@ -88,8 +88,8 @@
             android:id="@+id/spinner_profile"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
             android:spinnerMode="dropdown" />
 
     </LinearLayout>
@@ -100,8 +100,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_below="@id/layout_profile_weight"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         android:layout_marginTop="32dp"
         android:text="@string/text_favorites"
         android:textSize="18sp" />
@@ -111,8 +111,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/text_profile_favorites"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         android:layout_marginTop="16dp"
         android:background="#d1d1d1"
         android:orientation="vertical">
@@ -136,10 +136,10 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="32dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         android:layout_marginTop="32dp"
-        android:text="@string/text_save_profile"
+        android:text="@string/button_save_profile"
         android:theme="@style/HomeButtonTheme"
         android:textSize="18sp"/>
 

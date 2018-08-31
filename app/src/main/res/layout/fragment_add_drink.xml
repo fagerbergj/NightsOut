@@ -10,7 +10,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         tools:context=".AddDrinkFragment">
 
         <android.support.v7.widget.Toolbar
@@ -53,6 +53,7 @@
                 android:orientation="horizontal"
                 android:paddingBottom="8dp"
                 android:paddingTop="8dp" />
+
         </LinearLayout>
 
         <TextView
@@ -130,7 +131,6 @@
             android:layout_marginTop="16dp"
             android:gravity="center_vertical"
             android:orientation="horizontal">
-            <!--android:layout_below="@id/layout_favorites_foreground"-->
 
             <TextView
                 android:id="@+id/text_add_drink_aav"
@@ -144,7 +144,8 @@
                 android:layout_width="175dp"
                 android:layout_height="50dp"
                 android:gravity="center_horizontal"
-                android:inputType="numberDecimal" />
+                android:inputType="numberDecimal"
+                android:hint="@string/text_aav"/>
 
             <TextView
                 android:layout_width="match_parent"
@@ -181,7 +182,8 @@
                 android:layout_width="175dp"
                 android:layout_height="50dp"
                 android:gravity="center_horizontal"
-                android:inputType="number" />
+                android:inputType="number"
+                android:hint="@string/text_amount"/>
 
             <Spinner
                 android:id="@+id/spinner_add_drink_amount"
@@ -204,5 +206,6 @@
             android:text="@string/text_add"
             android:textSize="18sp"
             android:theme="@style/HomeButtonTheme" />
+
     </RelativeLayout>
 </ScrollView>

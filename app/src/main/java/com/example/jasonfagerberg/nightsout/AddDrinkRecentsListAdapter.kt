@@ -1,6 +1,8 @@
 package com.example.jasonfagerberg.nightsout
 
 import android.content.Context
+import android.content.DialogInterface
+import android.support.v7.app.AlertDialog
 import android.support.v7.widget.CardView
 import android.support.v7.widget.RecyclerView
 import android.view.Gravity
@@ -33,6 +35,29 @@ class AddDrinkFragmentRecentsListAdapter(private val mContext: Context, drinksLi
             val toast = Toast.makeText(mContext, "${holder.name.text} clicked", Toast.LENGTH_SHORT)
             toast.setGravity(Gravity.CENTER, 0, 450)
             toast.show()
+        }
+
+        holder.card.setOnLongClickListener { v: View ->
+            val dialogClickListener = DialogInterface.OnClickListener { _, which ->
+                when (which) {
+                    DialogInterface.BUTTON_POSITIVE -> {
+                        //Yes is pressed
+                        mRecentDrinksList.remove(drink)
+                        this.notifyItemRemoved(position)
+                        val toast = Toast.makeText(v.context,
+                                "Drink Removed ", Toast.LENGTH_SHORT)
+                        toast.setGravity(Gravity.CENTER, 0, 0)
+                        toast.show()
+                    }
+                    DialogInterface.BUTTON_NEGATIVE -> {/* no action for clicking no */
+                    }
+                }
+            }
+            //Build Actual box
+            val builder = AlertDialog.Builder(v.context!!)
+            builder.setMessage("Remove from recents?").setPositiveButton("Yes", dialogClickListener)
+                    .setNegativeButton("No", dialogClickListener).show()
+            true
         }
     }
 
