@@ -17,7 +17,7 @@
         app:titleTextColor="@color/colorWhite"/>
 
     <android.support.design.button.MaterialButton
-        android:id="@+id/btn_add_drink"
+        android:id="@+id/btn_home_add_drink"
         android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:layout_below="@id/toolbar_home"
@@ -31,7 +31,7 @@
         android:id="@+id/layout_start_drinking"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/btn_add_drink"
+        android:layout_below="@id/btn_home_add_drink"
         android:layout_centerHorizontal="true"
         android:gravity="center_horizontal"
         android:orientation="vertical"
@@ -56,7 +56,7 @@
         android:id="@+id/layout_end_drinking"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/btn_add_drink"
+        android:layout_below="@id/btn_home_add_drink"
         android:layout_centerHorizontal="true"
         android:gravity="center_horizontal"
         android:orientation="vertical"

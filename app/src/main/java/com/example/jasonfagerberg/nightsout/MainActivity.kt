@@ -4,15 +4,16 @@ import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
 import android.support.v4.app.Fragment
-import java.text.DateFormat.getDateInstance
-import java.util.*
+import android.util.Log
+
+private const val TAG = "MainActivity"
 
 class MainActivity : AppCompatActivity() {
 
     // init fragments
-    val homeFragment = HomeFragment.newInstance()
-    val logFragment = LogFragment.newInstance()
-    val profileFragment = ProfileFragment.newInstance()
+    private val homeFragment = HomeFragment.newInstance()
+    private val logFragment = LogFragment.newInstance()
+    private val profileFragment = ProfileFragment.newInstance()
     val addDrinkFragment = AddDrinkFragment.newInstance()
 
 
@@ -25,26 +26,44 @@ class MainActivity : AppCompatActivity() {
         val bottomNavigationView: BottomNavigationView? = findViewById(R.id.bottom_navigation_view)
 
         bottomNavigationView?.setOnNavigationItemSelectedListener { listener ->
-            if (listener.itemId == R.id.bottom_nav_home) {
-                setFragment(homeFragment)
-                true
-            }else if (listener.itemId == R.id.bottom_nav_log){
-                setFragment(logFragment)
-                true
-            }else if (listener.itemId == R.id.bottom_nav_profile){
-                setFragment(profileFragment)
-                true
-            }else{
-                true
+            val curFrag: Fragment ?= supportFragmentManager.findFragmentById(R.id.main_frame)
+            when(listener.itemId){
+                R.id.bottom_nav_home -> {
+                    if (curFrag !is HomeFragment) setFragment(homeFragment)
+                    true
+                }
+                R.id.bottom_nav_log -> {
+                    if(curFrag !is LogFragment) setFragment(logFragment)
+                    true
+                }
+                R.id.bottom_nav_profile -> {
+                    if(curFrag !is ProfileFragment) setFragment(profileFragment)
+                    true
+                }
+                else -> false
             }
         }
     }
 
-    private fun setFragment(fragment: Fragment) {
+    fun setFragment(fragment: Fragment) {
         val transaction = supportFragmentManager.beginTransaction()
+        //transaction.replace(R.id.main_frame, fragment)
         transaction.replace(R.id.main_frame, fragment)
         transaction.addToBackStack(null)
         transaction.commit()
+    }
+
+    override fun onBackPressed() {
+        val count = supportFragmentManager.backStackEntryCount
+
+        Log.v(TAG, "count = $count")
+        if (count == 1) {
+            finish()
+            //additional code
+        } else {
+            supportFragmentManager.popBackStack()
+        }
+
     }
 
 }
