@@ -12,8 +12,8 @@ import android.widget.TextView
 import android.widget.Toast
 import java.util.ArrayList
 
-class ProfileFragmentFavoriesListAdapter(private val mContext: Context, drinksList: ArrayList<Drink>) :
-        RecyclerView.Adapter<ProfileFragmentFavoriesListAdapter.ViewHolder>() {
+class ProfileFragmentFavoritesListAdapter(private val mContext: Context, drinksList: ArrayList<Drink>) :
+        RecyclerView.Adapter<ProfileFragmentFavoritesListAdapter.ViewHolder>() {
     // vars
     private val mFavoriteDrinksList: MutableList<Drink> = drinksList
     private val mMainActivity: MainActivity = mContext as MainActivity

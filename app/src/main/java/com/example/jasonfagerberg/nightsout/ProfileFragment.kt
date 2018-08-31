@@ -18,7 +18,7 @@ import android.widget.RelativeLayout
 class ProfileFragment : Fragment() {
 
     private var mFavoritesList: ArrayList<Drink> = ArrayList()
-    private lateinit var mFavoritesListAdapter: ProfileFragmentFavoriesListAdapter
+    private lateinit var mFavoritesListAdapter: ProfileFragmentFavoritesListAdapter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -49,7 +49,7 @@ class ProfileFragment : Fragment() {
         }
 
         // adapter setup
-        mFavoritesListAdapter = ProfileFragmentFavoriesListAdapter(context!!, mFavoritesList)
+        mFavoritesListAdapter = ProfileFragmentFavoritesListAdapter(context!!, mFavoritesList)
         favoriteListView.adapter = mFavoritesListAdapter
 
         // button setup

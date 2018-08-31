@@ -1,17 +1,21 @@
 package com.example.jasonfagerberg.nightsout
 
 import android.os.Bundle
+import android.support.design.button.MaterialButton
 import android.support.design.widget.BottomNavigationView
 import android.support.v4.app.Fragment
+import android.support.v4.content.ContextCompat
+import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.util.Log
+import android.view.*
 import android.widget.ArrayAdapter
 import android.widget.FrameLayout
 import android.widget.RelativeLayout
 import android.widget.Spinner
+
+private const val TAG = "AddDrinkFragment"
 
 class AddDrinkFragment : Fragment() {
 
@@ -21,14 +25,23 @@ class AddDrinkFragment : Fragment() {
     private var mRecentsList: ArrayList<Drink> = ArrayList()
     private lateinit var mRecentsListAdapter: AddDrinkFragmentRecentsListAdapter
 
+    private var mFavorited: Boolean = false
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         // inflate view
         val view = inflater.inflate(R.layout.fragment_add_drink, container, false)
 
+        // main
+        val main = (activity as AppCompatActivity)
+
         //toolbar setup
         val toolbar:android.support.v7.widget.Toolbar = view!!.findViewById(R.id.toolbar_add_drink)
-        toolbar.inflateMenu(R.menu.empty_menu)
+        toolbar.inflateMenu(R.menu.add_drink_menu)
+        main.setSupportActionBar(toolbar)
+        main.supportActionBar!!.setDisplayShowTitleEnabled(true)
+        setHasOptionsMenu(true)
+
         toolbar.setNavigationIcon(R.drawable.arrow_back_white_24dp)
 
         toolbar.setNavigationOnClickListener { _: View -> activity!!.onBackPressed() }
@@ -81,5 +94,25 @@ class AddDrinkFragment : Fragment() {
 
     companion object {
         fun newInstance(): AddDrinkFragment = AddDrinkFragment()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+        inflater!!.inflate(R.menu.add_drink_menu, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        val resId = item?.itemId
+        when(resId){
+            R.id.btn_toolbar_favorite -> {
+                mFavorited = !mFavorited
+                if(mFavorited){
+                    item.icon = ContextCompat.getDrawable(context!!, R.drawable.favorite_white_24dp)
+                }else{
+                    item.icon = ContextCompat.getDrawable(context!!, R.drawable.favorite_border_white_24dp)
+                }
+            }
+        }
+
+        return true
     }
 }

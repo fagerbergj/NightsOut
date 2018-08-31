@@ -6,6 +6,7 @@ import android.support.design.button.MaterialButton
 import android.support.design.widget.BottomNavigationView
 import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
+import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.RecyclerView
 import android.view.*
 import android.support.v7.widget.LinearLayoutManager
@@ -13,6 +14,11 @@ import android.support.v7.widget.helper.ItemTouchHelper
 import android.widget.FrameLayout
 import android.widget.RelativeLayout
 import kotlinx.android.synthetic.main.fragment_home.view.*
+import android.content.DialogInterface
+import android.support.v7.app.AlertDialog
+import android.widget.TextView
+import android.text.method.TextKeyListener.clear
+import android.widget.Toast
 
 
 class HomeFragment : Fragment(), HomeFragmentRecyclerItemTouchHelper.RecyclerItemTouchHelperListener {
@@ -30,9 +36,15 @@ class HomeFragment : Fragment(), HomeFragmentRecyclerItemTouchHelper.RecyclerIte
         // set layout
         mRelativeLayout = view.findViewById(R.id.layout_home)
 
-        // toolbar setup
+        // main
+        val main = (activity as AppCompatActivity)
+
+        //toolbar setup
         val toolbar:android.support.v7.widget.Toolbar = view!!.findViewById(R.id.toolbar_home)
         toolbar.inflateMenu(R.menu.home_menu)
+        main.setSupportActionBar(toolbar)
+        main.supportActionBar!!.setDisplayShowTitleEnabled(true)
+        setHasOptionsMenu(true)
 
         // mDrinkList recycler view setup
         val drinksListView:RecyclerView = view.findViewById(R.id.recycler_drink_list)
@@ -83,6 +95,33 @@ class HomeFragment : Fragment(), HomeFragmentRecyclerItemTouchHelper.RecyclerIte
     // create new fragment
     companion object {
         fun newInstance(): HomeFragment = HomeFragment()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+        inflater!!.inflate(R.menu.home_menu, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        val resId = item?.itemId
+        if(resId == R.id.btn_toolbar_home_done){
+            val dialogClickListener = DialogInterface.OnClickListener { _, which ->
+                when (which) {
+                    DialogInterface.BUTTON_POSITIVE -> {
+                        //Yes is pressed
+                        val toast = Toast.makeText(activity!!.applicationContext,
+                                "Session Logged ", Toast.LENGTH_SHORT)
+                        toast.setGravity(Gravity.CENTER, 0, 0)
+                        toast.show()
+                    }
+                    DialogInterface.BUTTON_NEGATIVE -> {/* no action for clicking no */ }
+                }
+            }
+            //Build Actual box
+            val builder = AlertDialog.Builder(context!!)
+            builder.setMessage("Log Session?").setPositiveButton("Yes", dialogClickListener)
+                    .setNegativeButton("No", dialogClickListener).show()
+        }
+        return true
     }
     
     //swipe method 
