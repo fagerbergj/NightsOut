@@ -1,6 +1,5 @@
 package com.example.jasonfagerberg.nightsout
 
-import android.util.Log
 import java.text.SimpleDateFormat
 import java.util.*
 

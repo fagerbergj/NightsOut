@@ -1,7 +1,6 @@
 package com.example.jasonfagerberg.nightsout
 
 import android.os.Bundle
-import android.support.design.button.MaterialButton
 import android.support.design.widget.BottomNavigationView
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat

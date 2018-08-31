@@ -13,11 +13,8 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.helper.ItemTouchHelper
 import android.widget.FrameLayout
 import android.widget.RelativeLayout
-import kotlinx.android.synthetic.main.fragment_home.view.*
 import android.content.DialogInterface
 import android.support.v7.app.AlertDialog
-import android.widget.TextView
-import android.text.method.TextKeyListener.clear
 import android.widget.Toast
 
 
