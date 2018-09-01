@@ -1,9 +1,11 @@
 package com.example.jasonfagerberg.nightsout
 
+import android.graphics.PorterDuff
 import android.os.Bundle
 import android.support.design.button.MaterialButton
 import android.support.design.widget.BottomNavigationView
 import android.support.v4.app.Fragment
+import android.support.v4.content.ContextCompat
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -57,13 +59,17 @@ class ProfileFragment : Fragment() {
         val btnFemale: MaterialButton = view.findViewById(R.id.btn_profile_female)
 
         btnMale.setOnClickListener{ _ ->
-            btnMale.isEnabled = false
-            btnFemale.isEnabled = true
+            btnMale.background.setColorFilter(ContextCompat.getColor(context!!,
+                    R.color.colorLightRed), PorterDuff.Mode.MULTIPLY)
+            btnFemale.background.setColorFilter(ContextCompat.getColor(context!!,
+                    R.color.colorLightGray), PorterDuff.Mode.MULTIPLY)
         }
 
         btnFemale.setOnClickListener{ _ ->
-            btnFemale.isEnabled = false
-            btnMale.isEnabled = true
+            btnFemale.background.setColorFilter(ContextCompat.getColor(context!!,
+                    R.color.colorLightRed), PorterDuff.Mode.MULTIPLY)
+            btnMale.background.setColorFilter(ContextCompat.getColor(context!!,
+                    R.color.colorLightGray), PorterDuff.Mode.MULTIPLY)
         }
 
         // setup bottom nav bar

@@ -11,7 +11,11 @@
         <item name="colorPrimary">@color/colorGreen</item>
     </style>
     
-    <style name="ProfileRadioTheme" parent="Theme.MaterialComponents.Light">
+    <style name="ProfileButtonMaleTheme" parent="Theme.MaterialComponents.Light">
+        <item name="colorPrimary">@color/colorLightRed</item>
+    </style>
+
+    <style name="ProfileButtonFemaleTheme" parent="Theme.MaterialComponents.Light">
         <item name="colorPrimary">@color/colorLightRed</item>
     </style>
 </resources>
