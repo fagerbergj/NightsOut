@@ -29,17 +29,20 @@ class LogFragment : Fragment() {
     private lateinit var mLogFragmentAdapter: LogFragmentAdapter
     private lateinit var calendarView: MaterialCalendarView
     private lateinit var calendar: Calendar
+    private lateinit var mLogListView: RecyclerView
+    private lateinit var mMainActivity: MainActivity
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_log, container, false)
+        mMainActivity = context as MainActivity
 
         // recycler view
-        val logListView: RecyclerView = view.findViewById(R.id.recycler_log)
+        val mLogListView: RecyclerView = view.findViewById(R.id.recycler_log)
         val linearLayoutManager = LinearLayoutManager(context)
         linearLayoutManager.orientation = LinearLayoutManager.VERTICAL
-        logListView.layoutManager = linearLayoutManager
+        mLogListView.layoutManager = linearLayoutManager
 
         // toolbar setup
         val toolbar:android.support.v7.widget.Toolbar = view!!.findViewById(R.id.toolbar_log)
@@ -68,6 +71,34 @@ class LogFragment : Fragment() {
         val logList: ArrayList<Any> = ArrayList()
 
         // calender setup
+        setupCalendar(view, logList)
+
+        // set adapter
+        mLogFragmentAdapter = LogFragmentAdapter(context!!, logList)
+        mLogListView.adapter = mLogFragmentAdapter
+
+        // setup bottom nav bar
+        mMainActivity.showBottomNavBar(R.id.bottom_nav_log)
+
+        return view
+    }
+
+    companion object {
+        fun newInstance(): LogFragment = LogFragment()
+    }
+
+    // format days to correct object and send to decorator
+    private fun highlightDays(){
+        val dates = ArrayList<CalendarDay>()
+        for(session in mSessionList.keys){
+            val day = CalendarDay.from(session.date)
+            dates.add(day)
+        }
+        calendarView.addDecorator(EventDecorator(ContextCompat.getColor(context!!,
+                R.color.colorPrimaryDark), dates))
+    }
+
+    private fun setupCalendar(view: View, logList: ArrayList<Any>){
         calendarView = view.findViewById(R.id.calender_log)
         calendarView.selectedDate = CalendarDay.today()
         calendar.time = calendarView.selectedDate.date
@@ -88,41 +119,8 @@ class LogFragment : Fragment() {
 
             if(curSession in mSessionList.keys){ logList.addAll(mSessionList[curSession]!!) }
             mLogFragmentAdapter.notifyDataSetChanged()
-            logListView.layoutManager!!.scrollToPosition(0)
+            mLogListView.layoutManager!!.scrollToPosition(0)
         }
-
-
-        // set adapter
-        mLogFragmentAdapter = LogFragmentAdapter(context!!, logList)
-        logListView.adapter = mLogFragmentAdapter
-
-        // setup bottom nav bar
-        val mainActivity: MainActivity = context as MainActivity
-        val botNavBar: BottomNavigationView = mainActivity.findViewById(R.id.bottom_navigation_view)
-        botNavBar.visibility = View.VISIBLE
-        botNavBar.selectedItemId = R.id.bottom_nav_log
-
-        val params = RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,
-                RelativeLayout.LayoutParams.MATCH_PARENT)
-        params.addRule(RelativeLayout.ABOVE, R.id.bottom_navigation_view)
-        (mainActivity.findViewById(R.id.main_frame) as FrameLayout).layoutParams = params
-
-        return view
-    }
-
-    companion object {
-        fun newInstance(): LogFragment = LogFragment()
-    }
-
-    // format days to correct object and send to decorator
-    private fun highlightDays(){
-        val dates = ArrayList<CalendarDay>()
-        for(session in mSessionList.keys){
-            val day = CalendarDay.from(session.date)
-            dates.add(day)
-        }
-        calendarView.addDecorator(EventDecorator(ContextCompat.getColor(context!!,
-                R.color.colorPrimaryDark), dates))
     }
 }
 

@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
-import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.Log
@@ -26,33 +25,19 @@ class AddDrinkFragment : Fragment() {
 
     private var mFavorited: Boolean = false
 
+    private lateinit var mMainActivity: MainActivity
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         // inflate view
         val view = inflater.inflate(R.layout.fragment_add_drink, container, false)
-
-        // main
-        val main = (activity as AppCompatActivity)
+        mMainActivity = context as MainActivity
 
         //toolbar setup
-        val toolbar:android.support.v7.widget.Toolbar = view!!.findViewById(R.id.toolbar_add_drink)
-        toolbar.inflateMenu(R.menu.add_drink_menu)
-        main.setSupportActionBar(toolbar)
-        main.supportActionBar!!.setDisplayShowTitleEnabled(true)
-        setHasOptionsMenu(true)
-
-        toolbar.setNavigationIcon(R.drawable.arrow_back_white_24dp)
-
-        toolbar.setNavigationOnClickListener { _: View -> activity!!.onBackPressed() }
+        toolbarSetup(view)
 
         // hide bottom nav bar
-        val mainActivity: MainActivity = context as MainActivity
-        val botNavBar: BottomNavigationView = mainActivity.findViewById(R.id.bottom_navigation_view)
-        botNavBar.visibility = View.INVISIBLE
-
-        val params = RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,
-                RelativeLayout.LayoutParams.MATCH_PARENT)
-        (mainActivity.findViewById(R.id.main_frame) as FrameLayout).layoutParams = params
+        mMainActivity.hideBottomNavBar()
 
         // spinner setup
         val dropdown: Spinner = view.findViewById(R.id.spinner_add_drink_amount)
@@ -60,13 +45,13 @@ class AddDrinkFragment : Fragment() {
         val adapter = ArrayAdapter(context!!, android.R.layout.simple_spinner_dropdown_item, items)
         dropdown.adapter = adapter
 
-        // recycler view setup
+        // favorites recycler view setup
         val favoriteListView: RecyclerView = view.findViewById(R.id.recycler_add_drink_favorites_list)
         val linearLayoutManagerFavorites = LinearLayoutManager(context)
         linearLayoutManagerFavorites.orientation = LinearLayoutManager.HORIZONTAL
         favoriteListView.layoutManager = linearLayoutManagerFavorites
 
-        // recycler view setup
+        // recents recycler view setup
         val recentsListView: RecyclerView = view.findViewById(R.id.recycler_add_drink_recents_list)
         val linearLayoutManagerRecents = LinearLayoutManager(context)
         linearLayoutManagerRecents.orientation = LinearLayoutManager.HORIZONTAL
@@ -113,5 +98,17 @@ class AddDrinkFragment : Fragment() {
         }
 
         return true
+    }
+
+    private fun toolbarSetup(view: View){
+        val toolbar:android.support.v7.widget.Toolbar = view.findViewById(R.id.toolbar_add_drink)
+        toolbar.inflateMenu(R.menu.add_drink_menu)
+        mMainActivity .setSupportActionBar(toolbar)
+        mMainActivity .supportActionBar!!.setDisplayShowTitleEnabled(true)
+        setHasOptionsMenu(true)
+
+        toolbar.setNavigationIcon(R.drawable.arrow_back_white_24dp)
+
+        toolbar.setNavigationOnClickListener { _: View -> activity!!.onBackPressed() }
     }
 }

@@ -7,6 +7,9 @@ import android.support.v4.app.Fragment
 import android.util.Log
 import android.preference.PreferenceManager
 import android.content.SharedPreferences
+import android.view.View
+import android.widget.FrameLayout
+import android.widget.RelativeLayout
 
 private const val TAG = "MainActivity"
 
@@ -17,6 +20,7 @@ class MainActivity : AppCompatActivity() {
     private val logFragment = LogFragment.newInstance()
     private val profileFragment = ProfileFragment.newInstance()
     val addDrinkFragment = AddDrinkFragment.newInstance()
+    private lateinit var botNavBar: BottomNavigationView
 
     // shared pref data
     private lateinit var preferences: SharedPreferences
@@ -33,9 +37,9 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         // bottom nav bar
-        val bottomNavigationView: BottomNavigationView? = findViewById(R.id.bottom_navigation_view)
+        botNavBar = findViewById(R.id.bottom_navigation_view)
 
-        bottomNavigationView?.setOnNavigationItemSelectedListener { listener ->
+        botNavBar.setOnNavigationItemSelectedListener { listener ->
             val curFrag: Fragment ?= supportFragmentManager.findFragmentById(R.id.main_frame)
             when(listener.itemId){
                 R.id.bottom_nav_home -> {
@@ -113,6 +117,25 @@ class MainActivity : AppCompatActivity() {
         transaction.replace(R.id.main_frame, fragment)
         transaction.addToBackStack(null)
         transaction.commit()
+    }
+
+    fun showBottomNavBar(id: Int){
+        botNavBar.visibility = View.VISIBLE
+        botNavBar.selectedItemId = id
+
+        val params = RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,
+                RelativeLayout.LayoutParams.MATCH_PARENT)
+        params.addRule(RelativeLayout.ABOVE, R.id.bottom_navigation_view)
+        findViewById<FrameLayout>(R.id.main_frame).layoutParams = params
+    }
+
+    fun hideBottomNavBar(){
+        val botNavBar: BottomNavigationView = findViewById(R.id.bottom_navigation_view)
+        botNavBar.visibility = View.INVISIBLE
+
+        val params = RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,
+                RelativeLayout.LayoutParams.MATCH_PARENT)
+        findViewById<FrameLayout>(R.id.main_frame).layoutParams = params
     }
 
     override fun onBackPressed() {

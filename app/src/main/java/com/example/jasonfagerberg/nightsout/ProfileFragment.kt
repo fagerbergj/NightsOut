@@ -4,7 +4,6 @@ import android.graphics.PorterDuff
 import android.graphics.Typeface
 import android.os.Bundle
 import android.support.design.button.MaterialButton
-import android.support.design.widget.BottomNavigationView
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.LinearLayoutManager
@@ -15,13 +14,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import android.content.res.ColorStateList
-import android.widget.AdapterView
-import android.widget.AdapterView.OnItemSelectedListener
-
-
-
-
 
 private const val TAG = "ProfileFragment"
 
@@ -84,32 +76,16 @@ class ProfileFragment : Fragment() {
         }
 
         // sex button setup
-        btnMale = view.findViewById(R.id.btn_profile_male)
-        btnFemale = view.findViewById(R.id.btn_profile_female)
-
-        if (profileInit && sex) {
-            pressMaleButton()
-        }else if(profileInit && !sex){
-            pressFemaleButton()
-        }
-
-        btnMale.setOnClickListener{ _ ->
-            pressMaleButton()
-        }
-
-        btnFemale.setOnClickListener{ _ ->
-           pressFemaleButton()
-        }
+        setupSexButtons(view)
 
         // edit Text setup
         mWeightEditText = view.findViewById(R.id.edit_profile_weight)
         if(profileInit) mWeightEditText.setText(mMainActivity.weight.toString())
 
-        val botNavBar: BottomNavigationView = mMainActivity.findViewById(R.id.bottom_navigation_view)
         if(profileInit) {
-            showBottomNavBar(botNavBar)
+            mMainActivity.showBottomNavBar(R.id.bottom_nav_profile)
         } else {
-            hideBottomNavBar(botNavBar)
+            mMainActivity.hideBottomNavBar()
         }
         return view
     }
@@ -179,30 +155,30 @@ class ProfileFragment : Fragment() {
         }
     }
 
-    private fun showBottomNavBar(botNavBar: BottomNavigationView){
-        botNavBar.visibility = View.VISIBLE
-        botNavBar.selectedItemId = R.id.bottom_nav_profile
-
-        val params = RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,
-                RelativeLayout.LayoutParams.MATCH_PARENT)
-        params.addRule(RelativeLayout.ABOVE, R.id.bottom_navigation_view)
-        (mMainActivity.findViewById(R.id.main_frame) as FrameLayout).layoutParams = params
-    }
-
-    private fun hideBottomNavBar(botNavBar: BottomNavigationView){
-        botNavBar.visibility = View.INVISIBLE
-        botNavBar.selectedItemId = R.id.bottom_nav_profile
-
-        val params = RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,
-                RelativeLayout.LayoutParams.MATCH_PARENT)
-        (mMainActivity.findViewById(R.id.main_frame) as FrameLayout).layoutParams = params
-    }
-
     private fun setupSpinner(view: View){
         mSpinner = view.findViewById(R.id.spinner_profile)
         val items = arrayOf("lbs", "kg")
         val adapter = ArrayAdapter(context!!, android.R.layout.simple_spinner_dropdown_item, items)
         mSpinner.adapter = adapter
+    }
+
+    private fun setupSexButtons(view: View){
+        btnMale = view.findViewById(R.id.btn_profile_male)
+        btnFemale = view.findViewById(R.id.btn_profile_female)
+
+        if (profileInit && sex) {
+            pressMaleButton()
+        }else if(profileInit && !sex){
+            pressFemaleButton()
+        }
+
+        btnMale.setOnClickListener{ _ ->
+            pressMaleButton()
+        }
+
+        btnFemale.setOnClickListener{ _ ->
+            pressFemaleButton()
+        }
     }
 
     companion object {
