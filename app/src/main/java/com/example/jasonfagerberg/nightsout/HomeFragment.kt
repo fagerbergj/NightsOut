@@ -18,7 +18,6 @@ import android.support.v7.app.AlertDialog
 import android.widget.EditText
 import android.widget.Toast
 import android.app.TimePickerDialog
-import android.util.Log
 import java.util.*
 
 
@@ -29,8 +28,6 @@ class HomeFragment : Fragment(), HomeFragmentRecyclerItemTouchHelper.RecyclerIte
     private lateinit var mDrinkListAdapter: HomeFragmentDrinkListAdapter
     private lateinit var mRelativeLayout: RelativeLayout
     private lateinit var mMainActivity: MainActivity
-    private var startTimeMin: Int = 0
-    private var endTimeMin: Int = 0
 
     // create fragment view
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -98,21 +95,23 @@ class HomeFragment : Fragment(), HomeFragmentRecyclerItemTouchHelper.RecyclerIte
         val startPicker:EditText = view.findViewById(R.id.edit_start_time)
         val endPicker: EditText = view.findViewById(R.id.edit_end_time)
 
-        startTimeMin = mainActivity.startTimeMin
-        endTimeMin = mainActivity.endTimeMin
+        if(mMainActivity.startTimeMin > -1) startPicker.setText(convertMinutesTo12HourTime(
+                mMainActivity.startTimeMin))
+        if(mMainActivity.endTimeMin > -1) endPicker.setText(convertMinutesTo12HourTime(
+                mMainActivity.endTimeMin))
 
         startPicker.setOnClickListener{ _ ->
             val currentTime = Calendar.getInstance()
             var hour = currentTime.get(Calendar.HOUR_OF_DAY)
             var minute = currentTime.get(Calendar.MINUTE)
-            if(startTimeMin != 0){
-                hour = startTimeMin/60
-                minute = startTimeMin%60
+            if(mMainActivity.startTimeMin != -1){
+                hour = mMainActivity.startTimeMin/60
+                minute = mMainActivity.startTimeMin%60
             }
             val mTimePicker: TimePickerDialog
             mTimePicker = TimePickerDialog(context!!,
                     TimePickerDialog.OnTimeSetListener { _ , selectedHour, selectedMinute ->
-                startTimeMin = selectedHour*60 + selectedMinute
+                mMainActivity.startTimeMin = selectedHour*60 + selectedMinute
                 val timePeriod: String
                 var displayHour = selectedHour
                 var displayMinuet = selectedMinute.toString()
@@ -126,6 +125,8 @@ class HomeFragment : Fragment(), HomeFragmentRecyclerItemTouchHelper.RecyclerIte
                 if (displayMinuet.length == 1) displayMinuet = "0$displayMinuet"
                 val time = "$displayHour : $displayMinuet $timePeriod"
                 startPicker.setText(time)
+                mMainActivity.startTimeMin = convert24HourTimeToMinutes(selectedHour, selectedMinute)
+                if(mMainActivity.endTimeMin == -1) mMainActivity.endTimeMin = mMainActivity.startTimeMin
             }, hour, minute, false)
             mTimePicker.setTitle("Start Time")
             mTimePicker.show()
@@ -135,14 +136,14 @@ class HomeFragment : Fragment(), HomeFragmentRecyclerItemTouchHelper.RecyclerIte
             val currentTime = Calendar.getInstance()
             var hour = currentTime.get(Calendar.HOUR_OF_DAY)
             var minute = currentTime.get(Calendar.MINUTE)
-            if(endTimeMin != 0){
-                hour = startTimeMin/60
-                minute = startTimeMin%60
+            if(mMainActivity.endTimeMin != -1){
+                hour = mMainActivity.startTimeMin/60
+                minute = mMainActivity.startTimeMin%60
             }
             val mTimePicker: TimePickerDialog
             mTimePicker = TimePickerDialog(context!!,
                     TimePickerDialog.OnTimeSetListener { _ , selectedHour, selectedMinute ->
-                endTimeMin = selectedHour*60 + selectedMinute
+                mMainActivity.endTimeMin = selectedHour*60 + selectedMinute
                 val timePeriod: String
                 var displayHour = selectedHour
                 var displayMinuet = selectedMinute.toString()
@@ -156,6 +157,7 @@ class HomeFragment : Fragment(), HomeFragmentRecyclerItemTouchHelper.RecyclerIte
                 if (displayMinuet.length == 1) displayMinuet = "0$displayMinuet"
                 val time = "$displayHour : $displayMinuet $timePeriod"
                 endPicker.setText(time)
+                mMainActivity.endTimeMin = convert24HourTimeToMinutes(selectedHour, selectedMinute)
             }, hour, minute, false)
             mTimePicker.setTitle("End Time")
             mTimePicker.show()
@@ -163,12 +165,6 @@ class HomeFragment : Fragment(), HomeFragmentRecyclerItemTouchHelper.RecyclerIte
 
         // return
         return view
-    }
-
-    override fun onPause() {
-        mMainActivity.startTimeMin = startTimeMin
-        mMainActivity.endTimeMin = endTimeMin
-        super.onPause()
     }
 
     // create new fragment
@@ -229,5 +225,25 @@ class HomeFragment : Fragment(), HomeFragmentRecyclerItemTouchHelper.RecyclerIte
             snackbar.setActionTextColor(Color.YELLOW)
             snackbar.show()
         }
+    }
+
+    private fun convertMinutesTo12HourTime(min: Int): String{
+        var hour = min/60
+        val minutes = min%60
+        var timePeriod: String
+        if(hour >= 12){
+            hour -= 12
+            timePeriod = "PM"
+        }else{
+            timePeriod = "AM"
+        }
+        if (hour == 0) hour = 12
+        var displayMinuet = minutes.toString()
+        if (displayMinuet.length == 1) displayMinuet = "0$displayMinuet"
+        return "$hour:$displayMinuet $timePeriod"
+    }
+
+    private fun convert24HourTimeToMinutes(hour: Int, min: Int):Int{
+        return hour*60 + min
     }
 }

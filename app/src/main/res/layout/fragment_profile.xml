@@ -51,7 +51,7 @@
             android:layout_marginStart="20dp"
             android:layout_marginEnd="16dp"
             android:text="@string/text_female"
-            android:theme="@style/ProfileButtonFemaleTheme"
+            android:theme="@style/ProfileButtonMaleTheme"
             android:textSize="18sp"/>
     </LinearLayout>
 
@@ -72,8 +72,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/text_profile_weight"
+        android:layout_marginStart="56dp"
         android:layout_marginTop="10dp"
-        android:layout_toEndOf="@+id/text_profile_weight"
         android:gravity="center"
         android:orientation="horizontal">
 
@@ -82,15 +82,15 @@
             android:layout_width="200dp"
             android:layout_height="50dp"
             android:gravity="center_horizontal"
-            android:inputType="numberDecimal"
-            android:hint="@string/text_empty"/>
+            android:hint="@string/text_empty"
+            android:inputType="numberDecimal" />
 
         <Spinner
             android:id="@+id/spinner_profile"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
             android:spinnerMode="dropdown" />
 
     </LinearLayout>
@@ -134,15 +134,15 @@
         android:id="@+id/btn_profile_save"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:layout_alignParentBottom="true"
+        android:layout_below="@id/layout_foreground"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="32dp"
-        android:layout_marginStart="16dp"
+        android:layout_marginBottom="8dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="56dp"
         android:text="@string/button_save_profile"
-        android:theme="@style/HomeButtonTheme"
-        android:textSize="18sp"/>
+        android:textSize="18sp"
+        android:theme="@style/HomeButtonTheme" />
 
 
 </RelativeLayout>

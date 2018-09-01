@@ -5,24 +5,32 @@ import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
 import android.support.v4.app.Fragment
 import android.util.Log
+import android.preference.PreferenceManager
+import android.content.SharedPreferences
 
 private const val TAG = "MainActivity"
 
 class MainActivity : AppCompatActivity() {
 
     // init fragments
-    private val homeFragment = HomeFragment.newInstance()
+    val homeFragment = HomeFragment.newInstance()
     private val logFragment = LogFragment.newInstance()
     private val profileFragment = ProfileFragment.newInstance()
     val addDrinkFragment = AddDrinkFragment.newInstance()
-    var startTimeMin: Int = 0
-    var endTimeMin: Int = 0
+
+    // shared pref data
+    private lateinit var preferences: SharedPreferences
+    var profileInt = false
+    var sex: Boolean = true
+    var weight: Double = 0.0
+    var weightMeasurement: String = ""
+    var startTimeMin: Int = -1
+    var endTimeMin: Int = -1
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        setFragment(homeFragment)
 
         // bottom nav bar
         val bottomNavigationView: BottomNavigationView? = findViewById(R.id.bottom_navigation_view)
@@ -47,6 +55,58 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    override fun onResume() {
+        // get data
+        preferences = PreferenceManager.getDefaultSharedPreferences(this)
+        getGlobalData()
+
+        if(!profileInt){
+            setFragment(profileFragment)
+        }else{
+            setFragment(homeFragment)
+        }
+
+        super.onResume()
+    }
+
+    override fun onPause() {
+        setGlobalData()
+        super.onPause()
+    }
+
+    private fun setGlobalData(){
+        // profile not init
+        if(weightMeasurement == "") return
+
+        val editor = preferences.edit()
+        editor.putBoolean("profileInit", true)
+        editor.putBoolean("profileSex", sex)
+        editor.putFloat("profileWeight", weight.toFloat())
+        editor.putString("profileWeightMeasurement", weightMeasurement)
+
+        editor.putInt("homeStartTimeMin", startTimeMin)
+        editor.putInt("homeEndTimeMin", endTimeMin)
+        editor.apply()
+
+        Log.v(TAG, "vars stored: profileInit=$profileInt sex=$sex weight=${weight.toFloat()} " +
+                "weight measurment=$weightMeasurement start time=$startTimeMin end time=$endTimeMin")
+    }
+
+    private fun getGlobalData(){
+        profileInt = preferences.getBoolean("profileInit", profileInt)
+        sex = preferences.getBoolean("profileSex", sex)
+        var weightFloat: Float = 0.toFloat()
+        weightFloat = preferences.getFloat("profileWeight", weightFloat)
+        weight = weightFloat.toDouble()
+        weightMeasurement = preferences.getString("profileWeightMeasurement", weightMeasurement)!!
+
+        startTimeMin = preferences.getInt("homeStartTimeMin", startTimeMin)
+        endTimeMin = preferences.getInt("homeEndTimeMin", endTimeMin)
+
+        Log.v(TAG, "vars retrieved: profileInit=$profileInt sex=$sex weight=$weight " +
+                "weight measurment=$weightMeasurement start time=$startTimeMin end time=$endTimeMin")
+    }
+
     fun setFragment(fragment: Fragment) {
         val transaction = supportFragmentManager.beginTransaction()
         //transaction.replace(R.id.main_frame, fragment)
@@ -65,7 +125,5 @@ class MainActivity : AppCompatActivity() {
         } else {
             supportFragmentManager.popBackStack()
         }
-
     }
-
 }
