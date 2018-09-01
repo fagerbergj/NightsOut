@@ -1,6 +1,5 @@
 <resources>
 
-    <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
@@ -18,4 +17,5 @@
     <style name="ProfileButtonFemaleTheme" parent="Theme.MaterialComponents.Light">
         <item name="colorPrimary">@color/colorLightRed</item>
     </style>
+
 </resources>

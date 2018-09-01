@@ -15,6 +15,8 @@ class MainActivity : AppCompatActivity() {
     private val logFragment = LogFragment.newInstance()
     private val profileFragment = ProfileFragment.newInstance()
     val addDrinkFragment = AddDrinkFragment.newInstance()
+    var startTimeMin: Int = 0
+    var endTimeMin: Int = 0
 
 
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -54,7 +54,9 @@
             android:layout_height="40dp"
             android:textAlignment="center"
             android:inputType="time"
-            android:hint="@string/text_empty"/>
+            android:hint="@string/text_empty"
+            android:clickable="true"
+            android:focusable="false"/>
     </LinearLayout>
 
     <LinearLayout
@@ -81,7 +83,9 @@
             android:layout_height="40dp"
             android:textAlignment="center"
             android:inputType="time"
-            android:hint="@string/text_empty"/>
+            android:hint="@string/text_empty"
+            android:clickable="true"
+            android:focusable="false"/>
     </LinearLayout>
 
     <android.support.v7.widget.RecyclerView
