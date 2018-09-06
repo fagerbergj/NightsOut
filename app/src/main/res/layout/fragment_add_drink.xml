@@ -183,7 +183,7 @@
                 android:layout_width="175dp"
                 android:layout_height="50dp"
                 android:gravity="center_horizontal"
-                android:inputType="number"
+                android:inputType="numberDecimal"
                 android:hint="@string/text_empty"/>
 
             <Spinner

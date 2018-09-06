@@ -45,7 +45,7 @@ RecyclerView.Adapter<LogFragmentAdapter.ViewHolder>() {
 
                 val aav = "AAV: " + "%.1f".format(drink.aav) + "%"
                 holder.aav!!.text = aav
-                val amount = "%.1f".format(drink.amount) + drink.measurement
+                val amount = "%.1f".format(drink.amount) + " " + drink.measurement
                 holder.amount!!.text = amount
             }
             HEADER -> {

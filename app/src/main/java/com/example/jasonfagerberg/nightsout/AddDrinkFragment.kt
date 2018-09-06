@@ -41,7 +41,7 @@ class AddDrinkFragment : Fragment() {
 
         // spinner setup
         val dropdown: Spinner = view.findViewById(R.id.spinner_add_drink_amount)
-        val items = arrayOf("oz", "beers", "shots", "wine glass")
+        val items = arrayOf("oz", "beers", "shots", "wine glasses")
         val adapter = ArrayAdapter(context!!, android.R.layout.simple_spinner_dropdown_item, items)
         dropdown.adapter = adapter
 

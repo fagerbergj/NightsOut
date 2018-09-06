@@ -3,15 +3,11 @@ package com.example.jasonfagerberg.nightsout
 import android.graphics.Color
 import android.os.Bundle
 import android.support.design.button.MaterialButton
-import android.support.design.widget.BottomNavigationView
 import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
-import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.RecyclerView
 import android.view.*
 import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.helper.ItemTouchHelper
-import android.widget.FrameLayout
 import android.widget.RelativeLayout
 import android.content.DialogInterface
 import android.support.v7.app.AlertDialog
@@ -19,11 +15,17 @@ import android.widget.EditText
 import android.widget.Toast
 import android.app.TimePickerDialog
 import java.util.*
+import android.support.v7.widget.DividerItemDecoration
+import android.view.MenuInflater
+
+
+
+
 
 
 private const val TAG = "HomeFragment"
 
-class HomeFragment : Fragment(), HomeFragmentRecyclerItemTouchHelper.RecyclerItemTouchHelperListener {
+class HomeFragment : Fragment(){
     private val mDrinkList: ArrayList<Drink> = ArrayList()
     private lateinit var mDrinkListAdapter: HomeFragmentDrinkListAdapter
     private lateinit var mRelativeLayout: RelativeLayout
@@ -101,34 +103,6 @@ class HomeFragment : Fragment(), HomeFragmentRecyclerItemTouchHelper.RecyclerIte
         return true
     }
 
-    //swipe method
-    override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int, position: Int) {
-        if (viewHolder is HomeFragmentDrinkListAdapter.ViewHolder) {
-            // get the removed item name to display it in snack bar
-            val name = mDrinkList[viewHolder.adapterPosition].name
-
-            // backup of removed item for undo purpose
-            val deletedItem = mDrinkList[viewHolder.adapterPosition]
-            val deletedIndex = viewHolder.adapterPosition
-
-            // remove the item from recycler view
-            mDrinkListAdapter.removeItem(viewHolder.adapterPosition)
-
-            // showing snack bar with Undo option
-            val snackbar = Snackbar.make(mRelativeLayout, "$name removed from meal list!",
-                    Snackbar.LENGTH_LONG)
-
-            // undo is selected, restore the deleted item
-            val undo = { _:View ->
-                mDrinkListAdapter.restoreItem(deletedItem, deletedIndex)
-            }
-            snackbar.setAction("UNDO", undo)
-
-            snackbar.setActionTextColor(Color.YELLOW)
-            snackbar.show()
-        }
-    }
-
     private fun setupToolbar(view: View){
         val toolbar:android.support.v7.widget.Toolbar = view.findViewById(R.id.toolbar_home)
         toolbar.inflateMenu(R.menu.home_menu)
@@ -143,17 +117,14 @@ class HomeFragment : Fragment(), HomeFragmentRecyclerItemTouchHelper.RecyclerIte
         val linearLayoutManager = LinearLayoutManager(context)
         linearLayoutManager.orientation = LinearLayoutManager.VERTICAL
         drinksListView.layoutManager = linearLayoutManager
+        val itemDecor = DividerItemDecoration(drinksListView.context, DividerItemDecoration.VERTICAL)
+        drinksListView.addItemDecoration(itemDecor)
 
         // set adapter
         mDrinkListAdapter = HomeFragmentDrinkListAdapter(context!!, mDrinkList)
         //update list
         drinksListView.adapter = mDrinkListAdapter //Update display with new list
         drinksListView.layoutManager!!.scrollToPosition(mDrinkList.size - 1) //Nav to end of list
-
-        // set up touch listener for recycler
-        // Add touch listener for left swipe
-        val itemTouchHelperCallback = HomeFragmentRecyclerItemTouchHelper(0, ItemTouchHelper.LEFT, this@HomeFragment)
-        ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(drinksListView)
     }
 
     private fun setupEditTexts(view: View){

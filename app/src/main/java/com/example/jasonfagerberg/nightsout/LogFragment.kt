@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
+import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.Log
@@ -39,10 +40,12 @@ class LogFragment : Fragment() {
         mMainActivity = context as MainActivity
 
         // recycler view
-        val mLogListView: RecyclerView = view.findViewById(R.id.recycler_log)
+        mLogListView = view.findViewById(R.id.recycler_log)
         val linearLayoutManager = LinearLayoutManager(context)
         linearLayoutManager.orientation = LinearLayoutManager.VERTICAL
         mLogListView.layoutManager = linearLayoutManager
+        val itemDecor = DividerItemDecoration(mLogListView.context, DividerItemDecoration.VERTICAL)
+        mLogListView.addItemDecoration(itemDecor)
 
         // toolbar setup
         val toolbar:android.support.v7.widget.Toolbar = view!!.findViewById(R.id.toolbar_log)
@@ -51,11 +54,12 @@ class LogFragment : Fragment() {
         calendar = Calendar.getInstance()
 
         // todo remove test data
-        for (i in 9 downTo 0){
-            calendar.set(2018, 8, i)
+        for (i in -4..4){
+            calendar = Calendar.getInstance()
+            calendar.add(Calendar.DATE, i)
+            Log.v(TAG, calendar.time.toString())
 
             val session = Session(calendar.time, i.toDouble(), i.toDouble())
-            calendar.set(2018, 8, 1)
 
             mSessionList[session] = ArrayList()
 
@@ -119,7 +123,7 @@ class LogFragment : Fragment() {
 
             if(curSession in mSessionList.keys){ logList.addAll(mSessionList[curSession]!!) }
             mLogFragmentAdapter.notifyDataSetChanged()
-            mLogListView.layoutManager!!.scrollToPosition(0)
+            mLogListView.layoutManager?.scrollToPosition(0)
         }
     }
 }

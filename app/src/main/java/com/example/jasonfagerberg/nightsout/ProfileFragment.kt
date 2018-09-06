@@ -108,6 +108,11 @@ class ProfileFragment : Fragment() {
 
     private fun saveProfile(view: View){
         val sexText = view.findViewById<TextView>(R.id.text_profile_sex)
+        if("${mWeightEditText.text}"["${mWeightEditText.text}".length-1] == '.'){
+            val w = "${mWeightEditText.text}0"
+            mWeightEditText.setText(w)
+        }
+
         if(!sexButtonPressed && !profileInit){
             val toast = Toast.makeText(context!!, "Please Select a Sex", Toast.LENGTH_LONG)
             toast.setGravity(Gravity.CENTER, 0, 450)
