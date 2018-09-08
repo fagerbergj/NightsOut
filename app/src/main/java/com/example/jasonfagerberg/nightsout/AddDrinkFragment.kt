@@ -8,10 +8,7 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.*
-import android.widget.ArrayAdapter
-import android.widget.FrameLayout
-import android.widget.RelativeLayout
-import android.widget.Spinner
+import android.widget.*
 
 private const val TAG = "AddDrinkFragment"
 
@@ -64,6 +61,10 @@ class AddDrinkFragment : Fragment() {
             mFavoritesList.add(drink)
         }
 
+        // set empty text views
+        mRecentsList = mFavoritesList
+        showOrHideEmptyTextViews(view)
+
         // adapter setup
         mFavoritesListAdapter = AddDrinkFragmentFavoritesListAdapter(context!!, mFavoritesList)
         favoriteListView.adapter = mFavoritesListAdapter
@@ -110,5 +111,22 @@ class AddDrinkFragment : Fragment() {
         toolbar.setNavigationIcon(R.drawable.arrow_back_white_24dp)
 
         toolbar.setNavigationOnClickListener { _: View -> activity!!.onBackPressed() }
+    }
+
+    private fun showOrHideEmptyTextViews(view: View){
+        val emptyFavorite = view.findViewById<TextView>(R.id.text_favorites_empty_list)
+        val emptyRecent = view.findViewById<TextView>(R.id.text_recents_empty_list)
+
+        if(mFavoritesList.isEmpty()){
+            emptyFavorite.visibility = View.VISIBLE
+        }else{
+            emptyFavorite.visibility = View.INVISIBLE
+        }
+
+        if(mRecentsList.isEmpty()){
+            emptyRecent.visibility = View.VISIBLE
+        }else{
+            emptyRecent.visibility = View.INVISIBLE
+        }
     }
 }

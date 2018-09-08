@@ -66,7 +66,7 @@ class MainActivity : AppCompatActivity() {
 
         if(!profileInt){
             setFragment(profileFragment)
-        }else{
+        }else if (supportFragmentManager.backStackEntryCount == 0){
             setFragment(homeFragment)
         }
 

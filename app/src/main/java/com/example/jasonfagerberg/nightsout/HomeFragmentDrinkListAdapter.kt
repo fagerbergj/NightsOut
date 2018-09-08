@@ -64,10 +64,11 @@ class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: Ar
 
     }
 
-    // swipe remove
+    // remove
     private fun removeItem(position: Int) {
         mDrinksList.removeAt(position)
         notifyItemRemoved(position)
+        notifyItemRangeChanged(position, mDrinksList.size)
     }
 
     private fun showEditRemoveDialog(position: Int){
@@ -124,12 +125,12 @@ class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: Ar
 
         dialog.findViewById<MaterialButton>(R.id.btn_edit_drink_edit).setOnClickListener{ _ ->
             //padd 0's to end
-            if("${editAAV.text}"["${editAAV.text}".length-1] == '.'){
+            if(!editAAV.text.isEmpty() && "${editAAV.text}"["${editAAV.text}".length-1] == '.'){
                 val padded = "${editAAV.text}0"
                 editAAV.setText(padded)
             }
 
-            if("${editAmount.text}"["${editAmount.text}".length-1] == '.'){
+            if(!editAmount.text.isEmpty() && "${editAmount.text}"["${editAmount.text}".length-1] == '.'){
                 val padded = "${editAmount.text}0"
                 editAmount.setText(padded)
             }

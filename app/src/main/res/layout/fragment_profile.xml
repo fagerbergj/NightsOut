@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ProfileFragment"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar_profile"
@@ -107,28 +111,41 @@
         android:text="@string/text_favorites"
         android:textSize="18sp" />
 
-    <LinearLayout
-        android:id="@+id/layout_foreground"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/text_profile_favorites"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginTop="16dp"
-        android:background="#d1d1d1"
-        android:orientation="vertical">
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/recycler_profile_favorites_list"
+        <RelativeLayout
+            android:id="@+id/layout_foreground"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="2dp"
-            android:layout_marginTop="2dp"
-            android:background="@color/colorWhite"
-            android:orientation="horizontal"
-            android:paddingBottom="8dp"
-            android:paddingTop="8dp" />
-    </LinearLayout>
+            android:layout_height="70dp"
+            android:layout_below="@+id/text_profile_favorites"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:background="#d1d1d1"
+            android:orientation="vertical">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recycler_profile_favorites_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="2dp"
+                android:layout_marginTop="2dp"
+                android:background="@color/colorWhite"
+                android:orientation="horizontal"
+                android:paddingBottom="8dp"
+                android:paddingTop="8dp" />
+
+            <android.support.design.button.MaterialButton
+                android:id="@+id/btn_profile_add_favorite"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:text="@string/text_add_favorite"
+                android:theme="@style/HomeButtonTheme"
+                app:icon="@drawable/add_white_24dp"
+                app:iconGravity="start"/>
+
+        </RelativeLayout>
 
     <android.support.design.button.MaterialButton
         android:id="@+id/btn_profile_save"
@@ -144,5 +161,5 @@
         android:textSize="18sp"
         android:theme="@style/HomeButtonTheme" />
 
-
-</RelativeLayout>
+    </RelativeLayout>
+</ScrollView>

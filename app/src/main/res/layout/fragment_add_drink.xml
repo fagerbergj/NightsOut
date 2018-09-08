@@ -32,7 +32,7 @@
             android:text="@string/text_quick_fill_recents"
             android:textSize="16sp" />
 
-        <LinearLayout
+        <RelativeLayout
             android:id="@+id/layout_recents_foreground"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -54,7 +54,14 @@
                 android:paddingBottom="8dp"
                 android:paddingTop="8dp" />
 
-        </LinearLayout>
+            <TextView
+                android:id="@+id/text_recents_empty_list"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="@string/text_empty_recents_list" />
+
+        </RelativeLayout>
 
         <TextView
             android:id="@+id/text_add_drink_favorites"
@@ -67,7 +74,7 @@
             android:text="@string/text_quick_fill_favorites"
             android:textSize="16sp" />
 
-        <LinearLayout
+        <RelativeLayout
             android:id="@+id/layout_favorites_foreground"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -88,7 +95,15 @@
                 android:orientation="horizontal"
                 android:paddingBottom="8dp"
                 android:paddingTop="8dp" />
-        </LinearLayout>
+
+            <TextView
+                android:id="@+id/text_favorites_empty_list"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="@string/text_empty_favorites_list" />
+
+        </RelativeLayout>
 
         <LinearLayout
             android:id="@+id/layout_add_drink_name"

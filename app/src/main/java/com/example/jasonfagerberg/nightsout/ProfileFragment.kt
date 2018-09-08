@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.support.design.button.MaterialButton
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
+import android.support.v7.widget.CardView
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.Log
@@ -22,6 +23,7 @@ class ProfileFragment : Fragment() {
     private var mFavoritesList: ArrayList<Drink> = ArrayList()
     private lateinit var mFavoritesListAdapter: ProfileFragmentFavoritesListAdapter
     private lateinit var mMainActivity: MainActivity
+    private lateinit var mFavoritesListView: RecyclerView
 
     // shared pref data
     var profileInit = false
@@ -35,6 +37,7 @@ class ProfileFragment : Fragment() {
     private lateinit var btnMale: MaterialButton
     private lateinit var btnFemale: MaterialButton
     private lateinit var btnSave: MaterialButton
+
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -53,10 +56,10 @@ class ProfileFragment : Fragment() {
         setupSpinner(view)
 
         // recycler view setup
-        val favoriteListView: RecyclerView = view.findViewById(R.id.recycler_profile_favorites_list)
+        mFavoritesListView = view.findViewById(R.id.recycler_profile_favorites_list)
         val linearLayoutManager = LinearLayoutManager(context)
         linearLayoutManager.orientation = LinearLayoutManager.HORIZONTAL
-        favoriteListView.layoutManager = linearLayoutManager
+        mFavoritesListView.layoutManager = linearLayoutManager
 
         // todo remove test data
         for (i in 0..9){
@@ -65,9 +68,12 @@ class ProfileFragment : Fragment() {
             mFavoritesList.add(drink)
         }
 
+        // empty text view setup
+        showOrHideEmptyTextViews(view)
+
         // adapter setup
         mFavoritesListAdapter = ProfileFragmentFavoritesListAdapter(context!!, mFavoritesList)
-        favoriteListView.adapter = mFavoritesListAdapter
+        mFavoritesListView.adapter = mFavoritesListAdapter
 
         // save button setup
         btnSave = view.findViewById(R.id.btn_profile_save)
@@ -87,7 +93,13 @@ class ProfileFragment : Fragment() {
         } else {
             mMainActivity.hideBottomNavBar()
         }
+
         return view
+    }
+
+    override fun onPause() {
+        Log.v(TAG, mFavoritesListView.height.toString())
+        super.onPause()
     }
 
     private fun pressMaleButton(){
@@ -108,7 +120,7 @@ class ProfileFragment : Fragment() {
 
     private fun saveProfile(view: View){
         val sexText = view.findViewById<TextView>(R.id.text_profile_sex)
-        if("${mWeightEditText.text}"["${mWeightEditText.text}".length-1] == '.'){
+        if(!mWeightEditText.text.isEmpty() && "${mWeightEditText.text}"["${mWeightEditText.text}".length-1] == '.'){
             val w = "${mWeightEditText.text}0"
             mWeightEditText.setText(w)
         }
@@ -188,5 +200,15 @@ class ProfileFragment : Fragment() {
 
     companion object {
         fun newInstance() : ProfileFragment = ProfileFragment()
+    }
+
+    private fun showOrHideEmptyTextViews(view: View){
+        val emptyFavorite = view.findViewById<MaterialButton>(R.id.btn_profile_add_favorite)
+
+        if(mFavoritesList.isEmpty()){
+            emptyFavorite.visibility = View.VISIBLE
+        }else{
+            emptyFavorite.visibility = View.INVISIBLE
+        }
     }
 }

@@ -1,12 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    android:id="@+id/layout_home"
+
+<ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".HomeFragment">
+    tools:context=".HomeFragment"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+<RelativeLayout
+    android:id="@+id/layout_home"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar_home"
@@ -88,10 +93,10 @@
             android:textAlignment="center" />
     </LinearLayout>
 
-    <LinearLayout
+    <RelativeLayout
+        android:id="@+id/layout_drink_list"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/text_BAC_value"
+        android:layout_height="332dp"
         android:layout_below="@id/layout_start_drinking"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
@@ -108,13 +113,21 @@
             android:paddingEnd="16dp"
             android:paddingStart="16dp" />
 
-    </LinearLayout>
+        <TextView
+            android:id="@+id/text_home_empty_list"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="@string/text_empty_drink_list" />
+
+    </RelativeLayout>
 
     <TextView
         android:id="@+id/text_BAC_value"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
+        android:layout_alignParentBottom="false"
+        android:layout_below="@id/layout_drink_list"
         android:layout_centerHorizontal="true"
         android:paddingBottom="4dp"
         android:text="@string/test_bac_value"
@@ -137,3 +150,4 @@
         android:text="@string/test_user_status" />
 
 </RelativeLayout>
+</ScrollView>

@@ -13,6 +13,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.RelativeLayout
+import android.widget.TextView
 import com.prolificinteractive.materialcalendarview.CalendarDay
 import com.prolificinteractive.materialcalendarview.DayViewDecorator
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView
@@ -32,6 +33,7 @@ class LogFragment : Fragment() {
     private lateinit var calendar: Calendar
     private lateinit var mLogListView: RecyclerView
     private lateinit var mMainActivity: MainActivity
+    private lateinit var mLogList: ArrayList<Any>
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -72,13 +74,13 @@ class LogFragment : Fragment() {
         }
 
         // take date from calender, pull correct session, pass to adapter
-        val logList: ArrayList<Any> = ArrayList()
+        mLogList = ArrayList()
 
         // calender setup
-        setupCalendar(view, logList)
+        setupCalendar(view)
 
         // set adapter
-        mLogFragmentAdapter = LogFragmentAdapter(context!!, logList)
+        mLogFragmentAdapter = LogFragmentAdapter(context!!, mLogList)
         mLogListView.adapter = mLogFragmentAdapter
 
         // setup bottom nav bar
@@ -102,28 +104,41 @@ class LogFragment : Fragment() {
                 R.color.colorPrimaryDark), dates))
     }
 
-    private fun setupCalendar(view: View, logList: ArrayList<Any>){
+    private fun setupCalendar(view: View){
         calendarView = view.findViewById(R.id.calender_log)
         calendarView.selectedDate = CalendarDay.today()
         calendar.time = calendarView.selectedDate.date
         var curSession = Session(calendar.time,0.0,0.0)
-        logList.add(curSession)
+        mLogList.add(curSession)
 
-        if(curSession in mSessionList.keys){ logList.addAll(mSessionList[curSession]!!) }
+        if(curSession in mSessionList.keys){ mLogList.addAll(mSessionList[curSession]!!) }
+
+        // show or hide empty text
+        showOrHideEmptyTextViews(view)
 
         // add blue dots to days you drank
         highlightDays()
 
         // when date is changed, change recycler list
-        calendarView.setOnDateChangedListener{_, day, _ ->
-            logList.clear()
+        calendarView.setOnDateChangedListener{_ , day, _ ->
+            mLogList.clear()
             calendar.set(day.year, day.month, day.day)
             curSession = Session(calendar.time,0.0,0.0)
-            logList.add(curSession)
+            mLogList.add(curSession)
 
-            if(curSession in mSessionList.keys){ logList.addAll(mSessionList[curSession]!!) }
+            if(curSession in mSessionList.keys){ mLogList.addAll(mSessionList[curSession]!!) }
             mLogFragmentAdapter.notifyDataSetChanged()
             mLogListView.layoutManager?.scrollToPosition(0)
+            showOrHideEmptyTextViews(mLogListView.parent as View)
+        }
+    }
+
+    private fun showOrHideEmptyTextViews(view: View){
+        val emptyLog = view.findViewById<TextView>(R.id.text_log_empty_list)
+        if(mLogList.size == 1){
+            emptyLog.visibility = View.VISIBLE
+        }else{
+            emptyLog.visibility = View.INVISIBLE
         }
     }
 }

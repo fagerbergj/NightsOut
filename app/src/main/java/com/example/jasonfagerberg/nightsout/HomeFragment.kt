@@ -17,10 +17,7 @@ import android.app.TimePickerDialog
 import java.util.*
 import android.support.v7.widget.DividerItemDecoration
 import android.view.MenuInflater
-
-
-
-
+import android.widget.TextView
 
 
 private const val TAG = "HomeFragment"
@@ -53,6 +50,9 @@ class HomeFragment : Fragment(){
 
         // setup list
         setupRecycler(view)
+
+        // show or hide empty text
+        showOrHideEmptyListText(view)
 
         // add a drink button setup
         val btnAdd: MaterialButton = view.findViewById(R.id.btn_home_add_drink)
@@ -226,5 +226,14 @@ class HomeFragment : Fragment(){
 
     private fun convert24HourTimeToMinutes(hour: Int, min: Int):Int{
         return hour*60 + min
+    }
+
+    private fun showOrHideEmptyListText(view: View){
+        val emptyText = view.findViewById<TextView>(R.id.text_home_empty_list)
+        if(mDrinkList.isEmpty()){
+            emptyText.visibility = View.VISIBLE
+        }else{
+            emptyText.visibility = View.INVISIBLE
+        }
     }
 }
