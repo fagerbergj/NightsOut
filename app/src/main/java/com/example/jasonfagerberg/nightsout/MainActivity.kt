@@ -93,7 +93,7 @@ class MainActivity : AppCompatActivity() {
         editor.apply()
 
         Log.v(TAG, "vars stored: profileInit=$profileInt sex=$sex weight=${weight.toFloat()} " +
-                "weight measurment=$weightMeasurement start time=$startTimeMin end time=$endTimeMin")
+                "weight measurement=$weightMeasurement start time=$startTimeMin end time=$endTimeMin")
     }
 
     private fun getGlobalData(){
@@ -108,7 +108,7 @@ class MainActivity : AppCompatActivity() {
         endTimeMin = preferences.getInt("homeEndTimeMin", endTimeMin)
 
         Log.v(TAG, "vars retrieved: profileInit=$profileInt sex=$sex weight=$weight " +
-                "weight measurment=$weightMeasurement start time=$startTimeMin end time=$endTimeMin")
+                "weight measurement=$weightMeasurement start time=$startTimeMin end time=$endTimeMin")
     }
 
     fun setFragment(fragment: Fragment) {

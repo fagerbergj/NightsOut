@@ -14,8 +14,4 @@
         <item name="colorPrimary">@color/colorLightRed</item>
     </style>
 
-    <style name="ProfileButtonFemaleTheme" parent="Theme.MaterialComponents.Light">
-        <item name="colorPrimary">@color/colorLightRed</item>
-    </style>
-
 </resources>

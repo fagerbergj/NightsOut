@@ -1,23 +1,20 @@
 package com.example.jasonfagerberg.nightsout
 
-import android.graphics.Color
+import android.app.TimePickerDialog
+import android.content.DialogInterface
 import android.os.Bundle
 import android.support.design.button.MaterialButton
-import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
+import android.support.v7.app.AlertDialog
+import android.support.v7.widget.DividerItemDecoration
+import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.*
-import android.support.v7.widget.LinearLayoutManager
-import android.widget.RelativeLayout
-import android.content.DialogInterface
-import android.support.v7.app.AlertDialog
 import android.widget.EditText
-import android.widget.Toast
-import android.app.TimePickerDialog
-import java.util.*
-import android.support.v7.widget.DividerItemDecoration
-import android.view.MenuInflater
+import android.widget.RelativeLayout
 import android.widget.TextView
+import android.widget.Toast
+import java.util.*
 
 
 private const val TAG = "HomeFragment"
@@ -41,12 +38,12 @@ class HomeFragment : Fragment(){
         //toolbar setup
         setupToolbar(view)
 
-        // todo remove test data
-        for (i in 0..9){
-            val drink = Drink(ByteArray(0), "This is an Example Drink #" + i.toString(),
-                    i*10 + i + i.toDouble()/10, (i*10 + i + i.toDouble()/10), "oz")
-            mDrinkList.add(drink)
-        }
+//        // todo remove test data
+//        for (i in 0..9){
+//            val drink = Drink(ByteArray(0), "This is an Example Drink #" + i.toString(),
+//                    i*10 + i + i.toDouble()/10, (i*10 + i + i.toDouble()/10), "oz")
+//            mDrinkList.add(drink)
+//        }
 
         // setup list
         setupRecycler(view)
@@ -228,7 +225,7 @@ class HomeFragment : Fragment(){
         return hour*60 + min
     }
 
-    private fun showOrHideEmptyListText(view: View){
+    fun showOrHideEmptyListText(view: View){
         val emptyText = view.findViewById<TextView>(R.id.text_home_empty_list)
         if(mDrinkList.isEmpty()){
             emptyText.visibility = View.VISIBLE

@@ -60,7 +60,7 @@
             android:textAlignment="center"
             android:inputType="time"
             android:hint="@string/text_empty"
-            android:clickable="true"
+            android:clickable="false"
             android:focusable="false"/>
     </LinearLayout>
 
@@ -86,7 +86,7 @@
             android:id="@+id/edit_end_time"
             android:layout_width="112dp"
             android:layout_height="40dp"
-            android:clickable="true"
+            android:clickable="false"
             android:focusable="false"
             android:hint="@string/text_empty"
             android:inputType="time"

@@ -74,14 +74,24 @@ class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: Ar
     private fun showEditRemoveDialog(position: Int){
         val drink = mDrinksList[position]
         val builder = AlertDialog.Builder(mContext)
+        val parent:ViewGroup? = null
         val dialogView = mMainActivity.layoutInflater.inflate(
-                R.layout.fragment_home_edit_or_remove_drink_dialog, null)
+                R.layout.fragment_home_edit_or_remove_drink_dialog, parent, false)
 
         dialogView.findViewById<TextView>(R.id.text_edit_remove_drink_title).text = drink.name
 
         builder.setView(dialogView)
         val dialog = builder.create()
         dialog.show()
+
+        // add another button
+        val another = dialogView.findViewById<TextView>(R.id.text_dialog_add_another)
+        another.setOnClickListener{ _ ->
+            dialog.dismiss()
+            mDrinksList.add(position, mDrinksList[position])
+            notifyItemInserted(position)
+            notifyItemRangeChanged(position, mDrinksList.size)
+        }
 
         // edit button clicked
         val edit = dialogView.findViewById<TextView>(R.id.text_dialog_edit_drink)
@@ -95,14 +105,16 @@ class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: Ar
         delete.setOnClickListener{ _ ->
             dialog.dismiss()
             removeItem(position)
+            mMainActivity.homeFragment.showOrHideEmptyListText(mMainActivity.homeFragment.view!!)
         }
     }
 
     private fun showEditDialog(position: Int){
         val drink = mDrinksList[position]
         val builder = AlertDialog.Builder(mContext)
+        val parent:ViewGroup? = null
         val dialogView = mMainActivity.layoutInflater.inflate(
-                R.layout.fragment_home_edit_dialog, null)
+                R.layout.fragment_home_edit_dialog, parent, false)
 
         builder.setView(dialogView)
         val dialog = builder.create()
@@ -124,7 +136,7 @@ class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: Ar
         dropdown.setSelection(items.indexOf(drink.measurement))
 
         dialog.findViewById<MaterialButton>(R.id.btn_edit_drink_edit).setOnClickListener{ _ ->
-            //padd 0's to end
+            //pad 0s to end
             if(!editAAV.text.isEmpty() && "${editAAV.text}"["${editAAV.text}".length-1] == '.'){
                 val padded = "${editAAV.text}0"
                 editAAV.setText(padded)

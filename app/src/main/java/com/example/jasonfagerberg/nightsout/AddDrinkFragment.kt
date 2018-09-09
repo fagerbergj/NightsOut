@@ -1,14 +1,14 @@
 package com.example.jasonfagerberg.nightsout
 
 import android.os.Bundle
-import android.support.design.widget.BottomNavigationView
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.util.Log
 import android.view.*
-import android.widget.*
+import android.widget.ArrayAdapter
+import android.widget.Spinner
+import android.widget.TextView
 
 private const val TAG = "AddDrinkFragment"
 
@@ -23,6 +23,9 @@ class AddDrinkFragment : Fragment() {
     private var mFavorited: Boolean = false
 
     private lateinit var mMainActivity: MainActivity
+
+    // resulting drink
+    lateinit var mResult: Drink
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -54,15 +57,15 @@ class AddDrinkFragment : Fragment() {
         linearLayoutManagerRecents.orientation = LinearLayoutManager.HORIZONTAL
         recentsListView.layoutManager = linearLayoutManagerRecents
 
-        // todo remove test data
-        for (i in 0..9){
-            val drink = Drink(ByteArray(0), "This is an Example Drink #" + i.toString(),
-                    i*10 + i + i.toDouble()/10, (i*10 + i + i.toDouble()/10), "oz")
-            mFavoritesList.add(drink)
-        }
+//        // todo remove test data
+//        for (i in 0..9){
+//            val drink = Drink(ByteArray(0), "This is an Example Drink #" + i.toString(),
+//                    i*10 + i + i.toDouble()/10, (i*10 + i + i.toDouble()/10), "oz")
+//            mFavoritesList.add(drink)
+//        }
 
         // set empty text views
-        mRecentsList = mFavoritesList
+        mRecentsList.addAll(mFavoritesList)
         showOrHideEmptyTextViews(view)
 
         // adapter setup
@@ -113,7 +116,7 @@ class AddDrinkFragment : Fragment() {
         toolbar.setNavigationOnClickListener { _: View -> activity!!.onBackPressed() }
     }
 
-    private fun showOrHideEmptyTextViews(view: View){
+    fun showOrHideEmptyTextViews(view: View){
         val emptyFavorite = view.findViewById<TextView>(R.id.text_favorites_empty_list)
         val emptyRecent = view.findViewById<TextView>(R.id.text_recents_empty_list)
 

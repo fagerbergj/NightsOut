@@ -1,27 +1,23 @@
 package com.example.jasonfagerberg.nightsout
 
 import android.os.Bundle
-import android.support.design.widget.BottomNavigationView
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
-import android.widget.RelativeLayout
 import android.widget.TextView
 import com.prolificinteractive.materialcalendarview.CalendarDay
 import com.prolificinteractive.materialcalendarview.DayViewDecorator
+import com.prolificinteractive.materialcalendarview.DayViewFacade
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView
+import com.prolificinteractive.materialcalendarview.spans.DotSpan
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
-import com.prolificinteractive.materialcalendarview.spans.DotSpan
-import com.prolificinteractive.materialcalendarview.DayViewFacade
 
 private const val TAG = "LogFragment"
 
@@ -55,23 +51,23 @@ class LogFragment : Fragment() {
 
         calendar = Calendar.getInstance()
 
-        // todo remove test data
-        for (i in -4..4){
-            calendar = Calendar.getInstance()
-            calendar.add(Calendar.DATE, i)
-            Log.v(TAG, calendar.time.toString())
-
-            val session = Session(calendar.time, i.toDouble(), i.toDouble())
-
-            mSessionList[session] = ArrayList()
-
-            val end = (Math.random()*10).toInt()
-            for (x in 0..end){
-                val drink = Drink(ByteArray(0), "This is an Example Drink # $x",
-                        x*10 + x + x.toDouble()/10, (x*10 + x + x.toDouble()/10), "oz")
-                mSessionList[session]!!.add(drink)
-            }
-        }
+//        // todo remove test data
+//        for (i in -4..4){
+//            calendar = Calendar.getInstance()
+//            calendar.add(Calendar.DATE, i)
+//            Log.v(TAG, calendar.time.toString())
+//
+//            val session = Session(calendar.time, i.toDouble(), i.toDouble())
+//
+//            mSessionList[session] = ArrayList()
+//
+//            val end = (Math.random()*10).toInt()
+//            for (x in 0..end){
+//                val drink = Drink(ByteArray(0), "This is an Example Drink # $x",
+//                        x*10 + x + x.toDouble()/10, (x*10 + x + x.toDouble()/10), "oz")
+//                mSessionList[session]!!.add(drink)
+//            }
+//        }
 
         // take date from calender, pull correct session, pass to adapter
         mLogList = ArrayList()

@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.support.design.button.MaterialButton
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
-import android.support.v7.widget.CardView
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.Log
@@ -26,8 +25,8 @@ class ProfileFragment : Fragment() {
     private lateinit var mFavoritesListView: RecyclerView
 
     // shared pref data
-    var profileInit = false
-    var sex: Boolean = true
+    private var profileInit = false
+    private var sex: Boolean = true
     private lateinit var mWeightEditText: EditText
     private lateinit var mSpinner: Spinner
 
@@ -61,12 +60,12 @@ class ProfileFragment : Fragment() {
         linearLayoutManager.orientation = LinearLayoutManager.HORIZONTAL
         mFavoritesListView.layoutManager = linearLayoutManager
 
-        // todo remove test data
-        for (i in 0..9){
-            val drink = Drink(ByteArray(0), "This is an Example Drink #" + i.toString(),
-                    i*10 + i + i.toDouble()/10, (i*10 + i + i.toDouble()/10), "oz")
-            mFavoritesList.add(drink)
-        }
+//        // todo remove test data
+//        for (i in 0..9){
+//            val drink = Drink(ByteArray(0), "This is an Example Drink #" + i.toString(),
+//                    i*10 + i + i.toDouble()/10, (i*10 + i + i.toDouble()/10), "oz")
+//            mFavoritesList.add(drink)
+//        }
 
         // empty text view setup
         showOrHideEmptyTextViews(view)
@@ -129,14 +128,14 @@ class ProfileFragment : Fragment() {
             val toast = Toast.makeText(context!!, "Please Select a Sex", Toast.LENGTH_LONG)
             toast.setGravity(Gravity.CENTER, 0, 450)
             toast.show()
-            sexText.text = "Sex ***Please Select A Sex***"
+            sexText.text = resources.getText(R.string.text_sex_error)
             sexText.setTypeface(null, Typeface.BOLD)
             sexText.setTextColor(ContextCompat.getColor(context!!, R.color.colorRed))
             return
         }else if (mWeightEditText.text.isEmpty() || mWeightEditText.text.toString().toDouble()  < 60 ){
             val weightText = view.findViewById<TextView>(R.id.text_profile_weight)
             // make weight text stand out
-            weightText.text = "Weight ***Please Enter Valid Weight***"
+            weightText.text = resources.getText(R.string.text_weight_error)
             weightText.setTypeface(null, Typeface.BOLD)
             val oldColors = weightText.textColors //save original colors
             weightText.setTextColor(ContextCompat.getColor(context!!, R.color.colorRed))
@@ -207,6 +206,9 @@ class ProfileFragment : Fragment() {
 
         if(mFavoritesList.isEmpty()){
             emptyFavorite.visibility = View.VISIBLE
+            emptyFavorite.setOnClickListener{ _ ->
+                mMainActivity.setFragment(mMainActivity.addDrinkFragment)
+            }
         }else{
             emptyFavorite.visibility = View.INVISIBLE
         }

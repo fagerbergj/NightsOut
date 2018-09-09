@@ -18,11 +18,13 @@ class AddDrinkFragmentFavoritesListAdapter(private val mContext: Context, drinks
         RecyclerView.Adapter<AddDrinkFragmentFavoritesListAdapter.ViewHolder>() {
     // vars
     private val mFavoriteDrinksList: MutableList<Drink> = drinksList
+    private lateinit var mMainActivity: MainActivity
 
     // set layout inflater & inflate layout
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(mContext)
         val view = inflater.inflate(R.layout.favorites_item, parent, false)
+        mMainActivity = mContext as MainActivity
         return ViewHolder(view)
     }
 
@@ -42,13 +44,19 @@ class AddDrinkFragmentFavoritesListAdapter(private val mContext: Context, drinks
             val dialogClickListener = DialogInterface.OnClickListener { _, which ->
                 when (which) {
                     DialogInterface.BUTTON_POSITIVE -> {
-                        //Yes is pressed
-                        mFavoriteDrinksList.remove(drink)
-                        this.notifyItemRemoved(position)
-                        val toast = Toast.makeText(v.context,
-                                "Drink Unfavorited ", Toast.LENGTH_SHORT)
+                        // Yes is pressed
+                        // show to user
+                        val toast = Toast.makeText(
+                                v.context, "${mFavoriteDrinksList[position].name} " +
+                                "Removed From Favorites List", Toast.LENGTH_SHORT)
                         toast.setGravity(Gravity.CENTER, 0, 0)
                         toast.show()
+                        // actual removal
+                        mFavoriteDrinksList.remove(drink)
+                        notifyItemRemoved(position)
+                        notifyItemRangeChanged(position, mFavoriteDrinksList.size)
+                        mMainActivity.addDrinkFragment.showOrHideEmptyTextViews(
+                                mMainActivity.addDrinkFragment.view!!)
                     }
                     DialogInterface.BUTTON_NEGATIVE -> {/* no action for clicking no */
                     }
