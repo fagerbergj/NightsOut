@@ -20,7 +20,6 @@ import java.util.*
 private const val TAG = "HomeFragment"
 
 class HomeFragment : Fragment(){
-    private val mDrinkList: ArrayList<Drink> = ArrayList()
     private lateinit var mDrinkListAdapter: HomeFragmentDrinkListAdapter
     private lateinit var mRelativeLayout: RelativeLayout
     private lateinit var mMainActivity: MainActivity
@@ -37,13 +36,6 @@ class HomeFragment : Fragment(){
 
         //toolbar setup
         setupToolbar(view)
-
-//        // todo remove test data
-//        for (i in 0..9){
-//            val drink = Drink(ByteArray(0), "This is an Example Drink #" + i.toString(),
-//                    i*10 + i + i.toDouble()/10, (i*10 + i + i.toDouble()/10), "oz")
-//            mDrinkList.add(drink)
-//        }
 
         // setup list
         setupRecycler(view)
@@ -118,10 +110,10 @@ class HomeFragment : Fragment(){
         drinksListView.addItemDecoration(itemDecor)
 
         // set adapter
-        mDrinkListAdapter = HomeFragmentDrinkListAdapter(context!!, mDrinkList)
+        mDrinkListAdapter = HomeFragmentDrinkListAdapter(context!!, mMainActivity.mDrinksList)
         //update list
         drinksListView.adapter = mDrinkListAdapter //Update display with new list
-        drinksListView.layoutManager!!.scrollToPosition(mDrinkList.size - 1) //Nav to end of list
+        drinksListView.layoutManager!!.scrollToPosition(mMainActivity.mDrinksList.size - 1) //Nav to end of list
     }
 
     private fun setupEditTexts(view: View){
@@ -227,7 +219,7 @@ class HomeFragment : Fragment(){
 
     fun showOrHideEmptyListText(view: View){
         val emptyText = view.findViewById<TextView>(R.id.text_home_empty_list)
-        if(mDrinkList.isEmpty()){
+        if(mMainActivity.mDrinksList.isEmpty()){
             emptyText.visibility = View.VISIBLE
         }else{
             emptyText.visibility = View.INVISIBLE

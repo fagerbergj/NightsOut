@@ -1,6 +1,7 @@
 package com.example.jasonfagerberg.nightsout
 
 import android.os.Bundle
+import android.support.design.button.MaterialButton
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.LinearLayoutManager
@@ -14,18 +15,12 @@ private const val TAG = "AddDrinkFragment"
 
 class AddDrinkFragment : Fragment() {
 
-    private var mFavoritesList: ArrayList<Drink> = ArrayList()
     private lateinit var mFavoritesListAdapter: AddDrinkFragmentFavoritesListAdapter
-
-    private var mRecentsList: ArrayList<Drink> = ArrayList()
     private lateinit var mRecentsListAdapter: AddDrinkFragmentRecentsListAdapter
 
     private var mFavorited: Boolean = false
 
     private lateinit var mMainActivity: MainActivity
-
-    // resulting drink
-    lateinit var mResult: Drink
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -57,23 +52,15 @@ class AddDrinkFragment : Fragment() {
         linearLayoutManagerRecents.orientation = LinearLayoutManager.HORIZONTAL
         recentsListView.layoutManager = linearLayoutManagerRecents
 
-//        // todo remove test data
-//        for (i in 0..9){
-//            val drink = Drink(ByteArray(0), "This is an Example Drink #" + i.toString(),
-//                    i*10 + i + i.toDouble()/10, (i*10 + i + i.toDouble()/10), "oz")
-//            mFavoritesList.add(drink)
-//        }
-
         // set empty text views
-        mRecentsList.addAll(mFavoritesList)
         showOrHideEmptyTextViews(view)
 
         // adapter setup
-        mFavoritesListAdapter = AddDrinkFragmentFavoritesListAdapter(context!!, mFavoritesList)
+        mFavoritesListAdapter = AddDrinkFragmentFavoritesListAdapter(context!!, mMainActivity.mFavoritesList)
         favoriteListView.adapter = mFavoritesListAdapter
 
         // adapter setup
-        mRecentsListAdapter = AddDrinkFragmentRecentsListAdapter(context!!, mFavoritesList)
+        mRecentsListAdapter = AddDrinkFragmentRecentsListAdapter(context!!, mMainActivity.mFavoritesList)
         recentsListView.adapter = mRecentsListAdapter
 
         // Inflate the layout for this fragment
@@ -90,13 +77,16 @@ class AddDrinkFragment : Fragment() {
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         val resId = item?.itemId
+        val btnAdd = view!!.findViewById<MaterialButton>(R.id.btn_add_drink_add)
         when(resId){
             R.id.btn_toolbar_favorite -> {
                 mFavorited = !mFavorited
                 if(mFavorited){
                     item.icon = ContextCompat.getDrawable(context!!, R.drawable.favorite_white_24dp)
+                    btnAdd.setText(R.string.text_add_and_favorite)
                 }else{
                     item.icon = ContextCompat.getDrawable(context!!, R.drawable.favorite_border_white_24dp)
+                    btnAdd.setText(R.string.text_add)
                 }
             }
         }
@@ -120,13 +110,13 @@ class AddDrinkFragment : Fragment() {
         val emptyFavorite = view.findViewById<TextView>(R.id.text_favorites_empty_list)
         val emptyRecent = view.findViewById<TextView>(R.id.text_recents_empty_list)
 
-        if(mFavoritesList.isEmpty()){
+        if(mMainActivity.mFavoritesList.isEmpty()){
             emptyFavorite.visibility = View.VISIBLE
         }else{
             emptyFavorite.visibility = View.INVISIBLE
         }
 
-        if(mRecentsList.isEmpty()){
+        if(mMainActivity.mRecentsList.isEmpty()){
             emptyRecent.visibility = View.VISIBLE
         }else{
             emptyRecent.visibility = View.INVISIBLE

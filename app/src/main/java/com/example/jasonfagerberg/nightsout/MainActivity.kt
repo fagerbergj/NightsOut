@@ -10,6 +10,7 @@ import android.content.SharedPreferences
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.RelativeLayout
+import java.util.*
 
 private const val TAG = "MainActivity"
 
@@ -31,10 +32,18 @@ class MainActivity : AppCompatActivity() {
     var startTimeMin: Int = -1
     var endTimeMin: Int = -1
 
+    // global lists
+    val mDrinksList: ArrayList<Drink> = ArrayList()
+    val mRecentsList: ArrayList<Drink> = ArrayList()
+    val mFavoritesList: ArrayList<Drink> = ArrayList()
+    val mSessionsList: HashMap<Session, ArrayList<Drink>> = HashMap()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        //todo remove all test data
+        initData()
 
         // bottom nav bar
         botNavBar = findViewById(R.id.bottom_navigation_view)
@@ -136,6 +145,42 @@ class MainActivity : AppCompatActivity() {
         val params = RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,
                 RelativeLayout.LayoutParams.MATCH_PARENT)
         findViewById<FrameLayout>(R.id.main_frame).layoutParams = params
+    }
+
+    private fun initData(){
+        // todo remove drinks test data
+        for (i in 0..9){
+            val drink = Drink(ByteArray(0), "This is an Example Drink #" + i.toString(),
+                    i*10 + i + i.toDouble()/10, (i*10 + i + i.toDouble()/10), "oz")
+            mDrinksList.add(drink)
+        }
+
+        // todo remove favorites test data
+        for (i in 0..9){
+            val drink = Drink(ByteArray(0), "This is an Example Drink #" + i.toString(),
+                    i*10 + i + i.toDouble()/10, (i*10 + i + i.toDouble()/10), "oz")
+            mFavoritesList.add(drink)
+        }
+        mRecentsList.addAll(mFavoritesList)
+
+        // todo remove test data
+        for (i in -4..4){
+            val calendar = Calendar.getInstance()
+            calendar.add(Calendar.DATE, i)
+            Log.v(TAG, calendar.time.toString())
+
+            val session = Session(calendar.time, i.toDouble(), i.toDouble())
+
+            mSessionsList[session] = ArrayList()
+
+            val end = (Math.random()*10).toInt()
+            for (x in 0..end){
+                val drink = Drink(ByteArray(0), "This is an Example Drink # $x",
+                        x*10 + x + x.toDouble()/10, (x*10 + x + x.toDouble()/10), "oz")
+                mSessionsList[session]!!.add(drink)
+            }
+        }
+
     }
 
     override fun onBackPressed() {

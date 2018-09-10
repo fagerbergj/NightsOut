@@ -19,7 +19,6 @@ private const val TAG = "ProfileFragment"
 
 class ProfileFragment : Fragment() {
 
-    private var mFavoritesList: ArrayList<Drink> = ArrayList()
     private lateinit var mFavoritesListAdapter: ProfileFragmentFavoritesListAdapter
     private lateinit var mMainActivity: MainActivity
     private lateinit var mFavoritesListView: RecyclerView
@@ -60,18 +59,11 @@ class ProfileFragment : Fragment() {
         linearLayoutManager.orientation = LinearLayoutManager.HORIZONTAL
         mFavoritesListView.layoutManager = linearLayoutManager
 
-//        // todo remove test data
-//        for (i in 0..9){
-//            val drink = Drink(ByteArray(0), "This is an Example Drink #" + i.toString(),
-//                    i*10 + i + i.toDouble()/10, (i*10 + i + i.toDouble()/10), "oz")
-//            mFavoritesList.add(drink)
-//        }
-
         // empty text view setup
         showOrHideEmptyTextViews(view)
 
         // adapter setup
-        mFavoritesListAdapter = ProfileFragmentFavoritesListAdapter(context!!, mFavoritesList)
+        mFavoritesListAdapter = ProfileFragmentFavoritesListAdapter(context!!, mMainActivity.mFavoritesList)
         mFavoritesListView.adapter = mFavoritesListAdapter
 
         // save button setup
@@ -91,6 +83,12 @@ class ProfileFragment : Fragment() {
             mMainActivity.showBottomNavBar(R.id.bottom_nav_profile)
         } else {
             mMainActivity.hideBottomNavBar()
+        }
+
+        // add favorite button setup
+        val btnAddFavorite = view.findViewById<MaterialButton>(R.id.btn_profile_add_favorite)
+        btnAddFavorite.setOnClickListener{ _ ->
+            mMainActivity.setFragment(mMainActivity.addDrinkFragment)
         }
 
         return view
@@ -202,13 +200,10 @@ class ProfileFragment : Fragment() {
     }
 
     private fun showOrHideEmptyTextViews(view: View){
-        val emptyFavorite = view.findViewById<MaterialButton>(R.id.btn_profile_add_favorite)
+        val emptyFavorite = view.findViewById<TextView>(R.id.text_profile_favorites_empty_list)
 
-        if(mFavoritesList.isEmpty()){
+        if(mMainActivity.mFavoritesList.isEmpty()){
             emptyFavorite.visibility = View.VISIBLE
-            emptyFavorite.setOnClickListener{ _ ->
-                mMainActivity.setFragment(mMainActivity.addDrinkFragment)
-            }
         }else{
             emptyFavorite.visibility = View.INVISIBLE
         }

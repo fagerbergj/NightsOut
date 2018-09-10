@@ -17,13 +17,11 @@ import com.prolificinteractive.materialcalendarview.MaterialCalendarView
 import com.prolificinteractive.materialcalendarview.spans.DotSpan
 import java.util.*
 import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
 
 private const val TAG = "LogFragment"
 
 class LogFragment : Fragment() {
 
-    private val mSessionList : HashMap<Session, ArrayList<Drink>> = HashMap()
     private lateinit var mLogFragmentAdapter: LogFragmentAdapter
     private lateinit var calendarView: MaterialCalendarView
     private lateinit var calendar: Calendar
@@ -36,6 +34,7 @@ class LogFragment : Fragment() {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_log, container, false)
         mMainActivity = context as MainActivity
+        calendar = Calendar.getInstance()
 
         // recycler view
         mLogListView = view.findViewById(R.id.recycler_log)
@@ -48,26 +47,6 @@ class LogFragment : Fragment() {
         // toolbar setup
         val toolbar:android.support.v7.widget.Toolbar = view!!.findViewById(R.id.toolbar_log)
         toolbar.inflateMenu(R.menu.empty_menu)
-
-        calendar = Calendar.getInstance()
-
-//        // todo remove test data
-//        for (i in -4..4){
-//            calendar = Calendar.getInstance()
-//            calendar.add(Calendar.DATE, i)
-//            Log.v(TAG, calendar.time.toString())
-//
-//            val session = Session(calendar.time, i.toDouble(), i.toDouble())
-//
-//            mSessionList[session] = ArrayList()
-//
-//            val end = (Math.random()*10).toInt()
-//            for (x in 0..end){
-//                val drink = Drink(ByteArray(0), "This is an Example Drink # $x",
-//                        x*10 + x + x.toDouble()/10, (x*10 + x + x.toDouble()/10), "oz")
-//                mSessionList[session]!!.add(drink)
-//            }
-//        }
 
         // take date from calender, pull correct session, pass to adapter
         mLogList = ArrayList()
@@ -92,7 +71,7 @@ class LogFragment : Fragment() {
     // format days to correct object and send to decorator
     private fun highlightDays(){
         val dates = ArrayList<CalendarDay>()
-        for(session in mSessionList.keys){
+        for(session in mMainActivity.mSessionsList.keys){
             val day = CalendarDay.from(session.date)
             dates.add(day)
         }
@@ -107,7 +86,8 @@ class LogFragment : Fragment() {
         var curSession = Session(calendar.time,0.0,0.0)
         mLogList.add(curSession)
 
-        if(curSession in mSessionList.keys){ mLogList.addAll(mSessionList[curSession]!!) }
+        if(curSession in mMainActivity.mSessionsList.keys){ mLogList.addAll(
+                mMainActivity.mSessionsList[curSession]!!) }
 
         // show or hide empty text
         showOrHideEmptyTextViews(view)
@@ -122,7 +102,8 @@ class LogFragment : Fragment() {
             curSession = Session(calendar.time,0.0,0.0)
             mLogList.add(curSession)
 
-            if(curSession in mSessionList.keys){ mLogList.addAll(mSessionList[curSession]!!) }
+            if(curSession in mMainActivity.mSessionsList.keys){ mLogList.addAll(
+                    mMainActivity.mSessionsList[curSession]!!) }
             mLogFragmentAdapter.notifyDataSetChanged()
             mLogListView.layoutManager?.scrollToPosition(0)
             showOrHideEmptyTextViews(mLogListView.parent as View)

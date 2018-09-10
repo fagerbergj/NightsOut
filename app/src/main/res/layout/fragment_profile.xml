@@ -111,6 +111,22 @@
         android:text="@string/text_favorites"
         android:textSize="18sp" />
 
+        <android.support.design.button.MaterialButton
+            android:id="@+id/btn_profile_add_favorite"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/text_profile_favorites"
+            android:layout_alignEnd="@+id/layout_foreground"
+            android:paddingBottom="2dp"
+            android:paddingEnd="10dp"
+            android:paddingStart="8dp"
+            android:paddingTop="2dp"
+            android:text="@string/text_add_favorite"
+            android:textSize="12sp"
+            android:theme="@style/HomeButtonTheme"
+            app:icon="@drawable/add_white_18dp"
+            app:iconGravity="start" />
+
         <RelativeLayout
             android:id="@+id/layout_foreground"
             android:layout_width="match_parent"
@@ -133,17 +149,12 @@
                 android:paddingBottom="8dp"
                 android:paddingTop="8dp" />
 
-            <android.support.design.button.MaterialButton
-                android:id="@+id/btn_profile_add_favorite"
+            <TextView
+                android:id="@+id/text_profile_favorites_empty_list"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:layout_marginEnd="8dp"
-                android:layout_marginStart="8dp"
-                android:text="@string/text_add_favorite"
-                android:theme="@style/HomeButtonTheme"
-                app:icon="@drawable/add_white_24dp"
-                app:iconGravity="start"/>
+                android:text="@string/text_empty_favorites_list" />
 
         </RelativeLayout>
 
