@@ -46,6 +46,9 @@ class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: Ar
         val amount = "%.1f".format(drink.amount) + " " + drink.measurement
         holder.amount.text = amount
 
+        if (drink.favorited) holder.favorited.setImageResource(R.drawable.favorite_red_18dp)
+        else holder.favorited.setImageResource(R.drawable.favorite_border_red_18dp)
+
         holder.foreground.setOnClickListener { _ -> showEditRemoveDialog(position) }
     }
 
@@ -61,7 +64,7 @@ class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: Ar
         internal var aav: TextView = itemView.findViewById(R.id.text_home_drink_aav)
         internal var amount: TextView = itemView.findViewById(R.id.text_home_drink_amount)
         internal var foreground: LinearLayout = itemView.findViewById(R.id.layout_foreground)
-
+        internal var favorited: ImageView = itemView.findViewById(R.id.image_home_drink_favored)
     }
 
     // remove
@@ -91,6 +94,20 @@ class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: Ar
             mDrinksList.add(position, mDrinksList[position])
             notifyItemInserted(position)
             notifyItemRangeChanged(position, mDrinksList.size)
+        }
+
+        val favorite = dialogView.findViewById<TextView>(R.id.text_dialog_favorite_drink)
+        if (drink.favorited){
+            favorite.setText(R.string.text_unfavorite_drink)
+            favorite.setCompoundDrawablesWithIntrinsicBounds(R.drawable.favorite_border_red_18dp,0,0,0)
+        }else{
+            favorite.setText(R.string.text_favorite_drink)
+            favorite.setCompoundDrawablesWithIntrinsicBounds(R.drawable.favorite_red_18dp,0,0,0)
+        }
+        favorite.setOnClickListener{ _ ->
+            drink.favorited = !drink.favorited
+            dialog.dismiss()
+            notifyItemChanged(position)
         }
 
         // edit button clicked

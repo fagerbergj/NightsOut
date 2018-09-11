@@ -1,5 +1,6 @@
 package com.example.jasonfagerberg.nightsout
 
+import android.graphics.Typeface
 import android.os.Bundle
 import android.support.design.button.MaterialButton
 import android.support.v4.app.Fragment
@@ -7,9 +8,7 @@ import android.support.v4.content.ContextCompat
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.*
-import android.widget.ArrayAdapter
-import android.widget.Spinner
-import android.widget.TextView
+import android.widget.*
 
 private const val TAG = "AddDrinkFragment"
 
@@ -63,6 +62,10 @@ class AddDrinkFragment : Fragment() {
         mRecentsListAdapter = AddDrinkFragmentRecentsListAdapter(context!!, mMainActivity.mFavoritesList)
         recentsListView.adapter = mRecentsListAdapter
 
+        // add button setup
+        val btnAdd = view.findViewById<MaterialButton>(R.id.btn_add_drink_add)
+        btnAdd.setOnClickListener { _ -> addDrink(view)}
+
         // Inflate the layout for this fragment
         return view
     }
@@ -84,9 +87,15 @@ class AddDrinkFragment : Fragment() {
                 if(mFavorited){
                     item.icon = ContextCompat.getDrawable(context!!, R.drawable.favorite_white_24dp)
                     btnAdd.setText(R.string.text_add_and_favorite)
+                    val toast = Toast.makeText(context!!, "Drink Will Be Favorited After Adding", Toast.LENGTH_LONG)
+                    toast.setGravity(Gravity.CENTER, 0, 450)
+                    toast.show()
                 }else{
                     item.icon = ContextCompat.getDrawable(context!!, R.drawable.favorite_border_white_24dp)
                     btnAdd.setText(R.string.text_add)
+                    val toast = Toast.makeText(context!!, "Drink Will Not Be Favorited", Toast.LENGTH_LONG)
+                    toast.setGravity(Gravity.CENTER, 0, 450)
+                    toast.show()
                 }
             }
         }
@@ -104,6 +113,68 @@ class AddDrinkFragment : Fragment() {
         toolbar.setNavigationIcon(R.drawable.arrow_back_white_24dp)
 
         toolbar.setNavigationOnClickListener { _: View -> activity!!.onBackPressed() }
+    }
+
+    private fun addDrink(view: View){
+        val editName = view.findViewById<EditText>(R.id.edit_add_drink_name)
+        val editAAV = view.findViewById<EditText>(R.id.edit_add_drink_aav)
+        val editAmount = view.findViewById<EditText>(R.id.edit_add_drink_amount)
+
+        val textName = view.findViewById<TextView>(R.id.text_add_drink_name)
+        val textAAV = view.findViewById<TextView>(R.id.text_add_drink_aav)
+        val textAmount = view.findViewById<TextView>(R.id.text_add_drink_amount)
+
+        resetTextView(textName, R.string.text_name)
+        resetTextView(textAAV, R.string.text_aav)
+        resetTextView(textAmount, R.string.text_amount)
+
+        // make sure string can be parsed to double
+        if(!editAAV.text.isEmpty() && "${editAAV.text}"["${editAAV.text}".length-1] == '.'){
+            val w = "${editAAV.text}0"
+            editAAV.setText(w)
+        }
+        if(!editAmount.text.isEmpty() && "${editAmount.text}"["${editAmount.text}".length-1] == '.'){
+            val w = "${editAmount.text}0"
+            editAmount.setText(w)
+        }
+
+        // check name isn't empty
+        if(editName.text.isEmpty()){
+            val toast = Toast.makeText(context!!, "Please Input a Name", Toast.LENGTH_LONG)
+            toast.setGravity(Gravity.CENTER, 0, 450)
+            toast.show()
+
+            textName.setTypeface(null, Typeface.BOLD)
+            textName.setTextColor(ContextCompat.getColor(context!!, R.color.colorRed))
+            return
+        } else if (editAAV.text.isEmpty() || ("${editAAV.text}".toDouble() > 100.0)){
+            val toast = Toast.makeText(context!!, "Please Input a Valid A.A.V.", Toast.LENGTH_LONG)
+            toast.setGravity(Gravity.CENTER, 0, 450)
+            toast.show()
+
+            textAAV.setTypeface(null, Typeface.BOLD)
+            textAAV.setTextColor(ContextCompat.getColor(context!!, R.color.colorRed))
+            return
+        } else if (editAmount.text.isEmpty()){
+            val toast = Toast.makeText(context!!, "Please Input a Valid Amount", Toast.LENGTH_LONG)
+            toast.setGravity(Gravity.CENTER, 0, 450)
+            toast.show()
+
+            textAmount.setTypeface(null, Typeface.BOLD)
+            textAmount.setTextColor(ContextCompat.getColor(context!!, R.color.colorRed))
+            return
+        }
+
+        editName.text.clear()
+        editAAV.text.clear()
+        editAmount.text.clear()
+        mMainActivity.onBackPressed()
+    }
+
+    private fun resetTextView(view: TextView, id: Int){
+        view.text = resources.getText(id)
+        view.setTypeface(null, Typeface.NORMAL)
+        view.setTextColor(ContextCompat.getColor(context!!, R.color.colorText))
     }
 
     fun showOrHideEmptyTextViews(view: View){

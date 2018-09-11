@@ -3,6 +3,7 @@
     <words>
       <w>favorited</w>
       <w>recents</w>
+      <w>unfavorite</w>
     </words>
   </dictionary>
 </component>

@@ -19,7 +19,7 @@ class MainActivity : AppCompatActivity() {
     // init fragments
     val homeFragment = HomeFragment.newInstance()
     private val logFragment = LogFragment.newInstance()
-    private val profileFragment = ProfileFragment.newInstance()
+    val profileFragment = ProfileFragment.newInstance()
     val addDrinkFragment = AddDrinkFragment.newInstance()
     private lateinit var botNavBar: BottomNavigationView
 
@@ -149,16 +149,18 @@ class MainActivity : AppCompatActivity() {
 
     private fun initData(){
         // todo remove drinks test data
-        for (i in 0..9){
+        for (i in 0..1){
             val drink = Drink(ByteArray(0), "This is an Example Drink #" + i.toString(),
-                    i*10 + i + i.toDouble()/10, (i*10 + i + i.toDouble()/10), "oz")
+                    i*10 + i + i.toDouble()/10, (i*10 + i + i.toDouble()/10), "oz",
+                    false, false)
             mDrinksList.add(drink)
         }
 
         // todo remove favorites test data
         for (i in 0..9){
             val drink = Drink(ByteArray(0), "This is an Example Drink #" + i.toString(),
-                    i*10 + i + i.toDouble()/10, (i*10 + i + i.toDouble()/10), "oz")
+                    i*10 + i + i.toDouble()/10, (i*10 + i + i.toDouble()/10), "oz",
+                    true, true)
             mFavoritesList.add(drink)
         }
         mRecentsList.addAll(mFavoritesList)
@@ -176,7 +178,8 @@ class MainActivity : AppCompatActivity() {
             val end = (Math.random()*10).toInt()
             for (x in 0..end){
                 val drink = Drink(ByteArray(0), "This is an Example Drink # $x",
-                        x*10 + x + x.toDouble()/10, (x*10 + x + x.toDouble()/10), "oz")
+                        x*10 + x + x.toDouble()/10, (x*10 + x + x.toDouble()/10), "oz",
+                        false, false)
                 mSessionsList[session]!!.add(drink)
             }
         }
