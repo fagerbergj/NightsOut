@@ -6,6 +6,7 @@ import android.support.v4.content.ContextCompat
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -70,9 +71,11 @@ class LogFragment : Fragment() {
 
     // format days to correct object and send to decorator
     private fun highlightDays(){
+        // fixme broken after removing sessions
         val dates = ArrayList<CalendarDay>()
-        for(session in mMainActivity.mSessionsList.keys){
-            val day = CalendarDay.from(session.date)
+        for(log in mMainActivity.mLogHeaders){
+            val day = CalendarDay.from(Date(log.date))
+            Log.v(TAG, day.date.toString())
             dates.add(day)
         }
         calendarView.addDecorator(EventDecorator(ContextCompat.getColor(context!!,
@@ -83,11 +86,12 @@ class LogFragment : Fragment() {
         calendarView = view.findViewById(R.id.calender_log)
         calendarView.selectedDate = CalendarDay.today()
         calendar.time = calendarView.selectedDate.date
-        var curSession = Session(calendar.time,0.0,0.0)
-        mLogList.add(curSession)
-
-        if(curSession in mMainActivity.mSessionsList.keys){ mLogList.addAll(
-                mMainActivity.mSessionsList[curSession]!!) }
+        // fixme broken after removing sessions
+//        var curSession = Session(calendar.time,0.0,0.0)
+//        mLogList.add(curSession)
+//
+//        if(curSession in mMainActivity.mSessionsList.keys){ mLogList.addAll(
+//                mMainActivity.mSessionsList[curSession]!!) }
 
         // show or hide empty text
         showOrHideEmptyTextViews(view)
@@ -99,11 +103,12 @@ class LogFragment : Fragment() {
         calendarView.setOnDateChangedListener{_ , day, _ ->
             mLogList.clear()
             calendar.set(day.year, day.month, day.day)
-            curSession = Session(calendar.time,0.0,0.0)
-            mLogList.add(curSession)
-
-            if(curSession in mMainActivity.mSessionsList.keys){ mLogList.addAll(
-                    mMainActivity.mSessionsList[curSession]!!) }
+            // fixme broken after removing sessions
+//            curSession = Session(calendar.time,0.0,0.0)
+//            mLogList.add(curSession)
+//
+//            if(curSession in mMainActivity.mSessionsList.keys){ mLogList.addAll(
+//                    mMainActivity.mSessionsList[curSession]!!) }
             mLogFragmentAdapter.notifyDataSetChanged()
             mLogListView.layoutManager?.scrollToPosition(0)
             showOrHideEmptyTextViews(mLogListView.parent as View)

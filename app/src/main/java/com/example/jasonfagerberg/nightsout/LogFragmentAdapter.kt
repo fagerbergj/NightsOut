@@ -42,22 +42,23 @@ RecyclerView.Adapter<LogFragmentAdapter.ViewHolder>() {
 
                 holder.name!!.text = drink.name
 
-                val aav = "AAV: " + "%.1f".format(drink.aav) + "%"
-                holder.aav!!.text = aav
+                val abv = "ABV: " + "%.1f".format(drink.abv) + "%"
+                holder.abv!!.text = abv
                 val amount = "%.1f".format(drink.amount) + " " + drink.measurement
                 holder.amount!!.text = amount
             }
             HEADER -> {
-                val session: Session = mLogList[position] as Session
-
-                // Log.v(TAG, getItemViewType(position).toString())
-                holder.day!!.text = session.dateString
-
-                val duration = "Duration: ${session.duration}"
-                holder.duration!!.text = duration
-
-                val maxBac = "Max BAC: ${session.maxBAC}"
-                holder.maxBAC!!.text = maxBac
+                // fixme broken after removing sessions
+//                val session: Session = mLogList[position] as Session
+//
+//                // Log.v(TAG, getItemViewType(position).toString())
+//                holder.day!!.text = session.dateString
+//
+//                val duration = "Duration: ${session.duration}"
+//                holder.duration!!.text = duration
+//
+//                val maxBac = "Max BAC: ${session.maxBAC}"
+//                holder.maxBAC!!.text = maxBac
 
             }
         }
@@ -80,7 +81,7 @@ RecyclerView.Adapter<LogFragmentAdapter.ViewHolder>() {
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         // drink views
         internal var name: TextView ?= itemView.findViewById(R.id.text_log_drink_name)
-        internal var aav: TextView ?= itemView.findViewById(R.id.text_log_drink_aav)
+        internal var abv: TextView ?= itemView.findViewById(R.id.text_log_drink_abv)
         internal var amount: TextView ?= itemView.findViewById(R.id.text_log_drink_amount)
 
         // header views

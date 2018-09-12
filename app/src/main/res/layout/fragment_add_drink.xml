@@ -136,7 +136,7 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/layout_add_drink_aav"
+            android:id="@+id/layout_add_drink_abv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
@@ -149,14 +149,14 @@
             android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/text_add_drink_aav"
+                android:id="@+id/text_add_drink_abv"
                 android:layout_width="75dp"
                 android:layout_height="wrap_content"
-                android:text="@string/text_aav"
+                android:text="@string/text_abv"
                 android:textSize="18sp" />
 
             <EditText
-                android:id="@+id/edit_add_drink_aav"
+                android:id="@+id/edit_add_drink_abv"
                 android:layout_width="175dp"
                 android:layout_height="50dp"
                 android:gravity="center_horizontal"
@@ -178,7 +178,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
-            android:layout_below="@id/layout_add_drink_aav"
+            android:layout_below="@id/layout_add_drink_abv"
             android:layout_centerVertical="true"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"

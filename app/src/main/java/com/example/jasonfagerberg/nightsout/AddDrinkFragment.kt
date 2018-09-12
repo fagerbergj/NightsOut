@@ -59,7 +59,7 @@ class AddDrinkFragment : Fragment() {
         favoriteListView.adapter = mFavoritesListAdapter
 
         // adapter setup
-        mRecentsListAdapter = AddDrinkFragmentRecentsListAdapter(context!!, mMainActivity.mFavoritesList)
+        mRecentsListAdapter = AddDrinkFragmentRecentsListAdapter(context!!, mMainActivity.mRecentsList)
         recentsListView.adapter = mRecentsListAdapter
 
         // add button setup
@@ -117,21 +117,21 @@ class AddDrinkFragment : Fragment() {
 
     private fun addDrink(view: View){
         val editName = view.findViewById<EditText>(R.id.edit_add_drink_name)
-        val editAAV = view.findViewById<EditText>(R.id.edit_add_drink_aav)
+        val editABV = view.findViewById<EditText>(R.id.edit_add_drink_abv)
         val editAmount = view.findViewById<EditText>(R.id.edit_add_drink_amount)
 
         val textName = view.findViewById<TextView>(R.id.text_add_drink_name)
-        val textAAV = view.findViewById<TextView>(R.id.text_add_drink_aav)
+        val textABV = view.findViewById<TextView>(R.id.text_add_drink_abv)
         val textAmount = view.findViewById<TextView>(R.id.text_add_drink_amount)
 
         resetTextView(textName, R.string.text_name)
-        resetTextView(textAAV, R.string.text_aav)
+        resetTextView(textABV, R.string.text_abv)
         resetTextView(textAmount, R.string.text_amount)
 
         // make sure string can be parsed to double
-        if(!editAAV.text.isEmpty() && "${editAAV.text}"["${editAAV.text}".length-1] == '.'){
-            val w = "${editAAV.text}0"
-            editAAV.setText(w)
+        if(!editABV.text.isEmpty() && "${editABV.text}"["${editABV.text}".length-1] == '.'){
+            val w = "${editABV.text}0"
+            editABV.setText(w)
         }
         if(!editAmount.text.isEmpty() && "${editAmount.text}"["${editAmount.text}".length-1] == '.'){
             val w = "${editAmount.text}0"
@@ -147,13 +147,13 @@ class AddDrinkFragment : Fragment() {
             textName.setTypeface(null, Typeface.BOLD)
             textName.setTextColor(ContextCompat.getColor(context!!, R.color.colorRed))
             return
-        } else if (editAAV.text.isEmpty() || ("${editAAV.text}".toDouble() > 100.0)){
+        } else if (editABV.text.isEmpty() || ("${editABV.text}".toDouble() > 100.0)){
             val toast = Toast.makeText(context!!, "Please Input a Valid A.A.V.", Toast.LENGTH_LONG)
             toast.setGravity(Gravity.CENTER, 0, 450)
             toast.show()
 
-            textAAV.setTypeface(null, Typeface.BOLD)
-            textAAV.setTextColor(ContextCompat.getColor(context!!, R.color.colorRed))
+            textABV.setTypeface(null, Typeface.BOLD)
+            textABV.setTextColor(ContextCompat.getColor(context!!, R.color.colorRed))
             return
         } else if (editAmount.text.isEmpty()){
             val toast = Toast.makeText(context!!, "Please Input a Valid Amount", Toast.LENGTH_LONG)
@@ -166,7 +166,7 @@ class AddDrinkFragment : Fragment() {
         }
 
         editName.text.clear()
-        editAAV.text.clear()
+        editABV.text.clear()
         editAmount.text.clear()
         mMainActivity.onBackPressed()
     }

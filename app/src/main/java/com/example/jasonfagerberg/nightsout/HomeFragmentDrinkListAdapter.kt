@@ -32,17 +32,17 @@ class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: Ar
     // When view is rendered bind the correct holder to it
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val drink = mDrinksList[position]
-        if (!drink.image.isEmpty()) {
-            holder.image.setImageBitmap(BitmapFactory.decodeByteArray(drink.image, 0,
-                    drink.image.size))
-        } else {
-            holder.image.setImageBitmap(BitmapFactory.decodeResource(mContext.resources,
-                    R.drawable.beer))
-        }
+//        if (!drink.image.isEmpty()) {
+//            holder.image.setImageBitmap(BitmapFactory.decodeByteArray(drink.image, 0,
+//                    drink.image.size))
+//        } else {
+//            holder.image.setImageBitmap(BitmapFactory.decodeResource(mContext.resources,
+//                    R.drawable.beer))
+//        }
         holder.name.text = drink.name
 
-        val aav = "AAV: " + "%.1f".format(drink.aav) + "%"
-        holder.aav.text = aav
+        val abv = "ABV: " + "%.1f".format(drink.abv) + "%"
+        holder.abv.text = abv
         val amount = "%.1f".format(drink.amount) + " " + drink.measurement
         holder.amount.text = amount
 
@@ -61,7 +61,7 @@ class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: Ar
 
         internal var image: ImageView = itemView.findViewById(R.id.image_drink)
         internal var name: TextView = itemView.findViewById(R.id.text_home_drink_name)
-        internal var aav: TextView = itemView.findViewById(R.id.text_home_drink_aav)
+        internal var abv: TextView = itemView.findViewById(R.id.text_home_drink_abv)
         internal var amount: TextView = itemView.findViewById(R.id.text_home_drink_amount)
         internal var foreground: LinearLayout = itemView.findViewById(R.id.layout_foreground)
         internal var favorited: ImageView = itemView.findViewById(R.id.image_home_drink_favored)
@@ -140,8 +140,8 @@ class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: Ar
         val editName = dialogView.findViewById<EditText>(R.id.edit_edit_drink_name)
         editName.setText(drink.name)
 
-        val editAAV = dialogView.findViewById<EditText>(R.id.edit_edit_drink_aav)
-        editAAV.setText(drink.aav.toString())
+        val editABV = dialogView.findViewById<EditText>(R.id.edit_edit_drink_abv)
+        editABV.setText(drink.abv.toString())
 
         val editAmount = dialogView.findViewById<EditText>(R.id.edit_edit_drink_amount)
         editAmount.setText(drink.amount.toString())
@@ -154,9 +154,9 @@ class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: Ar
 
         dialog.findViewById<MaterialButton>(R.id.btn_edit_drink_edit).setOnClickListener{ _ ->
             //pad 0s to end
-            if(!editAAV.text.isEmpty() && "${editAAV.text}"["${editAAV.text}".length-1] == '.'){
-                val padded = "${editAAV.text}0"
-                editAAV.setText(padded)
+            if(!editABV.text.isEmpty() && "${editABV.text}"["${editABV.text}".length-1] == '.'){
+                val padded = "${editABV.text}0"
+                editABV.setText(padded)
             }
 
             if(!editAmount.text.isEmpty() && "${editAmount.text}"["${editAmount.text}".length-1] == '.'){
@@ -168,8 +168,8 @@ class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: Ar
             if(!editName.text.isEmpty()){
                 drink.name = editName.text.toString()
             }
-            if (!editAAV.text.isEmpty()){
-                drink.aav = "${editAAV.text}0".toDouble()
+            if (!editABV.text.isEmpty()){
+                drink.abv = "${editABV.text}0".toDouble()
             }
             if (!editAmount.text.isEmpty()){
                 drink.amount = "${editAmount.text}0".toDouble()

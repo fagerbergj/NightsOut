@@ -11,6 +11,7 @@ import android.view.View
 import android.widget.FrameLayout
 import android.widget.RelativeLayout
 import java.util.*
+import kotlin.collections.ArrayList
 
 private const val TAG = "MainActivity"
 
@@ -19,7 +20,7 @@ class MainActivity : AppCompatActivity() {
     // init fragments
     val homeFragment = HomeFragment.newInstance()
     private val logFragment = LogFragment.newInstance()
-    val profileFragment = ProfileFragment.newInstance()
+    private val profileFragment = ProfileFragment.newInstance()
     val addDrinkFragment = AddDrinkFragment.newInstance()
     private lateinit var botNavBar: BottomNavigationView
 
@@ -33,17 +34,29 @@ class MainActivity : AppCompatActivity() {
     var endTimeMin: Int = -1
 
     // global lists
-    val mDrinksList: ArrayList<Drink> = ArrayList()
-    val mRecentsList: ArrayList<Drink> = ArrayList()
-    val mFavoritesList: ArrayList<Drink> = ArrayList()
-    val mSessionsList: HashMap<Session, ArrayList<Drink>> = HashMap()
+    lateinit var mDrinksList: ArrayList<Drink>
+    lateinit var mRecentsList: ArrayList<Drink>
+    lateinit var mFavoritesList: ArrayList<Drink>
+    lateinit var mLogHeaders: ArrayList<LogHeader>
 
+    lateinit var mDatabaseHelper: DatabaseHelper
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        //todo remove all test data
-        initData()
+
+        // database
+        val DB_NAME = "nights_out_db.db"
+        val DB_VERSION = 4
+        mDatabaseHelper = DatabaseHelper(applicationContext, DB_NAME, null, DB_VERSION)
+        mDatabaseHelper.openDatabase()
+
+        // init data
+        mDrinksList = mDatabaseHelper.pullCurrentSession()
+        mFavoritesList = mDatabaseHelper.pullFavoriteDrinks()
+        mRecentsList = mDatabaseHelper.pullRecentDrinks()
+        mLogHeaders = mDatabaseHelper.pullLogHeaders()
+
 
         // bottom nav bar
         botNavBar = findViewById(R.id.bottom_navigation_view)
@@ -85,6 +98,11 @@ class MainActivity : AppCompatActivity() {
     override fun onPause() {
         setGlobalData()
         super.onPause()
+    }
+
+    override fun onDestroy() {
+        mDatabaseHelper.closeDatabase()
+        super.onDestroy()
     }
 
     private fun setGlobalData(){
@@ -145,45 +163,6 @@ class MainActivity : AppCompatActivity() {
         val params = RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,
                 RelativeLayout.LayoutParams.MATCH_PARENT)
         findViewById<FrameLayout>(R.id.main_frame).layoutParams = params
-    }
-
-    private fun initData(){
-        // todo remove drinks test data
-        for (i in 0..1){
-            val drink = Drink(ByteArray(0), "This is an Example Drink #" + i.toString(),
-                    i*10 + i + i.toDouble()/10, (i*10 + i + i.toDouble()/10), "oz",
-                    false, false)
-            mDrinksList.add(drink)
-        }
-
-        // todo remove favorites test data
-        for (i in 0..9){
-            val drink = Drink(ByteArray(0), "This is an Example Drink #" + i.toString(),
-                    i*10 + i + i.toDouble()/10, (i*10 + i + i.toDouble()/10), "oz",
-                    true, true)
-            mFavoritesList.add(drink)
-        }
-        mRecentsList.addAll(mFavoritesList)
-
-        // todo remove test data
-        for (i in -4..4){
-            val calendar = Calendar.getInstance()
-            calendar.add(Calendar.DATE, i)
-            Log.v(TAG, calendar.time.toString())
-
-            val session = Session(calendar.time, i.toDouble(), i.toDouble())
-
-            mSessionsList[session] = ArrayList()
-
-            val end = (Math.random()*10).toInt()
-            for (x in 0..end){
-                val drink = Drink(ByteArray(0), "This is an Example Drink # $x",
-                        x*10 + x + x.toDouble()/10, (x*10 + x + x.toDouble()/10), "oz",
-                        false, false)
-                mSessionsList[session]!!.add(drink)
-            }
-        }
-
     }
 
     override fun onBackPressed() {
