@@ -195,10 +195,6 @@ class ProfileFragment : Fragment() {
         }
     }
 
-    companion object {
-        fun newInstance() : ProfileFragment = ProfileFragment()
-    }
-
     private fun showOrHideEmptyTextViews(view: View){
         val emptyFavorite = view.findViewById<TextView>(R.id.text_profile_favorites_empty_list)
 

@@ -10,7 +10,6 @@ import android.content.SharedPreferences
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.RelativeLayout
-import java.util.*
 import kotlin.collections.ArrayList
 
 private const val TAG = "MainActivity"
@@ -18,10 +17,10 @@ private const val TAG = "MainActivity"
 class MainActivity : AppCompatActivity() {
 
     // init fragments
-    val homeFragment = HomeFragment.newInstance()
-    private val logFragment = LogFragment.newInstance()
-    private val profileFragment = ProfileFragment.newInstance()
-    val addDrinkFragment = AddDrinkFragment.newInstance()
+    val homeFragment = HomeFragment()
+    private val logFragment = LogFragment()
+    private val profileFragment = ProfileFragment()
+    val addDrinkFragment = AddDrinkFragment()
     private lateinit var botNavBar: BottomNavigationView
 
     // shared pref data
@@ -34,29 +33,16 @@ class MainActivity : AppCompatActivity() {
     var endTimeMin: Int = -1
 
     // global lists
-    lateinit var mDrinksList: ArrayList<Drink>
-    lateinit var mRecentsList: ArrayList<Drink>
-    lateinit var mFavoritesList: ArrayList<Drink>
-    lateinit var mLogHeaders: ArrayList<LogHeader>
+    var mDrinksList: ArrayList<Drink> = ArrayList()
+    var mRecentsList: ArrayList<Drink> = ArrayList()
+    var mFavoritesList: ArrayList<Drink> = ArrayList()
+    var mLogHeaders: ArrayList<LogHeader> = ArrayList()
 
     lateinit var mDatabaseHelper: DatabaseHelper
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-        // database
-        val DB_NAME = "nights_out_db.db"
-        val DB_VERSION = 4
-        mDatabaseHelper = DatabaseHelper(applicationContext, DB_NAME, null, DB_VERSION)
-        mDatabaseHelper.openDatabase()
-
-        // init data
-        mDrinksList = mDatabaseHelper.pullCurrentSession()
-        mFavoritesList = mDatabaseHelper.pullFavoriteDrinks()
-        mRecentsList = mDatabaseHelper.pullRecentDrinks()
-        mLogHeaders = mDatabaseHelper.pullLogHeaders()
-
 
         // bottom nav bar
         botNavBar = findViewById(R.id.bottom_navigation_view)
@@ -81,10 +67,26 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    override fun onResume() {
+    override fun onResume(){
+        initData()
+        super.onResume()
+    }
+
+    override fun onPause() {
+        saveData()
+        super.onPause()
+    }
+
+    private fun initData(){
         // get data
         preferences = PreferenceManager.getDefaultSharedPreferences(this)
         getGlobalData()
+
+        // database
+        val DB_NAME = "nights_out_db.db"
+        val DB_VERSION = 18
+        mDatabaseHelper = DatabaseHelper(this, DB_NAME, null, DB_VERSION)
+        mDatabaseHelper.openDatabase()
 
         if(!profileInt){
             setFragment(profileFragment)
@@ -92,17 +94,16 @@ class MainActivity : AppCompatActivity() {
             setFragment(homeFragment)
         }
 
-        super.onResume()
+        // init data
+
+        mDatabaseHelper.pullDrinks()
+        mDatabaseHelper.pullLogHeaders()
     }
 
-    override fun onPause() {
+    private fun saveData(){
         setGlobalData()
-        super.onPause()
-    }
-
-    override fun onDestroy() {
+        mDatabaseHelper.pushDrinks()
         mDatabaseHelper.closeDatabase()
-        super.onDestroy()
     }
 
     private fun setGlobalData(){

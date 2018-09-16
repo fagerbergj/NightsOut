@@ -60,11 +60,6 @@ class HomeFragment : Fragment(){
         return view
     }
 
-    // create new fragment
-    companion object {
-        fun newInstance(): HomeFragment = HomeFragment()
-    }
-
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
         inflater!!.inflate(R.menu.home_menu, menu)
     }

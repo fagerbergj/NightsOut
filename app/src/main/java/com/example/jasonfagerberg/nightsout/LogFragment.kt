@@ -65,10 +65,6 @@ class LogFragment : Fragment() {
         return view
     }
 
-    companion object {
-        fun newInstance(): LogFragment = LogFragment()
-    }
-
     // format days to correct object and send to decorator
     private fun highlightDays(){
         // fixme broken after removing sessions

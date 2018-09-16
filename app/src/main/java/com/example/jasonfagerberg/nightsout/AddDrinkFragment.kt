@@ -70,10 +70,6 @@ class AddDrinkFragment : Fragment() {
         return view
     }
 
-    companion object {
-        fun newInstance(): AddDrinkFragment = AddDrinkFragment()
-    }
-
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
         inflater!!.inflate(R.menu.add_drink_menu, menu)
     }

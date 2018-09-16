@@ -2,15 +2,13 @@ package com.example.jasonfagerberg.nightsout
 
 import android.app.AlertDialog
 import android.content.Context
-import android.graphics.BitmapFactory
 import android.support.design.button.MaterialButton
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-
-import java.util.ArrayList
+import java.util.*
 
 private const val TAG = "HomeFragmentAdapter"
 
@@ -32,6 +30,7 @@ class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: Ar
     // When view is rendered bind the correct holder to it
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val drink = mDrinksList[position]
+        // fixme set picture based on abv
 //        if (!drink.image.isEmpty()) {
 //            holder.image.setImageBitmap(BitmapFactory.decodeByteArray(drink.image, 0,
 //                    drink.image.size))
@@ -91,9 +90,19 @@ class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: Ar
         val another = dialogView.findViewById<TextView>(R.id.text_dialog_add_another)
         another.setOnClickListener{ _ ->
             dialog.dismiss()
-            mDrinksList.add(position, mDrinksList[position])
-            notifyItemInserted(position)
-            notifyItemRangeChanged(position, mDrinksList.size)
+            val d = mDrinksList[position]
+            val copy = Drink(d.id, d.name, d.abv, d.amount, d.measurement, d.favorited, d.recent)
+
+            if(position <= mDrinksList.size/2){
+                mDrinksList.add(position + 1, copy)
+                notifyItemInserted(position + 1)
+                notifyItemRangeChanged(position + 1, mDrinksList.size)
+            }
+            else{
+                mDrinksList.add(position, copy)
+                notifyItemInserted(position)
+                notifyItemRangeChanged(position, mDrinksList.size)
+            }
         }
 
         val favorite = dialogView.findViewById<TextView>(R.id.text_dialog_favorite_drink)
@@ -106,8 +115,17 @@ class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: Ar
         }
         favorite.setOnClickListener{ _ ->
             drink.favorited = !drink.favorited
+            if(drink.favorited) mMainActivity.mFavoritesList.add(drink)
+            else mMainActivity.mFavoritesList.remove(drink)
             dialog.dismiss()
-            notifyItemChanged(position)
+
+            for (i in mMainActivity.mDrinksList.indices){
+                val d = mMainActivity.mDrinksList[i]
+                if (d == drink){
+                    d.favorited = drink.favorited
+                    notifyItemChanged(i)
+                }
+            }
         }
 
         // edit button clicked
@@ -128,6 +146,8 @@ class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: Ar
 
     private fun showEditDialog(position: Int){
         val drink = mDrinksList[position]
+        val other = Drink(drink.id, drink.name, drink.abv, drink.amount, drink.measurement, false, false)
+
         val builder = AlertDialog.Builder(mContext)
         val parent:ViewGroup? = null
         val dialogView = mMainActivity.layoutInflater.inflate(
@@ -169,12 +189,24 @@ class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: Ar
                 drink.name = editName.text.toString()
             }
             if (!editABV.text.isEmpty()){
-                drink.abv = "${editABV.text}0".toDouble()
+                drink.abv = "${editABV.text}".toDouble()
             }
             if (!editAmount.text.isEmpty()){
-                drink.amount = "${editAmount.text}0".toDouble()
+                drink.amount = "${editAmount.text}".toDouble()
             }
             drink.measurement = dropdown.selectedItem.toString()
+
+            val foundID = mMainActivity.mDatabaseHelper.getDrinkIdFromFullDrinkInfo(drink)
+            val existsInDB = foundID != -1
+            drink.id = foundID
+            if(!drink.isExactSameDrink(other) && !existsInDB){
+                mMainActivity.mDatabaseHelper.insertDrinkIntoDrinksTable(drink)
+                drink.id = mMainActivity.mDatabaseHelper.getDrinkIdFromFullDrinkInfo(drink)
+            }
+
+            if (drink.id == -1){
+                throw Exception()
+            }
             dialog.dismiss()
             this.notifyItemChanged(position)
         }
