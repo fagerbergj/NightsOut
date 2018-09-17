@@ -88,6 +88,7 @@ class ProfileFragment : Fragment() {
         // add favorite button setup
         val btnAddFavorite = view.findViewById<MaterialButton>(R.id.btn_profile_add_favorite)
         btnAddFavorite.setOnClickListener{ _ ->
+            mMainActivity.addDrinkFragment.mFavorited = true
             mMainActivity.setFragment(mMainActivity.addDrinkFragment)
         }
 

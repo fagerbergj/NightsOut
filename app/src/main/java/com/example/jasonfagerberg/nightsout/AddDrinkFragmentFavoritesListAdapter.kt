@@ -33,10 +33,11 @@ class AddDrinkFragmentFavoritesListAdapter(private val mContext: Context, drinks
         val drink = mFavoriteDrinksList[position]
         holder.name.text = drink.name
         holder.card.setOnClickListener { _ ->
-            val toast = Toast.makeText(mContext, "${holder.name.text} clicked", Toast.LENGTH_SHORT)
-            toast.setGravity(Gravity.CENTER, 0, 450)
+            val toast = Toast.makeText(mContext, "${holder.name.text} information filled in", Toast.LENGTH_SHORT)
+            toast.setGravity(Gravity.CENTER, 0, 600)
             toast.show()
             holder.image.setImageResource(R.drawable.favorite_white_24dp)
+            mMainActivity.addDrinkFragment.fillViews(drink.name, drink.abv, drink.amount, drink.measurement)
         }
 
         // remove from favorites on long press

@@ -47,6 +47,7 @@ class HomeFragment : Fragment(){
         val btnAdd: MaterialButton = view.findViewById(R.id.btn_home_add_drink)
         btnAdd.setOnClickListener{ _ ->
             val mainActivity: MainActivity = context as MainActivity
+            mMainActivity.addDrinkFragment.mFavorited = false
             mainActivity.setFragment(mainActivity.addDrinkFragment)
         }
 

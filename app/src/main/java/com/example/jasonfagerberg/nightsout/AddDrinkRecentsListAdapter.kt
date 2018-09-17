@@ -18,11 +18,13 @@ class AddDrinkFragmentRecentsListAdapter(private val mContext: Context, drinksLi
         RecyclerView.Adapter<AddDrinkFragmentRecentsListAdapter.ViewHolder>() {
     // vars
     private val mRecentDrinksList: MutableList<Drink> = drinksList
+    private lateinit var mMainActivity: MainActivity
 
     // set layout inflater & inflate layout
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(mContext)
         val view = inflater.inflate(R.layout.recents_item, parent, false)
+        mMainActivity = mContext as MainActivity
         return ViewHolder(view)
     }
 
@@ -31,9 +33,10 @@ class AddDrinkFragmentRecentsListAdapter(private val mContext: Context, drinksLi
         val drink = mRecentDrinksList[position]
         holder.name.text = drink.name
         holder.card.setOnClickListener { _ ->
-            val toast = Toast.makeText(mContext, "${holder.name.text} clicked", Toast.LENGTH_SHORT)
-            toast.setGravity(Gravity.CENTER, 0, 450)
+            val toast = Toast.makeText(mContext, "${holder.name.text} information filled in", Toast.LENGTH_SHORT)
+            toast.setGravity(Gravity.CENTER, 0, 600)
             toast.show()
+            mMainActivity.addDrinkFragment.fillViews(drink.name, drink.abv, drink.amount, drink.measurement)
         }
 
         holder.card.setOnLongClickListener { v: View ->

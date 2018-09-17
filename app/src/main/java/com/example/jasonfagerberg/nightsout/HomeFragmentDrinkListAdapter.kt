@@ -204,9 +204,6 @@ class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: Ar
                 drink.id = mMainActivity.mDatabaseHelper.getDrinkIdFromFullDrinkInfo(drink)
             }
 
-            if (drink.id == -1){
-                throw Exception()
-            }
             dialog.dismiss()
             this.notifyItemChanged(position)
         }

@@ -95,16 +95,59 @@ class DatabaseHelper(val context: Context?, val name: String?, factory: SQLiteDa
 
             val drink = Drink(id, drinkName, abv, amount, measurement, false, recent)
             drink.favorited = isFavoritedInDB(drinkName)
-            if (drink.favorited && !mMainActivity.mFavoritesList.contains(drink)) mMainActivity.mFavoritesList.add(drink)
-            if (drink.recent) mMainActivity.mRecentsList.add(drink)
             mMainActivity.mDrinksList.add(drink)
-            Log.v(TAG, "$drink")
+            Log.v(TAG, "current session $drink")
+        }
+        cursor.close()
+        pullFavoriteDrinks()
+        pullRecentDrinks()
+    }
+
+    private fun pullFavoriteDrinks(){
+        val table = "drinks, favorites"
+        val where = "drinks.id=favorites.origin_id"
+        val cursor = db.query(table, null, where, null, null, null, null, null)
+
+        while (cursor.moveToNext()){
+            val id = cursor.getInt(cursor.getColumnIndex("id"))
+            val drinkName = cursor.getString(cursor.getColumnIndex("name"))
+            val abv = cursor.getDouble(cursor.getColumnIndex("abv"))
+            val amount = cursor.getDouble(cursor.getColumnIndex("amount"))
+            val measurement = cursor.getString(cursor.getColumnIndex("measurement"))
+            val recent = cursor.getInt(cursor.getColumnIndex("recent")) == 1
+
+            val drink = Drink(id, drinkName, abv, amount, measurement, true, recent)
+
+            mMainActivity.mFavoritesList.add(drink)
+            Log.v(TAG, "favorited $drink")
         }
 
         cursor.close()
     }
 
-    private fun isFavoritedInDB(name: String): Boolean{
+    private fun pullRecentDrinks(){
+        val table = "drinks"
+        val where = "drinks.recent=1"
+        val cursor = db.query(table, null, where, null, null, null, null, null)
+
+        while (cursor.moveToNext()){
+            val id = cursor.getInt(cursor.getColumnIndex("id"))
+            val drinkName = cursor.getString(cursor.getColumnIndex("name"))
+            val abv = cursor.getDouble(cursor.getColumnIndex("abv"))
+            val amount = cursor.getDouble(cursor.getColumnIndex("amount"))
+            val measurement = cursor.getString(cursor.getColumnIndex("measurement"))
+            val recent = cursor.getInt(cursor.getColumnIndex("recent")) == 1
+
+            val drink = Drink(id, drinkName, abv, amount, measurement, true, recent)
+
+            mMainActivity.mRecentsList.add(drink)
+            Log.v(TAG, "recentD $drink")
+        }
+
+        cursor.close()
+    }
+
+    fun isFavoritedInDB(name: String): Boolean{
         val where = "drink_name = ?"
         val whereArgs = arrayOf(name)
         val cursor = db.query("favorites", null, where, whereArgs, null, null,null)
@@ -130,8 +173,8 @@ class DatabaseHelper(val context: Context?, val name: String?, factory: SQLiteDa
         Log.v(TAG, "pushDrinks()...called")
         deleteAllRowsInCurrentSessionTable()
         for(drink in mMainActivity.mDrinksList){
-            updateRowInDrinksTable(drink)
             insertRowInCurrentSessionTable(drink.id)
+            updateRowInDrinksTable(drink)
             // todo implement push favorite behavior
             if(drink.favorited && !isFavoritedInDB(drink.name)){
                 insertRowInFanoritesTable(drink.name, drink.id)
@@ -196,7 +239,6 @@ class DatabaseHelper(val context: Context?, val name: String?, factory: SQLiteDa
         //Log.v(TAG, sql)
         while (cursor.moveToNext()){
             val foundId = cursor.getInt(cursor.getColumnIndex("id"))
-            Log.v(TAG, "FoundID = $foundId")
             cursor.close()
             return foundId
         }

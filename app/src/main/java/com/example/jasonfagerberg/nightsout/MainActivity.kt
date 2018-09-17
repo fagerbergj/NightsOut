@@ -84,7 +84,7 @@ class MainActivity : AppCompatActivity() {
 
         // database
         val DB_NAME = "nights_out_db.db"
-        val DB_VERSION = 18
+        val DB_VERSION = 22
         mDatabaseHelper = DatabaseHelper(this, DB_NAME, null, DB_VERSION)
         mDatabaseHelper.openDatabase()
 
