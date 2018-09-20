@@ -1,4 +1,4 @@
-package com.example.jasonfagerberg.nightsout
+package com.example.jasonfagerberg.nightsout.log
 
 import android.util.Log
 import java.text.DateFormat
@@ -7,7 +7,7 @@ import java.util.*
 
 private const val TAG = "LogObject"
 
-class LogHeader(val date: Long, val max_bac: Double, private val duration: Int) {
+class LogHeader(val date: Long, val maxBac: Double, private val duration: Int) {
     var dateString: String
     val durationHours: Int = duration/60
     val durationMinuets: Int = duration%60
@@ -33,6 +33,6 @@ class LogHeader(val date: Long, val max_bac: Double, private val duration: Int) 
     }
 
     override fun toString(): String {
-        return "$dateString max_bac: $max_bac duration: $durationString"
+        return "$dateString maxBac: $maxBac duration: $durationString"
     }
 }

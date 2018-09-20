@@ -1,4 +1,4 @@
-package com.example.jasonfagerberg.nightsout
+package com.example.jasonfagerberg.nightsout.profile
 
 import android.content.Context
 import android.support.v7.widget.CardView
@@ -10,6 +10,8 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import com.example.jasonfagerberg.nightsout.main.Drink
+import com.example.jasonfagerberg.nightsout.R
 import java.util.ArrayList
 
 class ProfileFragmentFavoritesListAdapter(private val mContext: Context, drinksList: ArrayList<Drink>) :
@@ -41,7 +43,7 @@ class ProfileFragmentFavoritesListAdapter(private val mContext: Context, drinksL
                 //mFavoriteDrinksList.add(drink)
             }else{
                 // make the toast
-                val toast = Toast.makeText(mContext, "${holder.name.text} unfavorited", Toast.LENGTH_SHORT)
+                val toast = Toast.makeText(mContext, "${holder.name.text} unfavored", Toast.LENGTH_SHORT)
                 toast.setGravity(Gravity.CENTER, 0, 450)
                 toast.show()
 

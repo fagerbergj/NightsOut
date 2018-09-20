@@ -1,19 +1,20 @@
-package com.example.jasonfagerberg.nightsout
+package com.example.jasonfagerberg.nightsout.main
 
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.util.Log
+import com.example.jasonfagerberg.nightsout.log.LogHeader
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 
-private val TAG = "DatabaseHelper"
+private const val TAG = "DatabaseHelper"
 
 class DatabaseHelper(val context: Context?, val name: String?, factory: SQLiteDatabase.CursorFactory?,
                             val version: Int) : SQLiteOpenHelper(context, name, factory, version) {
 
-    private val DB_PATH = context!!.getDatabasePath(name).toString()
+    private val path = context!!.getDatabasePath(name).toString()
     private lateinit var db: SQLiteDatabase
     private lateinit var mMainActivity: MainActivity
 
@@ -26,11 +27,11 @@ class DatabaseHelper(val context: Context?, val name: String?, factory: SQLiteDa
             createDatabase()
         }
 
-        db = SQLiteDatabase.openDatabase(DB_PATH, null, SQLiteDatabase.OPEN_READWRITE)
+        db = SQLiteDatabase.openDatabase(path, null, SQLiteDatabase.OPEN_READWRITE)
 
         if (db.version != version) {
             onUpgrade(db, db.version, version)
-            //db = SQLiteDatabase.openDatabase(DB_PATH, null, SQLiteDatabase.OPEN_READWRITE)
+            //db = SQLiteDatabase.openDatabase(path, null, SQLiteDatabase.OPEN_READWRITE)
         }
 
         mMainActivity = context as MainActivity
@@ -67,7 +68,7 @@ class DatabaseHelper(val context: Context?, val name: String?, factory: SQLiteDa
     }
 
     private fun exists() : Boolean{
-        return File(DB_PATH).exists()
+        return File(path).exists()
     }
 
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
@@ -160,7 +161,7 @@ class DatabaseHelper(val context: Context?, val name: String?, factory: SQLiteDa
         val cursor = db.query("log", null, null, null, null, null, null)
         while (cursor.moveToNext()){
             val date = cursor.getLong(cursor.getColumnIndex("date"))
-            val maxBac = cursor.getDouble(cursor.getColumnIndex("max_bac"))
+            val maxBac = cursor.getDouble(cursor.getColumnIndex("maxBac"))
             val duration = cursor.getInt(cursor.getColumnIndex("duration"))
             mMainActivity.mLogHeaders.add(LogHeader(date, maxBac, duration))
             //Log.v(TAG, logHeaders[logHeaders.size-1].toString())
@@ -177,7 +178,7 @@ class DatabaseHelper(val context: Context?, val name: String?, factory: SQLiteDa
             updateRowInDrinksTable(drink)
             // todo implement push favorite behavior
             if(drink.favorited && !isFavoritedInDB(drink.name)){
-                insertRowInFanoritesTable(drink.name, drink.id)
+                insertRowInFavoritesTable(drink.name, drink.id)
             }else if(!drink.favorited && isFavoritedInDB(drink.name)){
                 deleteRowInFavoritesTable(drink.name)
             }
@@ -204,16 +205,10 @@ class DatabaseHelper(val context: Context?, val name: String?, factory: SQLiteDa
         db.execSQL(sql)
     }
 
-    private fun insertRowInFanoritesTable(name: String, id: Int){
+    private fun insertRowInFavoritesTable(name: String, id: Int){
         val sql = "INSERT INTO favorites VALUES (\"$name\", $id)"
         db.execSQL(sql)
     }
-
-    // todo update id when favorited drink gets changed, set the id to most recent id
-    private fun updateFavoritedDrink(name: String, id: Int){
-        throw NotImplementedError()
-    }
-
 
     private fun deleteAllRowsInCurrentSessionTable(){
         val sql = "DELETE FROM current_session_drinks"

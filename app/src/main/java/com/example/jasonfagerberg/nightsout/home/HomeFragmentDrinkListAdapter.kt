@@ -1,13 +1,17 @@
-package com.example.jasonfagerberg.nightsout
+package com.example.jasonfagerberg.nightsout.home
 
 import android.app.AlertDialog
 import android.content.Context
+import android.graphics.BitmapFactory
 import android.support.design.button.MaterialButton
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import com.example.jasonfagerberg.nightsout.main.Drink
+import com.example.jasonfagerberg.nightsout.main.MainActivity
+import com.example.jasonfagerberg.nightsout.R
 import java.util.*
 
 private const val TAG = "HomeFragmentAdapter"
@@ -31,13 +35,8 @@ class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: Ar
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val drink = mDrinksList[position]
         // fixme set picture based on abv
-//        if (!drink.image.isEmpty()) {
-//            holder.image.setImageBitmap(BitmapFactory.decodeByteArray(drink.image, 0,
-//                    drink.image.size))
-//        } else {
-//            holder.image.setImageBitmap(BitmapFactory.decodeResource(mContext.resources,
-//                    R.drawable.beer))
-//        }
+        holder.image.setImageBitmap(BitmapFactory.decodeResource(mContext.resources,
+                    R.drawable.beer))
         holder.name.text = drink.name
 
         val abv = "ABV: " + "%.1f".format(drink.abv) + "%"

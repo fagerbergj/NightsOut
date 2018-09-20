@@ -24,7 +24,7 @@
             android:layout_marginRight="4dp"
             android:background="@drawable/image_border"
             android:contentDescription="@string/fragment_home_name"
-            app:srcCompat="@drawable/beer" />
+            app:srcCompat="@mipmap/beer" />
 
         <LinearLayout
             android:layout_width="match_parent"

@@ -1,4 +1,4 @@
-package com.example.jasonfagerberg.nightsout
+package com.example.jasonfagerberg.nightsout.main
 
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
@@ -10,9 +10,18 @@ import android.content.SharedPreferences
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.RelativeLayout
+import com.example.jasonfagerberg.nightsout.addDrink.AddDrinkFragment
+import com.example.jasonfagerberg.nightsout.home.HomeFragment
+import com.example.jasonfagerberg.nightsout.log.LogFragment
+import com.example.jasonfagerberg.nightsout.profile.ProfileFragment
+import com.example.jasonfagerberg.nightsout.R
+import com.example.jasonfagerberg.nightsout.log.LogHeader
 import kotlin.collections.ArrayList
 
 private const val TAG = "MainActivity"
+
+private const val DB_NAME = "nights_out_db.db"
+private const val DB_VERSION = 22
 
 class MainActivity : AppCompatActivity() {
 
@@ -83,8 +92,6 @@ class MainActivity : AppCompatActivity() {
         getGlobalData()
 
         // database
-        val DB_NAME = "nights_out_db.db"
-        val DB_VERSION = 22
         mDatabaseHelper = DatabaseHelper(this, DB_NAME, null, DB_VERSION)
         mDatabaseHelper.openDatabase()
 

@@ -1,4 +1,4 @@
-package com.example.jasonfagerberg.nightsout
+package com.example.jasonfagerberg.nightsout.log
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -11,6 +11,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import com.example.jasonfagerberg.nightsout.main.MainActivity
+import com.example.jasonfagerberg.nightsout.R
 import com.prolificinteractive.materialcalendarview.CalendarDay
 import com.prolificinteractive.materialcalendarview.DayViewDecorator
 import com.prolificinteractive.materialcalendarview.DayViewFacade

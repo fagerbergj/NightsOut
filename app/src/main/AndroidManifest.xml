@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.example.jasonfagerberg.nightsout">
 
     <application
@@ -10,9 +11,10 @@
         android:theme="@style/AppTheme"
         android:windowSoftInputMode="adjustResize|stateHidden"
         android:allowBackup="true"
-        android:fullBackupContent="true">
+        android:fullBackupContent="true"
+        tools:ignore="GoogleAppIndexingWarning">
     <activity
-        android:name=".MainActivity"
+        android:name=".main.MainActivity"
         android:configChanges="orientation|keyboardHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

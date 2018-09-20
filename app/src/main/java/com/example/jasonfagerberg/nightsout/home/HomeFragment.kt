@@ -1,4 +1,4 @@
-package com.example.jasonfagerberg.nightsout
+package com.example.jasonfagerberg.nightsout.home
 
 import android.app.TimePickerDialog
 import android.content.DialogInterface
@@ -14,6 +14,8 @@ import android.widget.EditText
 import android.widget.RelativeLayout
 import android.widget.TextView
 import android.widget.Toast
+import com.example.jasonfagerberg.nightsout.main.MainActivity
+import com.example.jasonfagerberg.nightsout.R
 import java.util.*
 
 

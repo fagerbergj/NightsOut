@@ -1,7 +1,6 @@
-package com.example.jasonfagerberg.nightsout
+package com.example.jasonfagerberg.nightsout.addDrink
 
 import android.graphics.Typeface
-import android.icu.util.CurrencyAmount
 import android.os.Bundle
 import android.support.design.button.MaterialButton
 import android.support.v4.app.Fragment
@@ -11,6 +10,9 @@ import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.*
 import android.widget.*
+import com.example.jasonfagerberg.nightsout.main.Drink
+import com.example.jasonfagerberg.nightsout.main.MainActivity
+import com.example.jasonfagerberg.nightsout.R
 
 private const val TAG = "AddDrinkFragment"
 

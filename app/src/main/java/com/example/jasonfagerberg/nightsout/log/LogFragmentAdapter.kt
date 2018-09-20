@@ -1,4 +1,4 @@
-package com.example.jasonfagerberg.nightsout
+package com.example.jasonfagerberg.nightsout.log
 
 import android.content.Context
 import android.support.v7.widget.RecyclerView
@@ -6,6 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import com.example.jasonfagerberg.nightsout.main.Drink
+import com.example.jasonfagerberg.nightsout.R
 import java.util.*
 
 // log tag
@@ -22,7 +24,7 @@ RecyclerView.Adapter<LogFragmentAdapter.ViewHolder>() {
     private val mLogList: MutableList<Any> = logList
 
     // inflate correct layout
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LogFragmentAdapter.ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(mContext)
         when (viewType) {
             DRINK -> return ViewHolder(inflater.inflate(R.layout.fragment_log_list_drink_item,
@@ -34,7 +36,7 @@ RecyclerView.Adapter<LogFragmentAdapter.ViewHolder>() {
     }
 
     // When view is rendered set appropriate elements in the view holder
-    override fun onBindViewHolder(holder: LogFragmentAdapter.ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val viewType = getItemViewType(position)
         when(viewType){
             DRINK -> {
