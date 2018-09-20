@@ -72,6 +72,7 @@ class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: Ar
         notifyItemRangeChanged(position, mDrinksList.size)
     }
 
+    // todo too many lines, split into more methods
     private fun showEditRemoveDialog(position: Int){
         val drink = mDrinksList[position]
         val builder = AlertDialog.Builder(mContext)
@@ -143,6 +144,7 @@ class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: Ar
         }
     }
 
+    // todo too many lines, split into more methods
     private fun showEditDialog(position: Int){
         val drink = mDrinksList[position]
         val other = Drink(drink.id, drink.name, drink.abv, drink.amount, drink.measurement, false, false)

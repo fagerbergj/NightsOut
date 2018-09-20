@@ -39,6 +39,7 @@ class ProfileFragment : Fragment() {
     private lateinit var btnSave: MaterialButton
 
 
+    // todo a few too many lines, split into methods
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
@@ -118,6 +119,7 @@ class ProfileFragment : Fragment() {
                 R.color.colorLightGray), PorterDuff.Mode.MULTIPLY)
     }
 
+    // too many lines, split into multiple methods
     private fun saveProfile(view: View){
         val sexText = view.findViewById<TextView>(R.id.text_profile_sex)
         if(!mWeightEditText.text.isEmpty() && "${mWeightEditText.text}"["${mWeightEditText.text}".length-1] == '.'){

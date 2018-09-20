@@ -102,7 +102,6 @@ class MainActivity : AppCompatActivity() {
         }
 
         // init data
-
         mDatabaseHelper.pullDrinks()
         mDatabaseHelper.pullLogHeaders()
     }

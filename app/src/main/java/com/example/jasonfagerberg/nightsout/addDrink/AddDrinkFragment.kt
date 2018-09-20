@@ -123,6 +123,7 @@ class AddDrinkFragment : Fragment() {
         toolbar.setNavigationOnClickListener { _: View -> activity!!.onBackPressed() }
     }
 
+    // todo split up, too many lines
     private fun addDrink(view: View){
         val editName = view.findViewById<EditText>(R.id.edit_add_drink_name)
         val editABV = view.findViewById<EditText>(R.id.edit_add_drink_abv)
