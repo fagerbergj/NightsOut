@@ -7,7 +7,7 @@ import java.util.*
 
 private const val TAG = "LogObject"
 
-class LogHeader(val date: Long, val maxBac: Double, private val duration: Int) {
+class LogHeader(val date: Long, val maxBac: Double, val duration: Int) {
     var dateString: String
     val durationHours: Int = duration/60
     val durationMinuets: Int = duration%60
@@ -30,6 +30,10 @@ class LogHeader(val date: Long, val maxBac: Double, private val duration: Int) {
         dateString = "$dayOfWeek $monthAndDay"
 
         if(durationMinuets < 10) durationString = "$durationHours:0$durationMinuets"
+    }
+
+    override fun equals(other: Any?): Boolean {
+        return date == (other as LogHeader).date
     }
 
     override fun toString(): String {

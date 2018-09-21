@@ -59,6 +59,7 @@ class LogFragment : Fragment() {
 
         // set adapter
         mLogFragmentAdapter = LogFragmentAdapter(context!!, mLogList)
+        setLogListBasedOnDay(calendar.time.time)
         mLogListView.adapter = mLogFragmentAdapter
 
         // setup bottom nav bar
@@ -69,7 +70,6 @@ class LogFragment : Fragment() {
 
     // format days to correct object and send to decorator
     private fun highlightDays(){
-        // fixme broken after removing sessions
         val dates = ArrayList<CalendarDay>()
         for(log in mMainActivity.mLogHeaders){
             val day = CalendarDay.from(Date(log.date))
@@ -84,12 +84,6 @@ class LogFragment : Fragment() {
         calendarView = view.findViewById(R.id.calender_log)
         calendarView.selectedDate = CalendarDay.today()
         calendar.time = calendarView.selectedDate.date
-        // fixme broken after removing sessions
-//        var curSession = Session(calendar.time,0.0,0.0)
-//        mLogList.add(curSession)
-//
-//        if(curSession in mMainActivity.mSessionsList.keys){ mLogList.addAll(
-//                mMainActivity.mSessionsList[curSession]!!) }
 
         // show or hide empty text
         showOrHideEmptyTextViews(view)
@@ -99,18 +93,25 @@ class LogFragment : Fragment() {
 
         // when date is changed, change recycler list
         calendarView.setOnDateChangedListener{_ , day, _ ->
-            mLogList.clear()
             calendar.set(day.year, day.month, day.day)
-            // fixme broken after removing sessions
-//            curSession = Session(calendar.time,0.0,0.0)
-//            mLogList.add(curSession)
-//
-//            if(curSession in mMainActivity.mSessionsList.keys){ mLogList.addAll(
-//                    mMainActivity.mSessionsList[curSession]!!) }
-            mLogFragmentAdapter.notifyDataSetChanged()
-            mLogListView.layoutManager?.scrollToPosition(0)
-            showOrHideEmptyTextViews(mLogListView.parent as View)
+            Log.v(TAG, "Day = ${day.date.time}")
+            mLogList.clear()
+            setLogListBasedOnDay(day.date.time)
         }
+    }
+
+    private fun setLogListBasedOnDay(date: Long){
+        val index = mMainActivity.mLogHeaders.indexOf(LogHeader(date, 0.0, 0 ))
+        if(index >= 0){
+            mLogList.add(mMainActivity.mLogHeaders[index])
+            mLogList.addAll( mMainActivity.mDatabaseHelper.getLoggedDrinks(date))
+        }else{
+            mLogList.add(LogHeader(date, 0.0, 0 ))
+        }
+        mLogFragmentAdapter.notifyDataSetChanged()
+        mLogListView.layoutManager?.scrollToPosition(0)
+        showOrHideEmptyTextViews(mLogListView.parent as View)
+
     }
 
     private fun showOrHideEmptyTextViews(view: View){

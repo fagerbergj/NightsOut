@@ -36,7 +36,7 @@ class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: Ar
         val drink = mDrinksList[position]
         // fixme set picture based on abv
         holder.image.setImageBitmap(BitmapFactory.decodeResource(mContext.resources,
-                    R.drawable.beer))
+                    R.mipmap.beer))
         holder.name.text = drink.name
 
         val abv = "ABV: " + "%.1f".format(drink.abv) + "%"

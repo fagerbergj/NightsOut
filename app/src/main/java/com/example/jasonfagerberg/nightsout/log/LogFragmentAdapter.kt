@@ -50,18 +50,15 @@ RecyclerView.Adapter<LogFragmentAdapter.ViewHolder>() {
                 holder.amount!!.text = amount
             }
             HEADER -> {
-                // fixme broken after removing sessions
-//                val session: Session = mLogList[position] as Session
-//
-//                // Log.v(TAG, getItemViewType(position).toString())
-//                holder.day!!.text = session.dateString
-//
-//                val duration = "Duration: ${session.duration}"
-//                holder.duration!!.text = duration
-//
-//                val maxBac = "Max BAC: ${session.maxBAC}"
-//                holder.maxBAC!!.text = maxBac
+                val header: LogHeader = mLogList[position] as LogHeader
 
+                holder.day!!.text = header.dateString
+
+                val duration = "Duration: ${header.duration}"
+                holder.duration!!.text = duration
+
+                val maxBac = "Max BAC: ${header.maxBac}"
+                holder.maxBAC!!.text = maxBac
             }
         }
     }

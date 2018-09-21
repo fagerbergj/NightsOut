@@ -161,7 +161,7 @@ class DatabaseHelper(val context: Context?, val name: String?, factory: SQLiteDa
         val cursor = db.query("log", null, null, null, null, null, null)
         while (cursor.moveToNext()){
             val date = cursor.getLong(cursor.getColumnIndex("date"))
-            val maxBac = cursor.getDouble(cursor.getColumnIndex("maxBac"))
+            val maxBac = cursor.getDouble(cursor.getColumnIndex("max_bac"))
             val duration = cursor.getInt(cursor.getColumnIndex("duration"))
             mMainActivity.mLogHeaders.add(LogHeader(date, maxBac, duration))
             //Log.v(TAG, logHeaders[logHeaders.size-1].toString())
@@ -239,5 +239,57 @@ class DatabaseHelper(val context: Context?, val name: String?, factory: SQLiteDa
         }
         cursor.close()
         return -1
+    }
+
+    fun getLoggedDrinks(date: Long): ArrayList<Drink>{
+        val logId = getLogIdFromDate(date)
+        if (logId == -1) return ArrayList()
+        return getLoggedDrinksFromLogID(logId)
+    }
+
+    private fun getLogIdFromDate(date: Long): Int{
+        val where = "date = ?"
+        val whereArgs = arrayOf(date.toString())
+        val cursor = db.query("log", arrayOf("id"), where, whereArgs, null, null, null)
+        while (cursor.moveToNext()){
+            val ret = cursor.getInt(cursor.getColumnIndex("id"))
+            cursor.close()
+            return ret
+        }
+
+        cursor.close()
+        return -1
+    }
+
+    private fun getDrinkFromId(id: Int): Drink?{
+        val where = "id = ?"
+        val whereArgs = arrayOf(id.toString())
+        val cursor = db.query("drinks", null, where, whereArgs, null, null, null)
+        while (cursor.moveToNext()) {
+            val drinkName = cursor.getString(cursor.getColumnIndex("name"))
+            val abv = cursor.getDouble(cursor.getColumnIndex("abv"))
+            val amount = cursor.getDouble(cursor.getColumnIndex("amount"))
+            val measurement = cursor.getString(cursor.getColumnIndex("measurement"))
+
+            val drink = Drink(id, drinkName, abv, amount, measurement, false, false)
+            cursor.close()
+            return drink
+        }
+
+        cursor.close()
+        return null
+    }
+
+    private fun getLoggedDrinksFromLogID(logId: Int) : ArrayList<Drink>{
+        val drinks = ArrayList<Drink>()
+        val where = "log_id = ?"
+        val whereArgs = arrayOf(logId.toString())
+        val cursor = db.query("log_drink", null, where, whereArgs, null, null, null)
+        while (cursor.moveToNext()){
+            val drinkId = cursor.getInt(cursor.getColumnIndex("drink_id"))
+            drinks.add(getDrinkFromId(drinkId)!!)
+        }
+        cursor.close()
+        return drinks
     }
 }
