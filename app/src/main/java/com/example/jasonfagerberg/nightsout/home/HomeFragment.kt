@@ -74,6 +74,7 @@ class HomeFragment : Fragment(){
                 when (which) {
                     DialogInterface.BUTTON_POSITIVE -> {
                         //Yes is pressed
+                        // todo push new log and log drinks
                         val toast = Toast.makeText(activity!!.applicationContext,
                                 "Session Logged ", Toast.LENGTH_SHORT)
                         toast.setGravity(Gravity.CENTER, 0, 0)

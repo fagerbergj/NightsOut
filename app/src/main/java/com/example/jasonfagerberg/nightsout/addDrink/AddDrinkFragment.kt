@@ -21,6 +21,7 @@ class AddDrinkFragment : Fragment() {
     private lateinit var mFavoritesListAdapter: AddDrinkFragmentFavoritesListAdapter
     private lateinit var mRecentsListAdapter: AddDrinkFragmentRecentsListAdapter
 
+    // booleans that work together to change behavior based on fragment that set this fragment
     var mFavorited: Boolean = false
     private var canUnfavorite = true
 
@@ -81,6 +82,7 @@ class AddDrinkFragment : Fragment() {
         inflater!!.inflate(R.menu.add_drink_menu, menu)
         val item = menu!!.findItem(R.id.btn_toolbar_favorite)
         item.icon = ContextCompat.getDrawable(context!!, R.drawable.favorite_border_white_24dp)
+        // if called from profile fragment, the drink will be favorited and cannot be unfavorited
         if (mFavorited){
             canUnfavorite = false
             item.icon = ContextCompat.getDrawable(context!!, R.drawable.favorite_white_24dp)
@@ -96,15 +98,11 @@ class AddDrinkFragment : Fragment() {
                 if (mFavorited) {
                     item.icon = ContextCompat.getDrawable(context!!, R.drawable.favorite_white_24dp)
                     if(canUnfavorite) btnAdd.setText(R.string.text_add_and_favorite)
-                    val toast = Toast.makeText(context!!, "Drink Will Be Favorited After Adding", Toast.LENGTH_LONG)
-                    toast.setGravity(Gravity.CENTER, 0, 450)
-                    toast.show()
+                    showToast("Drink Will Be Favorited After Adding")
                 } else {
                     item.icon = ContextCompat.getDrawable(context!!, R.drawable.favorite_border_white_24dp)
                     btnAdd.setText(R.string.text_add)
-                    val toast = Toast.makeText(context!!, "Drink Will Not Be Favorited", Toast.LENGTH_LONG)
-                    toast.setGravity(Gravity.CENTER, 0, 450)
-                    toast.show()
+                    showToast("Drink Will Not Be Favorited")
                 }
             }
         }
@@ -123,15 +121,30 @@ class AddDrinkFragment : Fragment() {
         toolbar.setNavigationOnClickListener { _: View -> activity!!.onBackPressed() }
     }
 
-    // todo split up, too many lines
     private fun addDrink(view: View){
         val editName = view.findViewById<EditText>(R.id.edit_add_drink_name)
         val editABV = view.findViewById<EditText>(R.id.edit_add_drink_abv)
         val editAmount = view.findViewById<EditText>(R.id.edit_add_drink_amount)
 
-        val textName = view.findViewById<TextView>(R.id.text_add_drink_name)
-        val textABV = view.findViewById<TextView>(R.id.text_add_drink_abv)
-        val textAmount = view.findViewById<TextView>(R.id.text_add_drink_amount)
+        // if user input invalid shit, return
+        if(isInputErrors(editName, editABV, editAmount)) return
+
+        val name = editName.text.toString()
+        val abv = editABV.text.toString().toDouble()
+        val amount = editAmount.text.toString().toDouble()
+        val measurement = view.findViewById<Spinner>(R.id.spinner_add_drink_amount).selectedItem.toString()
+        buildDrinkAndAddToList(name, abv, amount, measurement)
+
+        editName.text.clear()
+        editABV.text.clear()
+        editAmount.text.clear()
+        mMainActivity.onBackPressed()
+    }
+
+    private fun isInputErrors(editName: EditText, editABV: EditText, editAmount: EditText):Boolean{
+        val textName = view!!.findViewById<TextView>(R.id.text_add_drink_name)
+        val textABV = view!!.findViewById<TextView>(R.id.text_add_drink_abv)
+        val textAmount = view!!.findViewById<TextView>(R.id.text_add_drink_amount)
 
         resetTextView(textName, R.string.text_name)
         resetTextView(textABV, R.string.text_abv)
@@ -149,82 +162,89 @@ class AddDrinkFragment : Fragment() {
 
         // check name isn't empty
         if(editName.text.isEmpty()){
-            val toast = Toast.makeText(context!!, "Please Input a Name", Toast.LENGTH_LONG)
-            toast.setGravity(Gravity.CENTER, 0, 450)
-            toast.show()
-
-            textName.setTypeface(null, Typeface.BOLD)
-            textName.setTextColor(ContextCompat.getColor(context!!, R.color.colorRed))
-            return
+            showToast("Please Input a Name")
+            setTextViewToRedAndBold(textName)
+            return true
         } else if (editABV.text.isEmpty() || ("${editABV.text}".toDouble() > 100.0)){
-            val toast = Toast.makeText(context!!, "Please Input a Valid A.A.V.", Toast.LENGTH_LONG)
-            toast.setGravity(Gravity.CENTER, 0, 450)
-            toast.show()
-
-            textABV.setTypeface(null, Typeface.BOLD)
-            textABV.setTextColor(ContextCompat.getColor(context!!, R.color.colorRed))
-            return
+            showToast("Please Input a Valid A.A.V.")
+            setTextViewToRedAndBold(textABV)
+            return true
         } else if (editAmount.text.isEmpty()){
-            val toast = Toast.makeText(context!!, "Please Input a Valid Amount", Toast.LENGTH_LONG)
-            toast.setGravity(Gravity.CENTER, 0, 450)
-            toast.show()
-
-            textAmount.setTypeface(null, Typeface.BOLD)
-            textAmount.setTextColor(ContextCompat.getColor(context!!, R.color.colorRed))
-            return
+            showToast("Please Input a Valid Amount")
+            setTextViewToRedAndBold(textAmount)
+            return true
         }
+        return false
+    }
 
-        val name = editName.text.toString()
-        val abv = editABV.text.toString().toDouble()
-        val amount = editAmount.text.toString().toDouble()
-        val measurement = view.findViewById<Spinner>(R.id.spinner_add_drink_amount).selectedItem.toString()
-
-        Log.v(TAG, "favorited from top bar: $mFavorited")
+    private fun buildDrinkAndAddToList(name: String, abv: Double, amount: Double, measurement: String){
         val drink = Drink(-1, name, abv, amount, measurement, mFavorited, true)
-        val foundID = mMainActivity.mDatabaseHelper.getDrinkIdFromFullDrinkInfo(drink)
 
+        setDrinkId(drink)
+        setDrinkFavorited(drink)
+
+        if (canUnfavorite) addToDrinkList(drink)
+        else addToFavoritesList(drink)
+    }
+
+    private fun setDrinkId(drink: Drink){
+        val foundID = mMainActivity.mDatabaseHelper.getDrinkIdFromFullDrinkInfo(drink)
         val existsInDB = foundID != -1
+
         if(!existsInDB){
             mMainActivity.mDatabaseHelper.insertDrinkIntoDrinksTable(drink)
             drink.id = mMainActivity.mDatabaseHelper.getDrinkIdFromFullDrinkInfo(drink)
         }else{
             drink.id = foundID
-            if(mMainActivity.mDrinksList.contains(drink)){
-                val index = mMainActivity.mDrinksList.indexOf(drink)
-                val drinkInSession = mMainActivity.mDrinksList[index]
-                Log.v(TAG, "favorited from current session: ${drinkInSession.favorited}")
-                drink.favorited = drinkInSession.favorited
-            }else if (mMainActivity.mDatabaseHelper.isFavoritedInDB(drink.name)){
-                Log.v(TAG, "favorited from db: true")
-                drink.favorited = true
-            }
+        }
+    }
+
+    private fun setDrinkFavorited(drink: Drink){
+        drink.favorited = mMainActivity.mFavoritesList.contains(drink)
+        Log.v(TAG, "Favorited from db ${drink.favorited}")
+
+        if(mMainActivity.mDrinksList.contains(drink)){
+            val index = mMainActivity.mDrinksList.indexOf(drink)
+            val drinkInSession = mMainActivity.mDrinksList[index]
+            drink.favorited = drinkInSession.favorited
+            Log.v(TAG, "Favorited from current session ${drink.favorited}")
         }
 
-        if (canUnfavorite) addToDrinkList(drink)
-        else addToFavoritesListOnly(drink)
+        if(mFavorited){
+            drink.favorited = true
+            Log.v(TAG, "Favorited from top bar ${drink.favorited}")
+            for (d in mMainActivity.mDrinksList){
+                if (d == drink){
+                    d.favorited = true
+                }
+            }
+        }
+    }
 
-        editName.text.clear()
-        editABV.text.clear()
-        editAmount.text.clear()
-        mMainActivity.onBackPressed()
+    private fun setTextViewToRedAndBold(text: TextView){
+        text.setTypeface(null, Typeface.BOLD)
+        text.setTextColor(ContextCompat.getColor(context!!, R.color.colorRed))
+    }
+
+    private fun showToast(message: String){
+        val toast = Toast.makeText(context!!, message, Toast.LENGTH_LONG)
+        toast.setGravity(Gravity.CENTER, 0, 450)
+        toast.show()
     }
 
     private fun addToDrinkList(drink: Drink){
         mMainActivity.mDrinksList.add(drink)
-        if(!mMainActivity.mRecentsList.contains(drink)){
-            mMainActivity.mRecentsList.add(0, drink)
-        }else{
-            mMainActivity.mRecentsList.remove(drink)
-            mMainActivity.mRecentsList.add(0, drink)
-        }
+
+        mMainActivity.mRecentsList.remove(drink)
+        mMainActivity.mRecentsList.add(0, drink)
 
         if(drink.favorited){
-            mMainActivity.mFavoritesList.add(0, drink)
+            addToFavoritesList(drink)
         }
     }
 
-    private fun addToFavoritesListOnly(drink: Drink){
-        if (mMainActivity.mFavoritesList.contains(drink)) mMainActivity.mFavoritesList.remove(drink)
+    private fun addToFavoritesList(drink: Drink){
+        mMainActivity.mFavoritesList.remove(drink)
         mMainActivity.mFavoritesList.add(0, drink)
     }
 

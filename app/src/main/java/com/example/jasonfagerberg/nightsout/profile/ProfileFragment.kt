@@ -27,7 +27,6 @@ class ProfileFragment : Fragment() {
 
     // shared pref data
     private var profileInit = false
-    private var sex: Boolean = true
     private lateinit var mWeightEditText: EditText
     private lateinit var mSpinner: Spinner
 
@@ -47,7 +46,6 @@ class ProfileFragment : Fragment() {
 
         mMainActivity = context as MainActivity
         profileInit = mMainActivity.profileInt
-        sex = mMainActivity.sex
 
         //toolbar setup
         val toolbar:android.support.v7.widget.Toolbar = view!!.findViewById(R.id.toolbar_profile)
@@ -105,6 +103,7 @@ class ProfileFragment : Fragment() {
 
     private fun pressMaleButton(){
         sexButtonPressed = true
+        mMainActivity.sex = true
         btnMale.background.setColorFilter(ContextCompat.getColor(context!!,
                 R.color.colorLightRed), PorterDuff.Mode.MULTIPLY)
         btnFemale.background.setColorFilter(ContextCompat.getColor(context!!,
@@ -113,6 +112,7 @@ class ProfileFragment : Fragment() {
 
     private fun pressFemaleButton(){
         sexButtonPressed = true
+        mMainActivity.sex = false
         btnFemale.background.setColorFilter(ContextCompat.getColor(context!!,
                 R.color.colorLightRed), PorterDuff.Mode.MULTIPLY)
         btnMale.background.setColorFilter(ContextCompat.getColor(context!!,
@@ -157,10 +157,9 @@ class ProfileFragment : Fragment() {
         val weight = mWeightEditText.text.toString().toDouble()
         val weightMeasurement = mSpinner.selectedItem.toString()
 
-        mMainActivity.sex = sex
         mMainActivity.weight = weight
         mMainActivity.weightMeasurement = weightMeasurement
-        Log.v(TAG, "Passed vars: sex=$sex weight=$weight weight " +
+        Log.v(TAG, "Passed vars: sex=${mMainActivity.sex} weight=$weight weight " +
                 "measurement=$weightMeasurement profileInit=${mMainActivity.profileInt}")
 
         if (profileInit){
@@ -185,9 +184,9 @@ class ProfileFragment : Fragment() {
         btnMale = view.findViewById(R.id.btn_profile_male)
         btnFemale = view.findViewById(R.id.btn_profile_female)
 
-        if (profileInit && sex) {
+        if (sexButtonPressed && mMainActivity.sex) {
             pressMaleButton()
-        }else if(profileInit && !sex){
+        }else if(sexButtonPressed && !mMainActivity.sex){
             pressFemaleButton()
         }
 
