@@ -115,11 +115,10 @@ class DatabaseHelper(val context: Context?, val name: String?, factory: SQLiteDa
             val abv = cursor.getDouble(cursor.getColumnIndex("abv"))
             val amount = cursor.getDouble(cursor.getColumnIndex("amount"))
             val measurement = cursor.getString(cursor.getColumnIndex("measurement"))
-            val recent = cursor.getInt(cursor.getColumnIndex("recent")) == 1
 
-            val drink = Drink(id, drinkName, abv, amount, measurement, true, recent)
+            val drink = Drink(id, drinkName, abv, amount, measurement, true, false)
 
-            mMainActivity.mFavoritesList.add(drink)
+            mMainActivity.mFavoritesList.add(0, drink)
             Log.v(TAG, "favorited $drink")
         }
 
@@ -137,18 +136,17 @@ class DatabaseHelper(val context: Context?, val name: String?, factory: SQLiteDa
             val abv = cursor.getDouble(cursor.getColumnIndex("abv"))
             val amount = cursor.getDouble(cursor.getColumnIndex("amount"))
             val measurement = cursor.getString(cursor.getColumnIndex("measurement"))
-            val recent = cursor.getInt(cursor.getColumnIndex("recent")) == 1
 
-            val drink = Drink(id, drinkName, abv, amount, measurement, true, recent)
+            val drink = Drink(id, drinkName, abv, amount, measurement, false, true)
 
-            mMainActivity.mRecentsList.add(drink)
+            mMainActivity.mRecentsList.add(0, drink)
             Log.v(TAG, "recentD $drink")
         }
 
         cursor.close()
     }
 
-    fun isFavoritedInDB(name: String): Boolean{
+    private fun isFavoritedInDB(name: String): Boolean{
         val where = "drink_name = ?"
         val whereArgs = arrayOf(name)
         val cursor = db.query("favorites", null, where, whereArgs, null, null,null)
@@ -176,7 +174,6 @@ class DatabaseHelper(val context: Context?, val name: String?, factory: SQLiteDa
         for(drink in mMainActivity.mDrinksList){
             insertRowInCurrentSessionTable(drink.id)
             updateRowInDrinksTable(drink)
-            // todo implement push favorite behavior
             if(drink.favorited && !isFavoritedInDB(drink.name)){
                 insertRowInFavoritesTable(drink.name, drink.id)
             }else if(!drink.favorited && isFavoritedInDB(drink.name)){
@@ -200,12 +197,12 @@ class DatabaseHelper(val context: Context?, val name: String?, factory: SQLiteDa
         Log.v(TAG, sql)
     }
 
-    private fun deleteRowInFavoritesTable(name: String){
+    fun deleteRowInFavoritesTable(name: String){
         val sql = "DELETE FROM favorites WHERE drink_name = \"$name\""
         db.execSQL(sql)
     }
 
-    private fun insertRowInFavoritesTable(name: String, id: Int){
+    fun insertRowInFavoritesTable(name: String, id: Int){
         val sql = "INSERT INTO favorites VALUES (\"$name\", $id)"
         db.execSQL(sql)
     }

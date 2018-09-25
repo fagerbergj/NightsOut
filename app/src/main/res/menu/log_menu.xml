@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/btn_clear_all_logs"
+        android:title="Clear All Logs"
+        app:showAsAction="never"/>
+    <item
+        android:id="@+id/btn_clear_selected_day_log"
+        android:title="Clear Logs On Selected Day"
+        app:showAsAction="never"/>
+
+</menu>

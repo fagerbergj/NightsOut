@@ -37,7 +37,7 @@ class MainActivity : AppCompatActivity() {
     var profileInt = false
     var sex: Boolean = true
     var weight: Double = 0.0
-    var weightMeasurement: String = ""
+    var weightMeasurement: String = "lbs"
     var startTimeMin: Int = -1
     var endTimeMin: Int = -1
 

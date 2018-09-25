@@ -144,23 +144,15 @@ class HomeFragment : Fragment(){
         val mTimePicker: TimePickerDialog
         mTimePicker = TimePickerDialog(context!!,
                 TimePickerDialog.OnTimeSetListener { _ , selectedHour, selectedMinute ->
-                    mMainActivity.startTimeMin = selectedHour*60 + selectedMinute
-                    val timePeriod: String
-                    var displayHour = selectedHour
-                    var displayMinuet = selectedMinute.toString()
-                    if(selectedHour >= 12){
-                        displayHour -= 12
-                        timePeriod = "PM"
-                    }else{
-                        timePeriod = "AM"
-                    }
-                    if (displayHour == 0) displayHour = 12
-                    if (displayMinuet.length == 1) displayMinuet = "0$displayMinuet"
-                    val time = "$displayHour : $displayMinuet $timePeriod"
-                    startPicker.setText(time)
+                    startPicker.setText(convertSelectedTimeToString(selectedHour, selectedMinute))
                     mMainActivity.startTimeMin = convert24HourTimeToMinutes(selectedHour, selectedMinute)
                     if(mMainActivity.endTimeMin == -1) mMainActivity.endTimeMin = mMainActivity.startTimeMin
                 }, hour, minute, false)
+
+        mTimePicker.setButton(DialogInterface.BUTTON_NEUTRAL, "Now") { _, _ ->
+            mMainActivity.startTimeMin = getCurrentTimeInMinuetsAndSetEditText(startPicker)
+        }
+
         mTimePicker.setTitle("Start Time")
         mTimePicker.show()
     }
@@ -170,30 +162,48 @@ class HomeFragment : Fragment(){
         var hour = currentTime.get(Calendar.HOUR_OF_DAY)
         var minute = currentTime.get(Calendar.MINUTE)
         if(mMainActivity.endTimeMin != -1){
-            hour = mMainActivity.startTimeMin/60
-            minute = mMainActivity.startTimeMin%60
+            hour = mMainActivity.endTimeMin/60
+            minute = mMainActivity.endTimeMin%60
         }
+
         val mTimePicker: TimePickerDialog
         mTimePicker = TimePickerDialog(context!!,
                 TimePickerDialog.OnTimeSetListener { _ , selectedHour, selectedMinute ->
-                    mMainActivity.endTimeMin = selectedHour*60 + selectedMinute
-                    val timePeriod: String
-                    var displayHour = selectedHour
-                    var displayMinuet = selectedMinute.toString()
-                    if(selectedHour >= 12){
-                        displayHour -= 12
-                        timePeriod = "PM"
-                    }else{
-                        timePeriod = "AM"
-                    }
-                    if (displayHour == 0) displayHour = 12
-                    if (displayMinuet.length == 1) displayMinuet = "0$displayMinuet"
-                    val time = "$displayHour : $displayMinuet $timePeriod"
-                    endPicker.setText(time)
+                    endPicker.setText(convertSelectedTimeToString(selectedHour, selectedMinute))
                     mMainActivity.endTimeMin = convert24HourTimeToMinutes(selectedHour, selectedMinute)
                 }, hour, minute, false)
+
+        mTimePicker.setButton(DialogInterface.BUTTON_NEUTRAL, "Now") { _, _ ->
+            mMainActivity.endTimeMin = getCurrentTimeInMinuetsAndSetEditText(endPicker)
+        }
+
         mTimePicker.setTitle("End Time")
         mTimePicker.show()
+    }
+
+    private fun getCurrentTimeInMinuetsAndSetEditText(pickerDisplay: EditText): Int{
+        val calendar = GregorianCalendar.getInstance()
+        val date = Date()
+        calendar.time = date
+        val curHour = calendar.get(Calendar.HOUR_OF_DAY)
+        val curMin = calendar.get(Calendar.MINUTE)
+        pickerDisplay.setText(convertSelectedTimeToString(curHour, curMin))
+        return convert24HourTimeToMinutes(curHour, curMin)
+    }
+
+    private fun convertSelectedTimeToString(selectedHour: Int, selectedMinute: Int): String{
+        val timePeriod: String
+        var displayHour = selectedHour
+        var displayMinuet = selectedMinute.toString()
+        if(selectedHour >= 12){
+            displayHour -= 12
+            timePeriod = "PM"
+        }else{
+            timePeriod = "AM"
+        }
+        if (displayHour == 0) displayHour = 12
+        if (displayMinuet.length == 1) displayMinuet = "0$displayMinuet"
+        return "$displayHour : $displayMinuet $timePeriod"
     }
 
     private fun convertMinutesTo12HourTime(min: Int): String{

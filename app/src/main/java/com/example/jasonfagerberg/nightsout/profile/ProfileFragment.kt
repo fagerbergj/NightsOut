@@ -3,6 +3,7 @@ package com.example.jasonfagerberg.nightsout.profile
 import android.graphics.PorterDuff
 import android.graphics.Typeface
 import android.os.Bundle
+import android.os.Message
 import android.support.design.button.MaterialButton
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
@@ -20,6 +21,9 @@ import com.example.jasonfagerberg.nightsout.R
 private const val TAG = "ProfileFragment"
 
 class ProfileFragment : Fragment() {
+    /* todo change profile behavior, pull shared prefs onCreate
+    push to shared prefs when save button is pressed,
+    if add favorites button is pressed, save partial changes in some sort of cache*/
 
     private lateinit var mFavoritesListAdapter: ProfileFragmentFavoritesListAdapter
     private lateinit var mMainActivity: MainActivity
@@ -38,7 +42,6 @@ class ProfileFragment : Fragment() {
     private lateinit var btnSave: MaterialButton
 
 
-    // todo a few too many lines, split into methods
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
@@ -49,16 +52,13 @@ class ProfileFragment : Fragment() {
 
         //toolbar setup
         val toolbar:android.support.v7.widget.Toolbar = view!!.findViewById(R.id.toolbar_profile)
-        toolbar.inflateMenu(R.menu.empty_menu)
+        toolbar.inflateMenu(R.menu.profile_menu)
 
         // spinner setup
         setupSpinner(view)
 
         // recycler view setup
-        mFavoritesListView = view.findViewById(R.id.recycler_profile_favorites_list)
-        val linearLayoutManager = LinearLayoutManager(context)
-        linearLayoutManager.orientation = LinearLayoutManager.HORIZONTAL
-        mFavoritesListView.layoutManager = linearLayoutManager
+        setupFavoritesRecyclerView(view)
 
         // empty text view setup
         showOrHideEmptyTextViews(view)
@@ -69,9 +69,7 @@ class ProfileFragment : Fragment() {
 
         // save button setup
         btnSave = view.findViewById(R.id.btn_profile_save)
-        btnSave.setOnClickListener{ _ ->
-            saveProfile(view)
-        }
+        btnSave.setOnClickListener{ _ -> saveProfile(view) }
 
         // sex button setup
         setupSexButtons(view)
@@ -94,6 +92,13 @@ class ProfileFragment : Fragment() {
         }
 
         return view
+    }
+
+    private fun setupFavoritesRecyclerView(view: View){
+        mFavoritesListView = view.findViewById(R.id.recycler_profile_favorites_list)
+        val linearLayoutManager = LinearLayoutManager(context)
+        linearLayoutManager.orientation = LinearLayoutManager.HORIZONTAL
+        mFavoritesListView.layoutManager = linearLayoutManager
     }
 
     override fun onPause() {
@@ -119,38 +124,24 @@ class ProfileFragment : Fragment() {
                 R.color.colorLightGray), PorterDuff.Mode.MULTIPLY)
     }
 
-    // too many lines, split into multiple methods
     private fun saveProfile(view: View){
         val sexText = view.findViewById<TextView>(R.id.text_profile_sex)
+        val weightText = view.findViewById<TextView>(R.id.text_profile_weight)
+        resetTextView(sexText, R.string.text_sex)
+        resetTextView(weightText, R.string.text_weight)
         if(!mWeightEditText.text.isEmpty() && "${mWeightEditText.text}"["${mWeightEditText.text}".length-1] == '.'){
             val w = "${mWeightEditText.text}0"
             mWeightEditText.setText(w)
         }
 
         if(!sexButtonPressed && !profileInit){
-            val toast = Toast.makeText(context!!, "Please Select a Sex", Toast.LENGTH_LONG)
-            toast.setGravity(Gravity.CENTER, 0, 450)
-            toast.show()
-            sexText.text = resources.getText(R.string.text_sex_error)
-            sexText.setTypeface(null, Typeface.BOLD)
-            sexText.setTextColor(ContextCompat.getColor(context!!, R.color.colorRed))
+            showToast("Please Select A Sex")
+            showErrorText(sexText, R.string.text_sex_error)
             return
         }else if (mWeightEditText.text.isEmpty() || mWeightEditText.text.toString().toDouble()  < 60 ){
-            val weightText = view.findViewById<TextView>(R.id.text_profile_weight)
-            // make weight text stand out
-            weightText.text = resources.getText(R.string.text_weight_error)
-            weightText.setTypeface(null, Typeface.BOLD)
-            val oldColors = weightText.textColors //save original colors
-            weightText.setTextColor(ContextCompat.getColor(context!!, R.color.colorRed))
+            showErrorText(weightText, R.string.text_weight_error)
 
-            // make sex text normal
-            sexText.text = resources.getText(R.string.text_sex)
-            sexText.setTypeface(null, Typeface.NORMAL)
-            sexText.setTextColor(oldColors)
-
-            val toast = Toast.makeText(context!!, "Please Enter a Valid Weight", Toast.LENGTH_LONG)
-            toast.setGravity(Gravity.CENTER, 0, 450)
-            toast.show()
+            showToast("Please Enter a Valid Weight")
             return
         }
 
@@ -159,13 +150,9 @@ class ProfileFragment : Fragment() {
 
         mMainActivity.weight = weight
         mMainActivity.weightMeasurement = weightMeasurement
-        Log.v(TAG, "Passed vars: sex=${mMainActivity.sex} weight=$weight weight " +
-                "measurement=$weightMeasurement profileInit=${mMainActivity.profileInt}")
 
         if (profileInit){
-            val toast = Toast.makeText(context!!, "Profile Saved!", Toast.LENGTH_LONG)
-            toast.setGravity(Gravity.CENTER, 0, 450)
-            toast.show()
+            showToast("Profile Saved!")
             return
         }else{
             mMainActivity.profileInt = true
@@ -173,9 +160,29 @@ class ProfileFragment : Fragment() {
         }
     }
 
+    private fun resetTextView(view: TextView, id: Int){
+        view.text = resources.getText(id)
+        view.setTypeface(null, Typeface.NORMAL)
+        view.setTextColor(ContextCompat.getColor(context!!, R.color.colorText))
+        view.setText(id)
+    }
+
+    private fun showErrorText(textView: TextView, errorMessageId: Int){
+        textView.text = resources.getText(errorMessageId)
+        textView.setTypeface(null, Typeface.BOLD)
+        textView.setTextColor(ContextCompat.getColor(context!!, R.color.colorRed))
+    }
+
+    private fun showToast(message: String){
+        val toast = Toast.makeText(context!!, message, Toast.LENGTH_LONG)
+        toast.setGravity(Gravity.CENTER, 0, 450)
+        toast.show()
+    }
+
     private fun setupSpinner(view: View){
         mSpinner = view.findViewById(R.id.spinner_profile)
         val items = arrayOf("lbs", "kg")
+        mSpinner.setSelection(items.indexOf(mMainActivity.weightMeasurement))
         val adapter = ArrayAdapter(context!!, android.R.layout.simple_spinner_dropdown_item, items)
         mSpinner.adapter = adapter
     }
@@ -184,9 +191,9 @@ class ProfileFragment : Fragment() {
         btnMale = view.findViewById(R.id.btn_profile_male)
         btnFemale = view.findViewById(R.id.btn_profile_female)
 
-        if (sexButtonPressed && mMainActivity.sex) {
+        if (sexButtonPressed || profileInit && mMainActivity.sex) {
             pressMaleButton()
-        }else if(sexButtonPressed && !mMainActivity.sex){
+        }else if(sexButtonPressed || profileInit && !mMainActivity.sex){
             pressFemaleButton()
         }
 

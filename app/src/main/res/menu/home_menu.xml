@@ -6,4 +6,8 @@
         android:icon="@drawable/done_white_24dp"
         android:title="@string/text_log_session"
         app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/btn_clear_drink_list"
+        android:title="Clear Drink List"
+        app:showAsAction="never"/>
 </menu>

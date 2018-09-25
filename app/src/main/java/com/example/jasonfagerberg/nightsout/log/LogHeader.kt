@@ -9,8 +9,8 @@ private const val TAG = "LogObject"
 
 class LogHeader(val date: Long, val maxBac: Double, val duration: Int) {
     var dateString: String
-    val durationHours: Int = duration/60
-    val durationMinuets: Int = duration%60
+    private val durationHours: Int = duration/60
+    private val durationMinuets: Int = duration%60
     var durationString: String = "$durationHours:$durationMinuets"
 
     init {

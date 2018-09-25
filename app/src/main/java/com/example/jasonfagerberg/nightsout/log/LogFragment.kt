@@ -49,7 +49,7 @@ class LogFragment : Fragment() {
 
         // toolbar setup
         val toolbar:android.support.v7.widget.Toolbar = view!!.findViewById(R.id.toolbar_log)
-        toolbar.inflateMenu(R.menu.empty_menu)
+        toolbar.inflateMenu(R.menu.log_menu)
 
         // take date from calender, pull correct session, pass to adapter
         mLogList = ArrayList()
