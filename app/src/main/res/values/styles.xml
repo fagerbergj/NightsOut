@@ -4,8 +4,6 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
-
-        <item name="android:textColorSecondary">@color/colorWhite</item>
     </style>
 
     <style name="HomeButtonTheme" parent="Theme.MaterialComponents.Light">
@@ -16,4 +14,7 @@
         <item name="colorPrimary">@color/colorLightRed</item>
     </style>
 
+    <style name="Overflow" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="android:textColorSecondary">@color/colorWhite</item>
+    </style>
 </resources>

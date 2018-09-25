@@ -17,7 +17,8 @@
             android:layout_height="wrap_content"
             android:background="@color/colorPrimary"
             app:title="@string/fragment_log_name"
-            app:titleTextColor="@color/colorWhite"/>
+            app:titleTextColor="@color/colorWhite"
+            android:theme="@style/Overflow"/>
 
         <com.prolificinteractive.materialcalendarview.MaterialCalendarView
             android:id="@+id/calender_log"
