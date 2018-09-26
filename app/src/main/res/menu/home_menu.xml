@@ -11,4 +11,9 @@
         android:id="@+id/btn_clear_drink_list"
         android:title="Clear Drink List"
         app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/btn_disclaimer"
+        android:title="Disclaimer"
+        app:showAsAction="never"/>
 </menu>

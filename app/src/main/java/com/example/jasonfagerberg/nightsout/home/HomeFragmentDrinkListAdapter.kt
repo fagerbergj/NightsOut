@@ -5,6 +5,7 @@ import android.content.Context
 import android.graphics.BitmapFactory
 import android.support.design.button.MaterialButton
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,6 +13,7 @@ import android.widget.*
 import com.example.jasonfagerberg.nightsout.main.Drink
 import com.example.jasonfagerberg.nightsout.main.MainActivity
 import com.example.jasonfagerberg.nightsout.R
+import com.example.jasonfagerberg.nightsout.main.Converter
 import java.util.*
 
 private const val TAG = "HomeFragmentAdapter"
@@ -65,7 +67,6 @@ class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: Ar
         internal var favorited: ImageView = itemView.findViewById(R.id.image_home_drink_favored)
     }
 
-    // remove
     private fun removeItem(position: Int) {
         mDrinksList.removeAt(position)
         notifyItemRemoved(position)
@@ -87,8 +88,8 @@ class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: Ar
         // add another button
         val another = dialogView.findViewById<TextView>(R.id.text_dialog_add_another)
         another.setOnClickListener{ _ ->
-            dialog.dismiss()
             onAddAnotherClicked(position)
+            dismissDialog(dialog)
         }
 
         setupFavoritesOption(dialogView, drink, dialog)
@@ -96,15 +97,15 @@ class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: Ar
         // edit button clicked
         val edit = dialogView.findViewById<TextView>(R.id.text_dialog_edit_drink)
         edit.setOnClickListener{ _ ->
-            dialog.dismiss()
             showEditDialog(position)
+            dismissDialog(dialog)
         }
 
         //delete button clicked
         val delete = dialogView.findViewById<TextView>(R.id.text_dialog_remove_drink)
         delete.setOnClickListener{ _ ->
-            dialog.dismiss()
             removeItem(position)
+            dismissDialog(dialog)
             mMainActivity.homeFragment.showOrHideEmptyListText(mMainActivity.homeFragment.view!!)
         }
     }
@@ -120,8 +121,8 @@ class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: Ar
         }
 
         favorite.setOnClickListener{ _ ->
-            dialog.dismiss()
             onFavoriteClicked(drink)
+            dismissDialog(dialog)
         }
     }
 
@@ -188,7 +189,6 @@ class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: Ar
         dropdown.setSelection(items.indexOf(drink.measurement))
 
         dialog.findViewById<MaterialButton>(R.id.btn_edit_drink_edit).setOnClickListener{ _ ->
-            dialog.dismiss()
             onDialogEditClick(drink, editName, editABV, editAmount, dropdown)
             this.notifyItemChanged(position)
         }
@@ -227,5 +227,10 @@ class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: Ar
             mMainActivity.mDatabaseHelper.insertDrinkIntoDrinksTable(drink)
             drink.id = mMainActivity.mDatabaseHelper.getDrinkIdFromFullDrinkInfo(drink)
         }
+    }
+
+    private fun dismissDialog(dialog: AlertDialog){
+        mMainActivity.homeFragment.calculateBAC()
+        dialog.dismiss()
     }
 }

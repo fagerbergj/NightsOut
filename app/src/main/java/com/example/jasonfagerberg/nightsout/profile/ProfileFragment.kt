@@ -153,6 +153,7 @@ class ProfileFragment : Fragment() {
 
         if (profileInit){
             showToast("Profile Saved!")
+            Log.v(TAG, "sex ${mMainActivity.sex}")
             return
         }else{
             mMainActivity.profileInt = true

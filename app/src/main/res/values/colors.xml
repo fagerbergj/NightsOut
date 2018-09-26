@@ -14,4 +14,6 @@
     <color name="colorLightGray">#BDBDBD</color>
     <color name="colorLightBlueGray">#CFD8DC</color>
     <color name="colorDarkGray">#616161</color>
+    <color name="colorOrange">#FF9800</color>
+    <color name="colorLighterGreen">#CDDC39</color>
 </resources>

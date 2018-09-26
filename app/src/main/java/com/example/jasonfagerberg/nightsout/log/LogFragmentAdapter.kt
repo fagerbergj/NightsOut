@@ -57,7 +57,7 @@ RecyclerView.Adapter<LogFragmentAdapter.ViewHolder>() {
                 val duration = "Duration: ${header.duration}"
                 holder.duration!!.text = duration
 
-                val maxBac = "Max BAC: ${header.maxBac}"
+                val maxBac = "Max bac: ${header.maxBac}"
                 holder.maxBAC!!.text = maxBac
             }
         }

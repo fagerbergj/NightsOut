@@ -5,10 +5,12 @@ import android.content.DialogInterface
 import android.os.Bundle
 import android.support.design.button.MaterialButton
 import android.support.v4.app.Fragment
+import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.*
 import android.widget.EditText
 import android.widget.RelativeLayout
@@ -16,6 +18,7 @@ import android.widget.TextView
 import android.widget.Toast
 import com.example.jasonfagerberg.nightsout.main.MainActivity
 import com.example.jasonfagerberg.nightsout.R
+import com.example.jasonfagerberg.nightsout.main.Converter
 import java.util.*
 
 
@@ -25,6 +28,8 @@ class HomeFragment : Fragment(){
     private lateinit var mDrinkListAdapter: HomeFragmentDrinkListAdapter
     private lateinit var mRelativeLayout: RelativeLayout
     private lateinit var mMainActivity: MainActivity
+    private val mConverter = Converter()
+    var bac = 0.000
 
     // create fragment view
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -61,6 +66,11 @@ class HomeFragment : Fragment(){
 
         // return
         return view
+    }
+
+    override fun onResume() {
+        calculateBAC()
+        super.onResume()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
@@ -119,9 +129,9 @@ class HomeFragment : Fragment(){
         val startPicker:EditText = view.findViewById(R.id.edit_start_time)
         val endPicker: EditText = view.findViewById(R.id.edit_end_time)
 
-        if(mMainActivity.startTimeMin > -1) startPicker.setText(convertMinutesTo12HourTime(
+        if(mMainActivity.startTimeMin > -1) startPicker.setText(mConverter.convertMinutesTo12HourTime(
                 mMainActivity.startTimeMin))
-        if(mMainActivity.endTimeMin > -1) endPicker.setText(convertMinutesTo12HourTime(
+        if(mMainActivity.endTimeMin > -1) endPicker.setText(mConverter.convertMinutesTo12HourTime(
                 mMainActivity.endTimeMin))
 
         startPicker.setOnClickListener{ _ ->
@@ -144,8 +154,8 @@ class HomeFragment : Fragment(){
         val mTimePicker: TimePickerDialog
         mTimePicker = TimePickerDialog(context!!,
                 TimePickerDialog.OnTimeSetListener { _ , selectedHour, selectedMinute ->
-                    startPicker.setText(convertSelectedTimeToString(selectedHour, selectedMinute))
-                    mMainActivity.startTimeMin = convert24HourTimeToMinutes(selectedHour, selectedMinute)
+                    startPicker.setText(mConverter.convertSelectedTimeToString(selectedHour, selectedMinute))
+                    mMainActivity.startTimeMin = mConverter.convert24HourTimeToMinutes(selectedHour, selectedMinute)
                     if(mMainActivity.endTimeMin == -1) mMainActivity.endTimeMin = mMainActivity.startTimeMin
                 }, hour, minute, false)
 
@@ -169,8 +179,8 @@ class HomeFragment : Fragment(){
         val mTimePicker: TimePickerDialog
         mTimePicker = TimePickerDialog(context!!,
                 TimePickerDialog.OnTimeSetListener { _ , selectedHour, selectedMinute ->
-                    endPicker.setText(convertSelectedTimeToString(selectedHour, selectedMinute))
-                    mMainActivity.endTimeMin = convert24HourTimeToMinutes(selectedHour, selectedMinute)
+                    endPicker.setText(mConverter.convertSelectedTimeToString(selectedHour, selectedMinute))
+                    mMainActivity.endTimeMin = mConverter.convert24HourTimeToMinutes(selectedHour, selectedMinute)
                 }, hour, minute, false)
 
         mTimePicker.setButton(DialogInterface.BUTTON_NEUTRAL, "Now") { _, _ ->
@@ -187,43 +197,8 @@ class HomeFragment : Fragment(){
         calendar.time = date
         val curHour = calendar.get(Calendar.HOUR_OF_DAY)
         val curMin = calendar.get(Calendar.MINUTE)
-        pickerDisplay.setText(convertSelectedTimeToString(curHour, curMin))
-        return convert24HourTimeToMinutes(curHour, curMin)
-    }
-
-    private fun convertSelectedTimeToString(selectedHour: Int, selectedMinute: Int): String{
-        val timePeriod: String
-        var displayHour = selectedHour
-        var displayMinuet = selectedMinute.toString()
-        if(selectedHour >= 12){
-            displayHour -= 12
-            timePeriod = "PM"
-        }else{
-            timePeriod = "AM"
-        }
-        if (displayHour == 0) displayHour = 12
-        if (displayMinuet.length == 1) displayMinuet = "0$displayMinuet"
-        return "$displayHour : $displayMinuet $timePeriod"
-    }
-
-    private fun convertMinutesTo12HourTime(min: Int): String{
-        var hour = min/60
-        val minutes = min%60
-        val timePeriod: String
-        if(hour >= 12){
-            hour -= 12
-            timePeriod = "PM"
-        }else{
-            timePeriod = "AM"
-        }
-        if (hour == 0) hour = 12
-        var displayMinuet = minutes.toString()
-        if (displayMinuet.length == 1) displayMinuet = "0$displayMinuet"
-        return "$hour:$displayMinuet $timePeriod"
-    }
-
-    private fun convert24HourTimeToMinutes(hour: Int, min: Int):Int{
-        return hour*60 + min
+        pickerDisplay.setText(mConverter.convertSelectedTimeToString(curHour, curMin))
+        return mConverter.convert24HourTimeToMinutes(curHour, curMin)
     }
 
     fun showOrHideEmptyListText(view: View){
@@ -233,5 +208,78 @@ class HomeFragment : Fragment(){
         }else{
             emptyText.visibility = View.INVISIBLE
         }
+    }
+
+    fun calculateBAC(){
+        var gramsOfAlcohol = 0.0
+        for (drink in mMainActivity.mDrinksList){
+            val volume = mConverter.convertDrinkVolumeToLeters(drink.amount, drink.measurement)
+            val abv = drink.abv
+            val alcoholConst = 0.789
+            gramsOfAlcohol += (volume * abv * alcoholConst)
+        }
+        Log.v(TAG, "gramsOfAlc: $gramsOfAlcohol")
+
+        val maleConst = 0.68
+        val femaleConst = 0.55
+        val weightInGrams = mConverter.convertWeightToGrams(mMainActivity.weight, mMainActivity.weightMeasurement)
+        Log.v(TAG, "weight in grams: $weightInGrams")
+
+        val sexModifiedWeight = if (mMainActivity.sex) weightInGrams * maleConst
+        else weightInGrams * femaleConst
+        Log.v(TAG, "sex modified weight: $sexModifiedWeight")
+
+        val instantBAC = 100 * (gramsOfAlcohol/sexModifiedWeight)
+        Log.v(TAG, "Instant BAC: $instantBAC")
+
+        var hoursElapsed = (mMainActivity.endTimeMin - mMainActivity.startTimeMin)/60
+        if (mMainActivity.endTimeMin < mMainActivity.startTimeMin){
+            val minInDay = 1440
+            hoursElapsed = ((mMainActivity.endTimeMin + minInDay) - mMainActivity.startTimeMin)/60
+        }
+
+        Log.v(TAG, "hours elapsed: $hoursElapsed")
+
+        val bacDecayPerHour = 0.015
+        bac = instantBAC - (hoursElapsed * bacDecayPerHour)
+        bac = if (bac < 0.0) 0.0 else bac
+        Log.v(TAG, "Calculated bac: $bac")
+        updateBACText()
+    }
+
+    private fun updateBACText(){
+        val bacValueView = view!!.findViewById<TextView>(R.id.text_home_bac_value)
+        val bacResultView = view!!.findViewById<TextView>(R.id.text_home_bac_result)
+
+        val bacText = "%.3f".format(bac)
+        when{
+            bac > .2 -> {
+                changeTextViewColorAndText(bacValueView, bacText, R.color.colorBlack)
+                changeTextViewColorAndText(bacResultView, "In Danger", R.color.colorBlack)
+            }
+            bac > .12 -> {
+                changeTextViewColorAndText(bacValueView, bacText, R.color.colorRed)
+                changeTextViewColorAndText(bacResultView, "Shit Faced", R.color.colorRed)
+            }
+            bac > .07 -> {
+                changeTextViewColorAndText(bacValueView, bacText, R.color.colorOrange)
+                changeTextViewColorAndText(bacResultView, "Drunk", R.color.colorOrange)
+            }
+            bac > .04 -> {
+                changeTextViewColorAndText(bacValueView, bacText, R.color.colorLighterGreen)
+                changeTextViewColorAndText(bacResultView, "Tipsy", R.color.colorLighterGreen)
+            }
+            else -> {
+                changeTextViewColorAndText(bacValueView, bacText, R.color.colorGreen)
+                changeTextViewColorAndText(bacResultView, "Sober", R.color.colorGreen)
+            }
+        }
+        bacValueView.invalidate()
+        bacValueView.requestLayout()
+    }
+
+    private fun changeTextViewColorAndText(textView: TextView, text: String, color: Int){
+        textView.text = text
+        textView.setTextColor(ContextCompat.getColor(context!!, color))
     }
 }
