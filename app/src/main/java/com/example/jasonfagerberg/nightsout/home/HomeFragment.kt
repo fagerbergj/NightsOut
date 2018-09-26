@@ -157,10 +157,12 @@ class HomeFragment : Fragment(){
                     startPicker.setText(mConverter.convertSelectedTimeToString(selectedHour, selectedMinute))
                     mMainActivity.startTimeMin = mConverter.convert24HourTimeToMinutes(selectedHour, selectedMinute)
                     if(mMainActivity.endTimeMin == -1) mMainActivity.endTimeMin = mMainActivity.startTimeMin
+                    calculateBAC()
                 }, hour, minute, false)
 
         mTimePicker.setButton(DialogInterface.BUTTON_NEUTRAL, "Now") { _, _ ->
             mMainActivity.startTimeMin = getCurrentTimeInMinuetsAndSetEditText(startPicker)
+            calculateBAC()
         }
 
         mTimePicker.setTitle("Start Time")
@@ -181,10 +183,12 @@ class HomeFragment : Fragment(){
                 TimePickerDialog.OnTimeSetListener { _ , selectedHour, selectedMinute ->
                     endPicker.setText(mConverter.convertSelectedTimeToString(selectedHour, selectedMinute))
                     mMainActivity.endTimeMin = mConverter.convert24HourTimeToMinutes(selectedHour, selectedMinute)
+                    calculateBAC()
                 }, hour, minute, false)
 
         mTimePicker.setButton(DialogInterface.BUTTON_NEUTRAL, "Now") { _, _ ->
             mMainActivity.endTimeMin = getCurrentTimeInMinuetsAndSetEditText(endPicker)
+            calculateBAC()
         }
 
         mTimePicker.setTitle("End Time")
@@ -232,10 +236,10 @@ class HomeFragment : Fragment(){
         val instantBAC = 100 * (gramsOfAlcohol/sexModifiedWeight)
         Log.v(TAG, "Instant BAC: $instantBAC")
 
-        var hoursElapsed = (mMainActivity.endTimeMin - mMainActivity.startTimeMin)/60
+        var hoursElapsed = (mMainActivity.endTimeMin - mMainActivity.startTimeMin)/60.0
         if (mMainActivity.endTimeMin < mMainActivity.startTimeMin){
             val minInDay = 1440
-            hoursElapsed = ((mMainActivity.endTimeMin + minInDay) - mMainActivity.startTimeMin)/60
+            hoursElapsed = ((mMainActivity.endTimeMin + minInDay) - mMainActivity.startTimeMin)/60.0
         }
 
         Log.v(TAG, "hours elapsed: $hoursElapsed")

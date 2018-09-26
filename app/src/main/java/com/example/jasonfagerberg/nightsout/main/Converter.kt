@@ -36,7 +36,7 @@ class Converter {
         }
         if (displayHour == 0) displayHour = 12
         if (displayMinuet.length == 1) displayMinuet = "0$displayMinuet"
-        return "$displayHour : $displayMinuet $timePeriod"
+        return "$displayHour:$displayMinuet $timePeriod"
     }
 
     fun convertMinutesTo12HourTime(min: Int): String{
