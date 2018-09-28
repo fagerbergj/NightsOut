@@ -229,7 +229,7 @@ class HomeFragment : Fragment(){
         val weightInGrams = mConverter.convertWeightToGrams(mMainActivity.weight, mMainActivity.weightMeasurement)
         Log.v(TAG, "weight in grams: $weightInGrams")
 
-        val sexModifiedWeight = if (mMainActivity.sex) weightInGrams * maleConst
+        val sexModifiedWeight = if (mMainActivity.sex!!) weightInGrams * maleConst
         else weightInGrams * femaleConst
         Log.v(TAG, "sex modified weight: $sexModifiedWeight")
 

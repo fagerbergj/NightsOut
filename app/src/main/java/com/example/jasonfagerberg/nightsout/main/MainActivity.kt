@@ -1,5 +1,6 @@
 package com.example.jasonfagerberg.nightsout.main
 
+import android.app.PendingIntent.getActivity
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
@@ -35,9 +36,9 @@ class MainActivity : AppCompatActivity() {
     // shared pref data
     private lateinit var preferences: SharedPreferences
     var profileInt = false
-    var sex: Boolean = true
+    var sex: Boolean? = null
     var weight: Double = 0.0
-    var weightMeasurement: String = "lbs"
+    var weightMeasurement = ""
     var startTimeMin: Int = -1
     var endTimeMin: Int = -1
 
@@ -118,7 +119,7 @@ class MainActivity : AppCompatActivity() {
 
         val editor = preferences.edit()
         editor.putBoolean("profileInit", true)
-        editor.putBoolean("profileSex", sex)
+        if (sex != null) editor.putBoolean("profileSex", sex!!)
         editor.putFloat("profileWeight", weight.toFloat())
         editor.putString("profileWeightMeasurement", weightMeasurement)
 
@@ -132,22 +133,31 @@ class MainActivity : AppCompatActivity() {
 
     private fun getGlobalData(){
         profileInt = preferences.getBoolean("profileInit", profileInt)
-        sex = preferences.getBoolean("profileSex", sex)
-        var weightFloat: Float = 0.toFloat()
-        weightFloat = preferences.getFloat("profileWeight", weightFloat)
-        weight = weightFloat.toDouble()
-        weightMeasurement = preferences.getString("profileWeightMeasurement", weightMeasurement)!!
+        if (profileInt) {
+            sex = true
+            sex = preferences.getBoolean("profileSex", sex!!)
+            var weightFloat: Float = 0.toFloat()
+            weightFloat = preferences.getFloat("profileWeight", weightFloat)
+            weight = weightFloat.toDouble()
+            weightMeasurement = preferences.getString("profileWeightMeasurement", weightMeasurement)!!
 
-        startTimeMin = preferences.getInt("homeStartTimeMin", startTimeMin)
-        endTimeMin = preferences.getInt("homeEndTimeMin", endTimeMin)
+            startTimeMin = preferences.getInt("homeStartTimeMin", startTimeMin)
+            endTimeMin = preferences.getInt("homeEndTimeMin", endTimeMin)
 
-        Log.v(TAG, "vars retrieved: profileInit=$profileInt sex=$sex weight=$weight " +
-                "weight measurement=$weightMeasurement start time=$startTimeMin end time=$endTimeMin")
+            Log.v(TAG, "vars retrieved: profileInit=$profileInt sex=$sex weight=$weight " +
+                    "weight measurement=$weightMeasurement start time=$startTimeMin end time=$endTimeMin")
+        }
     }
 
     fun setFragment(fragment: Fragment) {
-        val transaction = supportFragmentManager.beginTransaction()
+//        val f = this.supportFragmentManager.findFragmentById(R.id.main_frame)
+//        if(f is ProfileFragment && profileInt && !profileFragment.userWantsToAbandonUnsavedChanges()){
+//            botNavBar.selectedItemId = R.id.bottom_nav_profile
+//            return
+//        }
+
         //transaction.replace(R.id.main_frame, fragment)
+        val transaction = supportFragmentManager.beginTransaction()
         transaction.replace(R.id.main_frame, fragment)
         transaction.addToBackStack(null)
         transaction.commit()
