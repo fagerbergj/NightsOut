@@ -22,13 +22,7 @@ import com.example.jasonfagerberg.nightsout.R
 import java.util.*
 import android.widget.AdapterView
 import android.widget.AdapterView.OnItemSelectedListener
-import android.content.DialogInterface
 import android.widget.TextView
-import android.text.method.TextKeyListener.clear
-
-
-
-
 
 private const val TAG = "ProfileFragment"
 
@@ -124,39 +118,8 @@ class ProfileFragment : Fragment() {
         super.onResume()
     }
 
-    fun userWantsToAbandonUnsavedChanges(): Boolean{
-        var ret = false
-        val sexTextView = view!!.findViewById<TextView>(R.id.text_profile_sex)
-        val weightTextView = view!!.findViewById<TextView>(R.id.text_profile_weight)
-        resetTextView(sexTextView, R.string.text_sex)
-        resetTextView(weightTextView, R.string.text_weight)
-        if (hasUnsavedData()){
-            if (mMainActivity.sex != sex) showUnsavedText(sexTextView)
-            if (mMainActivity.weight != weight) showUnsavedText(weightTextView)
-            if (mMainActivity.weightMeasurement != weightMeasurement) showUnsavedText(weightTextView)
-
-            val dialogClickListener = DialogInterface.OnClickListener { _ , which ->
-                when (which) {
-                    DialogInterface.BUTTON_POSITIVE -> {
-                        //Yes is pressed
-                        ret = true
-                    }
-                    DialogInterface.BUTTON_NEGATIVE -> { }
-                }
-            }
-            //Build Actual box
-            val builder = AlertDialog.Builder(context)
-            builder.setMessage("Leaving This Page Will Erase All Unsaved Data\n" +
-                    "Are You Sure You Want To Leave??").setPositiveButton("Yes", dialogClickListener)
-                    .setNegativeButton("No", dialogClickListener).show()
-        }else{
-            return true
-        }
-
-        return ret
-    }
-
-    private fun hasUnsavedData():Boolean{
+    fun hasUnsavedData():Boolean{
+        if (!profileInit) return false
         return sex != mMainActivity.sex || weight != mMainActivity.weight ||
                 weightMeasurement != mMainActivity.weightMeasurement
     }

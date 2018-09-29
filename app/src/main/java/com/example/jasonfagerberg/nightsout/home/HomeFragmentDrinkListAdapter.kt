@@ -98,7 +98,7 @@ class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: Ar
         val edit = dialogView.findViewById<TextView>(R.id.text_dialog_edit_drink)
         edit.setOnClickListener{ _ ->
             showEditDialog(position)
-            dismissDialog(dialog)
+            dialog.dismiss()
         }
 
         //delete button clicked
@@ -191,6 +191,7 @@ class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: Ar
         dialog.findViewById<MaterialButton>(R.id.btn_edit_drink_edit).setOnClickListener{ _ ->
             onDialogEditClick(drink, editName, editABV, editAmount, dropdown)
             this.notifyItemChanged(position)
+            dismissDialog(dialog)
         }
     }
 
