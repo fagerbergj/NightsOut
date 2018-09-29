@@ -12,10 +12,7 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.*
-import android.widget.EditText
-import android.widget.RelativeLayout
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import com.example.jasonfagerberg.nightsout.main.MainActivity
 import com.example.jasonfagerberg.nightsout.R
 import com.example.jasonfagerberg.nightsout.main.Converter
@@ -30,6 +27,9 @@ class HomeFragment : Fragment(){
     private lateinit var mMainActivity: MainActivity
     private val mConverter = Converter()
     var bac = 0.000
+
+    private var drinkingDuration = 0.0
+    private var gramsOfAlcoholConsumed = 0.0
 
     // create fragment view
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -222,19 +222,16 @@ class HomeFragment : Fragment(){
             val alcoholConst = 0.789
             gramsOfAlcohol += (volume * abv * alcoholConst)
         }
-        Log.v(TAG, "gramsOfAlc: $gramsOfAlcohol")
+        gramsOfAlcoholConsumed = gramsOfAlcohol
 
         val maleConst = 0.68
         val femaleConst = 0.55
         val weightInGrams = mConverter.convertWeightToGrams(mMainActivity.weight, mMainActivity.weightMeasurement)
-        Log.v(TAG, "weight in grams: $weightInGrams")
 
         val sexModifiedWeight = if (mMainActivity.sex!!) weightInGrams * maleConst
         else weightInGrams * femaleConst
-        Log.v(TAG, "sex modified weight: $sexModifiedWeight")
 
         val instantBAC = 100 * (gramsOfAlcohol/sexModifiedWeight)
-        Log.v(TAG, "Instant BAC: $instantBAC")
 
         var hoursElapsed = (mMainActivity.endTimeMin - mMainActivity.startTimeMin)/60.0
         if (mMainActivity.endTimeMin < mMainActivity.startTimeMin){
@@ -242,7 +239,7 @@ class HomeFragment : Fragment(){
             hoursElapsed = ((mMainActivity.endTimeMin + minInDay) - mMainActivity.startTimeMin)/60.0
         }
 
-        Log.v(TAG, "hours elapsed: $hoursElapsed")
+        drinkingDuration = hoursElapsed
 
         val bacDecayPerHour = 0.015
         bac = instantBAC - (hoursElapsed * bacDecayPerHour)
@@ -251,9 +248,43 @@ class HomeFragment : Fragment(){
         updateBACText()
     }
 
+    private fun showBacInfoDialog(){
+        val builder = android.app.AlertDialog.Builder(view!!.context)
+        val parent:ViewGroup? = null
+        val dialogView = mMainActivity.layoutInflater
+                .inflate(R.layout.fragment_home_bac_info_dialog, parent, false)
+
+        builder.setView(dialogView)
+        val dialog = builder.create()
+        dialog.show()
+
+        dialog.findViewById<Button>(R.id.btn_home_dismiss_bac_info_dialog).setOnClickListener {
+            dialog.dismiss()
+        }
+
+        val bacInfoTitleString = "BAC Level: " + String.format("%.3f", bac)
+        dialog.findViewById<TextView>(R.id.text_home_dialog_bac_info_title).text = bacInfoTitleString
+
+        var hoursMin = mConverter.convertDecimalTimeToHoursAndMinuets(drinkingDuration)
+        val durationString =  "${hoursMin.first} hours  ${hoursMin.second} min"
+        dialog.findViewById<TextView>(R.id.text_home_bac_info_duration_drinking).text = durationString
+
+        val gramsString = String.format("%.2f", gramsOfAlcoholConsumed) + " grams"
+        dialog.findViewById<TextView>(R.id.text_home_bac_info_grams_of_alc).text = gramsString
+
+        val hoursToSober = if ((bac - 0.04) / 0.015 < 0) 0.0 else (bac - 0.04)/0.015
+        hoursMin = mConverter.convertDecimalTimeToHoursAndMinuets(hoursToSober)
+        val hoursToSoberString = "${hoursMin.first} hours  ${hoursMin.second} min"
+        dialog.findViewById<TextView>(R.id.text_home_bac_info_time_to_sober).text = hoursToSoberString
+
+    }
+
     private fun updateBACText(){
         val bacValueView = view!!.findViewById<TextView>(R.id.text_home_bac_value)
         val bacResultView = view!!.findViewById<TextView>(R.id.text_home_bac_result)
+
+        bacValueView.setOnClickListener { _ -> showBacInfoDialog() }
+        bacResultView.setOnClickListener { _ -> showBacInfoDialog() }
 
         val bacText = "%.3f".format(bac)
         when{

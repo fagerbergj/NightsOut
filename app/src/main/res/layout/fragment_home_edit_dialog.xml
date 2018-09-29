@@ -9,7 +9,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="4dp"
-        android:text="@string/text_edit"
+        android:text="@string/text_main_dialog_body"
         android:textColor="@color/colorBlack"
         android:textSize="24sp"
         android:textStyle="bold" />

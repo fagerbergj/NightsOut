@@ -166,8 +166,8 @@ class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: Ar
 
         val builder = AlertDialog.Builder(mContext)
         val parent:ViewGroup? = null
-        val dialogView = mMainActivity.layoutInflater.inflate(
-                R.layout.fragment_home_edit_dialog, parent, false)
+        val dialogView = mMainActivity.layoutInflater
+                .inflate(R.layout.fragment_home_edit_dialog, parent, false)
 
         builder.setView(dialogView)
         val dialog = builder.create()

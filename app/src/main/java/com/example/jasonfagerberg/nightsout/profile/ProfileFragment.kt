@@ -1,6 +1,5 @@
 package com.example.jasonfagerberg.nightsout.profile
 
-import android.app.AlertDialog
 import android.graphics.PorterDuff
 import android.graphics.Typeface
 import android.os.Bundle
@@ -33,6 +32,7 @@ class ProfileFragment : Fragment() {
 
     // shared pref data
     private var profileInit = false
+
     private lateinit var mWeightEditText: EditText
     private lateinit var mSpinner: Spinner
 
@@ -194,13 +194,6 @@ class ProfileFragment : Fragment() {
         textView.text = resources.getText(errorMessageId)
         textView.setTypeface(null, Typeface.BOLD)
         textView.setTextColor(ContextCompat.getColor(context!!, R.color.colorRed))
-    }
-
-    private fun showUnsavedText(textView: TextView){
-        val string = "${textView.text}  ${resources.getText(R.string.text_unsaved)}"
-        textView.text = string
-        textView.setTypeface(null, Typeface.BOLD)
-        textView.setTextColor(ContextCompat.getColor(context!!, R.color.colorYellow))
     }
 
     private fun showToast(message: String){

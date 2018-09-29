@@ -17,7 +17,6 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
-            android:text="@string/test_drink_name"
             android:textColor="@color/colorBlack"
             android:textSize="18sp" />
 
@@ -34,7 +33,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="12dp"
-                android:text="@string/test_drink_ABV"
                 android:textSize="16sp" />
 
             <TextView
@@ -42,7 +40,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="2dp"
-                android:text="@string/test_drink_amount"
                 android:textSize="16sp" />
 
         </LinearLayout>

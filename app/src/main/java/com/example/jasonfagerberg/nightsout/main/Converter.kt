@@ -58,4 +58,14 @@ class Converter {
     fun convert24HourTimeToMinutes(hour: Int, min: Int):Int{
         return hour*60 + min
     }
+
+    fun convertDecimalTimeToHoursAndMinuets(time: Double):Pair<Int, Int>{
+        var t = (100 * time * 60).toInt()
+
+        val hour = t / 3600
+        t %= 3600
+        val min = t / 60
+
+        return Pair(hour, min)
+    }
 }

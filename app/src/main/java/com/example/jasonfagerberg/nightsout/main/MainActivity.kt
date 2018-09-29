@@ -12,6 +12,8 @@ import android.preference.PreferenceManager
 import android.content.SharedPreferences
 import android.support.v4.content.ContextCompat
 import android.view.View
+import android.view.ViewGroup
+import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.RelativeLayout
 import com.example.jasonfagerberg.nightsout.addDrink.AddDrinkFragment
@@ -69,7 +71,7 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 R.id.bottom_nav_log -> {
-                    if(curFrag !is LogFragment) setFragment(logFragment)
+                    alertUserBeforeNavigation(curFrag, logFragment)
                     true
                 }
                 R.id.bottom_nav_profile -> {
@@ -81,27 +83,31 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun alertUserBeforeNavigation(curFrag: Fragment, destination:Fragment){
+    private fun alertUserBeforeNavigation(curFrag: Fragment, destination: Fragment?){
         if (curFrag == profileFragment && profileFragment.hasUnsavedData()){
             val builder = AlertDialog.Builder(this)
-                    .setTitle("Unsaved Profile Changes")
-                    .setMessage("Are you sure you want to abandon profile changes?")
-                    .setPositiveButton("Yes") { _, _ -> setFragment(destination) }
-                    .setNegativeButton("No"){ _, _ -> botNavBar.selectedItemId = R.id.bottom_nav_profile }
+            val parent: ViewGroup? = null
+            val dialogView = layoutInflater.inflate(
+                    R.layout.activity_main_ensure_abandoing_of_profile_changes_dialog, parent, false)
+
+            builder.setView(dialogView)
             val dialog = builder.create()
+            dialog.show()
 
-            dialog.setOnShowListener { _ ->
-                val neg = dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
-                neg.setTextColor(ContextCompat.getColor(this, R.color.colorDarkGray))
-                neg.setBackgroundColor(ContextCompat.getColor(this, R.color.colorWhite))
-
-                val pos = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
-                pos.setTextColor(ContextCompat.getColor(this, R.color.colorDarkGray))
-                pos.setBackgroundColor(ContextCompat.getColor(this, R.color.colorWhite))
+            dialog.findViewById<Button>(R.id.btn_main_dialog_negative).setOnClickListener {
+                dialog.dismiss()
+                botNavBar.selectedItemId = R.id.bottom_nav_profile
             }
 
-            dialog.show()
-        }else if(curFrag != destination) setFragment(destination)
+            dialog.findViewById<Button>(R.id.btn_main_dialog_positive).setOnClickListener {
+                dialog.dismiss()
+                if (destination == null) supportFragmentManager.popBackStack()
+                else setFragment(destination)
+            }
+        }else if(curFrag != destination){
+            if (destination == null) supportFragmentManager.popBackStack()
+            else setFragment(destination)
+        }
     }
 
     override fun onResume(){
@@ -205,13 +211,12 @@ class MainActivity : AppCompatActivity() {
 
     override fun onBackPressed() {
         val count = supportFragmentManager.backStackEntryCount
+        val curFrag: Fragment = supportFragmentManager.findFragmentById(R.id.main_frame)!!
 
-        Log.v(TAG, "count = $count")
         if (count == 1) {
             finish()
-            //additional code
         } else {
-            supportFragmentManager.popBackStack()
+            alertUserBeforeNavigation(curFrag, null)
         }
     }
 }
