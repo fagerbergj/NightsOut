@@ -130,7 +130,8 @@
         android:paddingBottom="4dp"
         android:textColor="@color/colorGreen"
         android:textSize="60sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:text="0.00"/>
 
     <TextView
         android:id="@+id/text_home_bac_result"
@@ -143,7 +144,21 @@
         android:paddingBottom="16dp"
         android:textColor="@color/colorGreen"
         android:textSize="20sp"
+        android:text="Sober"
         android:layout_toEndOf="@id/text_home_bac_value" />
+
+    <ImageButton
+        android:id="@+id/btn_home_bac_info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/layout_drink_list"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:background="@color/colorWhite"
+        android:src="@drawable/ic_info_gray_24dp" />
 
 </RelativeLayout>
 </ScrollView>

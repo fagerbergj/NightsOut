@@ -62,7 +62,6 @@ class Converter {
     fun convertDecimalTimeToHoursAndMinuets(time: Double):Pair<Int, Int>{
         val hour = time.toInt()
         val min = ((((time - hour) * 100) * 60) / 100).toInt()
-
         return Pair(hour, min)
     }
 

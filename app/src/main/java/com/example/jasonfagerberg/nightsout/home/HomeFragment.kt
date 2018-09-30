@@ -64,6 +64,8 @@ class HomeFragment : Fragment(){
         // set edit texts
         setupEditTexts(view)
 
+        view.findViewById<ImageButton>(R.id.btn_home_bac_info).setOnClickListener{ _ -> showBacInfoDialog()}
+
         // return
         return view
     }
