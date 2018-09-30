@@ -1,22 +1,19 @@
 package com.example.jasonfagerberg.nightsout.home
 
+import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Context
 import android.graphics.BitmapFactory
 import android.support.design.button.MaterialButton
 import android.support.v7.widget.RecyclerView
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import com.example.jasonfagerberg.nightsout.R
 import com.example.jasonfagerberg.nightsout.main.Drink
 import com.example.jasonfagerberg.nightsout.main.MainActivity
-import com.example.jasonfagerberg.nightsout.R
-import com.example.jasonfagerberg.nightsout.main.Converter
 import java.util.*
-
-private const val TAG = "HomeFragmentAdapter"
 
 class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: ArrayList<Drink>) :
         RecyclerView.Adapter<HomeFragmentDrinkListAdapter.ViewHolder>() {
@@ -36,13 +33,18 @@ class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: Ar
     // When view is rendered bind the correct holder to it
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val drink = mDrinksList[position]
-        if(drink.abv > 20){
-            holder.image.setImageBitmap(BitmapFactory.decodeResource(mContext.resources, R.mipmap.cocktail))
-        } else if (drink.abv > 9.5){
-            holder.image.setImageBitmap(BitmapFactory.decodeResource(mContext.resources, R.mipmap.wine))
-        } else {
-            holder.image.setImageBitmap(BitmapFactory.decodeResource(mContext.resources, R.mipmap.beer))
+
+        when {
+            drink.abv > 20 -> holder.image.setImageBitmap(BitmapFactory.
+                    decodeResource(mContext.resources, R.mipmap.cocktail))
+
+            drink.abv > 9.5 -> holder.image.setImageBitmap(BitmapFactory.
+                    decodeResource(mContext.resources, R.mipmap.wine))
+
+            else -> holder.image.setImageBitmap(BitmapFactory
+                    .decodeResource(mContext.resources, R.mipmap.beer))
         }
+
         holder.name.text = drink.name
 
         val abv = "ABV: " + "%.1f".format(drink.abv) + "%"
@@ -77,6 +79,7 @@ class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: Ar
         notifyItemRangeChanged(position, mDrinksList.size)
     }
 
+    @SuppressLint("InflateParams")
     private fun showEditRemoveDialog(position: Int){
         val drink = mDrinksList[position]
         val builder = AlertDialog.Builder(mContext)
@@ -187,7 +190,7 @@ class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: Ar
         editAmount.setText(drink.amount.toString())
 
         val dropdown: Spinner = dialogView.findViewById(R.id.spinner_edit_drink_amount)
-        val items = arrayOf("oz", "beers", "shots", "wine glasses")
+        val items = arrayOf("oz", "ml", "beers", "shots", "wine glasses")
         val adapter = ArrayAdapter(mContext, android.R.layout.simple_spinner_dropdown_item, items)
         dropdown.adapter = adapter
         dropdown.setSelection(items.indexOf(drink.measurement))

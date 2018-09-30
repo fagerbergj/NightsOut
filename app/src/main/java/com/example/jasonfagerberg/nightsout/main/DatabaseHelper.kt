@@ -7,7 +7,6 @@ import android.util.Log
 import com.example.jasonfagerberg.nightsout.log.LogHeader
 import java.io.File
 import java.io.FileOutputStream
-import java.io.IOException
 
 private const val TAG = "DatabaseHelper"
 

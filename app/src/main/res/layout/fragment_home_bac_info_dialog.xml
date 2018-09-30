@@ -53,7 +53,6 @@
             android:paddingStart="8dp"
             android:paddingEnd="2dp"
             android:paddingBottom="16dp"
-            android:text="xx hours xx mins"
             android:textAlignment="viewEnd"
             android:textColor="@color/colorDarkGray" />
 
@@ -82,7 +81,6 @@
             android:paddingEnd="0dp"
             android:paddingBottom="16dp"
             android:gravity="center_vertical"
-            android:text="xx grams"
             android:textColor="@color/colorDarkGray" />
 
         <TextView
@@ -110,8 +108,8 @@
             android:paddingStart="8dp"
             android:paddingEnd="2dp"
             android:paddingBottom="16dp"
-            android:text="xx hours xx mins"
-            android:textColor="@color/colorDarkGray" />
+            android:textColor="@color/colorDarkGray"
+            tools:ignore="HardcodedText" />
 
     </RelativeLayout>
 

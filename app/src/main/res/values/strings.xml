@@ -40,7 +40,6 @@
     <string name="text_weight_error">Weight ***Please Enter a Valid Weight***</string>
     <string name="text_favorite_drink">Favorite Drink</string>
     <string name="text_unfavorite_drink">Unfavorite Drink</string>
-    <string name="text_unsaved"> Unsaved Changes</string>
     <string name="text_unsaved_profile_changes">Unsaved Profile Changes</string>
     <string name="text_main_dialog_body">Are you sure you want to abandon unsaved profile changes?</string>
     <string name="text_yes">Yes</string>
@@ -50,4 +49,11 @@
     <string name="text_grams_of_alcohol_consumed">Grams of Alcohol Consumed: </string>
     <string name="text_time_to_sober">Approximate Time Until Sober: </string>
     <string name="text_dismiss">dismiss</string>
+    <string name="info">info</string>
+    <string name="clear_favorites_list">Clear Favorites List</string>
+    <string name="clear_recents_list">Clear Recents List</string>
+    <string name="clear_drink_list">Clear Drink List</string>
+    <string name="disclaimer">Disclaimer</string>
+    <string name="clear_all_logs">Clear All Logs</string>
+    <string name="clear_selected_day_logs">Clear Logs for Selected Day</string>
 </resources>

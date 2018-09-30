@@ -11,10 +11,9 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.RelativeLayout
 import android.widget.TextView
-import com.example.jasonfagerberg.nightsout.main.MainActivity
 import com.example.jasonfagerberg.nightsout.R
+import com.example.jasonfagerberg.nightsout.main.MainActivity
 import com.prolificinteractive.materialcalendarview.CalendarDay
 import com.prolificinteractive.materialcalendarview.DayViewDecorator
 import com.prolificinteractive.materialcalendarview.DayViewFacade
@@ -48,15 +47,6 @@ class LogFragment : Fragment() {
         mLogListView.layoutManager = linearLayoutManager
         val itemDecor = DividerItemDecoration(mLogListView.context, DividerItemDecoration.VERTICAL)
         mLogListView.addItemDecoration(itemDecor)
-
-        val displayMetrics = DisplayMetrics()
-        mMainActivity.windowManager.defaultDisplay.getMetrics(displayMetrics)
-        val height = displayMetrics.heightPixels
-
-//        val layout = view.findViewById<RelativeLayout>(R.id.log_layout)
-//        val params = layout.layoutParams
-//        params.height = height - mMainActivity.botNavBar.layoutParams.height
-//        layout.layoutParams = params
 
         // toolbar setup
         val toolbar:android.support.v7.widget.Toolbar = view!!.findViewById(R.id.toolbar_log)

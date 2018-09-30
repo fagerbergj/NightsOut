@@ -2,6 +2,7 @@ package com.example.jasonfagerberg.nightsout.main
 
 import android.util.Log
 
+private const val TAG = "Converter"
 class Converter {
     private val weightConversionMap = HashMap<String, Double>()
     private val volumeConversionMap = HashMap<String, Double>()
@@ -10,17 +11,18 @@ class Converter {
         weightConversionMap["lbs"] = 453.592
         weightConversionMap["kg"] = 1000.0
 
-        volumeConversionMap["oz"] = 00.295735
-        volumeConversionMap["beers"] = 03.54882
-        volumeConversionMap["wine glasses"] = 01.47868
-        volumeConversionMap["shots"] = 00.443603
+        volumeConversionMap["oz"] = 0.0295735
+        volumeConversionMap["ml"] = .001
+        volumeConversionMap["beers"] = 0.354882
+        volumeConversionMap["wine glasses"] = 0.147868
+        volumeConversionMap["shots"] = 0.0443603
     }
 
     fun convertWeightToGrams(weight: Double, weightMeasurement: String): Double{
         return weight * weightConversionMap[weightMeasurement]!!
     }
 
-    fun convertDrinkVolumeToLeters(amount: Double, amountMeasurement: String): Double{
+    fun convertDrinkVolumeToLiters(amount: Double, amountMeasurement: String): Double{
         return amount * volumeConversionMap[amountMeasurement]!!
     }
 

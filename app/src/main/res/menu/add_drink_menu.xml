@@ -8,10 +8,10 @@
         app:showAsAction="ifRoom"/>
     <item
         android:id="@+id/btn_clear_favorites_list"
-        android:title="Clear Favorites List"
+        android:title="@string/clear_favorites_list"
         app:showAsAction="never"/>
     <item
         android:id="@+id/btn_clear_recents_list"
-        android:title="Clear Recents List"
+        android:title="@string/clear_recents_list"
         app:showAsAction="never"/>
 </menu>

@@ -257,7 +257,7 @@ class AddDrinkFragment : Fragment() {
         editName.setText(name)
         editABV.setText(abv.toString())
         editAmount.setText(amount.toString())
-        val items = arrayOf("oz", "beers", "shots", "wine glasses")
+        val items = arrayOf("oz", "ml", "beers", "shots", "wine glasses")
         dropdown.setSelection(items.indexOf(measurement))
     }
 

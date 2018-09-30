@@ -58,8 +58,7 @@
             android:hint="@string/text_empty"
             android:clickable="false"
             android:focusable="false"
-            android:importantForAutofill="no"
-            tools:targetApi="o" />
+            android:importantForAutofill="no" />
     </LinearLayout>
 
     <LinearLayout
@@ -87,8 +86,7 @@
             android:hint="@string/text_empty"
             android:inputType="time"
             android:textAlignment="center"
-            android:autofillHints=""
-            tools:targetApi="o" />
+            android:autofillHints="" />
     </LinearLayout>
 
     <RelativeLayout

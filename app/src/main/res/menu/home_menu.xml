@@ -9,11 +9,11 @@
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/btn_clear_drink_list"
-        android:title="Clear Drink List"
+        android:title="@string/clear_drink_list"
         app:showAsAction="never"/>
 
     <item
         android:id="@+id/btn_disclaimer"
-        android:title="Disclaimer"
+        android:title="@string/disclaimer"
         app:showAsAction="never"/>
 </menu>

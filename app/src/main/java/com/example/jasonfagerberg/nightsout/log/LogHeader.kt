@@ -11,7 +11,7 @@ class LogHeader(val date: Long, val maxBac: Double, val duration: Int) {
     var dateString: String
     private val durationHours: Int = duration/60
     private val durationMinuets: Int = duration%60
-    var durationString: String = "$durationHours:$durationMinuets"
+    private var durationString: String = "$durationHours:$durationMinuets"
 
     init {
         val locale = Locale.getDefault()
@@ -34,6 +34,10 @@ class LogHeader(val date: Long, val maxBac: Double, val duration: Int) {
 
     override fun equals(other: Any?): Boolean {
         return date == (other as LogHeader).date
+    }
+
+    override fun hashCode(): Int {
+        return date.hashCode()
     }
 
     override fun toString(): String {

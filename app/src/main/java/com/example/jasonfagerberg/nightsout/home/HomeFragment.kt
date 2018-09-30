@@ -19,11 +19,6 @@ import com.example.jasonfagerberg.nightsout.main.Converter
 import java.util.*
 import android.widget.RelativeLayout
 
-
-
-
-
-
 private const val TAG = "HomeFragment"
 
 class HomeFragment : Fragment(){
@@ -31,7 +26,7 @@ class HomeFragment : Fragment(){
     private lateinit var mRelativeLayout: RelativeLayout
     private lateinit var mMainActivity: MainActivity
     private val mConverter = Converter()
-    var bac = 0.000
+    private var bac = 0.000
 
     private var drinkingDuration = 0.0
     private var gramsOfAlcoholConsumed = 0.0
@@ -122,7 +117,6 @@ class HomeFragment : Fragment(){
         val linearLayoutManager = LinearLayoutManager(context)
         linearLayoutManager.orientation = LinearLayoutManager.VERTICAL
         drinksListView.layoutManager = linearLayoutManager
-        val itemDecor = DividerItemDecoration(drinksListView.context, DividerItemDecoration.VERTICAL)
 
         // set adapter
         mDrinkListAdapter = HomeFragmentDrinkListAdapter(context!!, mMainActivity.mDrinksList)
@@ -223,10 +217,10 @@ class HomeFragment : Fragment(){
     fun calculateBAC(){
         var gramsOfAlcohol = 0.0
         for (drink in mMainActivity.mDrinksList){
-            val volume = mConverter.convertDrinkVolumeToLeters(drink.amount, drink.measurement)
+            val volume = mConverter.convertDrinkVolumeToLiters(drink.amount, drink.measurement)
             val abv = drink.abv
-            val alcoholConst = 0.789
-            gramsOfAlcohol += (volume * abv * alcoholConst)
+            gramsOfAlcohol += (volume * abv )
+            Log.v(TAG, "$volume * $abv = ${volume * abv}")
         }
         gramsOfAlcoholConsumed = gramsOfAlcohol
 

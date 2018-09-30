@@ -10,9 +10,6 @@ import com.example.jasonfagerberg.nightsout.main.Drink
 import com.example.jasonfagerberg.nightsout.R
 import java.util.*
 
-// log tag
-private const val TAG = "LogFragmentAdapter"
-
 // view type identifier
 private const val DRINK = 0
 private const val HEADER = 1

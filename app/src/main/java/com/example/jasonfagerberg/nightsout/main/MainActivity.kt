@@ -1,28 +1,24 @@
 package com.example.jasonfagerberg.nightsout.main
 
 import android.app.AlertDialog
-import android.app.PendingIntent.getActivity
-import android.content.DialogInterface
-import android.support.v7.app.AppCompatActivity
+import android.content.SharedPreferences
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.support.design.widget.BottomNavigationView
 import android.support.v4.app.Fragment
+import android.support.v7.app.AppCompatActivity
 import android.util.Log
-import android.preference.PreferenceManager
-import android.content.SharedPreferences
-import android.support.v4.content.ContextCompat
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.RelativeLayout
+import com.example.jasonfagerberg.nightsout.R
 import com.example.jasonfagerberg.nightsout.addDrink.AddDrinkFragment
 import com.example.jasonfagerberg.nightsout.home.HomeFragment
 import com.example.jasonfagerberg.nightsout.log.LogFragment
-import com.example.jasonfagerberg.nightsout.profile.ProfileFragment
-import com.example.jasonfagerberg.nightsout.R
 import com.example.jasonfagerberg.nightsout.log.LogHeader
-import kotlin.collections.ArrayList
+import com.example.jasonfagerberg.nightsout.profile.ProfileFragment
 
 private const val TAG = "MainActivity"
 
@@ -36,7 +32,7 @@ class MainActivity : AppCompatActivity() {
     private val logFragment = LogFragment()
     private val profileFragment = ProfileFragment()
     val addDrinkFragment = AddDrinkFragment()
-    lateinit var botNavBar: BottomNavigationView
+    private lateinit var botNavBar: BottomNavigationView
 
     // shared pref data
     private lateinit var preferences: SharedPreferences
