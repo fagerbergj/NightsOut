@@ -33,100 +33,86 @@
         android:orientation="horizontal"
         android:paddingTop="16dp">
 
-        <LinearLayout
-            android:id="@+id/labels"
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/duration_label"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
+            android:paddingBottom="16dp"
+            android:text="@string/text_drinking_duration"
+            android:textColor="@color/colorDarkGray"
+            android:layout_alignParentStart="true"
+            android:layout_toStartOf="@+id/text_home_bac_info_duration_drinking"
+            android:textAlignment="viewStart" />
+
+        <TextView
+            android:id="@+id/text_home_bac_info_duration_drinking"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingBottom="16dp"
+            android:textColor="@color/colorDarkGray"
+            android:layout_alignParentEnd="true"
             android:paddingStart="8dp"
-            android:paddingEnd="8dp"
-            android:layout_alignParentStart="true">
+            android:paddingEnd="0dp"
+            android:textAlignment="viewEnd"
+            android:text="xx hours xx mins"
+            android:layout_alignTop="@+id/duration_label"/>
 
-            <RelativeLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingBottom="16dp"
-                    android:text="@string/text_drinking_duration"
-                    android:textColor="@color/colorDarkGray"
-                    android:layout_alignParentStart="true"
-                    android:layout_toStartOf="@+id/text_home_bac_info_duration_drinking"
-                    android:textAlignment="viewStart" />
+        <TextView
+            android:id="@+id/grams_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingBottom="16dp"
+            android:text="@string/text_grams_of_alcohol_consumed"
+            android:textColor="@color/colorDarkGray"
+            android:layout_alignParentStart="true"
+            android:layout_toStartOf="@+id/text_home_bac_info_grams_of_alc"
+            android:textAlignment="viewStart"
+            android:layout_below="@+id/duration_label"/>
 
-                <TextView
-                    android:id="@+id/text_home_bac_info_duration_drinking"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingBottom="16dp"
-                    android:textColor="@color/colorDarkGray"
-                    android:layout_alignParentEnd="true"
-                    android:paddingStart="8dp"
-                    android:paddingEnd="0dp"
-                    android:textAlignment="viewEnd"
-                    android:text="xx hours xx mins"/>
+        <TextView
+            android:id="@+id/text_home_bac_info_grams_of_alc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@id/text_home_bac_info_duration_drinking"
+            android:layout_alignTop="@+id/grams_label"
+            android:layout_alignBottom="@+id/grams_label"
+            android:layout_alignParentEnd="true"
+            android:paddingStart="8dp"
+            android:paddingEnd="0dp"
+            android:paddingBottom="16dp"
+            android:gravity="center_vertical"
+            android:text="xx grams"
+            android:textColor="@color/colorDarkGray" />
 
-            </RelativeLayout>
+        <TextView
+            android:id="@+id/sober_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingBottom="16dp"
+            android:text="@string/text_time_to_sober"
+            android:textColor="@color/colorDarkGray"
+            android:layout_toStartOf="@+id/text_home_bac_info_time_to_sober"
+            android:textAlignment="viewStart"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/grams_label"/>
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <TextView
-                    android:id="@+id/grams"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingBottom="16dp"
-                    android:text="@string/text_grams_of_alcohol_consumed"
-                    android:textColor="@color/colorDarkGray"
-                    android:layout_alignParentStart="true"
-                    android:layout_toStartOf="@+id/text_home_bac_info_grams_of_alc"
-                    android:textAlignment="viewStart" />
-
-                <TextView
-                    android:id="@+id/text_home_bac_info_grams_of_alc"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingBottom="16dp"
-                    android:text="xx grams"
-                    android:textColor="@color/colorDarkGray"
-                    android:layout_alignParentEnd="true"
-                    android:paddingStart="8dp"
-                    android:paddingEnd="0dp"
-                    android:textAlignment="viewEnd"/>
-
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingBottom="16dp"
-                    android:text="@string/text_time_to_sober"
-                    android:textColor="@color/colorDarkGray"
-                    android:layout_toStartOf="@+id/text_home_bac_info_time_to_sober"
-                    android:textAlignment="viewStart"
-                    android:layout_alignParentStart="true"/>
-
-                <TextView
-                    android:id="@+id/text_home_bac_info_time_to_sober"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingBottom="16dp"
-                    android:textColor="@color/colorDarkGray"
-                    android:text="xx hours xx mins"
-                    android:layout_alignParentEnd="true"
-                    android:paddingStart="8dp"
-                    android:paddingEnd="0dp"
-                    android:textAlignment="viewEnd"/>
-
-            </RelativeLayout>
-        </LinearLayout>
+        <TextView
+            android:id="@+id/text_home_bac_info_time_to_sober"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/text_home_bac_info_grams_of_alc"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="0dp"
+            android:paddingStart="8dp"
+            android:paddingEnd="0dp"
+            android:paddingBottom="16dp"
+            android:text="xx hours xx mins"
+            android:gravity="center_vertical"
+            android:textColor="@color/colorDarkGray"
+            android:layout_below="@+id/text_home_bac_info_grams_of_alc"
+            android:layout_alignTop="@+id/sober_label"
+            android:layout_alignBottom="@+id/sober_label"/>
 
     </RelativeLayout>
 
