@@ -180,6 +180,10 @@ class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: Ar
         val dialog = builder.create()
         dialog.show()
 
+        val title = dialogView.findViewById<TextView>(R.id.text_edit_drink_title)
+        val titleString = "Edit: ${drink.name}"
+        title.text = titleString
+
         val editName = dialogView.findViewById<EditText>(R.id.edit_edit_drink_name)
         editName.setText(drink.name)
 

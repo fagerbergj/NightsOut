@@ -8,22 +8,26 @@ class Converter {
     private val volumeConversionMap = HashMap<String, Double>()
 
     init {
-        weightConversionMap["lbs"] = 453.592
-        weightConversionMap["kg"] = 1000.0
+        weightConversionMap["lbs"] = 1.0
+        weightConversionMap["kg"] = 0.453592
 
-        volumeConversionMap["oz"] = 0.0295735
-        volumeConversionMap["ml"] = .001
-        volumeConversionMap["beers"] = 0.354882
-        volumeConversionMap["wine glasses"] = 0.147868
-        volumeConversionMap["shots"] = 0.0443603
+        volumeConversionMap["oz"] = 1.0
+        volumeConversionMap["ml"] = 0.033814
+        volumeConversionMap["beers"] = 12.0
+        volumeConversionMap["wine glasses"] = 5.0
+        volumeConversionMap["shots"] = 1.5
     }
 
-    fun convertWeightToGrams(weight: Double, weightMeasurement: String): Double{
+    fun convertWeightToLbs(weight: Double, weightMeasurement: String): Double{
         return weight * weightConversionMap[weightMeasurement]!!
     }
 
-    fun convertDrinkVolumeToLiters(amount: Double, amountMeasurement: String): Double{
+    fun convertDrinkVolumeToFluidOz(amount: Double, amountMeasurement: String): Double{
         return amount * volumeConversionMap[amountMeasurement]!!
+    }
+
+    fun convertFluidOztoGrams(foz: Double):Double{
+        return 23.3333333 * foz
     }
 
     fun convertSelectedTimeToString(selectedHour: Int, selectedMinute: Int): String{

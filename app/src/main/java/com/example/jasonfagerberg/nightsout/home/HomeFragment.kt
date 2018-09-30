@@ -118,6 +118,9 @@ class HomeFragment : Fragment(){
         linearLayoutManager.orientation = LinearLayoutManager.VERTICAL
         drinksListView.layoutManager = linearLayoutManager
 
+        val itemDecor = DividerItemDecoration(drinksListView.context, DividerItemDecoration.VERTICAL)
+        drinksListView.addItemDecoration(itemDecor)
+
         // set adapter
         mDrinkListAdapter = HomeFragmentDrinkListAdapter(context!!, mMainActivity.mDrinksList)
         //update list
@@ -215,23 +218,22 @@ class HomeFragment : Fragment(){
     }
 
     fun calculateBAC(){
-        var gramsOfAlcohol = 0.0
+        var a = 0.0
         for (drink in mMainActivity.mDrinksList){
-            val volume = mConverter.convertDrinkVolumeToLiters(drink.amount, drink.measurement)
-            val abv = drink.abv
-            gramsOfAlcohol += (volume * abv )
+            val volume = mConverter.convertDrinkVolumeToFluidOz(drink.amount, drink.measurement)
+            val abv = drink.abv/100
+            a += (volume * abv )
             Log.v(TAG, "$volume * $abv = ${volume * abv}")
         }
-        gramsOfAlcoholConsumed = gramsOfAlcohol
+        gramsOfAlcoholConsumed = mConverter.convertFluidOztoGrams(a)
 
-        val maleConst = 0.68
-        val femaleConst = 0.55
-        val weightInGrams = mConverter.convertWeightToGrams(mMainActivity.weight, mMainActivity.weightMeasurement)
+        val r = if(mMainActivity.sex!!) .73 else .66
 
-        val sexModifiedWeight = if (mMainActivity.sex!!) weightInGrams * maleConst
-        else weightInGrams * femaleConst
+        val weightInOz = mConverter.convertWeightToLbs(mMainActivity.weight, mMainActivity.weightMeasurement)
 
-        val instantBAC = 100 * (gramsOfAlcohol/sexModifiedWeight)
+        val sexModifiedWeight = weightInOz * r
+
+        val instantBAC = (a * 5.14) / sexModifiedWeight
 
         var hoursElapsed = (mMainActivity.endTimeMin - mMainActivity.startTimeMin)/60.0
         if (mMainActivity.endTimeMin < mMainActivity.startTimeMin){
@@ -241,6 +243,7 @@ class HomeFragment : Fragment(){
 
         drinkingDuration = hoursElapsed
 
+        Log.v(TAG, "a = $a w = $sexModifiedWeight h = ${(hoursElapsed * 0.015)}")
         val bacDecayPerHour = 0.015
         bac = instantBAC - (hoursElapsed * bacDecayPerHour)
         bac = if (bac < 0.0) 0.0 else bac
