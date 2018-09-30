@@ -1,8 +1,8 @@
 package com.example.jasonfagerberg.nightsout.main
 
-import android.util.Log
-
-private const val TAG = "Converter"
+//import android.util.Log
+//
+//private const val TAG = "Converter"
 class Converter {
     private val weightConversionMap = HashMap<String, Double>()
     private val volumeConversionMap = HashMap<String, Double>()
@@ -26,7 +26,7 @@ class Converter {
         return amount * volumeConversionMap[amountMeasurement]!!
     }
 
-    fun convertFluidOztoGrams(foz: Double):Double{
+    fun convertFluidOzToGrams(foz: Double):Double{
         return 23.3333333 * foz
     }
 

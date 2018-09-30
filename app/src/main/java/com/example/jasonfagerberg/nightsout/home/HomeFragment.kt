@@ -132,8 +132,18 @@ class HomeFragment : Fragment(){
         val startPicker:EditText = view.findViewById(R.id.edit_start_time)
         val endPicker: EditText = view.findViewById(R.id.edit_end_time)
 
+        if(mMainActivity.startTimeMin == -1) {
+            mMainActivity.startTimeMin = getCurrentTimeInMinuets()
+            startPicker.setText(mConverter.convertMinutesTo12HourTime(mMainActivity.startTimeMin))
+        }
+        if(mMainActivity.endTimeMin == -1){
+            mMainActivity.endTimeMin = getCurrentTimeInMinuets()
+            endPicker.setText(mConverter.convertMinutesTo12HourTime(mMainActivity.endTimeMin))
+        }
+
         if(mMainActivity.startTimeMin > -1) startPicker.setText(mConverter.convertMinutesTo12HourTime(
                 mMainActivity.startTimeMin))
+
         if(mMainActivity.endTimeMin > -1) endPicker.setText(mConverter.convertMinutesTo12HourTime(
                 mMainActivity.endTimeMin))
 
@@ -164,7 +174,8 @@ class HomeFragment : Fragment(){
                 }, hour, minute, false)
 
         mTimePicker.setButton(DialogInterface.BUTTON_NEUTRAL, "Now") { _, _ ->
-            mMainActivity.startTimeMin = getCurrentTimeInMinuetsAndSetEditText(startPicker)
+            mMainActivity.startTimeMin = getCurrentTimeInMinuets()
+            startPicker.setText(mConverter.convertMinutesTo12HourTime(mMainActivity.startTimeMin))
             calculateBAC()
         }
 
@@ -190,7 +201,8 @@ class HomeFragment : Fragment(){
                 }, hour, minute, false)
 
         mTimePicker.setButton(DialogInterface.BUTTON_NEUTRAL, "Now") { _, _ ->
-            mMainActivity.endTimeMin = getCurrentTimeInMinuetsAndSetEditText(endPicker)
+            mMainActivity.endTimeMin = getCurrentTimeInMinuets()
+            endPicker.setText(mConverter.convertMinutesTo12HourTime(mMainActivity.endTimeMin))
             calculateBAC()
         }
 
@@ -198,13 +210,12 @@ class HomeFragment : Fragment(){
         mTimePicker.show()
     }
 
-    private fun getCurrentTimeInMinuetsAndSetEditText(pickerDisplay: EditText): Int{
+    private fun getCurrentTimeInMinuets(): Int{
         val calendar = GregorianCalendar.getInstance()
         val date = Date()
         calendar.time = date
         val curHour = calendar.get(Calendar.HOUR_OF_DAY)
         val curMin = calendar.get(Calendar.MINUTE)
-        pickerDisplay.setText(mConverter.convertSelectedTimeToString(curHour, curMin))
         return mConverter.convert24HourTimeToMinutes(curHour, curMin)
     }
 
@@ -225,7 +236,7 @@ class HomeFragment : Fragment(){
             a += (volume * abv )
             Log.v(TAG, "$volume * $abv = ${volume * abv}")
         }
-        gramsOfAlcoholConsumed = mConverter.convertFluidOztoGrams(a)
+        gramsOfAlcoholConsumed = mConverter.convertFluidOzToGrams(a)
 
         val r = if(mMainActivity.sex!!) .73 else .66
 
