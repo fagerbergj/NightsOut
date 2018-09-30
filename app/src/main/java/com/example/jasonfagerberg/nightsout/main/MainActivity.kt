@@ -36,7 +36,7 @@ class MainActivity : AppCompatActivity() {
     private val logFragment = LogFragment()
     private val profileFragment = ProfileFragment()
     val addDrinkFragment = AddDrinkFragment()
-    private lateinit var botNavBar: BottomNavigationView
+    lateinit var botNavBar: BottomNavigationView
 
     // shared pref data
     private lateinit var preferences: SharedPreferences

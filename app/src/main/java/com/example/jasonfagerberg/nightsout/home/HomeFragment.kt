@@ -17,6 +17,11 @@ import com.example.jasonfagerberg.nightsout.main.MainActivity
 import com.example.jasonfagerberg.nightsout.R
 import com.example.jasonfagerberg.nightsout.main.Converter
 import java.util.*
+import android.widget.RelativeLayout
+
+
+
+
 
 
 private const val TAG = "HomeFragment"
@@ -118,7 +123,6 @@ class HomeFragment : Fragment(){
         linearLayoutManager.orientation = LinearLayoutManager.VERTICAL
         drinksListView.layoutManager = linearLayoutManager
         val itemDecor = DividerItemDecoration(drinksListView.context, DividerItemDecoration.VERTICAL)
-        drinksListView.addItemDecoration(itemDecor)
 
         // set adapter
         mDrinkListAdapter = HomeFragmentDrinkListAdapter(context!!, mMainActivity.mDrinksList)
