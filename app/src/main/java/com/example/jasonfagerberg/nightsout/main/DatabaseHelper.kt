@@ -14,7 +14,8 @@ private const val TAG = "DatabaseHelper"
 class DatabaseHelper(val context: Context?, val name: String?, factory: SQLiteDatabase.CursorFactory?,
                             val version: Int) : SQLiteOpenHelper(context, name, factory, version) {
 
-    private val path = context!!.getDatabasePath(name).toString()
+    //private val path = context!!.getDatabasePath(name).toString()
+    private val path = "data/data/com.example.jasonfagerberg.nightsout/$name"
     private lateinit var db: SQLiteDatabase
     private lateinit var mMainActivity: MainActivity
 
@@ -39,18 +40,15 @@ class DatabaseHelper(val context: Context?, val name: String?, factory: SQLiteDa
 
     private fun createDatabase(){
         Log.v(TAG, "createDatabase()...called")
-        try {
-            copyDatabase()
-        } catch (e: IOException) {
-            throw Error("Error copying database")
-        }
+        copyDatabase()
 
     }
 
     private fun copyDatabase(){
         Log.v(TAG, "copy")
         val inputStream = context!!.assets.open(name!!)
-        val outputStream = FileOutputStream(context.getDatabasePath(name))
+        Log.v(TAG, path)
+        val outputStream = FileOutputStream(path)
 
         val buffer = ByteArray(1024)
         while (inputStream.read(buffer) > 0) {
