@@ -48,14 +48,14 @@
             android:id="@+id/text_home_bac_info_duration_drinking"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingBottom="16dp"
-            android:textColor="@color/colorDarkGray"
+            android:layout_alignTop="@+id/duration_label"
             android:layout_alignParentEnd="true"
             android:paddingStart="8dp"
-            android:paddingEnd="0dp"
-            android:textAlignment="viewEnd"
+            android:paddingEnd="2dp"
+            android:paddingBottom="16dp"
             android:text="xx hours xx mins"
-            android:layout_alignTop="@+id/duration_label"/>
+            android:textAlignment="viewEnd"
+            android:textColor="@color/colorDarkGray" />
 
 
         <TextView
@@ -101,18 +101,17 @@
             android:id="@+id/text_home_bac_info_time_to_sober"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_below="@+id/text_home_bac_info_grams_of_alc"
             android:layout_alignStart="@+id/text_home_bac_info_grams_of_alc"
+            android:layout_alignTop="@+id/sober_label"
+            android:layout_alignBottom="@+id/sober_label"
             android:layout_alignParentEnd="true"
-            android:layout_marginStart="0dp"
+            android:gravity="center_vertical"
             android:paddingStart="8dp"
-            android:paddingEnd="0dp"
+            android:paddingEnd="2dp"
             android:paddingBottom="16dp"
             android:text="xx hours xx mins"
-            android:gravity="center_vertical"
-            android:textColor="@color/colorDarkGray"
-            android:layout_below="@+id/text_home_bac_info_grams_of_alc"
-            android:layout_alignTop="@+id/sober_label"
-            android:layout_alignBottom="@+id/sober_label"/>
+            android:textColor="@color/colorDarkGray" />
 
     </RelativeLayout>
 

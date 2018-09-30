@@ -266,7 +266,9 @@ class HomeFragment : Fragment(){
         dialog.findViewById<TextView>(R.id.text_home_dialog_bac_info_title).text = bacInfoTitleString
 
         var hoursMin = mConverter.convertDecimalTimeToHoursAndMinuets(drinkingDuration)
-        val durationString =  "${hoursMin.first} hours  ${hoursMin.second} min"
+        Log.v(TAG, "$drinkingDuration")
+        var hoursMinStrings = mConverter.convertHoursAndMinuetsIntoTwoDigitStrings(hoursMin)
+        val durationString =  "${hoursMinStrings.first} hours  ${hoursMinStrings.second} min"
         dialog.findViewById<TextView>(R.id.text_home_bac_info_duration_drinking).text = durationString
 
         val gramsString = String.format("%.2f", gramsOfAlcoholConsumed) + " grams"
@@ -274,7 +276,8 @@ class HomeFragment : Fragment(){
 
         val hoursToSober = if ((bac - 0.04) / 0.015 < 0) 0.0 else (bac - 0.04)/0.015
         hoursMin = mConverter.convertDecimalTimeToHoursAndMinuets(hoursToSober)
-        val hoursToSoberString = "${hoursMin.first} hours  ${hoursMin.second} min"
+        hoursMinStrings = mConverter.convertHoursAndMinuetsIntoTwoDigitStrings(hoursMin)
+        val hoursToSoberString = "${hoursMinStrings.first} hours  ${hoursMinStrings.second} min"
         dialog.findViewById<TextView>(R.id.text_home_bac_info_time_to_sober).text = hoursToSoberString
 
     }

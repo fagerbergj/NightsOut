@@ -60,12 +60,19 @@ class Converter {
     }
 
     fun convertDecimalTimeToHoursAndMinuets(time: Double):Pair<Int, Int>{
-        var t = (100 * time * 60).toInt()
-
-        val hour = t / 3600
-        t %= 3600
-        val min = t / 60
+        val hour = time.toInt()
+        val min = ((((time - hour) * 100) * 60) / 100).toInt()
 
         return Pair(hour, min)
+    }
+
+    fun convertHoursAndMinuetsIntoTwoDigitStrings(hoursMin: Pair<Int, Int>): Pair<String, String>{
+        val hours = if (hoursMin.first < 10) "0${hoursMin.first}"
+                    else hoursMin.first.toString()
+
+        val min = if (hoursMin.second < 10) "0${hoursMin.second}"
+                    else hoursMin.second.toString()
+
+        return Pair(hours, min)
     }
 }
