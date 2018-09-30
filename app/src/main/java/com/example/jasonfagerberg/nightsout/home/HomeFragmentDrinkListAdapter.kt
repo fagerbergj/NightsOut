@@ -36,9 +36,13 @@ class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: Ar
     // When view is rendered bind the correct holder to it
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val drink = mDrinksList[position]
-        // fixme set picture based on abv
-        holder.image.setImageBitmap(BitmapFactory.decodeResource(mContext.resources,
-                    R.mipmap.beer))
+        if(drink.abv > 20){
+            holder.image.setImageBitmap(BitmapFactory.decodeResource(mContext.resources, R.mipmap.cocktail))
+        } else if (drink.abv > 9.5){
+            holder.image.setImageBitmap(BitmapFactory.decodeResource(mContext.resources, R.mipmap.wine))
+        } else {
+            holder.image.setImageBitmap(BitmapFactory.decodeResource(mContext.resources, R.mipmap.beer))
+        }
         holder.name.text = drink.name
 
         val abv = "ABV: " + "%.1f".format(drink.abv) + "%"
