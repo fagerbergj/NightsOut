@@ -24,7 +24,7 @@ import java.util.*
 private const val TAG = "MainActivity"
 
 private const val DB_NAME = "nights_out_db.db"
-private const val DB_VERSION = 27
+private const val DB_VERSION = 33
 
 class MainActivity : AppCompatActivity() {
 

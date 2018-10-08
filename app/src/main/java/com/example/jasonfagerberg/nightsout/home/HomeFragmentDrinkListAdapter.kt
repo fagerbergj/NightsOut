@@ -139,13 +139,11 @@ class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: Ar
 
         if(position <= mDrinksList.size/2){
             mDrinksList.add(position + 1, copy)
-            copy.modifiedTime++
             notifyItemInserted(position + 1)
             notifyItemRangeChanged(position + 1, mDrinksList.size)
         }
         else{
             mDrinksList.add(position, copy)
-            copy.modifiedTime--
             notifyItemInserted(position)
             notifyItemRangeChanged(position, mDrinksList.size)
         }

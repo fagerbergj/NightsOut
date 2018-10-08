@@ -7,6 +7,7 @@ import android.util.Log
 import com.example.jasonfagerberg.nightsout.log.LogHeader
 import java.io.File
 import java.io.FileOutputStream
+import java.io.IOException
 
 private const val TAG = "DatabaseHelper"
 
@@ -31,7 +32,7 @@ class DatabaseHelper(val context: Context?, val name: String?, factory: SQLiteDa
 
         if (db.version != version) {
             onUpgrade(db, db.version, version)
-            //db = SQLiteDatabase.openDatabase(path, null, SQLiteDatabase.OPEN_READWRITE)
+            db = SQLiteDatabase.openDatabase(path, null, SQLiteDatabase.OPEN_READWRITE)
         }
 
         mMainActivity = context as MainActivity
@@ -39,7 +40,11 @@ class DatabaseHelper(val context: Context?, val name: String?, factory: SQLiteDa
 
     private fun createDatabase(){
         Log.v(TAG, "createDatabase()...called")
-        copyDatabase()
+        try {
+            copyDatabase()
+        } catch (e: IOException) {
+            throw Error("Error copying database")
+        }
 
     }
 
@@ -70,8 +75,26 @@ class DatabaseHelper(val context: Context?, val name: String?, factory: SQLiteDa
 
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
         Log.v(TAG, "OnUpgrade....called")
+        dropAllTables()
+        rebuildTables()
         createDatabase()
         db!!.version = newVersion
+    }
+
+    private fun dropAllTables(){
+        db.execSQL("DROP TABLE drinks")
+        db.execSQL("DROP TABLE current_session_drinks")
+        db.execSQL("DROP TABLE favorites")
+        db.execSQL("DROP TABLE log")
+        db.execSQL("DROP TABLE log_drink")
+    }
+
+    private fun rebuildTables(){
+        db.execSQL("CREATE TABLE \"current_session_drinks\" ( `drink_id` INTEGER, `position` INTEGER )")
+        db.execSQL("CREATE TABLE \"drinks\" ( `id` INTEGER PRIMARY KEY AUTOINCREMENT, `name` TEXT, `abv` NUMERIC, `amount` NUMERIC, `measurement` TEXT, `recent` INTEGER, `modifiedTime` INTEGER )")
+        db.execSQL("CREATE TABLE `favorites` ( `drink_name` TEXT, `origin_id` INTEGER )")
+        db.execSQL("CREATE TABLE \"log\" ( `id` INTEGER, `date` NUMERIC UNIQUE, `max_bac` NUMERIC, `duration` INTEGER, PRIMARY KEY(`id`) )")
+        db.execSQL("CREATE TABLE `log_drink` ( `log_id` INTEGER, `drink_id` INTEGER )")
     }
 
     fun pullDrinks(){
@@ -82,7 +105,7 @@ class DatabaseHelper(val context: Context?, val name: String?, factory: SQLiteDa
 
         val table = "drinks, current_session_drinks"
         val where = "drinks.id=current_session_drinks.drink_id"
-        val order = "drinks.modifiedTime ASC"
+        val order = "current_session_drinks.position ASC"
         val cursor = db.query(table, null, where, null, null, null, order, null)
         while (cursor.moveToNext()){
             val id = cursor.getInt(cursor.getColumnIndex("id"))
@@ -179,8 +202,9 @@ class DatabaseHelper(val context: Context?, val name: String?, factory: SQLiteDa
     fun pushDrinks(){
         Log.v(TAG, "pushDrinks()...called")
         deleteAllRowsInCurrentSessionTable()
-        for(drink in mMainActivity.mDrinksList){
-            insertRowInCurrentSessionTable(drink.id)
+        for(i in mMainActivity.mDrinksList.indices){
+            val drink = mMainActivity.mDrinksList[i]
+            insertRowInCurrentSessionTable(drink.id, i)
             updateRowInDrinksTable(drink)
             if(drink.favorited && !isFavoritedInDB(drink.name)){
                 insertRowInFavoritesTable(drink.name, drink.id)
@@ -199,8 +223,8 @@ class DatabaseHelper(val context: Context?, val name: String?, factory: SQLiteDa
         Log.v(TAG, sql)
     }
 
-    private fun insertRowInCurrentSessionTable(id: Int){
-        val sql = "INSERT INTO current_session_drinks VALUES ($id)"
+    private fun insertRowInCurrentSessionTable(id: Int, pos:Int){
+        val sql = "INSERT INTO current_session_drinks VALUES ($id, $pos)"
         db.execSQL(sql)
         Log.v(TAG, sql)
     }
