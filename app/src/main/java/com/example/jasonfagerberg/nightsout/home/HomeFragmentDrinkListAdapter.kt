@@ -202,6 +202,7 @@ class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: Ar
         dialog.findViewById<MaterialButton>(R.id.btn_edit_drink_edit).setOnClickListener{ _ ->
             onDialogEditClick(drink, editName, editABV, editAmount, dropdown)
             this.notifyItemChanged(position)
+            drink.modifiedTime = mMainActivity.getTimeNow()
             dismissDialog(dialog)
         }
     }
