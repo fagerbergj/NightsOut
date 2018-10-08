@@ -135,15 +135,17 @@ class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: Ar
 
     private fun onAddAnotherClicked(position: Int){
         val d = mDrinksList[position]
-        val copy = Drink(d.id, d.name, d.abv, d.amount, d.measurement, d.favorited, d.recent)
+        val copy = Drink(d.id, d.name, d.abv, d.amount, d.measurement, d.favorited, d.recent, d.modifiedTime)
 
         if(position <= mDrinksList.size/2){
             mDrinksList.add(position + 1, copy)
+            copy.modifiedTime++
             notifyItemInserted(position + 1)
             notifyItemRangeChanged(position + 1, mDrinksList.size)
         }
         else{
             mDrinksList.add(position, copy)
+            copy.modifiedTime--
             notifyItemInserted(position)
             notifyItemRangeChanged(position, mDrinksList.size)
         }
@@ -208,7 +210,8 @@ class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: Ar
 
     private fun onDialogEditClick(drink: Drink, editName: EditText, editABV: EditText,
                                   editAmount: EditText, dropdown: Spinner){
-        val other = Drink(drink.id, drink.name, drink.abv, drink.amount, drink.measurement, false, false)
+        val other = Drink(drink.id, drink.name, drink.abv, drink.amount, drink.measurement,
+                false, false, mMainActivity.getTimeNow())
         //pad 0s to end
         if(!editABV.text.isEmpty() && "${editABV.text}"["${editABV.text}".length-1] == '.'){
             val padded = "${editABV.text}0"

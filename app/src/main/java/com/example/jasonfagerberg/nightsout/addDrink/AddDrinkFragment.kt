@@ -42,7 +42,7 @@ class AddDrinkFragment : Fragment() {
 
         // spinner setup
         val dropdown: Spinner = view.findViewById(R.id.spinner_add_drink_amount)
-        val items = arrayOf("oz", "beers", "shots", "wine glasses")
+        val items = arrayOf("oz", "ml", "beers", "shots", "wine glasses")
         val adapter = ArrayAdapter(context!!, android.R.layout.simple_spinner_dropdown_item, items)
         dropdown.adapter = adapter
 
@@ -178,7 +178,7 @@ class AddDrinkFragment : Fragment() {
     }
 
     private fun buildDrinkAndAddToList(name: String, abv: Double, amount: Double, measurement: String){
-        val drink = Drink(-1, name, abv, amount, measurement, mFavorited, true)
+        val drink = Drink(-1, name, abv, amount, measurement, mFavorited, true, mMainActivity.getTimeNow())
 
         setDrinkId(drink)
         setDrinkFavorited(drink)
@@ -235,8 +235,16 @@ class AddDrinkFragment : Fragment() {
     private fun addToDrinkList(drink: Drink){
         mMainActivity.mDrinksList.add(drink)
 
-        mMainActivity.mRecentsList.remove(drink)
+        if(mMainActivity.mRecentsList.contains(drink)){
+            mMainActivity.mRecentsList[mMainActivity.mRecentsList.indexOf(drink)].recent = false
+            mMainActivity.mRecentsList.remove(drink)
+        }
         mMainActivity.mRecentsList.add(0, drink)
+
+        if (mMainActivity.mRecentsList.size > 25){
+            mMainActivity.mRecentsList[mMainActivity.mRecentsList.size - 1].recent = false
+            mMainActivity.mRecentsList.removeAt(mMainActivity.mRecentsList.size - 1)
+        }
 
         if(drink.favorited){
             addToFavoritesList(drink)

@@ -134,17 +134,17 @@ class HomeFragment : Fragment(){
 
         if(mMainActivity.startTimeMin == -1) {
             mMainActivity.startTimeMin = getCurrentTimeInMinuets()
-            startPicker.setText(mConverter.convertMinutesTo12HourTime(mMainActivity.startTimeMin))
+            startPicker.setText(mConverter.convertTimeTo12HourTime(mMainActivity.startTimeMin))
         }
         if(mMainActivity.endTimeMin == -1){
             mMainActivity.endTimeMin = getCurrentTimeInMinuets()
-            endPicker.setText(mConverter.convertMinutesTo12HourTime(mMainActivity.endTimeMin))
+            endPicker.setText(mConverter.convertTimeTo12HourTime(mMainActivity.endTimeMin))
         }
 
-        if(mMainActivity.startTimeMin > -1) startPicker.setText(mConverter.convertMinutesTo12HourTime(
+        if(mMainActivity.startTimeMin > -1) startPicker.setText(mConverter.convertTimeTo12HourTime(
                 mMainActivity.startTimeMin))
 
-        if(mMainActivity.endTimeMin > -1) endPicker.setText(mConverter.convertMinutesTo12HourTime(
+        if(mMainActivity.endTimeMin > -1) endPicker.setText(mConverter.convertTimeTo12HourTime(
                 mMainActivity.endTimeMin))
 
         startPicker.setOnClickListener{ _ ->
@@ -167,7 +167,7 @@ class HomeFragment : Fragment(){
         val mTimePicker: TimePickerDialog
         mTimePicker = TimePickerDialog(context!!,
                 TimePickerDialog.OnTimeSetListener { _ , selectedHour, selectedMinute ->
-                    startPicker.setText(mConverter.convertSelectedTimeToString(selectedHour, selectedMinute))
+                    startPicker.setText(mConverter.convertTimeTo12HourString(selectedHour, selectedMinute))
                     mMainActivity.startTimeMin = mConverter.convert24HourTimeToMinutes(selectedHour, selectedMinute)
                     if(mMainActivity.endTimeMin == -1) mMainActivity.endTimeMin = mMainActivity.startTimeMin
                     calculateBAC()
@@ -175,7 +175,7 @@ class HomeFragment : Fragment(){
 
         mTimePicker.setButton(DialogInterface.BUTTON_NEUTRAL, "Now") { _, _ ->
             mMainActivity.startTimeMin = getCurrentTimeInMinuets()
-            startPicker.setText(mConverter.convertMinutesTo12HourTime(mMainActivity.startTimeMin))
+            startPicker.setText(mConverter.convertTimeTo12HourTime(mMainActivity.startTimeMin))
             calculateBAC()
         }
 
@@ -195,14 +195,14 @@ class HomeFragment : Fragment(){
         val mTimePicker: TimePickerDialog
         mTimePicker = TimePickerDialog(context!!,
                 TimePickerDialog.OnTimeSetListener { _ , selectedHour, selectedMinute ->
-                    endPicker.setText(mConverter.convertSelectedTimeToString(selectedHour, selectedMinute))
+                    endPicker.setText(mConverter.convertTimeTo12HourString(selectedHour, selectedMinute))
                     mMainActivity.endTimeMin = mConverter.convert24HourTimeToMinutes(selectedHour, selectedMinute)
                     calculateBAC()
                 }, hour, minute, false)
 
         mTimePicker.setButton(DialogInterface.BUTTON_NEUTRAL, "Now") { _, _ ->
             mMainActivity.endTimeMin = getCurrentTimeInMinuets()
-            endPicker.setText(mConverter.convertMinutesTo12HourTime(mMainActivity.endTimeMin))
+            endPicker.setText(mConverter.convertTimeTo12HourTime(mMainActivity.endTimeMin))
             calculateBAC()
         }
 

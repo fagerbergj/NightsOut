@@ -19,11 +19,12 @@ import com.example.jasonfagerberg.nightsout.home.HomeFragment
 import com.example.jasonfagerberg.nightsout.log.LogFragment
 import com.example.jasonfagerberg.nightsout.log.LogHeader
 import com.example.jasonfagerberg.nightsout.profile.ProfileFragment
+import java.util.*
 
 private const val TAG = "MainActivity"
 
 private const val DB_NAME = "nights_out_db.db"
-private const val DB_VERSION = 23
+private const val DB_VERSION = 27
 
 class MainActivity : AppCompatActivity() {
 
@@ -203,6 +204,10 @@ class MainActivity : AppCompatActivity() {
         val params = RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,
                 RelativeLayout.LayoutParams.MATCH_PARENT)
         findViewById<FrameLayout>(R.id.main_frame).layoutParams = params
+    }
+
+    fun getTimeNow():Long{
+        return Calendar.getInstance().time.time
     }
 
     override fun onBackPressed() {

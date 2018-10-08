@@ -30,7 +30,7 @@ class Converter {
         return 23.3333333 * foz
     }
 
-    fun convertSelectedTimeToString(selectedHour: Int, selectedMinute: Int): String{
+    fun convertTimeTo12HourString(selectedHour: Int, selectedMinute: Int): String{
         val timePeriod: String
         var displayHour = selectedHour
         var displayMinuet = selectedMinute.toString()
@@ -45,7 +45,7 @@ class Converter {
         return "$displayHour:$displayMinuet $timePeriod"
     }
 
-    fun convertMinutesTo12HourTime(min: Int): String{
+    fun convertTimeTo12HourTime(min: Int): String{
         var hour = min/60
         val minutes = min%60
         val timePeriod: String
