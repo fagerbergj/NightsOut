@@ -51,11 +51,11 @@ RecyclerView.Adapter<LogFragmentAdapter.ViewHolder>() {
 
                 holder.day!!.text = header.dateString
 
-                val duration = "Duration: ${header.duration}"
+                val duration = "Duration: ${header.durationString}"
                 holder.duration!!.text = duration
 
-                val maxBac = "Max bac: ${header.maxBac}"
-                holder.maxBAC!!.text = maxBac
+                val bac = "Bac: ${"%.3f".format(header.bac)}"
+                holder.bac!!.text = bac
             }
         }
     }
@@ -83,6 +83,6 @@ RecyclerView.Adapter<LogFragmentAdapter.ViewHolder>() {
         // header views
         internal var day: TextView ?= itemView.findViewById(R.id.text_log_day)
         internal var duration: TextView ?= itemView.findViewById(R.id.text_log_duration)
-        internal var maxBAC: TextView ?= itemView.findViewById(R.id.text_log_max_BAC)
+        internal var bac: TextView ?= itemView.findViewById(R.id.text_log_BAC)
     }
 }

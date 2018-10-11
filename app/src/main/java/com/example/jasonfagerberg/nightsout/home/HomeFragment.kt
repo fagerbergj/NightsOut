@@ -18,6 +18,10 @@ import com.example.jasonfagerberg.nightsout.R
 import com.example.jasonfagerberg.nightsout.main.Converter
 import java.util.*
 import android.widget.RelativeLayout
+import android.widget.DatePicker
+import android.app.DatePickerDialog
+import com.example.jasonfagerberg.nightsout.log.LogHeader
+
 
 private const val TAG = "HomeFragment"
 
@@ -82,23 +86,19 @@ class HomeFragment : Fragment(){
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         val resId = item?.itemId
         if(resId == R.id.btn_toolbar_home_done){
-            val dialogClickListener = DialogInterface.OnClickListener { _, which ->
-                when (which) {
-                    DialogInterface.BUTTON_POSITIVE -> {
-                        //Yes is pressed
-                        // todo push new log and log drinks
-                        val toast = Toast.makeText(activity!!.applicationContext,
-                                "Session Logged ", Toast.LENGTH_SHORT)
-                        toast.setGravity(Gravity.CENTER, 0, 0)
-                        toast.show()
-                    }
-                    DialogInterface.BUTTON_NEGATIVE -> {/* no action for clicking no */ }
-                }
+            val myCalendar = Calendar.getInstance()
+            val date = DatePickerDialog.OnDateSetListener { _ , year, monthOfYear, dayOfMonth ->
+                myCalendar.set(Calendar.YEAR, year)
+                myCalendar.set(Calendar.MONTH, monthOfYear)
+                myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
+                mMainActivity.mLogHeaders.add(LogHeader(myCalendar.timeInMillis, bac, drinkingDuration))
+                Log.v(TAG, "time to epoch: ${myCalendar.timeInMillis}, bac $bac, duration $drinkingDuration")
             }
-            //Build Actual box
-            val builder = AlertDialog.Builder(context!!)
-            builder.setMessage("Log Session?").setPositiveButton("Yes", dialogClickListener)
-                    .setNegativeButton("No", dialogClickListener).show()
+
+            val dp = DatePickerDialog(context!!, date, myCalendar.get(Calendar.YEAR),
+                    myCalendar.get(Calendar.MONTH), myCalendar.get(Calendar.DAY_OF_MONTH))
+            dp.setTitle("Log Day")
+            dp.show()
         }
         return true
     }

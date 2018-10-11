@@ -6,7 +6,6 @@ import android.support.v4.content.ContextCompat
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.util.DisplayMetrics
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -102,12 +101,13 @@ class LogFragment : Fragment() {
     }
 
     private fun setLogListBasedOnDay(date: Long){
-        val index = mMainActivity.mLogHeaders.indexOf(LogHeader(date, 0.0, 0 ))
+        val index = mMainActivity.mLogHeaders.indexOf(LogHeader(date, 0.0, 0.0 ))
+        Log.v(TAG, "date: $date index: $index")
         if(index >= 0){
             mLogList.add(mMainActivity.mLogHeaders[index])
             mLogList.addAll( mMainActivity.mDatabaseHelper.getLoggedDrinks(date))
         }else{
-            mLogList.add(LogHeader(date, 0.0, 0 ))
+            mLogList.add(LogHeader(date, 0.0, 0.0 ))
         }
         mLogFragmentAdapter.notifyDataSetChanged()
         mLogListView.layoutManager?.scrollToPosition(0)

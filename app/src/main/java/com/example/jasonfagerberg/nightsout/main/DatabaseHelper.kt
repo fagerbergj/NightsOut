@@ -191,7 +191,7 @@ class DatabaseHelper(val context: Context?, val name: String?, factory: SQLiteDa
         while (cursor.moveToNext()){
             val date = cursor.getLong(cursor.getColumnIndex("date"))
             val maxBac = cursor.getDouble(cursor.getColumnIndex("max_bac"))
-            val duration = cursor.getInt(cursor.getColumnIndex("duration"))
+            val duration = cursor.getDouble(cursor.getColumnIndex("duration"))
             mMainActivity.mLogHeaders.add(LogHeader(date, maxBac, duration))
             //Log.v(TAG, logHeaders[logHeaders.size-1].toString())
         }
