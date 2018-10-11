@@ -104,8 +104,9 @@ class LogFragment : Fragment() {
         val index = mMainActivity.mLogHeaders.indexOf(LogHeader(date, 0.0, 0.0 ))
         Log.v(TAG, "date: $date index: $index")
         if(index >= 0){
-            mLogList.add(mMainActivity.mLogHeaders[index])
-            mLogList.addAll( mMainActivity.mDatabaseHelper.getLoggedDrinks(date))
+            val header = mMainActivity.mLogHeaders[index]
+            mLogList.add(header)
+            mLogList.addAll( mMainActivity.mDatabaseHelper.getLoggedDrinks(header.date))
         }else{
             mLogList.add(LogHeader(date, 0.0, 0.0 ))
         }

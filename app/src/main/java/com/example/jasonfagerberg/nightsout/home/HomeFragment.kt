@@ -90,6 +90,7 @@ class HomeFragment : Fragment(){
                 myCalendar.set(Calendar.MONTH, monthOfYear)
                 myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
                 mMainActivity.mLogHeaders.add(LogHeader(myCalendar.timeInMillis, bac, drinkingDuration))
+                mMainActivity.mDatabaseHelper.pushDrinksToLogDrinks(myCalendar.timeInMillis)
                 Log.v(TAG, "time to epoch: ${myCalendar.timeInMillis}, bac $bac, duration $drinkingDuration")
             }
 
