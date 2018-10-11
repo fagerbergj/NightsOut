@@ -56,4 +56,8 @@
     <string name="disclaimer">Disclaimer</string>
     <string name="clear_all_logs">Clear All Logs</string>
     <string name="clear_selected_day_logs">Clear Logs for Selected Day</string>
+    <string name="overwrite_log">Overwrite Log</string>
+    <string name="cancel">Cancel</string>
+    <string name="append">Append</string>
+    <string name="overwrite">Overwrite</string>
 </resources>

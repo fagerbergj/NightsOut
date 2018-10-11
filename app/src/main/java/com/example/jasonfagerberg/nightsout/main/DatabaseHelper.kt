@@ -289,7 +289,6 @@ class DatabaseHelper(val context: Context?, val name: String?, factory: SQLiteDa
         val cursor = db.query("log_drink", null, where, whereArgs, null, null, null)
         while (cursor.moveToNext()){
             val drinkId = cursor.getInt(cursor.getColumnIndex("drink_id"))
-            Log.v(TAG, "$drinkId")
             drinks.add(getDrinkFromId(drinkId)!!)
         }
         cursor.close()
@@ -319,7 +318,7 @@ class DatabaseHelper(val context: Context?, val name: String?, factory: SQLiteDa
     fun pushDrinksToLogDrinks(date: Long){
         for (drink in mMainActivity.mDrinksList){
             val sql = "INSERT INTO log_drink VALUES ($date, ${drink.id})"
-            Log.v(TAG, sql)
+            Log.i(TAG, sql)
             db.execSQL(sql)
         }
     }

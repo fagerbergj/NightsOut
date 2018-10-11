@@ -19,6 +19,7 @@ import java.util.*
 import android.widget.RelativeLayout
 import android.app.DatePickerDialog
 import com.example.jasonfagerberg.nightsout.log.LogHeader
+import java.text.SimpleDateFormat
 
 
 private const val TAG = "HomeFragment"
@@ -84,22 +85,85 @@ class HomeFragment : Fragment(){
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         val resId = item?.itemId
         if(resId == R.id.btn_toolbar_home_done){
-            val myCalendar = Calendar.getInstance()
-            val date = DatePickerDialog.OnDateSetListener { _ , year, monthOfYear, dayOfMonth ->
-                myCalendar.set(Calendar.YEAR, year)
-                myCalendar.set(Calendar.MONTH, monthOfYear)
-                myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
-                mMainActivity.mLogHeaders.add(LogHeader(myCalendar.timeInMillis, bac, drinkingDuration))
-                mMainActivity.mDatabaseHelper.pushDrinksToLogDrinks(myCalendar.timeInMillis)
-                Log.v(TAG, "time to epoch: ${myCalendar.timeInMillis}, bac $bac, duration $drinkingDuration")
-            }
-
-            val dp = DatePickerDialog(context!!, date, myCalendar.get(Calendar.YEAR),
-                    myCalendar.get(Calendar.MONTH), myCalendar.get(Calendar.DAY_OF_MONTH))
-            dp.setTitle("Log Day")
-            dp.show()
+            showDatePicker()
         }
         return true
+    }
+
+    private fun showDatePicker(){
+        val calendar = Calendar.getInstance()
+        val date = DatePickerDialog.OnDateSetListener { _ , year, monthOfYear, dayOfMonth ->
+            calendar.set(Calendar.YEAR, year)
+            calendar.set(Calendar.MONTH, monthOfYear)
+            calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
+            mMainActivity.mLogHeaders.add(LogHeader(calendar.timeInMillis, bac, drinkingDuration))
+            mMainActivity.mDatabaseHelper.pushDrinksToLogDrinks(calendar.timeInMillis)
+        }
+
+        val dp = DatePickerDialog(context!!, date, calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH))
+        dp.setButton(DatePickerDialog.BUTTON_POSITIVE, "OK") { _ , _ ->
+            val testHeader = LogHeader(calendar.timeInMillis, 0.0, 0.0)
+            if (testHeader in mMainActivity.mLogHeaders){
+                showOverrideLogDialog(calendar)
+            }else{
+                mMainActivity.mLogHeaders.add(LogHeader(calendar.timeInMillis, bac, drinkingDuration))
+                val monthString = SimpleDateFormat("MMM", Locale.getDefault()).format(calendar.time)
+                val message = "Log created on $monthString ${calendar.get(Calendar.DAY_OF_MONTH)}, " +
+                        "${calendar.get(Calendar.YEAR)}"
+                showToast(message)
+            }
+        }
+
+        dp.setTitle("Log Day")
+        dp.show()
+    }
+
+    private fun showToast(message: String){
+        val toast = Toast.makeText(context!!, message, Toast.LENGTH_LONG)
+        toast.setGravity(Gravity.CENTER, 0, 450)
+        toast.show()
+    }
+
+    private fun showOverrideLogDialog(calendar: Calendar){
+        val builder = android.app.AlertDialog.Builder(view!!.context)
+        val parent:ViewGroup? = null
+        val dialogView = mMainActivity.layoutInflater
+                .inflate(R.layout.fragment_home_overwrite_log_dialog, parent, false)
+
+        val monthString = SimpleDateFormat("MMM", Locale.getDefault()).format(calendar.time)
+        var message = "There is already a log on $monthString ${calendar.get(Calendar.DAY_OF_MONTH)}," +
+                " ${calendar.get(Calendar.YEAR)}.\nWould you like to overwrite it?"
+        dialogView.findViewById<TextView>(R.id.text_home_dialog_overwrite_log_body).text = message
+
+        builder.setView(dialogView)
+        val dialog = builder.create()
+        dialog.setCancelable(false)
+        dialog.show()
+
+        dialogView.findViewById<Button>(R.id.btn_home_dialog_overwrite_log_cancel)
+                .setOnClickListener { _ ->
+                    showDatePicker()
+                    dialog.dismiss()
+                }
+
+        dialogView.findViewById<Button>(R.id.btn_home_dialog_overwrite_log_overwrite)
+                .setOnClickListener { _ ->
+                    //todo implement behavior: delete log drinks, add all current drinks
+                    message = "Log on $monthString ${calendar.get(Calendar.DAY_OF_MONTH)}," +
+                            " ${calendar.get(Calendar.YEAR)} was overwritten"
+                    showToast(message)
+                    dialog.dismiss()
+                }
+
+        dialogView.findViewById<Button>(R.id.btn_home_dialog_overwrite_log_append)
+                .setOnClickListener { _ ->
+                    //todo implement behavior: add current session minus logged drinks
+                    message = "Log on $monthString ${calendar.get(Calendar.DAY_OF_MONTH)}," +
+                            " ${calendar.get(Calendar.YEAR)} was appended"
+                    showToast(message)
+                    dialog.dismiss()
+                }
     }
 
     private fun setupToolbar(view: View){
@@ -292,7 +356,6 @@ class HomeFragment : Fragment(){
         hoursMinStrings = mConverter.convertHoursAndMinuetsIntoTwoDigitStrings(hoursMin)
         val hoursToSoberString = "${hoursMinStrings.first} hours  ${hoursMinStrings.second} min"
         dialog.findViewById<TextView>(R.id.text_home_bac_info_time_to_sober).text = hoursToSoberString
-
     }
 
     private fun updateBACText(){

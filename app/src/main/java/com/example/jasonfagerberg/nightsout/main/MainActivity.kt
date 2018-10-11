@@ -208,7 +208,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun getTimeNow():Long{
-        return Calendar.getInstance().time.time
+        return Calendar.getInstance().timeInMillis
     }
 
     override fun onBackPressed() {
