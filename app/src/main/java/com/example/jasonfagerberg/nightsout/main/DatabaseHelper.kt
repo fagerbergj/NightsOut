@@ -93,8 +93,8 @@ class DatabaseHelper(val context: Context?, val name: String?, factory: SQLiteDa
         db.execSQL("CREATE TABLE \"current_session_drinks\" ( `drink_id` INTEGER, `position` INTEGER )")
         db.execSQL("CREATE TABLE \"drinks\" ( `id` INTEGER PRIMARY KEY AUTOINCREMENT, `name` TEXT, `abv` NUMERIC, `amount` NUMERIC, `measurement` TEXT, `recent` INTEGER, `modifiedTime` INTEGER )")
         db.execSQL("CREATE TABLE `favorites` ( `drink_name` TEXT, `origin_id` INTEGER )")
-        db.execSQL("CREATE TABLE \"log\" ( `id` INTEGER, `date` NUMERIC UNIQUE, `max_bac` NUMERIC, `duration` INTEGER, PRIMARY KEY(`id`) )")
-        db.execSQL("CREATE TABLE `log_drink` ( `log_id` INTEGER, `drink_id` INTEGER )")
+        db.execSQL("CREATE TABLE \"log\" ( `date` INTEGER UNIQUE, `bac` NUMERIC, `duration` INTEGER, PRIMARY KEY(`date`) )")
+        db.execSQL("CREATE TABLE \"log_drink\" ( `log_date` NUMERIC, `drink_id` INTEGER )")
     }
 
     fun pullDrinks(){
@@ -190,18 +190,17 @@ class DatabaseHelper(val context: Context?, val name: String?, factory: SQLiteDa
         val cursor = db.query("log", null, null, null, null, null, null)
         while (cursor.moveToNext()){
             val date = cursor.getLong(cursor.getColumnIndex("date"))
-            val maxBac = cursor.getDouble(cursor.getColumnIndex("max_bac"))
+            val bac = cursor.getDouble(cursor.getColumnIndex("bac"))
             val duration = cursor.getDouble(cursor.getColumnIndex("duration"))
-            mMainActivity.mLogHeaders.add(LogHeader(date, maxBac, duration))
+            mMainActivity.mLogHeaders.add(LogHeader(date, bac, duration))
             //Log.v(TAG, logHeaders[logHeaders.size-1].toString())
         }
         cursor.close()
     }
 
-
     fun pushDrinks(){
         Log.v(TAG, "pushDrinks()...called")
-        deleteAllRowsInCurrentSessionTable()
+        deleteAllRowsInTable("current_session_drinks")
         for(i in mMainActivity.mDrinksList.indices){
             val drink = mMainActivity.mDrinksList[i]
             insertRowInCurrentSessionTable(drink.id, i)
@@ -214,11 +213,24 @@ class DatabaseHelper(val context: Context?, val name: String?, factory: SQLiteDa
         }
     }
 
+    fun pushLogHeaders(){
+        deleteAllRowsInTable("log")
+        for(header in mMainActivity.mLogHeaders){
+            insertRowInLogTable(header.date, header.bac, header.duration)
+        }
+    }
+
     private fun updateRowInDrinksTable(drink: Drink){
         var recent = 0
         if (drink.recent) recent = 1
         val sql = "UPDATE drinks SET name=\"${drink.name}\", abv=${drink.abv}, amount=${drink.amount}," +
                 " measurement=\"${drink.measurement}\", recent=$recent WHERE id=${drink.id}"
+        db.execSQL(sql)
+        Log.v(TAG, sql)
+    }
+
+    private fun insertRowInLogTable(date: Long, bac: Double, duration: Double){
+        val sql = "INSERT INTO log VALUES ($date, $bac, $duration)"
         db.execSQL(sql)
         Log.v(TAG, sql)
     }
@@ -239,8 +251,8 @@ class DatabaseHelper(val context: Context?, val name: String?, factory: SQLiteDa
         db.execSQL(sql)
     }
 
-    private fun deleteAllRowsInCurrentSessionTable(){
-        val sql = "DELETE FROM current_session_drinks"
+    private fun deleteAllRowsInTable(tableName: String){
+        val sql = "DELETE FROM $tableName"
         db.execSQL(sql)
         Log.v(TAG, "DELETE FROM current_session_drinks")
     }
@@ -271,23 +283,16 @@ class DatabaseHelper(val context: Context?, val name: String?, factory: SQLiteDa
     }
 
     fun getLoggedDrinks(date: Long): ArrayList<Drink>{
-        val logId = getLogIdFromDate(date)
-        if (logId == -1) return ArrayList()
-        return getLoggedDrinksFromLogID(logId)
-    }
-
-    private fun getLogIdFromDate(date: Long): Int{
-        val where = "date = ?"
+        val drinks = ArrayList<Drink>()
+        val where = "log_date = ?"
         val whereArgs = arrayOf(date.toString())
-        val cursor = db.query("log", arrayOf("id"), where, whereArgs, null, null, null)
+        val cursor = db.query("log_drink", null, where, whereArgs, null, null, null)
         while (cursor.moveToNext()){
-            val ret = cursor.getInt(cursor.getColumnIndex("id"))
-            cursor.close()
-            return ret
+            val drinkId = cursor.getInt(cursor.getColumnIndex("drink_id"))
+            drinks.add(getDrinkFromId(drinkId)!!)
         }
-
         cursor.close()
-        return -1
+        return drinks
     }
 
     private fun getDrinkFromId(id: Int): Drink?{
@@ -308,18 +313,5 @@ class DatabaseHelper(val context: Context?, val name: String?, factory: SQLiteDa
 
         cursor.close()
         return null
-    }
-
-    private fun getLoggedDrinksFromLogID(logId: Int) : ArrayList<Drink>{
-        val drinks = ArrayList<Drink>()
-        val where = "log_id = ?"
-        val whereArgs = arrayOf(logId.toString())
-        val cursor = db.query("log_drink", null, where, whereArgs, null, null, null)
-        while (cursor.moveToNext()){
-            val drinkId = cursor.getInt(cursor.getColumnIndex("drink_id"))
-            drinks.add(getDrinkFromId(drinkId)!!)
-        }
-        cursor.close()
-        return drinks
     }
 }

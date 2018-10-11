@@ -24,7 +24,7 @@ import java.util.*
 private const val TAG = "MainActivity"
 
 private const val DB_NAME = "nights_out_db.db"
-private const val DB_VERSION = 33
+private const val DB_VERSION = 36
 
 class MainActivity : AppCompatActivity() {
 
@@ -139,6 +139,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun saveData(){
         setGlobalData()
+        mDatabaseHelper.pushLogHeaders()
         mDatabaseHelper.pushDrinks()
         mDatabaseHelper.closeDatabase()
     }

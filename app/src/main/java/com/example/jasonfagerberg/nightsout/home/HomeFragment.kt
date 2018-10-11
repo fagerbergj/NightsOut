@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.support.design.button.MaterialButton
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
-import android.support.v7.app.AlertDialog
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -18,7 +17,6 @@ import com.example.jasonfagerberg.nightsout.R
 import com.example.jasonfagerberg.nightsout.main.Converter
 import java.util.*
 import android.widget.RelativeLayout
-import android.widget.DatePicker
 import android.app.DatePickerDialog
 import com.example.jasonfagerberg.nightsout.log.LogHeader
 
