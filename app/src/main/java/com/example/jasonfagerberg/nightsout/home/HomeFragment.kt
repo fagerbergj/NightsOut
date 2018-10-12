@@ -106,6 +106,7 @@ class HomeFragment : Fragment(){
                 showOverrideLogDialog(logDate)
             }else{
                 mMainActivity.mLogHeaders.add(LogHeader(logDate, bac, drinkingDuration))
+                mMainActivity.mDatabaseHelper.pushDrinksToLogDrinks(logDate)
                 val message = "Log created on ${testHeader.monthName} ${testHeader.day}, ${testHeader.year}"
                 showToast(message)
             }
