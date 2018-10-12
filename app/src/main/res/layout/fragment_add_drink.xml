@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         tools:context=".addDrink.AddDrinkFragment">
 
-        <android.support.v7.widget.Toolbar
+        <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar_add_drink"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -44,7 +44,7 @@
             android:background="#d1d1d1"
             android:orientation="vertical">
 
-            <android.support.v7.widget.RecyclerView
+            <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycler_add_drink_recents_list"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -86,7 +86,7 @@
             android:background="#d1d1d1"
             android:orientation="vertical">
 
-            <android.support.v7.widget.RecyclerView
+            <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycler_add_drink_favorites_list"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -216,7 +216,7 @@
 
         </LinearLayout>
 
-        <android.support.design.button.MaterialButton
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_add_drink_add"
             android:layout_width="match_parent"
             android:layout_height="60dp"

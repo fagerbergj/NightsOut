@@ -129,7 +129,7 @@
 
     </LinearLayout>
 
-    <android.support.design.button.MaterialButton
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_edit_drink_edit"
         android:layout_width="match_parent"
         android:layout_height="60dp"

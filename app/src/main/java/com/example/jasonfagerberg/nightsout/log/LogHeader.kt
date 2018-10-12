@@ -2,46 +2,36 @@ package com.example.jasonfagerberg.nightsout.log
 
 import android.util.Log
 import com.example.jasonfagerberg.nightsout.main.Converter
-import java.text.DateFormat
-import java.text.SimpleDateFormat
+import java.text.DateFormatSymbols
 import java.util.*
 
 
-private const val TAG = "LogObject"
+private const val TAG = "LogHeader"
 
-class LogHeader(val date: Long, val bac: Double, val duration: Double) {
-    var dateString: String
+class LogHeader(val date: Int, val bac: Double, val duration: Double) {
     private val converter = Converter()
-    private val durationHoursMinuets = converter.convertDecimalTimeToHoursAndMinuets(duration)
+    private val durationHoursMinuets = converter.decimalTimeToHoursAndMinuets(duration)
     private val durationHours = durationHoursMinuets.first
     private val durationMinuets = durationHoursMinuets.second
+
+    val year = Integer.parseInt(date.toString().substring(0,4))
+    val month = Integer.parseInt(date.toString().substring(4,6))
+    val day = Integer.parseInt(date.toString().substring(6,8))
+    val monthName = DateFormatSymbols().months[month]!!
     var durationString: String = "$durationHours:$durationMinuets"
+    val dateString: String
 
     init {
+        Log.v(TAG, "$date $year $month $day $monthName")
         val locale = Locale.getDefault()
-        val calendarDate = Date(date)
-        Log.v(TAG, calendarDate.toString())
-        lateinit var format: DateFormat
-        format = SimpleDateFormat("dd/MM", locale)
-        if (locale == Locale.US) {
-            format = SimpleDateFormat("MM/dd", locale)
-        }
-        format.timeZone = TimeZone.getDefault()
-        val monthAndDay = format.format(calendarDate)
-
-        format = SimpleDateFormat("EEEE", locale)
-        val dayOfWeek = format.format(calendarDate)
-        dateString = "$dayOfWeek $monthAndDay"
+        val suffix:String = if (day == 1) "st" else if (day == 2) "nd" else if (day == 3) "rd" else "th"
+        dateString = if (locale != Locale.US) "$day$suffix of $monthName" else "$monthName $day$suffix"
 
         if(durationMinuets < 10) durationString = "$durationHours:0$durationMinuets"
     }
 
     override fun equals(other: Any?): Boolean {
-        val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.US)
-        val o1 = sdf.format(Date(date))
-        val o2 = sdf.format((other as LogHeader).date)
-
-        return o1 == o2
+        return date == (other as LogHeader).date
     }
 
     override fun hashCode(): Int {

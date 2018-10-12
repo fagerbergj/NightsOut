@@ -1,17 +1,19 @@
 package com.example.jasonfagerberg.nightsout.log
 
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.support.v4.content.ContextCompat
-import android.support.v7.widget.DividerItemDecoration
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.fragment.app.Fragment
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.appcompat.widget.Toolbar
+import androidx.recyclerview.widget.RecyclerView
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import com.example.jasonfagerberg.nightsout.R
+import com.example.jasonfagerberg.nightsout.main.Converter
 import com.example.jasonfagerberg.nightsout.main.MainActivity
 import com.prolificinteractive.materialcalendarview.CalendarDay
 import com.prolificinteractive.materialcalendarview.DayViewDecorator
@@ -31,6 +33,7 @@ class LogFragment : Fragment() {
     private lateinit var mLogListView: RecyclerView
     private lateinit var mMainActivity: MainActivity
     private lateinit var mLogList: ArrayList<Any>
+    private val converter: Converter = Converter()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -42,13 +45,13 @@ class LogFragment : Fragment() {
         // recycler view
         mLogListView = view.findViewById(R.id.recycler_log)
         val linearLayoutManager = LinearLayoutManager(context)
-        linearLayoutManager.orientation = LinearLayoutManager.VERTICAL
+        linearLayoutManager.orientation = RecyclerView.VERTICAL
         mLogListView.layoutManager = linearLayoutManager
         val itemDecor = DividerItemDecoration(mLogListView.context, DividerItemDecoration.VERTICAL)
         mLogListView.addItemDecoration(itemDecor)
 
         // toolbar setup
-        val toolbar:android.support.v7.widget.Toolbar = view!!.findViewById(R.id.toolbar_log)
+        val toolbar: Toolbar = view!!.findViewById(R.id.toolbar_log)
         toolbar.inflateMenu(R.menu.log_menu)
 
         // take date from calender, pull correct session, pass to adapter
@@ -59,7 +62,11 @@ class LogFragment : Fragment() {
 
         // set adapter
         mLogFragmentAdapter = LogFragmentAdapter(context!!, mLogList)
-        setLogListBasedOnDay(calendar.time.time)
+        val year = calendar.get(Calendar.YEAR)
+        val month = calendar.get(Calendar.MONTH)
+        val day = calendar.get(Calendar.DAY_OF_MONTH)
+        val date = Integer.parseInt(converter.yearMonthDayTo8DigitString(year, month, day))
+        setLogListBasedOnDay(date)
         mLogListView.adapter = mLogFragmentAdapter
 
         // setup bottom nav bar
@@ -71,9 +78,11 @@ class LogFragment : Fragment() {
     // format days to correct object and send to decorator
     private fun highlightDays(){
         val dates = ArrayList<CalendarDay>()
+        val calendar = Calendar.getInstance()
         for(log in mMainActivity.mLogHeaders){
-            val day = CalendarDay.from(Date(log.date))
-            Log.v(TAG, day.date.toString())
+            calendar.set(log.year, log.month, log.day)
+            val day = CalendarDay.from(Date(calendar.time.time))
+            Log.v(TAG, day.toString())
             dates.add(day)
         }
         calendarView.addDecorator(EventDecorator(ContextCompat.getColor(context!!,
@@ -96,11 +105,13 @@ class LogFragment : Fragment() {
             calendar.set(day.year, day.month, day.day)
             Log.v(TAG, "Day = ${day.date.time}")
             mLogList.clear()
-            setLogListBasedOnDay(day.date.time)
+
+            val date = Integer.parseInt(converter.yearMonthDayTo8DigitString(day.year, day.month, day.day))
+            setLogListBasedOnDay(date)
         }
     }
 
-    private fun setLogListBasedOnDay(date: Long){
+    private fun setLogListBasedOnDay(date: Int){
         val index = mMainActivity.mLogHeaders.indexOf(LogHeader(date, 0.0, 0.0 ))
         Log.v(TAG, "date: $date index: $index")
         if(index >= 0){

@@ -1,14 +1,15 @@
 package com.example.jasonfagerberg.nightsout.home
 
+import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.DialogInterface
 import android.os.Bundle
-import android.support.design.button.MaterialButton
-import android.support.v4.app.Fragment
-import android.support.v4.content.ContextCompat
-import android.support.v7.widget.DividerItemDecoration
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import com.google.android.material.button.MaterialButton
+import androidx.fragment.app.Fragment
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.util.Log
 import android.view.*
 import android.widget.*
@@ -17,9 +18,7 @@ import com.example.jasonfagerberg.nightsout.R
 import com.example.jasonfagerberg.nightsout.main.Converter
 import java.util.*
 import android.widget.RelativeLayout
-import android.app.DatePickerDialog
 import com.example.jasonfagerberg.nightsout.log.LogHeader
-import java.text.SimpleDateFormat
 
 
 private const val TAG = "HomeFragment"
@@ -92,25 +91,22 @@ class HomeFragment : Fragment(){
 
     private fun showDatePicker(){
         val calendar = Calendar.getInstance()
-        val date = DatePickerDialog.OnDateSetListener { _ , year, monthOfYear, dayOfMonth ->
-            calendar.set(Calendar.YEAR, year)
-            calendar.set(Calendar.MONTH, monthOfYear)
-            calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
-            mMainActivity.mLogHeaders.add(LogHeader(calendar.timeInMillis, bac, drinkingDuration))
-            mMainActivity.mDatabaseHelper.pushDrinksToLogDrinks(calendar.timeInMillis)
-        }
 
-        val dp = DatePickerDialog(context!!, date, calendar.get(Calendar.YEAR),
+        val dp = DatePickerDialog(context!!, null, calendar.get(Calendar.YEAR),
                 calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH))
+
         dp.setButton(DatePickerDialog.BUTTON_POSITIVE, "OK") { _ , _ ->
-            val testHeader = LogHeader(calendar.timeInMillis, 0.0, 0.0)
+            val logYear = dp.datePicker.year
+            val logMonth = dp.datePicker.month
+            val logDay = dp.datePicker.dayOfMonth
+            val logDate = Integer.parseInt(mConverter.yearMonthDayTo8DigitString(logYear, logMonth, logDay))
+
+            val testHeader = LogHeader(logDate, 0.0, 0.0)
             if (testHeader in mMainActivity.mLogHeaders){
-                showOverrideLogDialog(calendar)
+                showOverrideLogDialog(logDate)
             }else{
-                mMainActivity.mLogHeaders.add(LogHeader(calendar.timeInMillis, bac, drinkingDuration))
-                val monthString = SimpleDateFormat("MMM", Locale.getDefault()).format(calendar.time)
-                val message = "Log created on $monthString ${calendar.get(Calendar.DAY_OF_MONTH)}, " +
-                        "${calendar.get(Calendar.YEAR)}"
+                mMainActivity.mLogHeaders.add(LogHeader(logDate, bac, drinkingDuration))
+                val message = "Log created on ${testHeader.monthName} ${testHeader.day}, ${testHeader.year}"
                 showToast(message)
             }
         }
@@ -125,15 +121,16 @@ class HomeFragment : Fragment(){
         toast.show()
     }
 
-    private fun showOverrideLogDialog(calendar: Calendar){
+    private fun showOverrideLogDialog(logDate: Int){
+        val header = mMainActivity.mLogHeaders[mMainActivity.mLogHeaders.indexOf(
+                LogHeader(logDate, 0.0, 0.0))]
+
         val builder = android.app.AlertDialog.Builder(view!!.context)
         val parent:ViewGroup? = null
         val dialogView = mMainActivity.layoutInflater
                 .inflate(R.layout.fragment_home_overwrite_log_dialog, parent, false)
-
-        val monthString = SimpleDateFormat("MMM", Locale.getDefault()).format(calendar.time)
-        var message = "There is already a log on $monthString ${calendar.get(Calendar.DAY_OF_MONTH)}," +
-                " ${calendar.get(Calendar.YEAR)}.\nWould you like to overwrite it?"
+        var message = "There is already a log on ${header.monthName} ${header.day}," +
+                " ${header.year}.\nWhat would you like to do to the old record?"
         dialogView.findViewById<TextView>(R.id.text_home_dialog_overwrite_log_body).text = message
 
         builder.setView(dialogView)
@@ -150,8 +147,8 @@ class HomeFragment : Fragment(){
         dialogView.findViewById<Button>(R.id.btn_home_dialog_overwrite_log_overwrite)
                 .setOnClickListener { _ ->
                     //todo implement behavior: delete log drinks, add all current drinks
-                    message = "Log on $monthString ${calendar.get(Calendar.DAY_OF_MONTH)}," +
-                            " ${calendar.get(Calendar.YEAR)} was overwritten"
+                    message = "Log on ${header.monthName} ${header.day}," +
+                            " ${header.year} was overwritten"
                     showToast(message)
                     dialog.dismiss()
                 }
@@ -159,15 +156,15 @@ class HomeFragment : Fragment(){
         dialogView.findViewById<Button>(R.id.btn_home_dialog_overwrite_log_append)
                 .setOnClickListener { _ ->
                     //todo implement behavior: add current session minus logged drinks
-                    message = "Log on $monthString ${calendar.get(Calendar.DAY_OF_MONTH)}," +
-                            " ${calendar.get(Calendar.YEAR)} was appended"
+                    message = "Log on ${header.monthName} ${header.day}," +
+                            " ${header.year} was appended"
                     showToast(message)
                     dialog.dismiss()
                 }
     }
 
     private fun setupToolbar(view: View){
-        val toolbar:android.support.v7.widget.Toolbar = view.findViewById(R.id.toolbar_home)
+        val toolbar: androidx.appcompat.widget.Toolbar = view.findViewById(R.id.toolbar_home)
         toolbar.inflateMenu(R.menu.home_menu)
         mMainActivity.setSupportActionBar(toolbar)
         mMainActivity.supportActionBar!!.setDisplayShowTitleEnabled(true)
@@ -176,7 +173,7 @@ class HomeFragment : Fragment(){
 
     private fun setupRecycler(view: View){
         // mDrinkList recycler view setup
-        val drinksListView:RecyclerView = view.findViewById(R.id.recycler_drink_list)
+        val drinksListView: RecyclerView = view.findViewById(R.id.recycler_drink_list)
         val linearLayoutManager = LinearLayoutManager(context)
         linearLayoutManager.orientation = LinearLayoutManager.VERTICAL
         drinksListView.layoutManager = linearLayoutManager
@@ -197,17 +194,17 @@ class HomeFragment : Fragment(){
 
         if(mMainActivity.startTimeMin == -1) {
             mMainActivity.startTimeMin = getCurrentTimeInMinuets()
-            startPicker.setText(mConverter.convertTimeTo12HourTime(mMainActivity.startTimeMin))
+            startPicker.setText(mConverter.timeTo12HourString(mMainActivity.startTimeMin))
         }
         if(mMainActivity.endTimeMin == -1){
             mMainActivity.endTimeMin = getCurrentTimeInMinuets()
-            endPicker.setText(mConverter.convertTimeTo12HourTime(mMainActivity.endTimeMin))
+            endPicker.setText(mConverter.timeTo12HourString(mMainActivity.endTimeMin))
         }
 
-        if(mMainActivity.startTimeMin > -1) startPicker.setText(mConverter.convertTimeTo12HourTime(
+        if(mMainActivity.startTimeMin > -1) startPicker.setText(mConverter.timeTo12HourString(
                 mMainActivity.startTimeMin))
 
-        if(mMainActivity.endTimeMin > -1) endPicker.setText(mConverter.convertTimeTo12HourTime(
+        if(mMainActivity.endTimeMin > -1) endPicker.setText(mConverter.timeTo12HourString(
                 mMainActivity.endTimeMin))
 
         startPicker.setOnClickListener{ _ ->
@@ -230,15 +227,15 @@ class HomeFragment : Fragment(){
         val mTimePicker: TimePickerDialog
         mTimePicker = TimePickerDialog(context!!,
                 TimePickerDialog.OnTimeSetListener { _ , selectedHour, selectedMinute ->
-                    startPicker.setText(mConverter.convertTimeTo12HourString(selectedHour, selectedMinute))
-                    mMainActivity.startTimeMin = mConverter.convert24HourTimeToMinutes(selectedHour, selectedMinute)
+                    startPicker.setText(mConverter.timeTo12HourString(selectedHour, selectedMinute))
+                    mMainActivity.startTimeMin = mConverter.c24HourTimeToMinutes(selectedHour, selectedMinute)
                     if(mMainActivity.endTimeMin == -1) mMainActivity.endTimeMin = mMainActivity.startTimeMin
                     calculateBAC()
                 }, hour, minute, false)
 
         mTimePicker.setButton(DialogInterface.BUTTON_NEUTRAL, "Now") { _, _ ->
             mMainActivity.startTimeMin = getCurrentTimeInMinuets()
-            startPicker.setText(mConverter.convertTimeTo12HourTime(mMainActivity.startTimeMin))
+            startPicker.setText(mConverter.timeTo12HourString(mMainActivity.startTimeMin))
             calculateBAC()
         }
 
@@ -258,14 +255,14 @@ class HomeFragment : Fragment(){
         val mTimePicker: TimePickerDialog
         mTimePicker = TimePickerDialog(context!!,
                 TimePickerDialog.OnTimeSetListener { _ , selectedHour, selectedMinute ->
-                    endPicker.setText(mConverter.convertTimeTo12HourString(selectedHour, selectedMinute))
-                    mMainActivity.endTimeMin = mConverter.convert24HourTimeToMinutes(selectedHour, selectedMinute)
+                    endPicker.setText(mConverter.timeTo12HourString(selectedHour, selectedMinute))
+                    mMainActivity.endTimeMin = mConverter.c24HourTimeToMinutes(selectedHour, selectedMinute)
                     calculateBAC()
                 }, hour, minute, false)
 
         mTimePicker.setButton(DialogInterface.BUTTON_NEUTRAL, "Now") { _, _ ->
             mMainActivity.endTimeMin = getCurrentTimeInMinuets()
-            endPicker.setText(mConverter.convertTimeTo12HourTime(mMainActivity.endTimeMin))
+            endPicker.setText(mConverter.timeTo12HourString(mMainActivity.endTimeMin))
             calculateBAC()
         }
 
@@ -279,7 +276,7 @@ class HomeFragment : Fragment(){
         calendar.time = date
         val curHour = calendar.get(Calendar.HOUR_OF_DAY)
         val curMin = calendar.get(Calendar.MINUTE)
-        return mConverter.convert24HourTimeToMinutes(curHour, curMin)
+        return mConverter.c24HourTimeToMinutes(curHour, curMin)
     }
 
     fun showOrHideEmptyListText(view: View){
@@ -294,16 +291,15 @@ class HomeFragment : Fragment(){
     fun calculateBAC(){
         var a = 0.0
         for (drink in mMainActivity.mDrinksList){
-            val volume = mConverter.convertDrinkVolumeToFluidOz(drink.amount, drink.measurement)
+            val volume = mConverter.drinkVolumeToFluidOz(drink.amount, drink.measurement)
             val abv = drink.abv/100
             a += (volume * abv )
-            Log.v(TAG, "$volume * $abv = ${volume * abv}")
         }
-        gramsOfAlcoholConsumed = mConverter.convertFluidOzToGrams(a)
+        gramsOfAlcoholConsumed = mConverter.fluidOzToGrams(a)
 
         val r = if(mMainActivity.sex!!) .73 else .66
 
-        val weightInOz = mConverter.convertWeightToLbs(mMainActivity.weight, mMainActivity.weightMeasurement)
+        val weightInOz = mConverter.weightToLbs(mMainActivity.weight, mMainActivity.weightMeasurement)
 
         val sexModifiedWeight = weightInOz * r
 
@@ -317,11 +313,10 @@ class HomeFragment : Fragment(){
 
         drinkingDuration = hoursElapsed
 
-        Log.v(TAG, "a = $a w = $sexModifiedWeight h = ${(hoursElapsed * 0.015)}")
         val bacDecayPerHour = 0.015
         bac = instantBAC - (hoursElapsed * bacDecayPerHour)
         bac = if (bac < 0.0) 0.0 else bac
-        Log.v(TAG, "Calculated bac: $bac")
+        //Log.v(TAG, "Calculated bac: $bac")
         updateBACText()
     }
 
@@ -342,9 +337,9 @@ class HomeFragment : Fragment(){
         val bacInfoTitleString = "BAC Level: " + String.format("%.3f", bac)
         dialog.findViewById<TextView>(R.id.text_home_dialog_bac_info_title).text = bacInfoTitleString
 
-        var hoursMin = mConverter.convertDecimalTimeToHoursAndMinuets(drinkingDuration)
+        var hoursMin = mConverter.decimalTimeToHoursAndMinuets(drinkingDuration)
         Log.v(TAG, "$drinkingDuration")
-        var hoursMinStrings = mConverter.convertHoursAndMinuetsIntoTwoDigitStrings(hoursMin)
+        var hoursMinStrings = mConverter.hoursAndMinuetsIntoTwoDigitStrings(hoursMin)
         val durationString =  "${hoursMinStrings.first} hours  ${hoursMinStrings.second} min"
         dialog.findViewById<TextView>(R.id.text_home_bac_info_duration_drinking).text = durationString
 
@@ -352,8 +347,8 @@ class HomeFragment : Fragment(){
         dialog.findViewById<TextView>(R.id.text_home_bac_info_grams_of_alc).text = gramsString
 
         val hoursToSober = if ((bac - 0.04) / 0.015 < 0) 0.0 else (bac - 0.04)/0.015
-        hoursMin = mConverter.convertDecimalTimeToHoursAndMinuets(hoursToSober)
-        hoursMinStrings = mConverter.convertHoursAndMinuetsIntoTwoDigitStrings(hoursMin)
+        hoursMin = mConverter.decimalTimeToHoursAndMinuets(hoursToSober)
+        hoursMinStrings = mConverter.hoursAndMinuetsIntoTwoDigitStrings(hoursMin)
         val hoursToSoberString = "${hoursMinStrings.first} hours  ${hoursMinStrings.second} min"
         dialog.findViewById<TextView>(R.id.text_home_bac_info_time_to_sober).text = hoursToSoberString
     }

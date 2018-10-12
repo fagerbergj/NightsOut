@@ -1,7 +1,7 @@
 package com.example.jasonfagerberg.nightsout.log
 
 import android.content.Context
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,7 +15,7 @@ private const val DRINK = 0
 private const val HEADER = 1
 
 class LogFragmentAdapter(private val mContext: Context, logList: ArrayList<Any>) :
-RecyclerView.Adapter<LogFragmentAdapter.ViewHolder>() {
+        RecyclerView.Adapter<LogFragmentAdapter.ViewHolder>() {
 
     // log to display
     private val mLogList: MutableList<Any> = logList

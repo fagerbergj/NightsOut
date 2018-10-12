@@ -4,8 +4,8 @@ import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Context
 import android.graphics.BitmapFactory
-import android.support.design.button.MaterialButton
-import android.support.v7.widget.RecyclerView
+import com.google.android.material.button.MaterialButton
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,7 +16,7 @@ import com.example.jasonfagerberg.nightsout.main.MainActivity
 import java.util.*
 
 class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: ArrayList<Drink>) :
-        RecyclerView.Adapter<HomeFragmentDrinkListAdapter.ViewHolder>() {
+        androidx.recyclerview.widget.RecyclerView.Adapter<HomeFragmentDrinkListAdapter.ViewHolder>() {
 
     // vars
     private val mDrinksList: MutableList<Drink> = drinksList
@@ -63,7 +63,7 @@ class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: Ar
     }
 
     // ViewHolder for each item in list
-    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class ViewHolder(itemView: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(itemView) {
 
         internal var image: ImageView = itemView.findViewById(R.id.image_drink)
         internal var name: TextView = itemView.findViewById(R.id.text_home_drink_name)

@@ -3,11 +3,12 @@ package com.example.jasonfagerberg.nightsout.profile
 import android.graphics.PorterDuff
 import android.graphics.Typeface
 import android.os.Bundle
-import android.support.design.button.MaterialButton
-import android.support.v4.app.Fragment
-import android.support.v4.content.ContextCompat
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import com.google.android.material.button.MaterialButton
+import androidx.fragment.app.Fragment
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.appcompat.widget.Toolbar
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
@@ -57,7 +58,7 @@ class ProfileFragment : Fragment() {
         profileInit = mMainActivity.profileInt
 
         //toolbar setup
-        val toolbar:android.support.v7.widget.Toolbar = view!!.findViewById(R.id.toolbar_profile)
+        val toolbar: Toolbar = view!!.findViewById(R.id.toolbar_profile)
         toolbar.inflateMenu(R.menu.profile_menu)
 
         // recycler v setup

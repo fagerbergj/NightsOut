@@ -189,7 +189,7 @@ class DatabaseHelper(val context: Context?, val name: String?, factory: SQLiteDa
     fun pullLogHeaders(){
         val cursor = db.query("log", null, null, null, null, null, null)
         while (cursor.moveToNext()){
-            val date = cursor.getLong(cursor.getColumnIndex("date"))
+            val date = cursor.getInt(cursor.getColumnIndex("date"))
             val bac = cursor.getDouble(cursor.getColumnIndex("bac"))
             val duration = cursor.getDouble(cursor.getColumnIndex("duration"))
             mMainActivity.mLogHeaders.add(LogHeader(date, bac, duration))
@@ -229,7 +229,7 @@ class DatabaseHelper(val context: Context?, val name: String?, factory: SQLiteDa
         Log.v(TAG, sql)
     }
 
-    private fun insertRowInLogTable(date: Long, bac: Double, duration: Double){
+    private fun insertRowInLogTable(date: Int, bac: Double, duration: Double){
         val sql = "INSERT INTO log VALUES ($date, $bac, $duration)"
         db.execSQL(sql)
         Log.v(TAG, sql)
@@ -282,7 +282,7 @@ class DatabaseHelper(val context: Context?, val name: String?, factory: SQLiteDa
         return -1
     }
 
-    fun getLoggedDrinks(date: Long): ArrayList<Drink>{
+    fun getLoggedDrinks(date: Int): ArrayList<Drink>{
         val drinks = ArrayList<Drink>()
         val where = "log_date = ?"
         val whereArgs = arrayOf(date.toString())
@@ -315,7 +315,7 @@ class DatabaseHelper(val context: Context?, val name: String?, factory: SQLiteDa
         return null
     }
 
-    fun pushDrinksToLogDrinks(date: Long){
+    fun pushDrinksToLogDrinks(date: Int){
         for (drink in mMainActivity.mDrinksList){
             val sql = "INSERT INTO log_drink VALUES ($date, ${drink.id})"
             Log.i(TAG, sql)

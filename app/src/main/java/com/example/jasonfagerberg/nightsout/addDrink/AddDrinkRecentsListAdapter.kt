@@ -2,9 +2,9 @@ package com.example.jasonfagerberg.nightsout.addDrink
 
 import android.content.Context
 import android.content.DialogInterface
-import android.support.v7.app.AlertDialog
-import android.support.v7.widget.CardView
-import android.support.v7.widget.RecyclerView
+import androidx.appcompat.app.AlertDialog
+import androidx.cardview.widget.CardView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View

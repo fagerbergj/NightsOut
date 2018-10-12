@@ -18,19 +18,19 @@ class Converter {
         volumeConversionMap["shots"] = 1.5
     }
 
-    fun convertWeightToLbs(weight: Double, weightMeasurement: String): Double{
+    fun weightToLbs(weight: Double, weightMeasurement: String): Double{
         return weight * weightConversionMap[weightMeasurement]!!
     }
 
-    fun convertDrinkVolumeToFluidOz(amount: Double, amountMeasurement: String): Double{
+    fun drinkVolumeToFluidOz(amount: Double, amountMeasurement: String): Double{
         return amount * volumeConversionMap[amountMeasurement]!!
     }
 
-    fun convertFluidOzToGrams(foz: Double):Double{
+    fun fluidOzToGrams(foz: Double):Double{
         return 23.3333333 * foz
     }
 
-    fun convertTimeTo12HourString(selectedHour: Int, selectedMinute: Int): String{
+    fun timeTo12HourString(selectedHour: Int, selectedMinute: Int): String{
         val timePeriod: String
         var displayHour = selectedHour
         var displayMinuet = selectedMinute.toString()
@@ -45,7 +45,7 @@ class Converter {
         return "$displayHour:$displayMinuet $timePeriod"
     }
 
-    fun convertTimeTo12HourTime(min: Int): String{
+    fun timeTo12HourString(min: Int): String{
         var hour = min/60
         val minutes = min%60
         val timePeriod: String
@@ -61,17 +61,17 @@ class Converter {
         return "$hour:$displayMinuet $timePeriod"
     }
 
-    fun convert24HourTimeToMinutes(hour: Int, min: Int):Int{
+    fun c24HourTimeToMinutes(hour: Int, min: Int):Int{
         return hour*60 + min
     }
 
-    fun convertDecimalTimeToHoursAndMinuets(time: Double):Pair<Int, Int>{
+    fun decimalTimeToHoursAndMinuets(time: Double):Pair<Int, Int>{
         val hour = time.toInt()
         val min = ((((time - hour) * 100) * 60) / 100).toInt()
         return Pair(hour, min)
     }
 
-    fun convertHoursAndMinuetsIntoTwoDigitStrings(hoursMin: Pair<Int, Int>): Pair<String, String>{
+    fun hoursAndMinuetsIntoTwoDigitStrings(hoursMin: Pair<Int, Int>): Pair<String, String>{
         val hours = if (hoursMin.first < 10) "0${hoursMin.first}"
                     else hoursMin.first.toString()
 
@@ -79,5 +79,11 @@ class Converter {
                     else hoursMin.second.toString()
 
         return Pair(hours, min)
+    }
+
+    fun yearMonthDayTo8DigitString(year: Int, month: Int, day: Int): String{
+        val monthString = if (month < 10) "0$month" else month.toString()
+        val dayString = if (day < 10) "0$day" else day.toString()
+        return "$year$monthString$dayString"
     }
 }

@@ -2,11 +2,12 @@ package com.example.jasonfagerberg.nightsout.addDrink
 
 import android.graphics.Typeface
 import android.os.Bundle
-import android.support.design.button.MaterialButton
-import android.support.v4.app.Fragment
-import android.support.v4.content.ContextCompat
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import com.google.android.material.button.MaterialButton
+import androidx.fragment.app.Fragment
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.appcompat.widget.Toolbar
 import android.util.Log
 import android.view.*
 import android.widget.*
@@ -110,7 +111,7 @@ class AddDrinkFragment : Fragment() {
     }
 
     private fun toolbarSetup(view: View){
-        val toolbar:android.support.v7.widget.Toolbar = view.findViewById(R.id.toolbar_add_drink)
+        val toolbar: Toolbar = view.findViewById(R.id.toolbar_add_drink)
         toolbar.inflateMenu(R.menu.add_drink_menu)
         mMainActivity .setSupportActionBar(toolbar)
         mMainActivity .supportActionBar!!.setDisplayShowTitleEnabled(true)
