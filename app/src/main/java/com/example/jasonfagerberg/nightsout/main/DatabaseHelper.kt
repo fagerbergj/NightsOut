@@ -329,4 +329,9 @@ class DatabaseHelper(val context: Context?, val name: String?, factory: SQLiteDa
         sql = "DELETE FROM log_drink WHERE log_date = $date"
         db.execSQL(sql)
     }
+
+    fun deleteAllFavorites(){
+        val sql = "DELETE FROM favorites"
+        db.execSQL(sql)
+    }
 }

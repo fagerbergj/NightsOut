@@ -107,6 +107,14 @@ class LogFragment : Fragment() {
         return true
     }
 
+    private fun setupToolbar(view: View) {
+        val toolbar: Toolbar = view.findViewById(R.id.toolbar_log)
+        toolbar.inflateMenu(R.menu.log_menu)
+        mMainActivity.setSupportActionBar(toolbar)
+        mMainActivity.supportActionBar!!.setDisplayShowTitleEnabled(true)
+        setHasOptionsMenu(true)
+    }
+
     private fun setAdapter(){
         mLogFragmentAdapter = LogFragmentAdapter(context!!, mLogList)
         val year = calendar.get(Calendar.YEAR)
@@ -115,14 +123,6 @@ class LogFragment : Fragment() {
         val date = Integer.parseInt(converter.yearMonthDayTo8DigitString(year, month, day))
         setLogListBasedOnDay(date)
         mLogListView.adapter = mLogFragmentAdapter
-    }
-
-    private fun setupToolbar(view: View) {
-        val toolbar: Toolbar = view.findViewById(R.id.toolbar_log)
-        toolbar.inflateMenu(R.menu.log_menu)
-        mMainActivity.setSupportActionBar(toolbar)
-        mMainActivity.supportActionBar!!.setDisplayShowTitleEnabled(true)
-        setHasOptionsMenu(true)
     }
 
         // format days to correct object and send to decorator

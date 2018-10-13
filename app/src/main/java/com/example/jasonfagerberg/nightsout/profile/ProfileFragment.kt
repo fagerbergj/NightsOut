@@ -12,10 +12,7 @@ import androidx.appcompat.widget.Toolbar
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
-import android.view.Gravity
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.*
 import com.example.jasonfagerberg.nightsout.main.MainActivity
 import com.example.jasonfagerberg.nightsout.R
@@ -23,6 +20,7 @@ import java.util.*
 import android.widget.AdapterView
 import android.widget.AdapterView.OnItemSelectedListener
 import android.widget.TextView
+import com.example.jasonfagerberg.nightsout.log.LogHeader
 
 private const val TAG = "ProfileFragment"
 
@@ -58,8 +56,7 @@ class ProfileFragment : Fragment() {
         profileInit = mMainActivity.profileInt
 
         //toolbar setup
-        val toolbar: Toolbar = view!!.findViewById(R.id.toolbar_profile)
-        toolbar.inflateMenu(R.menu.profile_menu)
+        setupToolbar(view!!)
 
         // recycler v setup
         setupFavoritesRecyclerView(view)
@@ -95,6 +92,34 @@ class ProfileFragment : Fragment() {
         }
 
         return view
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+        inflater!!.inflate(R.menu.profile_menu, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean{
+        val resId = item?.itemId
+        when(resId){
+            R.id.btn_clear_favorites_list -> {
+                mMainActivity.mDatabaseHelper.deleteAllFavorites()
+                mMainActivity.mFavoritesList.clear()
+                for (drink in mMainActivity.mDrinksList){
+                    drink.favorited = false
+                }
+                showOrHideEmptyTextViews(view!!)
+                mFavoritesListAdapter.notifyDataSetChanged()
+            }
+        }
+        return true
+    }
+
+    private fun setupToolbar(view: View) {
+        val toolbar: Toolbar = view.findViewById(R.id.toolbar_profile)
+        toolbar.inflateMenu(R.menu.profile_menu)
+        mMainActivity.setSupportActionBar(toolbar)
+        mMainActivity.supportActionBar!!.setDisplayShowTitleEnabled(true)
+        setHasOptionsMenu(true)
     }
 
     override fun onResume() {
