@@ -193,7 +193,12 @@ class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: Ar
         editAmount.setText(drink.amount.toString())
 
         val dropdown: Spinner = dialogView.findViewById(R.id.spinner_edit_drink_amount)
-        val items = arrayOf("oz", "ml", "beers", "shots", "wine glasses")
+        val country = Locale.getDefault().country
+        val items = arrayOf("ml", "oz", "beers", "shots", "wine glasses")
+        if (country == "US" || country == "LR" || country == "MM"){
+            items[0] = "oz"
+            items[1] = "ml"
+        }
         val adapter = ArrayAdapter(mContext, android.R.layout.simple_spinner_dropdown_item, items)
         dropdown.adapter = adapter
         dropdown.setSelection(items.indexOf(drink.measurement))

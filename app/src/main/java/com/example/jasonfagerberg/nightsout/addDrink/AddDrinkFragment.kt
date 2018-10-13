@@ -17,6 +17,7 @@ import android.widget.ArrayAdapter
 import android.widget.Toast
 import android.widget.AdapterView
 import com.example.jasonfagerberg.nightsout.main.MainActivity
+import java.util.*
 
 private const val TAG = "AddDrinkFragment"
 
@@ -47,7 +48,12 @@ class AddDrinkFragment : Fragment() {
 
         // spinner setup
         val dropdown: Spinner = view.findViewById(R.id.spinner_add_drink_amount)
-        val items = arrayOf("oz", "ml", "beers", "shots", "wine glasses")
+        val country = Locale.getDefault().country
+        val items = arrayOf("ml", "oz", "beers", "shots", "wine glasses")
+        if (country == "US" || country == "LR" || country == "MM"){
+            items[0] = "oz"
+            items[1] = "ml"
+        }
         val adapter = ArrayAdapter(context!!, android.R.layout.simple_spinner_dropdown_item, items)
         dropdown.adapter = adapter
 
@@ -304,7 +310,12 @@ class AddDrinkFragment : Fragment() {
         editName.setText(name)
         editABV.setText(abv.toString())
         editAmount.setText(amount.toString())
-        val items = arrayOf("oz", "ml", "beers", "shots", "wine glasses")
+        val country = Locale.getDefault().country
+        val items = arrayOf("ml", "oz", "beers", "shots", "wine glasses")
+        if (country == "US" || country == "LR" || country == "MM"){
+            items[0] = "oz"
+            items[1] = "ml"
+        }
         dropdown.setSelection(items.indexOf(measurement))
     }
 
