@@ -164,8 +164,6 @@ class AddDrinkFragment : Fragment() {
         }
     }
 
-
-
     private fun addDrink(view: View){
         val editName = view.findViewById<EditText>(R.id.edit_add_drink_name)
         val editABV = view.findViewById<EditText>(R.id.edit_add_drink_abv)

@@ -18,12 +18,13 @@ class DatabaseHelper(val context: Context?, val name: String?, factory: SQLiteDa
     private val path = "data/data/com.example.jasonfagerberg.nightsout/$name"
     private lateinit var db: SQLiteDatabase
     private lateinit var mMainActivity: MainActivity
+    // temp array for maintaining db after upgrade
+    private val mAllDrinks = ArrayList<Drink>()
 
     override fun onCreate(db: SQLiteDatabase?) { /* nothing to do */}
 
     fun openDatabase(){
-        Log.v(TAG, "openDatabase()...called")
-        //createDatabase()
+        mMainActivity = context as MainActivity
         if(!exists()){
             createDatabase()
         }
@@ -34,12 +35,10 @@ class DatabaseHelper(val context: Context?, val name: String?, factory: SQLiteDa
             onUpgrade(db, db.version, version)
             db = SQLiteDatabase.openDatabase(path, null, SQLiteDatabase.OPEN_READWRITE)
         }
-
-        mMainActivity = context as MainActivity
     }
 
     private fun createDatabase(){
-        Log.v(TAG, "createDatabase()...called")
+        Log.v(TAG, "Create DB")
         try {
             copyDatabase()
         } catch (e: IOException) {
@@ -49,9 +48,7 @@ class DatabaseHelper(val context: Context?, val name: String?, factory: SQLiteDa
     }
 
     private fun copyDatabase(){
-        Log.v(TAG, "copy")
         val inputStream = context!!.assets.open(name!!)
-        Log.v(TAG, path)
         val outputStream = FileOutputStream(path)
 
         val buffer = ByteArray(1024)
@@ -65,7 +62,6 @@ class DatabaseHelper(val context: Context?, val name: String?, factory: SQLiteDa
     }
 
     fun closeDatabase(){
-        Log.v(TAG, "closeDatabase()...called")
         db.close()
     }
 
@@ -74,7 +70,6 @@ class DatabaseHelper(val context: Context?, val name: String?, factory: SQLiteDa
     }
 
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
-        Log.v(TAG, "OnUpgrade....called")
         dropAllTables()
         rebuildTables()
         createDatabase()
@@ -82,6 +77,9 @@ class DatabaseHelper(val context: Context?, val name: String?, factory: SQLiteDa
     }
 
     private fun dropAllTables(){
+        pullDrinks()
+        pullLogHeaders()
+        pullAllDrinks()
         db.execSQL("DROP TABLE drinks")
         db.execSQL("DROP TABLE current_session_drinks")
         db.execSQL("DROP TABLE favorites")
@@ -95,10 +93,12 @@ class DatabaseHelper(val context: Context?, val name: String?, factory: SQLiteDa
         db.execSQL("CREATE TABLE `favorites` ( `drink_name` TEXT, `origin_id` INTEGER )")
         db.execSQL("CREATE TABLE \"log\" ( `date` INTEGER UNIQUE, `bac` NUMERIC, `duration` INTEGER, PRIMARY KEY(`date`) )")
         db.execSQL("CREATE TABLE \"log_drink\" ( `log_date` NUMERIC, `drink_id` INTEGER )")
+        pushDrinks()
+        pushLogHeaders()
+        pushAllDrinks()
     }
 
     fun pullDrinks(){
-        Log.v(TAG, "pullDrinks()...called")
         mMainActivity.mDrinksList.clear()
         mMainActivity.mFavoritesList.clear()
         mMainActivity.mRecentsList.clear()
@@ -213,12 +213,14 @@ class DatabaseHelper(val context: Context?, val name: String?, factory: SQLiteDa
     }
 
     fun pullDrinkNames(): ArrayList<String>{
+        Log.v(TAG, "pull drink names")
         val names = ArrayList<String>()
         val table = "drinks"
         val order = "modifiedTime ASC"
         val cursor = db.query(table, null, null, null, null, null, order, null)
         while (cursor.moveToNext()){
             val drinkName = cursor.getString(cursor.getColumnIndex("name"))
+            Log.v(TAG, drinkName)
             if (!names.contains(drinkName)) names.add(0, drinkName)
         }
         cursor.close()
@@ -366,4 +368,30 @@ class DatabaseHelper(val context: Context?, val name: String?, factory: SQLiteDa
         val sql = "UPDATE drinks SET recent = 0 WHERE recent = 1"
         db.execSQL(sql)
     }
+
+    private fun pullAllDrinks(){
+        val cursor = db.query("drinks", null, null, null, null, null, null, null)
+        while (cursor.moveToNext()){
+            val id = cursor.getInt(cursor.getColumnIndex("id"))
+            val drinkName = cursor.getString(cursor.getColumnIndex("name"))
+            val abv = cursor.getDouble(cursor.getColumnIndex("abv"))
+            val amount = cursor.getDouble(cursor.getColumnIndex("amount"))
+            val measurement = cursor.getString(cursor.getColumnIndex("measurement"))
+            val recent = cursor.getInt(cursor.getColumnIndex("recent")) == 1
+            val modifiedTime = cursor.getLong(cursor.getColumnIndex("modifiedTime"))
+
+            val drink = Drink(id, drinkName, abv, amount, measurement, false, recent, modifiedTime)
+            drink.favorited = isFavoritedInDB(drinkName)
+            mAllDrinks.add(drink)
+        }
+        cursor.close()
+    }
+
+    private fun pushAllDrinks(){
+        for (drink in mAllDrinks){
+            insertDrinkIntoDrinksTable(drink)
+        }
+        mAllDrinks.clear()
+    }
+
 }
