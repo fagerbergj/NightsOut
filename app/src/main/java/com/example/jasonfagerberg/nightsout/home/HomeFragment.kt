@@ -123,42 +123,36 @@ class HomeFragment : Fragment(){
     }
 
     private fun showOverrideLogDialog(logDate: Int){
-        val header = mMainActivity.mLogHeaders[mMainActivity.mLogHeaders.indexOf(
-                LogHeader(logDate, 0.0, 0.0))]
+        val headerIndex = mMainActivity.mLogHeaders.indexOf(LogHeader(logDate, 0.0, 0.0))
+        val header = mMainActivity.mLogHeaders[headerIndex]
 
         val builder = android.app.AlertDialog.Builder(view!!.context)
         val parent:ViewGroup? = null
         val dialogView = mMainActivity.layoutInflater
-                .inflate(R.layout.fragment_home_overwrite_log_dialog, parent, false)
+                .inflate(R.layout.fragment_home_update_log_dialog, parent, false)
         var message = "There is already a log on ${header.monthName} ${header.day}," +
-                " ${header.year}.\nWhat would you like to do to the old record?"
-        dialogView.findViewById<TextView>(R.id.text_home_dialog_overwrite_log_body).text = message
+                " ${header.year}.\nWould you like to update the old log?"
+        dialogView.findViewById<TextView>(R.id.text_home_dialog_update_log_body).text = message
 
         builder.setView(dialogView)
         val dialog = builder.create()
         dialog.setCancelable(false)
         dialog.show()
 
-        dialogView.findViewById<Button>(R.id.btn_home_dialog_overwrite_log_cancel)
+        dialogView.findViewById<Button>(R.id.btn_home_dialog_update_log_cancel)
                 .setOnClickListener { _ ->
                     showDatePicker()
                     dialog.dismiss()
                 }
 
-        dialogView.findViewById<Button>(R.id.btn_home_dialog_overwrite_log_overwrite)
+        dialogView.findViewById<Button>(R.id.btn_home_dialog_update_log_update)
                 .setOnClickListener { _ ->
-                    //todo implement behavior: delete log drinks, add all current drinks
+                    mMainActivity.mDatabaseHelper.deleteLog(header.date)
+                    mMainActivity.mLogHeaders[headerIndex] = LogHeader(header.date, bac, drinkingDuration)
+                    mDrinkListAdapter.notifyDataSetChanged()
+                    mMainActivity.mDatabaseHelper.pushDrinksToLogDrinks(header.date)
                     message = "Log on ${header.monthName} ${header.day}," +
                             " ${header.year} was overwritten"
-                    showToast(message)
-                    dialog.dismiss()
-                }
-
-        dialogView.findViewById<Button>(R.id.btn_home_dialog_overwrite_log_append)
-                .setOnClickListener { _ ->
-                    //todo implement behavior: add current session minus logged drinks
-                    message = "Log on ${header.monthName} ${header.day}," +
-                            " ${header.year} was appended"
                     showToast(message)
                     dialog.dismiss()
                 }

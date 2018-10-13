@@ -322,4 +322,11 @@ class DatabaseHelper(val context: Context?, val name: String?, factory: SQLiteDa
             db.execSQL(sql)
         }
     }
+
+    fun deleteLog(date: Int){
+        var sql = "DELETE FROM log WHERE date = $date"
+        db.execSQL(sql)
+        sql = "DELETE FROM log_drink WHERE log_date = $date"
+        db.execSQL(sql)
+    }
 }
