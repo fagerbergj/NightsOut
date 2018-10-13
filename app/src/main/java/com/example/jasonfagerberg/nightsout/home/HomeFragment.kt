@@ -10,6 +10,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.appcompat.widget.Toolbar
 import android.util.Log
 import android.view.*
 import android.widget.*
@@ -176,7 +177,7 @@ class HomeFragment : Fragment(){
     }
 
     private fun setupToolbar(view: View){
-        val toolbar: androidx.appcompat.widget.Toolbar = view.findViewById(R.id.toolbar_home)
+        val toolbar: Toolbar = view.findViewById(R.id.toolbar_home)
         toolbar.inflateMenu(R.menu.home_menu)
         mMainActivity.setSupportActionBar(toolbar)
         mMainActivity.supportActionBar!!.setDisplayShowTitleEnabled(true)

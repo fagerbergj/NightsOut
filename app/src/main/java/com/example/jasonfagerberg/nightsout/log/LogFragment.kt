@@ -8,9 +8,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.RecyclerView
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.TextView
 import com.example.jasonfagerberg.nightsout.R
 import com.example.jasonfagerberg.nightsout.main.Converter
@@ -51,8 +49,7 @@ class LogFragment : Fragment() {
         mLogListView.addItemDecoration(itemDecor)
 
         // toolbar setup
-        val toolbar: Toolbar = view!!.findViewById(R.id.toolbar_log)
-        toolbar.inflateMenu(R.menu.log_menu)
+        setupToolbar(view!!)
 
         // take date from calender, pull correct session, pass to adapter
         mLogList = ArrayList()
@@ -61,13 +58,7 @@ class LogFragment : Fragment() {
         setupCalendar(view)
 
         // set adapter
-        mLogFragmentAdapter = LogFragmentAdapter(context!!, mLogList)
-        val year = calendar.get(Calendar.YEAR)
-        val month = calendar.get(Calendar.MONTH)
-        val day = calendar.get(Calendar.DAY_OF_MONTH)
-        val date = Integer.parseInt(converter.yearMonthDayTo8DigitString(year, month, day))
-        setLogListBasedOnDay(date)
-        mLogListView.adapter = mLogFragmentAdapter
+        setAdapter()
 
         // setup bottom nav bar
         mMainActivity.showBottomNavBar(R.id.bottom_nav_log)
@@ -75,14 +66,72 @@ class LogFragment : Fragment() {
         return view
     }
 
-    // format days to correct object and send to decorator
+    override fun onResume() {
+        val myCalendar = Calendar.getInstance()
+        calendarView.selectedDate = CalendarDay.from(Date(myCalendar.time.time))
+        super.onResume()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+        inflater!!.inflate(R.menu.log_menu, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean{
+        val resId = item?.itemId
+        Log.v(TAG, "$resId")
+        when(resId){
+            R.id.btn_clear_all_logs -> {
+                for (header in mMainActivity.mLogHeaders){
+                    mMainActivity.mDatabaseHelper.deleteLog(header.date)
+                }
+                mMainActivity.mLogHeaders.clear()
+                mLogList.clear()
+                calendarView.removeDecorators()
+                setAdapter()
+                mLogFragmentAdapter.notifyDataSetChanged()
+                mLogFragmentAdapter.notifyDataSetChanged()
+            }
+            R.id.btn_clear_selected_day_log -> {
+                Log.v(TAG, "selected date ${calendarView.selectedDate}")
+                val date = converter.yearMonthDayTo8DigitString(calendarView.selectedDate.year,
+                        calendarView.selectedDate.month, calendarView.selectedDate.day).toInt()
+                mMainActivity.mLogHeaders.remove(LogHeader(date, 0.0, 0.0))
+                mMainActivity.mDatabaseHelper.deleteLog(date)
+                mLogList.clear()
+                calendarView.removeDecorators()
+                setAdapter()
+                mLogFragmentAdapter.notifyDataSetChanged()
+                highlightDays()
+            }
+        }
+        return true
+    }
+
+    private fun setAdapter(){
+        mLogFragmentAdapter = LogFragmentAdapter(context!!, mLogList)
+        val year = calendar.get(Calendar.YEAR)
+        val month = calendar.get(Calendar.MONTH)
+        val day = calendar.get(Calendar.DAY_OF_MONTH)
+        val date = Integer.parseInt(converter.yearMonthDayTo8DigitString(year, month, day))
+        setLogListBasedOnDay(date)
+        mLogListView.adapter = mLogFragmentAdapter
+    }
+
+    private fun setupToolbar(view: View) {
+        val toolbar: Toolbar = view.findViewById(R.id.toolbar_log)
+        toolbar.inflateMenu(R.menu.log_menu)
+        mMainActivity.setSupportActionBar(toolbar)
+        mMainActivity.supportActionBar!!.setDisplayShowTitleEnabled(true)
+        setHasOptionsMenu(true)
+    }
+
+        // format days to correct object and send to decorator
     private fun highlightDays(){
         val dates = ArrayList<CalendarDay>()
         val calendar = Calendar.getInstance()
         for(log in mMainActivity.mLogHeaders){
             calendar.set(log.year, log.month, log.day)
             val day = CalendarDay.from(Date(calendar.time.time))
-            Log.v(TAG, day.toString())
             dates.add(day)
         }
         calendarView.addDecorator(EventDecorator(ContextCompat.getColor(context!!,
@@ -103,7 +152,6 @@ class LogFragment : Fragment() {
         // when date is changed, change recycler list
         calendarView.setOnDateChangedListener{_ , day, _ ->
             calendar.set(day.year, day.month, day.day)
-            Log.v(TAG, "Day = ${day.date.time}")
             mLogList.clear()
 
             val date = Integer.parseInt(converter.yearMonthDayTo8DigitString(day.year, day.month, day.day))
@@ -113,7 +161,6 @@ class LogFragment : Fragment() {
 
     private fun setLogListBasedOnDay(date: Int){
         val index = mMainActivity.mLogHeaders.indexOf(LogHeader(date, 0.0, 0.0 ))
-        Log.v(TAG, "date: $date index: $index")
         if(index >= 0){
             val header = mMainActivity.mLogHeaders[index]
             mLogList.add(header)
