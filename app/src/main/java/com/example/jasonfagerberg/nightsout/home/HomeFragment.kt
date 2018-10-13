@@ -83,10 +83,27 @@ class HomeFragment : Fragment(){
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         val resId = item?.itemId
-        if(resId == R.id.btn_toolbar_home_done){
-            showDatePicker()
+        when (resId){
+            R.id.btn_toolbar_home_done ->  showDatePicker()
+            R.id.btn_clear_drink_list -> {
+                mMainActivity.mDrinksList.clear()
+                mDrinkListAdapter.notifyDataSetChanged()
+                showOrHideEmptyListText(view!!)
+            }
+            R.id.btn_disclaimer -> showDisclaimerDialog()
         }
         return true
+    }
+
+    private fun showDisclaimerDialog(){
+        val builder = android.app.AlertDialog.Builder(view!!.context)
+        val parent:ViewGroup? = null
+        val dialogView = mMainActivity.layoutInflater
+                .inflate(R.layout.fragment_home_dialog_disclaimer, parent, false)
+        builder.setView(dialogView)
+        val dialog = builder.create()
+        dialog.show()
+        dialog.findViewById<Button>(R.id.btn_disclaimer_dismiss).setOnClickListener { dialog.dismiss() }
     }
 
     private fun showDatePicker(){

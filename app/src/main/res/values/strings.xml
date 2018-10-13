@@ -57,4 +57,9 @@
     <string name="overwrite_log">Overwrite Log</string>
     <string name="cancel">Cancel</string>
     <string name="update">Update</string>
+    <string name="disclaimer_body">The BAC value provided by the app is only an estimate. The status
+        given by the app is an estimation based on the calculated BAC.your actual BAC will vary
+        depending on a host of different factors, such as your hydration status, recent meals,
+        fluid intake, kidney function, and much more. A breathalyzer or blood test is the only way
+        to have an accurate measurement.</string>
 </resources>
