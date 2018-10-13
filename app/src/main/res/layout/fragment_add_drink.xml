@@ -126,15 +126,14 @@
                 android:text="@string/name"
                 android:textSize="18sp" />
 
-            <EditText
+            <AutoCompleteTextView
                 android:id="@+id/edit_add_drink_name"
                 android:layout_width="225dp"
                 android:layout_height="50dp"
                 android:gravity="center_horizontal"
                 android:inputType="text"
                 android:hint="@string/empty"
-                android:importantForAutofill="no"
-                tools:targetApi="o" />
+                android:completionThreshold="0"/>
 
         </LinearLayout>
 

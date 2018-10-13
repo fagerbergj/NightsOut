@@ -12,8 +12,11 @@ import android.util.Log
 import android.view.*
 import android.widget.*
 import com.example.jasonfagerberg.nightsout.main.Drink
-import com.example.jasonfagerberg.nightsout.main.MainActivity
 import com.example.jasonfagerberg.nightsout.R
+import android.widget.ArrayAdapter
+import android.widget.Toast
+import android.widget.AdapterView
+import com.example.jasonfagerberg.nightsout.main.MainActivity
 
 private const val TAG = "AddDrinkFragment"
 
@@ -37,6 +40,7 @@ class AddDrinkFragment : Fragment() {
 
         //toolbar setup
         toolbarSetup(view)
+        drinkNameEditTextSetup(view)
 
         // hide bottom nav bar
         mMainActivity.hideBottomNavBar()
@@ -139,6 +143,22 @@ class AddDrinkFragment : Fragment() {
 
         toolbar.setNavigationOnClickListener { _: View -> activity!!.onBackPressed() }
     }
+
+    private fun drinkNameEditTextSetup(view: View){
+        val editName = view.findViewById<AutoCompleteTextView>(R.id.edit_add_drink_name)
+        val names = mMainActivity.mDatabaseHelper.pullDrinkNames()
+        val adapter = ArrayAdapter<String>(context!!, R.layout.fragment_add_drink_name_suggestion_list,
+                R.id.text_view_list_item, names)
+        editName.setAdapter(adapter)
+
+        editName.onItemClickListener = AdapterView.OnItemClickListener { _, _, position: Int, _ ->
+            val item = adapter.getItem(position)
+            val drink = mMainActivity.mDatabaseHelper.getDrinkFromName(item!!)
+            fillViews(drink.name, drink.abv, drink.amount, drink.measurement)
+        }
+    }
+
+
 
     private fun addDrink(view: View){
         val editName = view.findViewById<EditText>(R.id.edit_add_drink_name)
