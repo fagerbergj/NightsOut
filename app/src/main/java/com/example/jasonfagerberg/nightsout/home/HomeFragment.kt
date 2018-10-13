@@ -1,5 +1,6 @@
 package com.example.jasonfagerberg.nightsout.home
 
+import android.app.AlertDialog
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.DialogInterface
@@ -20,6 +21,10 @@ import com.example.jasonfagerberg.nightsout.main.Converter
 import java.util.*
 import android.widget.RelativeLayout
 import com.example.jasonfagerberg.nightsout.log.LogHeader
+import com.jjoe64.graphview.series.LineGraphSeries
+import com.jjoe64.graphview.GraphView
+import com.jjoe64.graphview.series.DataPoint
+import kotlin.collections.ArrayList
 
 
 private const val TAG = "HomeFragment"
@@ -342,6 +347,7 @@ class HomeFragment : Fragment(){
         builder.setView(dialogView)
         val dialog = builder.create()
         dialog.show()
+        setupBacDeclineChart(dialog)
 
         dialog.findViewById<Button>(R.id.btn_bac_info_dismiss).setOnClickListener {
             dialog.dismiss()
@@ -351,7 +357,7 @@ class HomeFragment : Fragment(){
         dialog.findViewById<TextView>(R.id.text_bac_info_title).text = bacInfoTitleString
 
         var hoursMin = mConverter.decimalTimeToHoursAndMinuets(drinkingDuration)
-        Log.v(TAG, "$drinkingDuration")
+        //Log.v(TAG, "$drinkingDuration")
         var hoursMinStrings = mConverter.hoursAndMinuetsIntoTwoDigitStrings(hoursMin)
         val durationString =  "${hoursMinStrings.first} hours  ${hoursMinStrings.second} min"
         dialog.findViewById<TextView>(R.id.text_bac_info_duration).text = durationString
@@ -364,6 +370,41 @@ class HomeFragment : Fragment(){
         hoursMinStrings = mConverter.hoursAndMinuetsIntoTwoDigitStrings(hoursMin)
         val hoursToSoberString = "${hoursMinStrings.first} hours  ${hoursMinStrings.second} min"
         dialog.findViewById<TextView>(R.id.text_bac_info_time_to_sober).text = hoursToSoberString
+    }
+
+    private fun setupBacDeclineChart(dialog: AlertDialog){
+        val graph = dialog.findViewById<GraphView>(R.id.graph_bac_info_declining_bac)
+        graph.title = "BAC Decline Over Time"
+        val points = ArrayList<DataPoint>()
+        var projectedBac = bac
+        var elapsedTime = 0.0
+        
+        while (projectedBac > 0.0075){
+            points.add(DataPoint(elapsedTime, projectedBac))
+            elapsedTime += .5
+            projectedBac -= 0.0075
+        }
+        val series = LineGraphSeries<DataPoint>(points.toTypedArray())
+
+        val soberLine = ArrayList<DataPoint>()
+        if (points.size > 0){
+            soberLine.add(DataPoint(0.0,0.04))
+            soberLine.add(DataPoint(100.0, 0.04))
+        }
+        val soberLineSeries = LineGraphSeries<DataPoint>(soberLine.toTypedArray())
+        soberLineSeries.color = ContextCompat.getColor(context!!, R.color.colorLightGreen)
+        soberLineSeries.backgroundColor = ContextCompat.getColor(context!!, R.color.colorLightGreen)
+        soberLineSeries.isDrawBackground = true
+
+        graph.addSeries(soberLineSeries)
+        graph.addSeries(series)
+
+        graph.gridLabelRenderer.labelVerticalWidth = 96
+
+        graph.viewport.isXAxisBoundsManual = true
+        graph.viewport.isYAxisBoundsManual = true
+        graph.viewport.setMaxY(bac + .0008)
+        graph.viewport.setMaxX(elapsedTime + .5)
     }
 
     private fun updateBACText(){

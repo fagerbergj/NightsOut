@@ -113,12 +113,18 @@
 
     </RelativeLayout>
 
+    <com.jjoe64.graphview.GraphView
+        android:id="@+id/graph_bac_info_declining_bac"
+        android:layout_width="match_parent"
+        android:layout_height="225dip"
+        android:layout_below="@id/info_container" />
+
     <Button
         android:id="@+id/btn_bac_info_dismiss"
         style="?android:attr/buttonBarButtonStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/info_container"
+        android:layout_below="@id/graph_bac_info_declining_bac"
         android:layout_alignParentEnd="true"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
