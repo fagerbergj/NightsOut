@@ -12,7 +12,6 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.appcompat.widget.Toolbar
-import android.util.Log
 import android.view.*
 import android.widget.*
 import com.example.jasonfagerberg.nightsout.main.MainActivity
@@ -25,6 +24,7 @@ import com.jjoe64.graphview.series.LineGraphSeries
 import com.jjoe64.graphview.GraphView
 import com.jjoe64.graphview.series.DataPoint
 import kotlin.collections.ArrayList
+import android.widget.Toast
 
 
 private const val TAG = "HomeFragment"
@@ -358,7 +358,7 @@ class HomeFragment : Fragment(){
 
         var hoursMin = mConverter.decimalTimeToHoursAndMinuets(drinkingDuration)
         //Log.v(TAG, "$drinkingDuration")
-        var hoursMinStrings = mConverter.hoursAndMinuetsIntoTwoDigitStrings(hoursMin)
+        var hoursMinStrings = mConverter.hoursAndMinuetsToTwoDigitStrings(hoursMin)
         val durationString =  "${hoursMinStrings.first} hours  ${hoursMinStrings.second} min"
         dialog.findViewById<TextView>(R.id.text_bac_info_duration).text = durationString
 
@@ -367,7 +367,7 @@ class HomeFragment : Fragment(){
 
         val hoursToSober = if ((bac - 0.04) / 0.015 < 0) 0.0 else (bac - 0.04)/0.015
         hoursMin = mConverter.decimalTimeToHoursAndMinuets(hoursToSober)
-        hoursMinStrings = mConverter.hoursAndMinuetsIntoTwoDigitStrings(hoursMin)
+        hoursMinStrings = mConverter.hoursAndMinuetsToTwoDigitStrings(hoursMin)
         val hoursToSoberString = "${hoursMinStrings.first} hours  ${hoursMinStrings.second} min"
         dialog.findViewById<TextView>(R.id.text_bac_info_time_to_sober).text = hoursToSoberString
     }
@@ -378,13 +378,18 @@ class HomeFragment : Fragment(){
         val points = ArrayList<DataPoint>()
         var projectedBac = bac
         var elapsedTime = 0.0
-        
+
         while (projectedBac > 0.0075){
             points.add(DataPoint(elapsedTime, projectedBac))
             elapsedTime += .5
             projectedBac -= 0.0075
         }
         val series = LineGraphSeries<DataPoint>(points.toTypedArray())
+        series.setOnDataPointTapListener { series, dataPoint ->
+            val pointBac = dataPoint.y.toString().substring(0,4)
+            val time = mConverter.decimalTimeToTwoDigitStrings(dataPoint.x)
+            showToast("BAC after ${time.first} hours and ${time.second} minuets: $pointBac")
+        }
 
         val soberLine = ArrayList<DataPoint>()
         if (points.size > 0){

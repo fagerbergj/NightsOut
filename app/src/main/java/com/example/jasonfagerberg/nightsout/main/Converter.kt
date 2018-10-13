@@ -71,7 +71,12 @@ class Converter {
         return Pair(hour, min)
     }
 
-    fun hoursAndMinuetsIntoTwoDigitStrings(hoursMin: Pair<Int, Int>): Pair<String, String>{
+    fun decimalTimeToTwoDigitStrings(time: Double): Pair<String, String>{
+        val hm = decimalTimeToHoursAndMinuets(time)
+        return hoursAndMinuetsToTwoDigitStrings(hm)
+    }
+
+    fun hoursAndMinuetsToTwoDigitStrings(hoursMin: Pair<Int, Int>): Pair<String, String>{
         val hours = if (hoursMin.first < 10) "0${hoursMin.first}"
                     else hoursMin.first.toString()
 
