@@ -85,7 +85,7 @@ class MainActivity : AppCompatActivity() {
             val builder = AlertDialog.Builder(this)
             val parent: ViewGroup? = null
             val dialogView = layoutInflater.inflate(
-                    R.layout.activity_main_ensure_abandoing_of_profile_changes_dialog, parent, false)
+                    R.layout.activity_main_dialog_abandon_profile_changes, parent, false)
 
             builder.setView(dialogView)
             val dialog = builder.create()

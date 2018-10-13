@@ -8,10 +8,10 @@
     android:padding="16dp">
 
     <TextView
-        android:id="@+id/text_home_dialog_bac_info_title"
+        android:id="@+id/text_bac_info_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/text_BAC_level"
+        android:text="@string/bac_level"
         android:textColor="@color/colorBlack"
         android:textSize="24sp"
         android:textStyle="bold"
@@ -23,7 +23,7 @@
         android:layout_height="1dp"
         android:layout_marginBottom="4dp"
         android:background="@android:color/darker_gray"
-        android:layout_below="@+id/text_home_dialog_bac_info_title" />
+        android:layout_below="@+id/text_bac_info_title" />
 
     <RelativeLayout
         android:id="@+id/info_container"
@@ -38,14 +38,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingBottom="16dp"
-            android:text="@string/text_drinking_duration"
+            android:text="@string/drinking_duration"
             android:textColor="@color/colorDarkGray"
             android:layout_alignParentStart="true"
-            android:layout_toStartOf="@+id/text_home_bac_info_duration_drinking"
+            android:layout_toStartOf="@+id/text_bac_info_duration"
             android:textAlignment="viewStart" />
 
         <TextView
-            android:id="@+id/text_home_bac_info_duration_drinking"
+            android:id="@+id/text_bac_info_duration"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignTop="@+id/duration_label"
@@ -62,18 +62,18 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingBottom="16dp"
-            android:text="@string/text_grams_of_alcohol_consumed"
+            android:text="@string/grams_of_alcohol_consumed"
             android:textColor="@color/colorDarkGray"
             android:layout_alignParentStart="true"
-            android:layout_toStartOf="@+id/text_home_bac_info_grams_of_alc"
+            android:layout_toStartOf="@+id/text_bac_info_grams_of_alc"
             android:textAlignment="viewStart"
             android:layout_below="@+id/duration_label"/>
 
         <TextView
-            android:id="@+id/text_home_bac_info_grams_of_alc"
+            android:id="@+id/text_bac_info_grams_of_alc"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignStart="@id/text_home_bac_info_duration_drinking"
+            android:layout_alignStart="@id/text_bac_info_duration"
             android:layout_alignTop="@+id/grams_label"
             android:layout_alignBottom="@+id/grams_label"
             android:layout_alignParentEnd="true"
@@ -88,19 +88,19 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingBottom="16dp"
-            android:text="@string/text_time_to_sober"
+            android:text="@string/time_to_sober"
             android:textColor="@color/colorDarkGray"
-            android:layout_toStartOf="@+id/text_home_bac_info_time_to_sober"
+            android:layout_toStartOf="@+id/text_bac_info_time_to_sober"
             android:textAlignment="viewStart"
             android:layout_alignParentStart="true"
             android:layout_below="@+id/grams_label"/>
 
         <TextView
-            android:id="@+id/text_home_bac_info_time_to_sober"
+            android:id="@+id/text_bac_info_time_to_sober"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/text_home_bac_info_grams_of_alc"
-            android:layout_alignStart="@+id/text_home_bac_info_grams_of_alc"
+            android:layout_below="@+id/text_bac_info_grams_of_alc"
+            android:layout_alignStart="@+id/text_bac_info_grams_of_alc"
             android:layout_alignTop="@+id/sober_label"
             android:layout_alignBottom="@+id/sober_label"
             android:layout_alignParentEnd="true"
@@ -114,7 +114,7 @@
     </RelativeLayout>
 
     <Button
-        android:id="@+id/btn_home_dismiss_bac_info_dialog"
+        android:id="@+id/btn_bac_info_dismiss"
         style="?android:attr/buttonBarButtonStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -124,7 +124,7 @@
         android:layout_marginEnd="8dp"
         android:paddingTop="4dp"
         android:paddingBottom="4dp"
-        android:text="@string/text_dismiss"
+        android:text="@string/dismiss"
         android:textColor="@color/colorDarkGray"
         app:backgroundTint="@color/colorWhite" />
 

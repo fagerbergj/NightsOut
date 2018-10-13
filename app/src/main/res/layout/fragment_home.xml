@@ -27,7 +27,7 @@
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         android:layout_marginTop="8dp"
-        android:text="@string/button_add_drink"
+        android:text="@string/add_a_drink"
         android:textColor="@color/colorWhite"
         android:theme="@style/HomeButtonTheme"
         android:textSize="18sp"/>
@@ -47,7 +47,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/text_start_drinking" />
+            android:text="@string/start_drinking" />
 
         <EditText
             android:id="@+id/edit_start_time"
@@ -55,7 +55,7 @@
             android:layout_height="40dp"
             android:textAlignment="center"
             android:inputType="time"
-            android:hint="@string/text_empty"
+            android:hint="@string/empty"
             android:clickable="false"
             android:focusable="false"
             android:importantForAutofill="no"
@@ -76,7 +76,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/text_end_drinking" />
+            android:text="@string/end_drinking" />
 
         <EditText
             android:id="@+id/edit_end_time"
@@ -84,7 +84,7 @@
             android:layout_height="40dp"
             android:clickable="false"
             android:focusable="false"
-            android:hint="@string/text_empty"
+            android:hint="@string/empty"
             android:inputType="time"
             android:textAlignment="center"
             android:autofillHints=""
@@ -117,7 +117,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:text="@string/text_empty_drink_list" />
+            android:text="@string/no_drinks_yet" />
 
     </RelativeLayout>
 

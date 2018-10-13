@@ -129,23 +129,23 @@ class HomeFragment : Fragment(){
         val builder = android.app.AlertDialog.Builder(view!!.context)
         val parent:ViewGroup? = null
         val dialogView = mMainActivity.layoutInflater
-                .inflate(R.layout.fragment_home_update_log_dialog, parent, false)
+                .inflate(R.layout.fragment_home_dialog_update_log, parent, false)
         var message = "There is already a log on ${header.monthName} ${header.day}," +
                 " ${header.year}.\nWould you like to update the old log?"
-        dialogView.findViewById<TextView>(R.id.text_home_dialog_update_log_body).text = message
+        dialogView.findViewById<TextView>(R.id.text_update_log_body).text = message
 
         builder.setView(dialogView)
         val dialog = builder.create()
         dialog.setCancelable(false)
         dialog.show()
 
-        dialogView.findViewById<Button>(R.id.btn_home_dialog_update_log_cancel)
+        dialogView.findViewById<Button>(R.id.btn_update_log_cancel)
                 .setOnClickListener { _ ->
                     showDatePicker()
                     dialog.dismiss()
                 }
 
-        dialogView.findViewById<Button>(R.id.btn_home_dialog_update_log_update)
+        dialogView.findViewById<Button>(R.id.btn_update_log_update)
                 .setOnClickListener { _ ->
                     mMainActivity.mDatabaseHelper.deleteLog(header.date)
                     mMainActivity.mLogHeaders[headerIndex] = LogHeader(header.date, bac, drinkingDuration)
@@ -319,33 +319,33 @@ class HomeFragment : Fragment(){
         val builder = android.app.AlertDialog.Builder(view!!.context)
         val parent:ViewGroup? = null
         val dialogView = mMainActivity.layoutInflater
-                .inflate(R.layout.fragment_home_bac_info_dialog, parent, false)
+                .inflate(R.layout.fragment_home_dialog_bac_info, parent, false)
 
         builder.setView(dialogView)
         val dialog = builder.create()
         dialog.show()
 
-        dialog.findViewById<Button>(R.id.btn_home_dismiss_bac_info_dialog).setOnClickListener {
+        dialog.findViewById<Button>(R.id.btn_bac_info_dismiss).setOnClickListener {
             dialog.dismiss()
         }
 
         val bacInfoTitleString = "BAC Level: " + String.format("%.3f", bac)
-        dialog.findViewById<TextView>(R.id.text_home_dialog_bac_info_title).text = bacInfoTitleString
+        dialog.findViewById<TextView>(R.id.text_bac_info_title).text = bacInfoTitleString
 
         var hoursMin = mConverter.decimalTimeToHoursAndMinuets(drinkingDuration)
         Log.v(TAG, "$drinkingDuration")
         var hoursMinStrings = mConverter.hoursAndMinuetsIntoTwoDigitStrings(hoursMin)
         val durationString =  "${hoursMinStrings.first} hours  ${hoursMinStrings.second} min"
-        dialog.findViewById<TextView>(R.id.text_home_bac_info_duration_drinking).text = durationString
+        dialog.findViewById<TextView>(R.id.text_bac_info_duration).text = durationString
 
         val gramsString = String.format("%.2f", gramsOfAlcoholConsumed) + " grams"
-        dialog.findViewById<TextView>(R.id.text_home_bac_info_grams_of_alc).text = gramsString
+        dialog.findViewById<TextView>(R.id.text_bac_info_grams_of_alc).text = gramsString
 
         val hoursToSober = if ((bac - 0.04) / 0.015 < 0) 0.0 else (bac - 0.04)/0.015
         hoursMin = mConverter.decimalTimeToHoursAndMinuets(hoursToSober)
         hoursMinStrings = mConverter.hoursAndMinuetsIntoTwoDigitStrings(hoursMin)
         val hoursToSoberString = "${hoursMinStrings.first} hours  ${hoursMinStrings.second} min"
-        dialog.findViewById<TextView>(R.id.text_home_bac_info_time_to_sober).text = hoursToSoberString
+        dialog.findViewById<TextView>(R.id.text_bac_info_time_to_sober).text = hoursToSoberString
     }
 
     private fun updateBACText(){

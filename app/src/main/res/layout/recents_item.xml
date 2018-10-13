@@ -37,7 +37,7 @@
                 android:layout_marginStart="8dp"
                 android:layout_toEndOf="@id/text_recent_drink_name"
                 android:src="@drawable/add_white_24dp"
-                android:contentDescription="@string/text_recents"/>
+                android:contentDescription="@string/recents"/>
 
         </RelativeLayout>
     </androidx.cardview.widget.CardView>

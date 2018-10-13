@@ -151,8 +151,8 @@ class ProfileFragment : Fragment() {
     private fun saveProfile(view: View){
         val sexText = view.findViewById<TextView>(R.id.text_profile_sex)
         val weightText = view.findViewById<TextView>(R.id.text_profile_weight)
-        resetTextView(sexText, R.string.text_sex)
-        resetTextView(weightText, R.string.text_weight)
+        resetTextView(sexText, R.string.sex)
+        resetTextView(weightText, R.string.weight)
         if(!mWeightEditText.text.isEmpty() && "${mWeightEditText.text}"["${mWeightEditText.text}".length-1] == '.'){
             val w = "${mWeightEditText.text}0"
             mWeightEditText.setText(w)
@@ -160,10 +160,10 @@ class ProfileFragment : Fragment() {
 
         if(sex == null && !profileInit){
             showToast("Please Select A Sex")
-            showErrorText(sexText, R.string.text_sex_error)
+            showErrorText(sexText, R.string.sex_error)
             return
         }else if (mWeightEditText.text.isEmpty() || mWeightEditText.text.toString().toDouble()  < 20 ){
-            showErrorText(weightText, R.string.text_weight_error)
+            showErrorText(weightText, R.string.weight_error)
             showToast("Please Enter a Valid Weight")
             return
         }

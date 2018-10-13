@@ -30,7 +30,7 @@
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
             android:layout_marginTop="8dp"
-            android:text="@string/text_quick_fill_recents"
+            android:text="@string/recents_quick_fill"
             android:textSize="16sp" />
 
         <RelativeLayout
@@ -60,7 +60,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:text="@string/text_empty_recents_list" />
+                android:text="@string/no_recent_drinks" />
 
         </RelativeLayout>
 
@@ -72,7 +72,7 @@
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
             android:layout_marginTop="8dp"
-            android:text="@string/text_quick_fill_favorites"
+            android:text="@string/favorites_quick_fill"
             android:textSize="16sp" />
 
         <RelativeLayout
@@ -102,7 +102,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:text="@string/text_empty_favorites_list" />
+                android:text="@string/no_favorite_drinks" />
 
         </RelativeLayout>
 
@@ -123,7 +123,7 @@
                 android:id="@+id/text_add_drink_name"
                 android:layout_width="75dp"
                 android:layout_height="wrap_content"
-                android:text="@string/text_name"
+                android:text="@string/name"
                 android:textSize="18sp" />
 
             <EditText
@@ -132,7 +132,7 @@
                 android:layout_height="50dp"
                 android:gravity="center_horizontal"
                 android:inputType="text"
-                android:hint="@string/text_empty"
+                android:hint="@string/empty"
                 android:importantForAutofill="no"
                 tools:targetApi="o" />
 
@@ -155,7 +155,7 @@
                 android:id="@+id/text_add_drink_abv"
                 android:layout_width="75dp"
                 android:layout_height="wrap_content"
-                android:text="@string/text_abv"
+                android:text="@string/abv"
                 android:textSize="18sp" />
 
             <EditText
@@ -164,7 +164,7 @@
                 android:layout_height="50dp"
                 android:gravity="center_horizontal"
                 android:inputType="numberDecimal"
-                android:hint="@string/text_empty"
+                android:hint="@string/empty"
                 android:importantForAutofill="no"
                 tools:targetApi="o" />
 
@@ -172,7 +172,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="@string/text_percent"
+                android:text="@string/percent"
                 android:textColor="@color/colorBlack"
                 android:textSize="24sp" />
 
@@ -195,7 +195,7 @@
                 android:id="@+id/text_add_drink_amount"
                 android:layout_width="75dp"
                 android:layout_height="wrap_content"
-                android:text="@string/text_amount"
+                android:text="@string/amount"
                 android:textSize="18sp" />
 
             <EditText
@@ -204,7 +204,7 @@
                 android:layout_height="50dp"
                 android:gravity="center_horizontal"
                 android:inputType="numberDecimal"
-                android:hint="@string/text_empty"
+                android:hint="@string/empty"
                 android:autofillHints=""
                 tools:targetApi="o" />
 
@@ -226,7 +226,7 @@
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
             android:layout_marginTop="64dp"
-            android:text="@string/text_add"
+            android:text="@string/add"
             android:textSize="18sp"
             android:theme="@style/HomeButtonTheme" />
 

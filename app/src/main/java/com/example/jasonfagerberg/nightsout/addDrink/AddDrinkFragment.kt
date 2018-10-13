@@ -72,7 +72,7 @@ class AddDrinkFragment : Fragment() {
 
         // add button setup
         val btnAdd = view.findViewById<MaterialButton>(R.id.btn_add_drink_add)
-        if (mFavorited) btnAdd.text = resources.getText(R.string.text_add_favorite)
+        if (mFavorited) btnAdd.text = resources.getText(R.string.add_favorite)
         btnAdd.setOnClickListener { _ -> addDrink(view)}
 
         // Inflate the layout for this fragment
@@ -98,11 +98,11 @@ class AddDrinkFragment : Fragment() {
                 if (canUnfavorite) mFavorited = !mFavorited
                 if (mFavorited) {
                     item.icon = ContextCompat.getDrawable(context!!, R.drawable.favorite_white_24dp)
-                    if(canUnfavorite) btnAdd.setText(R.string.text_add_and_favorite)
+                    if(canUnfavorite) btnAdd.setText(R.string.add_and_favorite)
                     showToast("Drink Will Be Favorited After Adding")
                 } else {
                     item.icon = ContextCompat.getDrawable(context!!, R.drawable.favorite_border_white_24dp)
-                    btnAdd.setText(R.string.text_add)
+                    btnAdd.setText(R.string.add)
                     showToast("Drink Will Not Be Favorited")
                 }
             }
@@ -147,9 +147,9 @@ class AddDrinkFragment : Fragment() {
         val textABV = view!!.findViewById<TextView>(R.id.text_add_drink_abv)
         val textAmount = view!!.findViewById<TextView>(R.id.text_add_drink_amount)
 
-        resetTextView(textName, R.string.text_name)
-        resetTextView(textABV, R.string.text_abv)
-        resetTextView(textAmount, R.string.text_amount)
+        resetTextView(textName, R.string.name)
+        resetTextView(textABV, R.string.abv)
+        resetTextView(textAmount, R.string.amount)
 
         // make sure string can be parsed to double
         if(!editABV.text.isEmpty() && "${editABV.text}"["${editABV.text}".length-1] == '.'){

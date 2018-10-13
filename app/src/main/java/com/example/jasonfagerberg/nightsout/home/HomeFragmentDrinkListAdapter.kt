@@ -5,7 +5,6 @@ import android.app.AlertDialog
 import android.content.Context
 import android.graphics.BitmapFactory
 import com.google.android.material.button.MaterialButton
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -84,16 +83,16 @@ class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: Ar
         val drink = mDrinksList[position]
         val builder = AlertDialog.Builder(mContext)
         val dialogView = mMainActivity.layoutInflater.inflate(
-                R.layout.fragment_home_edit_or_remove_drink_dialog, null)
+                R.layout.fragment_home_dialog_drink_modify, null)
 
-        dialogView.findViewById<TextView>(R.id.text_edit_remove_drink_title).text = drink.name
+        dialogView.findViewById<TextView>(R.id.text_drink_modify_title).text = drink.name
 
         builder.setView(dialogView)
         val dialog = builder.create()
         dialog.show()
 
         // add another button
-        val another = dialogView.findViewById<TextView>(R.id.text_dialog_add_another)
+        val another = dialogView.findViewById<TextView>(R.id.text_drink_modify_add_another)
         another.setOnClickListener{ _ ->
             onAddAnotherClicked(position)
             dismissDialog(dialog)
@@ -102,14 +101,14 @@ class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: Ar
         setupFavoritesOption(dialogView, drink, dialog)
 
         // edit button clicked
-        val edit = dialogView.findViewById<TextView>(R.id.text_dialog_edit_drink)
+        val edit = dialogView.findViewById<TextView>(R.id.text_drink_modify_edit_drink)
         edit.setOnClickListener{ _ ->
             showEditDialog(position)
             dialog.dismiss()
         }
 
         //delete button clicked
-        val delete = dialogView.findViewById<TextView>(R.id.text_dialog_remove_drink)
+        val delete = dialogView.findViewById<TextView>(R.id.text_drink_modify_remove_drink)
         delete.setOnClickListener{ _ ->
             removeItem(position)
             dismissDialog(dialog)
@@ -118,12 +117,12 @@ class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: Ar
     }
 
     private fun setupFavoritesOption(dialogView: View, drink: Drink, dialog: AlertDialog){
-        val favorite = dialogView.findViewById<TextView>(R.id.text_dialog_favorite_drink)
+        val favorite = dialogView.findViewById<TextView>(R.id.text_drink_modify_favorite_drink)
         if (drink.favorited){
-            favorite.setText(R.string.text_unfavorite_drink)
+            favorite.setText(R.string.unfavorite_drink)
             favorite.setCompoundDrawablesWithIntrinsicBounds(R.drawable.favorite_border_red_18dp,0,0,0)
         }else{
-            favorite.setText(R.string.text_favorite_drink)
+            favorite.setText(R.string.favorite_drink)
             favorite.setCompoundDrawablesWithIntrinsicBounds(R.drawable.favorite_red_18dp,0,0,0)
         }
 
@@ -174,7 +173,7 @@ class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: Ar
         val builder = AlertDialog.Builder(mContext)
         val parent:ViewGroup? = null
         val dialogView = mMainActivity.layoutInflater
-                .inflate(R.layout.fragment_home_edit_dialog, parent, false)
+                .inflate(R.layout.fragment_home_dialog_edit, parent, false)
 
         builder.setView(dialogView)
         val dialog = builder.create()
