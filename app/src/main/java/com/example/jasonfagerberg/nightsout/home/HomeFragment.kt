@@ -32,7 +32,7 @@ class HomeFragment : Fragment(){
     private var bac = 0.000
 
     private var drinkingDuration = 0.0
-    private var gramsOfAlcoholConsumed = 0.0
+    private var standardDrinksConsumed = 0.0
 
     // create fragment view
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -308,7 +308,7 @@ class HomeFragment : Fragment(){
             val abv = drink.abv/100
             a += (volume * abv )
         }
-        gramsOfAlcoholConsumed = mConverter.fluidOzToGrams(a)
+        standardDrinksConsumed = mConverter.fluidOzToGrams(a)/14.0
 
         val r = if(mMainActivity.sex!!) .73 else .66
 
@@ -356,8 +356,8 @@ class HomeFragment : Fragment(){
         val durationString =  "${hoursMinStrings.first} hours  ${hoursMinStrings.second} min"
         dialog.findViewById<TextView>(R.id.text_bac_info_duration).text = durationString
 
-        val gramsString = String.format("%.2f", gramsOfAlcoholConsumed) + " grams"
-        dialog.findViewById<TextView>(R.id.text_bac_info_grams_of_alc).text = gramsString
+        val standardDrinksString = String.format("%.2f", standardDrinksConsumed) + " drinks"
+        dialog.findViewById<TextView>(R.id.text_bac_info_standard_drinks).text = standardDrinksString
 
         val hoursToSober = if ((bac - 0.04) / 0.015 < 0) 0.0 else (bac - 0.04)/0.015
         hoursMin = mConverter.decimalTimeToHoursAndMinuets(hoursToSober)

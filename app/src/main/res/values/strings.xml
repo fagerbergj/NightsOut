@@ -44,7 +44,7 @@
     <string name="no">No</string>
     <string name="bac_level">BAC Level: </string>
     <string name="drinking_duration">Drinking Duration: </string>
-    <string name="grams_of_alcohol_consumed">Grams of Alcohol Consumed: </string>
+    <string name="standard_drinks_consumed">Standard Drinks Consumed: </string>
     <string name="time_to_sober">Approximate Time Until Sober: </string>
     <string name="dismiss">dismiss</string>
     <string name="info">info</string>
