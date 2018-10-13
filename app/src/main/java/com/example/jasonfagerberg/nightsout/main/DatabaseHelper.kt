@@ -334,4 +334,9 @@ class DatabaseHelper(val context: Context?, val name: String?, factory: SQLiteDa
         val sql = "DELETE FROM favorites"
         db.execSQL(sql)
     }
+
+    fun deleteAllRecents(){
+        val sql = "UPDATE drinks SET recent = 0 WHERE recent = 1"
+        db.execSQL(sql)
+    }
 }

@@ -106,6 +106,24 @@ class AddDrinkFragment : Fragment() {
                     showToast("Drink Will Not Be Favorited")
                 }
             }
+            R.id.btn_clear_favorites_list -> {
+                mMainActivity.mDatabaseHelper.deleteAllFavorites()
+                mMainActivity.mFavoritesList.clear()
+                for (drink in mMainActivity.mDrinksList){
+                    drink.favorited = false
+                }
+                showOrHideEmptyTextViews(view!!)
+                mFavoritesListAdapter.notifyDataSetChanged()
+            }
+            R.id.btn_clear_recents_list ->{
+                mMainActivity.mDatabaseHelper.deleteAllRecents()
+                mMainActivity.mRecentsList.clear()
+                for (drink in mMainActivity.mDrinksList){
+                    drink.recent = false
+                }
+                showOrHideEmptyTextViews(view!!)
+                mRecentsListAdapter.notifyDataSetChanged()
+            }
         }
         return true
     }
