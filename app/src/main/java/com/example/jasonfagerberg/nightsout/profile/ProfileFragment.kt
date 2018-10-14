@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.appcompat.widget.Toolbar
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
+//import android.util.Log
 import android.view.*
 import android.widget.*
 import com.example.jasonfagerberg.nightsout.main.MainActivity
@@ -20,9 +20,8 @@ import java.util.*
 import android.widget.AdapterView
 import android.widget.AdapterView.OnItemSelectedListener
 import android.widget.TextView
-import com.example.jasonfagerberg.nightsout.log.LogHeader
 
-private const val TAG = "ProfileFragment"
+//private const val TAG = "ProfileFragment"
 
 class ProfileFragment : Fragment() {
     private lateinit var mFavoritesListAdapter: ProfileFragmentFavoritesListAdapter
@@ -93,6 +92,25 @@ class ProfileFragment : Fragment() {
 
         return view
     }
+    override fun onResume() {
+        if(profileInit) {
+            sex = mMainActivity.sex!!
+            weight = mMainActivity.weight
+            weightMeasurement = mMainActivity.weightMeasurement
+            mWeightEditText.setText(weight.toString())
+            mMainActivity.showBottomNavBar(R.id.bottom_nav_profile)
+        } else {
+            mMainActivity.hideBottomNavBar()
+        }
+
+        // sex button setup
+        setupSexButtons(view!!)
+
+        // spinner setup
+        setupSpinner(view!!)
+
+        super.onResume()
+    }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
         inflater!!.inflate(R.menu.profile_menu, menu)
@@ -102,7 +120,7 @@ class ProfileFragment : Fragment() {
         val resId = item?.itemId
         when(resId){
             R.id.btn_clear_favorites_list -> {
-                mMainActivity.mDatabaseHelper.deleteAllFavorites()
+                mMainActivity.mDatabaseHelper.deleteRowsInTable("favorites", null)
                 mMainActivity.mFavoritesList.clear()
                 for (drink in mMainActivity.mDrinksList){
                     drink.favorited = false
@@ -120,28 +138,6 @@ class ProfileFragment : Fragment() {
         mMainActivity.setSupportActionBar(toolbar)
         mMainActivity.supportActionBar!!.setDisplayShowTitleEnabled(true)
         setHasOptionsMenu(true)
-    }
-
-    override fun onResume() {
-        if(profileInit) {
-            sex = mMainActivity.sex!!
-            weight = mMainActivity.weight
-            weightMeasurement = mMainActivity.weightMeasurement
-            mWeightEditText.setText(weight.toString())
-            mMainActivity.showBottomNavBar(R.id.bottom_nav_profile)
-        } else {
-            mMainActivity.hideBottomNavBar()
-        }
-
-        Log.v(TAG, "sex = $sex weight = $weight measurement = $weightMeasurement")
-
-        // sex button setup
-        setupSexButtons(view!!)
-
-        // spinner setup
-        setupSpinner(view!!)
-
-        super.onResume()
     }
 
     fun hasUnsavedData():Boolean{
@@ -184,12 +180,12 @@ class ProfileFragment : Fragment() {
         }
 
         if(sex == null && !profileInit){
-            showToast("Please Select A Sex")
+            mMainActivity.showToast("Please Select A Sex")
             showErrorText(sexText, R.string.sex_error)
             return
         }else if (mWeightEditText.text.isEmpty() || mWeightEditText.text.toString().toDouble()  < 20 ){
             showErrorText(weightText, R.string.weight_error)
-            showToast("Please Enter a Valid Weight")
+            mMainActivity.showToast("Please Enter a Valid Weight")
             return
         }
 
@@ -201,7 +197,7 @@ class ProfileFragment : Fragment() {
         mMainActivity.weightMeasurement = weightMeasurement
 
         if (profileInit){
-            showToast("Profile Saved!")
+            mMainActivity.showToast("Profile Saved!")
             return
         }else{
             mMainActivity.profileInt = true
@@ -222,16 +218,9 @@ class ProfileFragment : Fragment() {
         textView.setTextColor(ContextCompat.getColor(context!!, R.color.colorRed))
     }
 
-    private fun showToast(message: String){
-        val toast = Toast.makeText(context!!, message, Toast.LENGTH_LONG)
-        toast.setGravity(Gravity.CENTER, 0, 450)
-        toast.show()
-    }
-
     private fun setupSpinner(view: View){
         mSpinner = view.findViewById(R.id.spinner_profile)
         val items = arrayOf("lbs", "kg")
-        Log.v(TAG, "items[pos]= ${items[items.indexOf(weightMeasurement)]} pos = ${items.indexOf(weightMeasurement)} weightMeasure = $weightMeasurement")
         val adapter = ArrayAdapter(context!!, android.R.layout.simple_spinner_dropdown_item, items)
         mSpinner.adapter = adapter
         mSpinner.setSelection(items.indexOf(weightMeasurement))

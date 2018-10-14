@@ -7,11 +7,12 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.RecyclerView
-import android.util.Log
+//import android.util.Log
 import android.view.*
 import android.widget.TextView
 import com.example.jasonfagerberg.nightsout.R
-import com.example.jasonfagerberg.nightsout.main.Converter
+import com.example.jasonfagerberg.nightsout.converter.Converter
+import com.example.jasonfagerberg.nightsout.databaseHelper.LogDatabaseHelper
 import com.example.jasonfagerberg.nightsout.main.MainActivity
 import com.prolificinteractive.materialcalendarview.CalendarDay
 import com.prolificinteractive.materialcalendarview.DayViewDecorator
@@ -21,7 +22,7 @@ import com.prolificinteractive.materialcalendarview.spans.DotSpan
 import java.util.*
 import kotlin.collections.ArrayList
 
-private const val TAG = "LogFragment"
+//private const val TAG = "LogFragment"
 
 class LogFragment : Fragment() {
 
@@ -32,6 +33,7 @@ class LogFragment : Fragment() {
     private lateinit var mMainActivity: MainActivity
     private lateinit var mLogList: ArrayList<Any>
     private val converter: Converter = Converter()
+    private lateinit var logDatabaseHelper: LogDatabaseHelper
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -39,6 +41,7 @@ class LogFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_log, container, false)
         mMainActivity = context as MainActivity
         calendar = Calendar.getInstance()
+        logDatabaseHelper = LogDatabaseHelper(mMainActivity.mDatabaseHelper, mMainActivity)
 
         // recycler view
         mLogListView = view.findViewById(R.id.recycler_log)
@@ -78,11 +81,10 @@ class LogFragment : Fragment() {
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean{
         val resId = item?.itemId
-        Log.v(TAG, "$resId")
         when(resId){
             R.id.btn_clear_all_logs -> {
                 for (header in mMainActivity.mLogHeaders){
-                    mMainActivity.mDatabaseHelper.deleteLog(header.date)
+                    logDatabaseHelper.deleteLog(header.date)
                 }
                 mMainActivity.mLogHeaders.clear()
                 mLogList.clear()
@@ -92,11 +94,10 @@ class LogFragment : Fragment() {
                 mLogFragmentAdapter.notifyDataSetChanged()
             }
             R.id.btn_clear_selected_day_log -> {
-                Log.v(TAG, "selected date ${calendarView.selectedDate}")
                 val date = converter.yearMonthDayTo8DigitString(calendarView.selectedDate.year,
                         calendarView.selectedDate.month, calendarView.selectedDate.day).toInt()
                 mMainActivity.mLogHeaders.remove(LogHeader(date, 0.0, 0.0))
-                mMainActivity.mDatabaseHelper.deleteLog(date)
+                logDatabaseHelper.deleteLog(date)
                 mLogList.clear()
                 calendarView.removeDecorators()
                 setAdapter()
@@ -125,7 +126,6 @@ class LogFragment : Fragment() {
         mLogListView.adapter = mLogFragmentAdapter
     }
 
-        // format days to correct object and send to decorator
     private fun highlightDays(){
         val dates = ArrayList<CalendarDay>()
         val calendar = Calendar.getInstance()
@@ -164,7 +164,7 @@ class LogFragment : Fragment() {
         if(index >= 0){
             val header = mMainActivity.mLogHeaders[index]
             mLogList.add(header)
-            mLogList.addAll( mMainActivity.mDatabaseHelper.getLoggedDrinks(header.date))
+            mLogList.addAll( logDatabaseHelper.getLoggedDrinks(header.date))
         }else{
             mLogList.add(LogHeader(date, 0.0, 0.0 ))
         }

@@ -4,24 +4,27 @@ import android.app.AlertDialog
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.preference.PreferenceManager
+import android.view.Gravity
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.fragment.app.Fragment
 import androidx.appcompat.app.AppCompatActivity
-import android.util.Log
+//import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.RelativeLayout
+import android.widget.Toast
 import com.example.jasonfagerberg.nightsout.R
 import com.example.jasonfagerberg.nightsout.addDrink.AddDrinkFragment
+import com.example.jasonfagerberg.nightsout.databaseHelper.DatabaseHelper
 import com.example.jasonfagerberg.nightsout.home.HomeFragment
 import com.example.jasonfagerberg.nightsout.log.LogFragment
 import com.example.jasonfagerberg.nightsout.log.LogHeader
 import com.example.jasonfagerberg.nightsout.profile.ProfileFragment
 import java.util.*
 
-private const val TAG = "MainActivity"
+//private const val TAG = "MainActivity"
 
 private const val DB_NAME = "nights_out_db.db"
 private const val DB_VERSION = 37
@@ -157,9 +160,6 @@ class MainActivity : AppCompatActivity() {
         editor.putInt("homeStartTimeMin", startTimeMin)
         editor.putInt("homeEndTimeMin", endTimeMin)
         editor.apply()
-
-        Log.v(TAG, "vars stored: profileInit=$profileInt sex=$sex weight=${weight.toFloat()} " +
-                "weight measurement=$weightMeasurement start time=$startTimeMin end time=$endTimeMin")
     }
 
     private fun getGlobalData(){
@@ -174,9 +174,6 @@ class MainActivity : AppCompatActivity() {
 
             startTimeMin = preferences.getInt("homeStartTimeMin", startTimeMin)
             endTimeMin = preferences.getInt("homeEndTimeMin", endTimeMin)
-
-            Log.v(TAG, "vars retrieved: profileInit=$profileInt sex=$sex weight=$weight " +
-                    "weight measurement=$weightMeasurement start time=$startTimeMin end time=$endTimeMin")
         }
     }
 
@@ -205,6 +202,12 @@ class MainActivity : AppCompatActivity() {
         val params = RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,
                 RelativeLayout.LayoutParams.MATCH_PARENT)
         findViewById<FrameLayout>(R.id.main_frame).layoutParams = params
+    }
+
+    fun showToast(message: String){
+        val toast = Toast.makeText(this, message, Toast.LENGTH_LONG)
+        toast.setGravity(Gravity.CENTER, 0, 450)
+        toast.show()
     }
 
     fun getTimeNow():Long{

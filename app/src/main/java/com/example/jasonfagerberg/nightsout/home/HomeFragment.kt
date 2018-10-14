@@ -1,7 +1,5 @@
 package com.example.jasonfagerberg.nightsout.home
 
-import android.app.AlertDialog
-import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.DialogInterface
 import android.os.Bundle
@@ -16,28 +14,22 @@ import android.view.*
 import android.widget.*
 import com.example.jasonfagerberg.nightsout.main.MainActivity
 import com.example.jasonfagerberg.nightsout.R
-import com.example.jasonfagerberg.nightsout.main.Converter
+import com.example.jasonfagerberg.nightsout.converter.Converter
 import java.util.*
 import android.widget.RelativeLayout
-import com.example.jasonfagerberg.nightsout.log.LogHeader
-import com.jjoe64.graphview.series.LineGraphSeries
-import com.jjoe64.graphview.GraphView
-import com.jjoe64.graphview.series.DataPoint
-import kotlin.collections.ArrayList
-import android.widget.Toast
 
 
-private const val TAG = "HomeFragment"
+//private const val TAG = "HomeFragment"
 
 class HomeFragment : Fragment(){
-    private lateinit var mDrinkListAdapter: HomeFragmentDrinkListAdapter
+    lateinit var mDrinkListAdapter: HomeFragmentDrinkListAdapter
     private lateinit var mRelativeLayout: RelativeLayout
     private lateinit var mMainActivity: MainActivity
     private val mConverter = Converter()
-    private var bac = 0.000
+    var bac = 0.000
 
-    private var drinkingDuration = 0.0
-    private var standardDrinksConsumed = 0.0
+    var drinkingDuration = 0.0
+    var standardDrinksConsumed = 0.0
 
     // create fragment view
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -72,7 +64,10 @@ class HomeFragment : Fragment(){
         // set edit texts
         setupEditTexts(view)
 
-        view.findViewById<ImageButton>(R.id.btn_home_bac_info).setOnClickListener{ _ -> showBacInfoDialog()}
+        val bacInfoDialog = HomeFragmentBacInfoDialog(this, mMainActivity, mConverter)
+        view.findViewById<ImageButton>(R.id.btn_home_bac_info).setOnClickListener{ _ ->
+            bacInfoDialog.showBacInfoDialog()
+        }
 
         // return
         return view
@@ -89,11 +84,13 @@ class HomeFragment : Fragment(){
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         val resId = item?.itemId
+        val datePicker = HomeFragmentLogDatePicker(this, mMainActivity, mConverter)
         when (resId){
-            R.id.btn_toolbar_home_done ->  showDatePicker()
+            R.id.btn_toolbar_home_done ->  datePicker.showDatePicker()
             R.id.btn_clear_drink_list -> {
                 mMainActivity.mDrinksList.clear()
                 mDrinkListAdapter.notifyDataSetChanged()
+                calculateBAC()
                 showOrHideEmptyListText(view!!)
             }
             R.id.btn_disclaimer -> showDisclaimerDialog()
@@ -112,75 +109,6 @@ class HomeFragment : Fragment(){
         dialog.findViewById<Button>(R.id.btn_disclaimer_dismiss).setOnClickListener { dialog.dismiss() }
     }
 
-    private fun showDatePicker(){
-        val calendar = Calendar.getInstance()
-
-        val dp = DatePickerDialog(context!!, null, calendar.get(Calendar.YEAR),
-                calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH))
-
-        dp.setButton(DatePickerDialog.BUTTON_POSITIVE, "OK") { _ , _ ->
-            val logYear = dp.datePicker.year
-            val logMonth = dp.datePicker.month
-            val logDay = dp.datePicker.dayOfMonth
-            val logDate = Integer.parseInt(mConverter.yearMonthDayTo8DigitString(logYear, logMonth, logDay))
-
-            val testHeader = LogHeader(logDate, 0.0, 0.0)
-            if (testHeader in mMainActivity.mLogHeaders){
-                showOverrideLogDialog(logDate)
-            }else{
-                mMainActivity.mLogHeaders.add(LogHeader(logDate, bac, drinkingDuration))
-                mMainActivity.mDatabaseHelper.pushDrinksToLogDrinks(logDate)
-                val message = "Log created on ${testHeader.monthName} ${testHeader.day}, ${testHeader.year}"
-                showToast(message)
-            }
-        }
-
-        dp.setTitle("Log Day")
-        dp.show()
-    }
-
-    private fun showToast(message: String){
-        val toast = Toast.makeText(context!!, message, Toast.LENGTH_LONG)
-        toast.setGravity(Gravity.CENTER, 0, 450)
-        toast.show()
-    }
-
-    private fun showOverrideLogDialog(logDate: Int){
-        val headerIndex = mMainActivity.mLogHeaders.indexOf(LogHeader(logDate, 0.0, 0.0))
-        val header = mMainActivity.mLogHeaders[headerIndex]
-
-        val builder = android.app.AlertDialog.Builder(view!!.context)
-        val parent:ViewGroup? = null
-        val dialogView = mMainActivity.layoutInflater
-                .inflate(R.layout.fragment_home_dialog_update_log, parent, false)
-        var message = "There is already a log on ${header.monthName} ${header.day}," +
-                " ${header.year}.\nWould you like to update the old log?"
-        dialogView.findViewById<TextView>(R.id.text_update_log_body).text = message
-
-        builder.setView(dialogView)
-        val dialog = builder.create()
-        dialog.setCancelable(false)
-        dialog.show()
-
-        dialogView.findViewById<Button>(R.id.btn_update_log_cancel)
-                .setOnClickListener { _ ->
-                    showDatePicker()
-                    dialog.dismiss()
-                }
-
-        dialogView.findViewById<Button>(R.id.btn_update_log_update)
-                .setOnClickListener { _ ->
-                    mMainActivity.mDatabaseHelper.deleteLog(header.date)
-                    mMainActivity.mLogHeaders[headerIndex] = LogHeader(header.date, bac, drinkingDuration)
-                    mDrinkListAdapter.notifyDataSetChanged()
-                    mMainActivity.mDatabaseHelper.pushDrinksToLogDrinks(header.date)
-                    message = "Log on ${header.monthName} ${header.day}," +
-                            " ${header.year} was overwritten"
-                    showToast(message)
-                    dialog.dismiss()
-                }
-    }
-
     private fun setupToolbar(view: View){
         val toolbar: Toolbar = view.findViewById(R.id.toolbar_home)
         toolbar.inflateMenu(R.menu.home_menu)
@@ -193,7 +121,7 @@ class HomeFragment : Fragment(){
         // mDrinkList recycler view setup
         val drinksListView: RecyclerView = view.findViewById(R.id.recycler_drink_list)
         val linearLayoutManager = LinearLayoutManager(context)
-        linearLayoutManager.orientation = LinearLayoutManager.VERTICAL
+        linearLayoutManager.orientation = RecyclerView.VERTICAL
         drinksListView.layoutManager = linearLayoutManager
 
         val itemDecor = DividerItemDecoration(drinksListView.context, DividerItemDecoration.VERTICAL)
@@ -246,7 +174,7 @@ class HomeFragment : Fragment(){
         mTimePicker = TimePickerDialog(context!!,
                 TimePickerDialog.OnTimeSetListener { _ , selectedHour, selectedMinute ->
                     startPicker.setText(mConverter.timeTo12HourString(selectedHour, selectedMinute))
-                    mMainActivity.startTimeMin = mConverter.c24HourTimeToMinutes(selectedHour, selectedMinute)
+                    mMainActivity.startTimeMin = mConverter.militaryHoursAndMinutesToMinutes(selectedHour, selectedMinute)
                     if(mMainActivity.endTimeMin == -1) mMainActivity.endTimeMin = mMainActivity.startTimeMin
                     calculateBAC()
                 }, hour, minute, false)
@@ -274,7 +202,7 @@ class HomeFragment : Fragment(){
         mTimePicker = TimePickerDialog(context!!,
                 TimePickerDialog.OnTimeSetListener { _ , selectedHour, selectedMinute ->
                     endPicker.setText(mConverter.timeTo12HourString(selectedHour, selectedMinute))
-                    mMainActivity.endTimeMin = mConverter.c24HourTimeToMinutes(selectedHour, selectedMinute)
+                    mMainActivity.endTimeMin = mConverter.militaryHoursAndMinutesToMinutes(selectedHour, selectedMinute)
                     calculateBAC()
                 }, hour, minute, false)
 
@@ -294,7 +222,7 @@ class HomeFragment : Fragment(){
         calendar.time = date
         val curHour = calendar.get(Calendar.HOUR_OF_DAY)
         val curMin = calendar.get(Calendar.MINUTE)
-        return mConverter.c24HourTimeToMinutes(curHour, curMin)
+        return mConverter.militaryHoursAndMinutesToMinutes(curHour, curMin)
     }
 
     fun showOrHideEmptyListText(view: View){
@@ -334,90 +262,16 @@ class HomeFragment : Fragment(){
         val bacDecayPerHour = 0.015
         bac = instantBAC - (hoursElapsed * bacDecayPerHour)
         bac = if (bac < 0.0) 0.0 else bac
-        //Log.v(TAG, "Calculated bac: $bac")
         updateBACText()
-    }
-
-    private fun showBacInfoDialog(){
-        val builder = android.app.AlertDialog.Builder(view!!.context)
-        val parent:ViewGroup? = null
-        val dialogView = mMainActivity.layoutInflater
-                .inflate(R.layout.fragment_home_dialog_bac_info, parent, false)
-
-        builder.setView(dialogView)
-        val dialog = builder.create()
-        dialog.show()
-        setupBacDeclineChart(dialog)
-
-        dialog.findViewById<Button>(R.id.btn_bac_info_dismiss).setOnClickListener {
-            dialog.dismiss()
-        }
-
-        val bacInfoTitleString = "BAC Level: " + String.format("%.3f", bac)
-        dialog.findViewById<TextView>(R.id.text_bac_info_title).text = bacInfoTitleString
-
-        var hoursMin = mConverter.decimalTimeToHoursAndMinuets(drinkingDuration)
-        //Log.v(TAG, "$drinkingDuration")
-        var hoursMinStrings = mConverter.hoursAndMinuetsToTwoDigitStrings(hoursMin)
-        val durationString =  "${hoursMinStrings.first} hours  ${hoursMinStrings.second} min"
-        dialog.findViewById<TextView>(R.id.text_bac_info_duration).text = durationString
-
-        val standardDrinksString = String.format("%.2f", standardDrinksConsumed) + " drinks"
-        dialog.findViewById<TextView>(R.id.text_bac_info_standard_drinks).text = standardDrinksString
-
-        val hoursToSober = if ((bac - 0.04) / 0.015 < 0) 0.0 else (bac - 0.04)/0.015
-        hoursMin = mConverter.decimalTimeToHoursAndMinuets(hoursToSober)
-        hoursMinStrings = mConverter.hoursAndMinuetsToTwoDigitStrings(hoursMin)
-        val hoursToSoberString = "${hoursMinStrings.first} hours  ${hoursMinStrings.second} min"
-        dialog.findViewById<TextView>(R.id.text_bac_info_time_to_sober).text = hoursToSoberString
-    }
-
-    private fun setupBacDeclineChart(dialog: AlertDialog){
-        val graph = dialog.findViewById<GraphView>(R.id.graph_bac_info_declining_bac)
-        graph.title = "BAC Decline Over Time"
-        val points = ArrayList<DataPoint>()
-        var projectedBac = bac
-        var elapsedTime = 0.0
-
-        while (projectedBac > 0.0075){
-            points.add(DataPoint(elapsedTime, projectedBac))
-            elapsedTime += .5
-            projectedBac -= 0.0075
-        }
-        val series = LineGraphSeries<DataPoint>(points.toTypedArray())
-        series.setOnDataPointTapListener { series, dataPoint ->
-            val pointBac = dataPoint.y.toString().substring(0,4)
-            val time = mConverter.decimalTimeToTwoDigitStrings(dataPoint.x)
-            showToast("BAC after ${time.first} hours and ${time.second} minuets: $pointBac")
-        }
-
-        val soberLine = ArrayList<DataPoint>()
-        if (points.size > 0){
-            soberLine.add(DataPoint(0.0,0.04))
-            soberLine.add(DataPoint(100.0, 0.04))
-        }
-        val soberLineSeries = LineGraphSeries<DataPoint>(soberLine.toTypedArray())
-        soberLineSeries.color = ContextCompat.getColor(context!!, R.color.colorLightGreen)
-        soberLineSeries.backgroundColor = ContextCompat.getColor(context!!, R.color.colorLightGreen)
-        soberLineSeries.isDrawBackground = true
-
-        graph.addSeries(soberLineSeries)
-        graph.addSeries(series)
-
-        graph.gridLabelRenderer.labelVerticalWidth = 96
-
-        graph.viewport.isXAxisBoundsManual = true
-        graph.viewport.isYAxisBoundsManual = true
-        graph.viewport.setMaxY(bac + .0008)
-        graph.viewport.setMaxX(elapsedTime + .5)
     }
 
     private fun updateBACText(){
         val bacValueView = view!!.findViewById<TextView>(R.id.text_home_bac_value)
         val bacResultView = view!!.findViewById<TextView>(R.id.text_home_bac_result)
 
-        bacValueView.setOnClickListener { _ -> showBacInfoDialog() }
-        bacResultView.setOnClickListener { _ -> showBacInfoDialog() }
+        val bacInfo = HomeFragmentBacInfoDialog(this, mMainActivity, mConverter)
+        bacValueView.setOnClickListener { _ -> bacInfo.showBacInfoDialog() }
+        bacResultView.setOnClickListener { _ -> bacInfo.showBacInfoDialog() }
 
         val bacText = "%.3f".format(bac)
         when{

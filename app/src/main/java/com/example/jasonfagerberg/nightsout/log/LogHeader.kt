@@ -1,12 +1,12 @@
 package com.example.jasonfagerberg.nightsout.log
 
-import android.util.Log
-import com.example.jasonfagerberg.nightsout.main.Converter
+//import android.util.Log
+import com.example.jasonfagerberg.nightsout.converter.Converter
 import java.text.DateFormatSymbols
 import java.util.*
 
 
-private const val TAG = "LogHeader"
+//private const val TAG = "LogHeader"
 
 class LogHeader(val date: Int, val bac: Double, val duration: Double) {
     private val converter = Converter()
@@ -22,7 +22,6 @@ class LogHeader(val date: Int, val bac: Double, val duration: Double) {
     val dateString: String
 
     init {
-        Log.v(TAG, "$date $year $month $day $monthName")
         val locale = Locale.getDefault()
         val suffix:String = if (day == 1) "st" else if (day == 2) "nd" else if (day == 3) "rd" else "th"
         dateString = if (locale != Locale.US) "$day$suffix of $monthName" else "$monthName $day$suffix"

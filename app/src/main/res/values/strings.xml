@@ -54,7 +54,7 @@
     <string name="disclaimer">Disclaimer</string>
     <string name="clear_all_logs">Clear All Logs</string>
     <string name="clear_selected_day_logs">Clear Logs for Selected Day</string>
-    <string name="overwrite_log">Overwrite Log</string>
+    <string name="update_log">Update Log</string>
     <string name="cancel">Cancel</string>
     <string name="update">Update</string>
     <string name="disclaimer_body">The BAC value provided by the app is only an estimate. The status

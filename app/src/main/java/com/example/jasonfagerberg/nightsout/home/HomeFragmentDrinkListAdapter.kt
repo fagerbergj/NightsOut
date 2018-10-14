@@ -155,7 +155,7 @@ class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: Ar
             mMainActivity.mDatabaseHelper.insertRowInFavoritesTable(drink.name, drink.id)
         } else{
             mMainActivity.mFavoritesList.remove(drink)
-            mMainActivity.mDatabaseHelper.deleteRowInFavoritesTable(drink.name)
+            mMainActivity.mDatabaseHelper.deleteRowsInTable("favorites", "drink_name = \"${drink.name}\"")
         }
 
         for (i in mMainActivity.mDrinksList.indices){

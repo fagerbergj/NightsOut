@@ -1,4 +1,4 @@
-package com.example.jasonfagerberg.nightsout.main
+package com.example.jasonfagerberg.nightsout.converter
 
 //import android.util.Log
 //
@@ -61,7 +61,7 @@ class Converter {
         return "$hour:$displayMinuet $timePeriod"
     }
 
-    fun c24HourTimeToMinutes(hour: Int, min: Int):Int{
+    fun militaryHoursAndMinutesToMinutes(hour: Int, min: Int):Int{
         return hour*60 + min
     }
 
