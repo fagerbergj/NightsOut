@@ -17,11 +17,9 @@ import java.util.*
 class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: ArrayList<Drink>) :
         androidx.recyclerview.widget.RecyclerView.Adapter<HomeFragmentDrinkListAdapter.ViewHolder>() {
 
-    // vars
     private val mDrinksList: MutableList<Drink> = drinksList
     private lateinit var mMainActivity: MainActivity
 
-    // set layout inflater & inflate layout
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(mContext)
         val view = inflater.inflate(R.layout.fragment_home_list_item, parent, false)
@@ -29,7 +27,6 @@ class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: Ar
         return ViewHolder(view)
     }
 
-    // When view is rendered bind the correct holder to it
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val drink = mDrinksList[position]
 
@@ -59,29 +56,27 @@ class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: Ar
         return mDrinksList.size
     }
 
-    // ViewHolder for each item in list
-    inner class ViewHolder(itemView: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(itemView) {
+    private fun setupFavoritesOption(dialogView: View, drink: Drink, dialog: AlertDialog) {
+        val favorite = dialogView.findViewById<TextView>(R.id.text_drink_modify_favorite_drink)
+        if (drink.favorited) {
+            favorite.setText(R.string.unfavorite_drink)
+            favorite.setCompoundDrawablesWithIntrinsicBounds(R.drawable.favorite_border_red_18dp, 0, 0, 0)
+        } else {
+            favorite.setText(R.string.favorite_drink)
+            favorite.setCompoundDrawablesWithIntrinsicBounds(R.drawable.favorite_red_18dp, 0, 0, 0)
+        }
 
-        internal var image: ImageView = itemView.findViewById(R.id.image_drink)
-        internal var name: TextView = itemView.findViewById(R.id.text_home_drink_name)
-        internal var abv: TextView = itemView.findViewById(R.id.text_home_drink_abv)
-        internal var amount: TextView = itemView.findViewById(R.id.text_home_drink_amount)
-        internal var foreground: LinearLayout = itemView.findViewById(R.id.layout_foreground)
-        internal var favorited: ImageView = itemView.findViewById(R.id.image_home_drink_favored)
+        favorite.setOnClickListener { _ ->
+            onFavoriteClicked(drink)
+            dismissDialog(dialog)
+        }
     }
 
-    private fun removeItem(position: Int) {
-        mDrinksList.removeAt(position)
-        notifyItemRemoved(position)
-        notifyItemRangeChanged(position, mDrinksList.size)
-    }
-
-    @SuppressLint("InflateParams")
     private fun showEditRemoveDialog(position: Int) {
         val drink = mDrinksList[position]
         val builder = AlertDialog.Builder(mContext)
-        val dialogView = mMainActivity.layoutInflater.inflate(
-                R.layout.fragment_home_dialog_drink_modify, null)
+        val parent: ViewGroup? = null
+        val dialogView = mMainActivity.layoutInflater.inflate(R.layout.fragment_home_dialog_drink_modify, parent)
 
         dialogView.findViewById<TextView>(R.id.text_drink_modify_title).text = drink.name
 
@@ -111,22 +106,6 @@ class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: Ar
             removeItem(position)
             dismissDialog(dialog)
             mMainActivity.homeFragment.showOrHideEmptyListText(mMainActivity.homeFragment.view!!)
-        }
-    }
-
-    private fun setupFavoritesOption(dialogView: View, drink: Drink, dialog: AlertDialog) {
-        val favorite = dialogView.findViewById<TextView>(R.id.text_drink_modify_favorite_drink)
-        if (drink.favorited) {
-            favorite.setText(R.string.unfavorite_drink)
-            favorite.setCompoundDrawablesWithIntrinsicBounds(R.drawable.favorite_border_red_18dp, 0, 0, 0)
-        } else {
-            favorite.setText(R.string.favorite_drink)
-            favorite.setCompoundDrawablesWithIntrinsicBounds(R.drawable.favorite_red_18dp, 0, 0, 0)
-        }
-
-        favorite.setOnClickListener { _ ->
-            onFavoriteClicked(drink)
-            dismissDialog(dialog)
         }
     }
 
@@ -162,6 +141,12 @@ class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: Ar
                 notifyItemChanged(i)
             }
         }
+    }
+
+    private fun removeItem(position: Int) {
+        mDrinksList.removeAt(position)
+        notifyItemRemoved(position)
+        notifyItemRangeChanged(position, mDrinksList.size)
     }
 
     private fun showEditDialog(position: Int) {
@@ -208,6 +193,7 @@ class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: Ar
         }
     }
 
+
     private fun onDialogEditClick(drink: Drink, editName: EditText, editABV: EditText,
                                   editAmount: EditText, dropdown: Spinner) {
         val other = Drink(drink.id, drink.name, drink.abv, drink.amount, drink.measurement,
@@ -247,5 +233,15 @@ class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: Ar
     private fun dismissDialog(dialog: AlertDialog) {
         mMainActivity.homeFragment.calculateBAC()
         dialog.dismiss()
+    }
+
+    inner class ViewHolder(itemView: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(itemView) {
+
+        internal var image: ImageView = itemView.findViewById(R.id.image_drink)
+        internal var name: TextView = itemView.findViewById(R.id.text_home_drink_name)
+        internal var abv: TextView = itemView.findViewById(R.id.text_home_drink_abv)
+        internal var amount: TextView = itemView.findViewById(R.id.text_home_drink_amount)
+        internal var foreground: LinearLayout = itemView.findViewById(R.id.layout_foreground)
+        internal var favorited: ImageView = itemView.findViewById(R.id.image_home_drink_favored)
     }
 }

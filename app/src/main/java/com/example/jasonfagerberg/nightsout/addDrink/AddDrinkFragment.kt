@@ -71,28 +71,6 @@ class AddDrinkFragment : Fragment() {
         return view
     }
 
-    private fun setupRecentsAndFavoritesRecycler(view: View) {
-        // favorites recycler view setup
-        val favoriteListView: RecyclerView = view.findViewById(R.id.recycler_add_drink_favorites_list)
-        val linearLayoutManagerFavorites = LinearLayoutManager(context)
-        linearLayoutManagerFavorites.orientation = LinearLayoutManager.HORIZONTAL
-        favoriteListView.layoutManager = linearLayoutManagerFavorites
-
-        // recents recycler view setup
-        val recentsListView: RecyclerView = view.findViewById(R.id.recycler_add_drink_recents_list)
-        val linearLayoutManagerRecents = LinearLayoutManager(context)
-        linearLayoutManagerRecents.orientation = LinearLayoutManager.HORIZONTAL
-        recentsListView.layoutManager = linearLayoutManagerRecents
-
-        // adapter setup
-        mFavoritesListAdapter = AddDrinkFragmentFavoritesListAdapter(context!!, mMainActivity.mFavoritesList)
-        favoriteListView.adapter = mFavoritesListAdapter
-
-        // adapter setup
-        mRecentsListAdapter = AddDrinkFragmentRecentsListAdapter(context!!, mMainActivity.mRecentsList)
-        recentsListView.adapter = mRecentsListAdapter
-    }
-
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
         inflater!!.inflate(R.menu.add_drink_menu, menu)
         val item = menu!!.findItem(R.id.btn_toolbar_favorite)
@@ -154,6 +132,28 @@ class AddDrinkFragment : Fragment() {
         toolbar.setNavigationOnClickListener { _: View -> activity!!.onBackPressed() }
     }
 
+    private fun setupRecentsAndFavoritesRecycler(view: View) {
+        // favorites recycler view setup
+        val favoriteListView: RecyclerView = view.findViewById(R.id.recycler_add_drink_favorites_list)
+        val linearLayoutManagerFavorites = LinearLayoutManager(context)
+        linearLayoutManagerFavorites.orientation = LinearLayoutManager.HORIZONTAL
+        favoriteListView.layoutManager = linearLayoutManagerFavorites
+
+        // recents recycler view setup
+        val recentsListView: RecyclerView = view.findViewById(R.id.recycler_add_drink_recents_list)
+        val linearLayoutManagerRecents = LinearLayoutManager(context)
+        linearLayoutManagerRecents.orientation = LinearLayoutManager.HORIZONTAL
+        recentsListView.layoutManager = linearLayoutManagerRecents
+
+        // adapter setup
+        mFavoritesListAdapter = AddDrinkFragmentFavoritesListAdapter(context!!, mMainActivity.mFavoritesList)
+        favoriteListView.adapter = mFavoritesListAdapter
+
+        // adapter setup
+        mRecentsListAdapter = AddDrinkFragmentRecentsListAdapter(context!!, mMainActivity.mRecentsList)
+        recentsListView.adapter = mRecentsListAdapter
+    }
+
     private fun drinkNameEditTextSetup(view: View) {
         val editName = view.findViewById<AutoCompleteTextView>(R.id.edit_add_drink_name)
         val addDrinkDBHelper = AddDrinkDatabaseHelper(mMainActivity.mDatabaseHelper)
@@ -167,6 +167,47 @@ class AddDrinkFragment : Fragment() {
             val drink = addDrinkDBHelper.getDrinkFromName(item!!)
             fillViews(drink.name, drink.abv, drink.amount, drink.measurement)
         }
+    }
+
+    fun showOrHideEmptyTextViews(view: View) {
+        val emptyFavorite = view.findViewById<TextView>(R.id.text_favorites_empty_list)
+        val emptyRecent = view.findViewById<TextView>(R.id.text_recents_empty_list)
+
+        if (mMainActivity.mFavoritesList.isEmpty()) {
+            emptyFavorite.visibility = View.VISIBLE
+        } else {
+            emptyFavorite.visibility = View.INVISIBLE
+        }
+
+        if (mMainActivity.mRecentsList.isEmpty()) {
+            emptyRecent.visibility = View.VISIBLE
+        } else {
+            emptyRecent.visibility = View.INVISIBLE
+        }
+    }
+
+    private fun resetTextView(view: TextView, id: Int) {
+        view.text = resources.getText(id)
+        view.setTypeface(null, Typeface.NORMAL)
+        view.setTextColor(ContextCompat.getColor(context!!, R.color.colorText))
+    }
+
+    fun fillViews(name: String, abv: Double, amount: Double, measurement: String) {
+        val editName = view!!.findViewById<EditText>(R.id.edit_add_drink_name)
+        val editABV = view!!.findViewById<EditText>(R.id.edit_add_drink_abv)
+        val editAmount = view!!.findViewById<EditText>(R.id.edit_add_drink_amount)
+        val dropdown = view!!.findViewById<Spinner>(R.id.spinner_add_drink_amount)
+
+        editName.setText(name)
+        editABV.setText(abv.toString())
+        editAmount.setText(amount.toString())
+        val country = Locale.getDefault().country
+        val items = arrayOf("ml", "oz", "beers", "shots", "wine glasses")
+        if (country == "US" || country == "LR" || country == "MM") {
+            items[0] = "oz"
+            items[1] = "ml"
+        }
+        dropdown.setSelection(items.indexOf(measurement))
     }
 
     private fun addDrink(view: View) {
@@ -188,6 +229,30 @@ class AddDrinkFragment : Fragment() {
         editABV.text.clear()
         editAmount.text.clear()
         mMainActivity.onBackPressed()
+    }
+
+    fun addToDrinkList(drink: Drink) {
+        mMainActivity.mDrinksList.add(drink)
+
+        if (mMainActivity.mRecentsList.contains(drink)) {
+            mMainActivity.mRecentsList[mMainActivity.mRecentsList.indexOf(drink)].recent = false
+            mMainActivity.mRecentsList.remove(drink)
+        }
+        mMainActivity.mRecentsList.add(0, drink)
+
+        if (mMainActivity.mRecentsList.size > 25) {
+            mMainActivity.mRecentsList[mMainActivity.mRecentsList.size - 1].recent = false
+            mMainActivity.mRecentsList.removeAt(mMainActivity.mRecentsList.size - 1)
+        }
+
+        if (drink.favorited) {
+            addToFavoritesList(drink)
+        }
+    }
+
+    fun addToFavoritesList(drink: Drink) {
+        mMainActivity.mFavoritesList.remove(drink)
+        mMainActivity.mFavoritesList.add(0, drink)
     }
 
     private fun isInputErrors(editName: EditText, editABV: EditText, editAmount: EditText): Boolean {
@@ -229,70 +294,5 @@ class AddDrinkFragment : Fragment() {
     private fun setTextViewToRedAndBold(text: TextView) {
         text.setTypeface(null, Typeface.BOLD)
         text.setTextColor(ContextCompat.getColor(context!!, R.color.colorRed))
-    }
-
-    fun addToDrinkList(drink: Drink) {
-        mMainActivity.mDrinksList.add(drink)
-
-        if (mMainActivity.mRecentsList.contains(drink)) {
-            mMainActivity.mRecentsList[mMainActivity.mRecentsList.indexOf(drink)].recent = false
-            mMainActivity.mRecentsList.remove(drink)
-        }
-        mMainActivity.mRecentsList.add(0, drink)
-
-        if (mMainActivity.mRecentsList.size > 25) {
-            mMainActivity.mRecentsList[mMainActivity.mRecentsList.size - 1].recent = false
-            mMainActivity.mRecentsList.removeAt(mMainActivity.mRecentsList.size - 1)
-        }
-
-        if (drink.favorited) {
-            addToFavoritesList(drink)
-        }
-    }
-
-    fun addToFavoritesList(drink: Drink) {
-        mMainActivity.mFavoritesList.remove(drink)
-        mMainActivity.mFavoritesList.add(0, drink)
-    }
-
-    fun fillViews(name: String, abv: Double, amount: Double, measurement: String) {
-        val editName = view!!.findViewById<EditText>(R.id.edit_add_drink_name)
-        val editABV = view!!.findViewById<EditText>(R.id.edit_add_drink_abv)
-        val editAmount = view!!.findViewById<EditText>(R.id.edit_add_drink_amount)
-        val dropdown = view!!.findViewById<Spinner>(R.id.spinner_add_drink_amount)
-
-        editName.setText(name)
-        editABV.setText(abv.toString())
-        editAmount.setText(amount.toString())
-        val country = Locale.getDefault().country
-        val items = arrayOf("ml", "oz", "beers", "shots", "wine glasses")
-        if (country == "US" || country == "LR" || country == "MM") {
-            items[0] = "oz"
-            items[1] = "ml"
-        }
-        dropdown.setSelection(items.indexOf(measurement))
-    }
-
-    private fun resetTextView(view: TextView, id: Int) {
-        view.text = resources.getText(id)
-        view.setTypeface(null, Typeface.NORMAL)
-        view.setTextColor(ContextCompat.getColor(context!!, R.color.colorText))
-    }
-
-    fun showOrHideEmptyTextViews(view: View) {
-        val emptyFavorite = view.findViewById<TextView>(R.id.text_favorites_empty_list)
-        val emptyRecent = view.findViewById<TextView>(R.id.text_recents_empty_list)
-
-        if (mMainActivity.mFavoritesList.isEmpty()) {
-            emptyFavorite.visibility = View.VISIBLE
-        } else {
-            emptyFavorite.visibility = View.INVISIBLE
-        }
-
-        if (mMainActivity.mRecentsList.isEmpty()) {
-            emptyRecent.visibility = View.VISIBLE
-        } else {
-            emptyRecent.visibility = View.INVISIBLE
-        }
     }
 }

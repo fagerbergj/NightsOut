@@ -30,6 +30,16 @@ class Converter {
         return 23.3333333 * foz
     }
 
+    fun militaryHoursAndMinutesToMinutes(hour: Int, min: Int): Int {
+        return hour * 60 + min
+    }
+
+    fun decimalTimeToHoursAndMinuets(time: Double): Pair<Int, Int> {
+        val hour = time.toInt()
+        val min = ((((time - hour) * 100) * 60) / 100).toInt()
+        return Pair(hour, min)
+    }
+
     fun timeTo12HourString(selectedHour: Int, selectedMinute: Int): String {
         val timePeriod: String
         var displayHour = selectedHour
@@ -59,16 +69,6 @@ class Converter {
         var displayMinuet = minutes.toString()
         if (displayMinuet.length == 1) displayMinuet = "0$displayMinuet"
         return "$hour:$displayMinuet $timePeriod"
-    }
-
-    fun militaryHoursAndMinutesToMinutes(hour: Int, min: Int): Int {
-        return hour * 60 + min
-    }
-
-    fun decimalTimeToHoursAndMinuets(time: Double): Pair<Int, Int> {
-        val hour = time.toInt()
-        val min = ((((time - hour) * 100) * 60) / 100).toInt()
-        return Pair(hour, min)
     }
 
     fun decimalTimeToTwoDigitStrings(time: Double): Pair<String, String> {

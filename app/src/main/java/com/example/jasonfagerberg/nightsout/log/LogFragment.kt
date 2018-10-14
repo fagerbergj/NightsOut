@@ -126,18 +126,6 @@ class LogFragment : Fragment() {
         mLogListView.adapter = mLogFragmentAdapter
     }
 
-    private fun highlightDays() {
-        val dates = ArrayList<CalendarDay>()
-        val calendar = Calendar.getInstance()
-        for (log in mMainActivity.mLogHeaders) {
-            calendar.set(log.year, log.month, log.day)
-            val day = CalendarDay.from(Date(calendar.time.time))
-            dates.add(day)
-        }
-        calendarView.addDecorator(EventDecorator(ContextCompat.getColor(context!!,
-                R.color.colorPrimaryDark), dates))
-    }
-
     private fun setupCalendar(view: View) {
         calendarView = view.findViewById(R.id.calender_log)
         calendarView.selectedDate = CalendarDay.today()
@@ -157,6 +145,18 @@ class LogFragment : Fragment() {
             val date = Integer.parseInt(converter.yearMonthDayTo8DigitString(day.year, day.month, day.day))
             setLogListBasedOnDay(date)
         }
+    }
+
+    private fun highlightDays() {
+        val dates = ArrayList<CalendarDay>()
+        val calendar = Calendar.getInstance()
+        for (log in mMainActivity.mLogHeaders) {
+            calendar.set(log.year, log.month, log.day)
+            val day = CalendarDay.from(Date(calendar.time.time))
+            dates.add(day)
+        }
+        calendarView.addDecorator(EventDecorator(ContextCompat.getColor(context!!,
+                R.color.colorPrimaryDark), dates))
     }
 
     private fun setLogListBasedOnDay(date: Int) {

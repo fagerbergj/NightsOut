@@ -83,6 +83,84 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    override fun onResume() {
+        initData()
+        super.onResume()
+    }
+
+    override fun onPause() {
+        saveData()
+        super.onPause()
+    }
+
+    private fun initData() {
+        // get data
+        preferences = PreferenceManager.getDefaultSharedPreferences(this)
+        getProfileAndTimeData()
+
+        // database
+        mDatabaseHelper = DatabaseHelper(this, DB_NAME, null, DB_VERSION)
+        mDatabaseHelper.openDatabase()
+
+        if (!profileInt) {
+            setFragment(profileFragment)
+        } else if (supportFragmentManager.backStackEntryCount == 0) {
+            setFragment(homeFragment)
+        }
+
+        // init data
+        mDatabaseHelper.pullDrinks()
+        mDatabaseHelper.pullLogHeaders()
+    }
+
+    private fun saveData() {
+        setProfileAndTimeData()
+        mDatabaseHelper.pushLogHeaders()
+        mDatabaseHelper.pushDrinks()
+        mDatabaseHelper.closeDatabase()
+    }
+
+    private fun setProfileAndTimeData() {
+        // profile not init
+        if (weightMeasurement == "") return
+
+        val editor = preferences.edit()
+        editor.putBoolean("profileInit", true)
+        if (sex != null) editor.putBoolean("profileSex", sex!!)
+        editor.putFloat("profileWeight", weight.toFloat())
+        editor.putString("profileWeightMeasurement", weightMeasurement)
+
+        editor.putInt("homeStartTimeMin", startTimeMin)
+        editor.putInt("homeEndTimeMin", endTimeMin)
+        editor.apply()
+    }
+
+    private fun getProfileAndTimeData() {
+        profileInt = preferences.getBoolean("profileInit", profileInt)
+        if (profileInt) {
+            sex = true
+            sex = preferences.getBoolean("profileSex", sex!!)
+            var weightFloat: Float = 0.toFloat()
+            weightFloat = preferences.getFloat("profileWeight", weightFloat)
+            weight = weightFloat.toDouble()
+            weightMeasurement = preferences.getString("profileWeightMeasurement", weightMeasurement)!!
+
+            startTimeMin = preferences.getInt("homeStartTimeMin", startTimeMin)
+            endTimeMin = preferences.getInt("homeEndTimeMin", endTimeMin)
+        }
+    }
+
+    override fun onBackPressed() {
+        val count = supportFragmentManager.backStackEntryCount
+        val curFrag: Fragment = supportFragmentManager.findFragmentById(R.id.main_frame)!!
+
+        if (count == 1) {
+            finish()
+        } else {
+            alertUserBeforeNavigation(curFrag, null)
+        }
+    }
+
     private fun alertUserBeforeNavigation(curFrag: Fragment, destination: Fragment?) {
         if (curFrag == profileFragment && profileFragment.hasUnsavedData()) {
             val builder = AlertDialog.Builder(this)
@@ -110,81 +188,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    override fun onResume() {
-        initData()
-        super.onResume()
-    }
-
-    override fun onPause() {
-        saveData()
-        super.onPause()
-    }
-
-    private fun initData() {
-        // get data
-        preferences = PreferenceManager.getDefaultSharedPreferences(this)
-        getGlobalData()
-
-        // database
-        mDatabaseHelper = DatabaseHelper(this, DB_NAME, null, DB_VERSION)
-        mDatabaseHelper.openDatabase()
-
-        if (!profileInt) {
-            setFragment(profileFragment)
-        } else if (supportFragmentManager.backStackEntryCount == 0) {
-            setFragment(homeFragment)
-        }
-
-        // init data
-        mDatabaseHelper.pullDrinks()
-        mDatabaseHelper.pullLogHeaders()
-    }
-
-    private fun saveData() {
-        setGlobalData()
-        mDatabaseHelper.pushLogHeaders()
-        mDatabaseHelper.pushDrinks()
-        mDatabaseHelper.closeDatabase()
-    }
-
-    private fun setGlobalData() {
-        // profile not init
-        if (weightMeasurement == "") return
-
-        val editor = preferences.edit()
-        editor.putBoolean("profileInit", true)
-        if (sex != null) editor.putBoolean("profileSex", sex!!)
-        editor.putFloat("profileWeight", weight.toFloat())
-        editor.putString("profileWeightMeasurement", weightMeasurement)
-
-        editor.putInt("homeStartTimeMin", startTimeMin)
-        editor.putInt("homeEndTimeMin", endTimeMin)
-        editor.apply()
-    }
-
-    private fun getGlobalData() {
-        profileInt = preferences.getBoolean("profileInit", profileInt)
-        if (profileInt) {
-            sex = true
-            sex = preferences.getBoolean("profileSex", sex!!)
-            var weightFloat: Float = 0.toFloat()
-            weightFloat = preferences.getFloat("profileWeight", weightFloat)
-            weight = weightFloat.toDouble()
-            weightMeasurement = preferences.getString("profileWeightMeasurement", weightMeasurement)!!
-
-            startTimeMin = preferences.getInt("homeStartTimeMin", startTimeMin)
-            endTimeMin = preferences.getInt("homeEndTimeMin", endTimeMin)
-        }
-    }
-
-    fun setFragment(fragment: Fragment) {
-        //transaction.replace(R.id.main_frame, fragment)
-        val transaction = supportFragmentManager.beginTransaction()
-        transaction.replace(R.id.main_frame, fragment)
-        transaction.addToBackStack(null)
-        transaction.commit()
-    }
-
     fun showBottomNavBar(id: Int) {
         botNavBar.visibility = View.VISIBLE
         botNavBar.selectedItemId = id
@@ -204,24 +207,21 @@ class MainActivity : AppCompatActivity() {
         findViewById<FrameLayout>(R.id.main_frame).layoutParams = params
     }
 
-    fun showToast(message: String) {
-        val toast = Toast.makeText(this, message, Toast.LENGTH_LONG)
-        toast.setGravity(Gravity.CENTER, 0, 450)
-        toast.show()
+    fun setFragment(fragment: Fragment) {
+        //transaction.replace(R.id.main_frame, fragment)
+        val transaction = supportFragmentManager.beginTransaction()
+        transaction.replace(R.id.main_frame, fragment)
+        transaction.addToBackStack(null)
+        transaction.commit()
     }
 
     fun getTimeNow(): Long {
         return Calendar.getInstance().timeInMillis
     }
 
-    override fun onBackPressed() {
-        val count = supportFragmentManager.backStackEntryCount
-        val curFrag: Fragment = supportFragmentManager.findFragmentById(R.id.main_frame)!!
-
-        if (count == 1) {
-            finish()
-        } else {
-            alertUserBeforeNavigation(curFrag, null)
-        }
+    fun showToast(message: String) {
+        val toast = Toast.makeText(this, message, Toast.LENGTH_LONG)
+        toast.setGravity(Gravity.CENTER, 0, 450)
+        toast.show()
     }
 }

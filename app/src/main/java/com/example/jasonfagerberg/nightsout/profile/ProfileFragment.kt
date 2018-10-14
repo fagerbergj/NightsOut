@@ -142,17 +142,54 @@ class ProfileFragment : Fragment() {
         setHasOptionsMenu(true)
     }
 
-    fun hasUnsavedData(): Boolean {
-        if (!profileInit) return false
-        return sex != mMainActivity.sex || weight != mMainActivity.weight ||
-                weightMeasurement != mMainActivity.weightMeasurement
-    }
-
     private fun setupFavoritesRecyclerView(view: View) {
         mFavoritesListView = view.findViewById(R.id.recycler_profile_favorites_list)
         val linearLayoutManager = LinearLayoutManager(context)
         linearLayoutManager.orientation = LinearLayoutManager.HORIZONTAL
         mFavoritesListView.layoutManager = linearLayoutManager
+    }
+
+    private fun setupSpinner(view: View) {
+        mSpinner = view.findViewById(R.id.spinner_profile)
+        val items = arrayOf("lbs", "kg")
+        val adapter = ArrayAdapter(context!!, android.R.layout.simple_spinner_dropdown_item, items)
+        mSpinner.adapter = adapter
+        mSpinner.setSelection(items.indexOf(weightMeasurement))
+
+        mSpinner.onItemSelectedListener = object : OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+                val selectedItem = parent.getItemAtPosition(position).toString()
+                weightMeasurement = selectedItem
+            } // to close the onItemSelected
+
+            override fun onNothingSelected(parent: AdapterView<*>) {}
+        }
+    }
+
+    private fun setupSexButtons(view: View) {
+        btnMale = view.findViewById(R.id.btn_profile_male)
+        btnFemale = view.findViewById(R.id.btn_profile_female)
+
+        if (sex != null && sex!!) {
+            pressMaleButton()
+        } else if (sex != null && !sex!!) {
+            pressFemaleButton()
+        }
+
+        btnMale.setOnClickListener { _ ->
+            pressMaleButton()
+        }
+
+        btnFemale.setOnClickListener { _ ->
+            pressFemaleButton()
+        }
+    }
+
+    private fun resetTextView(view: TextView, id: Int) {
+        view.text = resources.getText(id)
+        view.setTypeface(null, Typeface.NORMAL)
+        view.setTextColor(ContextCompat.getColor(context!!, R.color.colorText))
+        view.setText(id)
     }
 
     private fun pressMaleButton() {
@@ -207,53 +244,10 @@ class ProfileFragment : Fragment() {
         }
     }
 
-    private fun resetTextView(view: TextView, id: Int) {
-        view.text = resources.getText(id)
-        view.setTypeface(null, Typeface.NORMAL)
-        view.setTextColor(ContextCompat.getColor(context!!, R.color.colorText))
-        view.setText(id)
-    }
-
     private fun showErrorText(textView: TextView, errorMessageId: Int) {
         textView.text = resources.getText(errorMessageId)
         textView.setTypeface(null, Typeface.BOLD)
         textView.setTextColor(ContextCompat.getColor(context!!, R.color.colorRed))
-    }
-
-    private fun setupSpinner(view: View) {
-        mSpinner = view.findViewById(R.id.spinner_profile)
-        val items = arrayOf("lbs", "kg")
-        val adapter = ArrayAdapter(context!!, android.R.layout.simple_spinner_dropdown_item, items)
-        mSpinner.adapter = adapter
-        mSpinner.setSelection(items.indexOf(weightMeasurement))
-
-        mSpinner.onItemSelectedListener = object : OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
-                val selectedItem = parent.getItemAtPosition(position).toString()
-                weightMeasurement = selectedItem
-            } // to close the onItemSelected
-
-            override fun onNothingSelected(parent: AdapterView<*>) {}
-        }
-    }
-
-    private fun setupSexButtons(view: View) {
-        btnMale = view.findViewById(R.id.btn_profile_male)
-        btnFemale = view.findViewById(R.id.btn_profile_female)
-
-        if (sex != null && sex!!) {
-            pressMaleButton()
-        } else if (sex != null && !sex!!) {
-            pressFemaleButton()
-        }
-
-        btnMale.setOnClickListener { _ ->
-            pressMaleButton()
-        }
-
-        btnFemale.setOnClickListener { _ ->
-            pressFemaleButton()
-        }
     }
 
     private fun showOrHideEmptyTextViews(view: View) {
@@ -264,5 +258,11 @@ class ProfileFragment : Fragment() {
         } else {
             emptyFavorite.visibility = View.INVISIBLE
         }
+    }
+
+    fun hasUnsavedData(): Boolean {
+        if (!profileInit) return false
+        return sex != mMainActivity.sex || weight != mMainActivity.weight ||
+                weightMeasurement != mMainActivity.weightMeasurement
     }
 }

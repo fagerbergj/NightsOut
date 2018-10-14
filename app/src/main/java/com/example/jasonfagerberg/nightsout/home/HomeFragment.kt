@@ -31,9 +31,8 @@ class HomeFragment : Fragment() {
     var drinkingDuration = 0.0
     var standardDrinksConsumed = 0.0
 
-    // create fragment view
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    // android lifecycle
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // inflate layout
         val view = inflater.inflate(R.layout.fragment_home, container, false)
         mMainActivity = context as MainActivity
@@ -96,17 +95,6 @@ class HomeFragment : Fragment() {
             R.id.btn_disclaimer -> showDisclaimerDialog()
         }
         return true
-    }
-
-    private fun showDisclaimerDialog() {
-        val builder = android.app.AlertDialog.Builder(view!!.context)
-        val parent: ViewGroup? = null
-        val dialogView = mMainActivity.layoutInflater
-                .inflate(R.layout.fragment_home_dialog_disclaimer, parent, false)
-        builder.setView(dialogView)
-        val dialog = builder.create()
-        dialog.show()
-        dialog.findViewById<Button>(R.id.btn_disclaimer_dismiss).setOnClickListener { dialog.dismiss() }
     }
 
     private fun setupToolbar(view: View) {
@@ -216,15 +204,6 @@ class HomeFragment : Fragment() {
         mTimePicker.show()
     }
 
-    private fun getCurrentTimeInMinuets(): Int {
-        val calendar = GregorianCalendar.getInstance()
-        val date = Date()
-        calendar.time = date
-        val curHour = calendar.get(Calendar.HOUR_OF_DAY)
-        val curMin = calendar.get(Calendar.MINUTE)
-        return mConverter.militaryHoursAndMinutesToMinutes(curHour, curMin)
-    }
-
     fun showOrHideEmptyListText(view: View) {
         val emptyText = view.findViewById<TextView>(R.id.text_home_empty_list)
         if (mMainActivity.mDrinksList.isEmpty()) {
@@ -232,6 +211,17 @@ class HomeFragment : Fragment() {
         } else {
             emptyText.visibility = View.INVISIBLE
         }
+    }
+
+    private fun showDisclaimerDialog() {
+        val builder = android.app.AlertDialog.Builder(view!!.context)
+        val parent: ViewGroup? = null
+        val dialogView = mMainActivity.layoutInflater
+                .inflate(R.layout.fragment_home_dialog_disclaimer, parent, false)
+        builder.setView(dialogView)
+        val dialog = builder.create()
+        dialog.show()
+        dialog.findViewById<Button>(R.id.btn_disclaimer_dismiss).setOnClickListener { dialog.dismiss() }
     }
 
     fun calculateBAC() {
@@ -303,5 +293,14 @@ class HomeFragment : Fragment() {
     private fun changeTextViewColorAndText(textView: TextView, text: String, color: Int) {
         textView.text = text
         textView.setTextColor(ContextCompat.getColor(context!!, color))
+    }
+
+    private fun getCurrentTimeInMinuets(): Int {
+        val calendar = GregorianCalendar.getInstance()
+        val date = Date()
+        calendar.time = date
+        val curHour = calendar.get(Calendar.HOUR_OF_DAY)
+        val curMin = calendar.get(Calendar.MINUTE)
+        return mConverter.militaryHoursAndMinutesToMinutes(curHour, curMin)
     }
 }
