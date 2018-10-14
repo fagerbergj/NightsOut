@@ -5,12 +5,12 @@ import com.example.jasonfagerberg.nightsout.main.MainActivity
 
 class LogDatabaseHelper(private val databaseHelper: DatabaseHelper, private val mainActivity: MainActivity) {
 
-    fun getLoggedDrinks(date: Int): ArrayList<Drink>{
+    fun getLoggedDrinks(date: Int): ArrayList<Drink> {
         val drinks = ArrayList<Drink>()
         val where = "log_date = ?"
         val whereArgs = arrayOf(date.toString())
         val cursor = databaseHelper.db.query("log_drink", null, where, whereArgs, null, null, null)
-        while (cursor.moveToNext()){
+        while (cursor.moveToNext()) {
             val drinkId = cursor.getInt(cursor.getColumnIndex("drink_id"))
             drinks.add(getDrinkFromId(drinkId)!!)
         }
@@ -18,21 +18,21 @@ class LogDatabaseHelper(private val databaseHelper: DatabaseHelper, private val 
         return drinks
     }
 
-    fun pushDrinksToLogDrinks(date: Int){
-        for (drink in mainActivity.mDrinksList){
+    fun pushDrinksToLogDrinks(date: Int) {
+        for (drink in mainActivity.mDrinksList) {
             val sql = "INSERT INTO log_drink VALUES ($date, ${drink.id})"
             databaseHelper.db.execSQL(sql)
         }
     }
 
-    fun deleteLog(date: Int){
+    fun deleteLog(date: Int) {
         var sql = "DELETE FROM log WHERE date = $date"
         databaseHelper.db.execSQL(sql)
         sql = "DELETE FROM log_drink WHERE log_date = $date"
         databaseHelper.db.execSQL(sql)
     }
 
-    private fun getDrinkFromId(id: Int): Drink?{
+    private fun getDrinkFromId(id: Int): Drink? {
         val where = "id = ?"
         val whereArgs = arrayOf(id.toString())
         val cursor = databaseHelper.db.query("drinks", null, where, whereArgs, null, null, null)

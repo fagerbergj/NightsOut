@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -11,25 +10,25 @@
         android:id="@+id/text_bac_info_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:paddingBottom="8dp"
         android:text="@string/bac_level"
         android:textColor="@color/colorBlack"
         android:textSize="24sp"
-        android:textStyle="bold"
-        android:paddingBottom="8dp"/>
+        android:textStyle="bold" />
 
     <View
         android:id="@+id/line"
         android:layout_width="match_parent"
         android:layout_height="1dp"
+        android:layout_below="@+id/text_bac_info_title"
         android:layout_marginBottom="4dp"
-        android:background="@android:color/darker_gray"
-        android:layout_below="@+id/text_bac_info_title" />
+        android:background="@android:color/darker_gray" />
 
     <RelativeLayout
         android:id="@+id/info_container"
-        android:layout_below="@id/line"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@id/line"
         android:orientation="horizontal"
         android:paddingTop="16dp">
 
@@ -37,12 +36,12 @@
             android:id="@+id/duration_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingBottom="16dp"
-            android:text="@string/drinking_duration"
-            android:textColor="@color/colorDarkGray"
             android:layout_alignParentStart="true"
             android:layout_toStartOf="@+id/text_bac_info_duration"
-            android:textAlignment="viewStart" />
+            android:paddingBottom="16dp"
+            android:text="@string/drinking_duration"
+            android:textAlignment="viewStart"
+            android:textColor="@color/colorDarkGray" />
 
         <TextView
             android:id="@+id/text_bac_info_duration"
@@ -61,13 +60,13 @@
             android:id="@+id/standard_drinks_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingBottom="16dp"
-            android:text="@string/standard_drinks_consumed"
-            android:textColor="@color/colorDarkGray"
+            android:layout_below="@+id/duration_label"
             android:layout_alignParentStart="true"
             android:layout_toStartOf="@+id/text_bac_info_standard_drinks"
+            android:paddingBottom="16dp"
+            android:text="@string/standard_drinks_consumed"
             android:textAlignment="viewStart"
-            android:layout_below="@+id/duration_label"/>
+            android:textColor="@color/colorDarkGray" />
 
         <TextView
             android:id="@+id/text_bac_info_standard_drinks"
@@ -77,23 +76,23 @@
             android:layout_alignTop="@+id/standard_drinks_label"
             android:layout_alignBottom="@+id/standard_drinks_label"
             android:layout_alignParentEnd="true"
+            android:gravity="center_vertical"
             android:paddingStart="8dp"
             android:paddingEnd="0dp"
             android:paddingBottom="16dp"
-            android:gravity="center_vertical"
             android:textColor="@color/colorDarkGray" />
 
         <TextView
             android:id="@+id/sober_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_below="@+id/standard_drinks_label"
+            android:layout_alignParentStart="true"
+            android:layout_toStartOf="@+id/text_bac_info_time_to_sober"
             android:paddingBottom="16dp"
             android:text="@string/time_to_sober"
-            android:textColor="@color/colorDarkGray"
-            android:layout_toStartOf="@+id/text_bac_info_time_to_sober"
             android:textAlignment="viewStart"
-            android:layout_alignParentStart="true"
-            android:layout_below="@+id/standard_drinks_label"/>
+            android:textColor="@color/colorDarkGray" />
 
         <TextView
             android:id="@+id/text_bac_info_time_to_sober"

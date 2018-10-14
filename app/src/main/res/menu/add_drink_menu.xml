@@ -5,14 +5,14 @@
         android:id="@+id/btn_toolbar_favorite"
         android:icon="@drawable/favorite_border_white_24dp"
         android:title="@string/log_session"
-        app:showAsAction="ifRoom"/>
+        app:showAsAction="ifRoom" />
     <item
         android:id="@+id/btn_clear_recents_list"
         android:title="@string/clear_recents_list"
-        app:showAsAction="never"/>
+        app:showAsAction="never" />
 
     <item
         android:id="@+id/btn_clear_favorites_list"
         android:title="@string/clear_favorites_list"
-        app:showAsAction="never"/>
+        app:showAsAction="never" />
 </menu>

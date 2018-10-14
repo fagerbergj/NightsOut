@@ -1,6 +1,5 @@
 package com.example.jasonfagerberg.nightsout.addDrink
 
-import com.example.jasonfagerberg.nightsout.databaseHelper.AddDrinkDatabaseHelper
 import com.example.jasonfagerberg.nightsout.main.Drink
 import com.example.jasonfagerberg.nightsout.main.MainActivity
 
@@ -8,7 +7,7 @@ class AddDrinkFragmentDatabaseTalker(private val addDrinkFragment: AddDrinkFragm
                                      private val mainActivity: MainActivity, private val canUnfavorite: Boolean,
                                      private val favorited: Boolean) {
 
-    fun buildDrinkAndAddToList(name: String, abv: Double, amount: Double, measurement: String ){
+    fun buildDrinkAndAddToList(name: String, abv: Double, amount: Double, measurement: String) {
         val drink = Drink(-1, name, abv, amount, measurement, favorited, true, mainActivity.getTimeNow())
 
         setDrinkId(drink)
@@ -18,31 +17,31 @@ class AddDrinkFragmentDatabaseTalker(private val addDrinkFragment: AddDrinkFragm
         else addDrinkFragment.addToFavoritesList(drink)
     }
 
-    private fun setDrinkId(drink: Drink){
+    private fun setDrinkId(drink: Drink) {
         val foundID = mainActivity.mDatabaseHelper.getDrinkIdFromFullDrinkInfo(drink)
         val existsInDB = foundID != -1
 
-        if(!existsInDB){
+        if (!existsInDB) {
             mainActivity.mDatabaseHelper.insertDrinkIntoDrinksTable(drink)
             drink.id = mainActivity.mDatabaseHelper.getDrinkIdFromFullDrinkInfo(drink)
-        }else{
+        } else {
             drink.id = foundID
         }
     }
 
-    private fun setDrinkFavorited(drink: Drink){
+    private fun setDrinkFavorited(drink: Drink) {
         drink.favorited = mainActivity.mFavoritesList.contains(drink)
 
-        if(mainActivity.mDrinksList.contains(drink)){
+        if (mainActivity.mDrinksList.contains(drink)) {
             val index = mainActivity.mDrinksList.indexOf(drink)
             val drinkInSession = mainActivity.mDrinksList[index]
             drink.favorited = drinkInSession.favorited
         }
 
-        if(favorited){
+        if (favorited) {
             drink.favorited = true
-            for (d in mainActivity.mDrinksList){
-                if (d == drink){
+            for (d in mainActivity.mDrinksList) {
+                if (d == drink) {
                     d.favorited = true
                 }
             }

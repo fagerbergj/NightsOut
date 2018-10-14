@@ -15,7 +15,7 @@ class HomeFragmentLogDatePicker(private val homeFragment: HomeFragment,
                                 private val mainActivity: MainActivity, private val converter: Converter) {
     private val logDatabaseHelper = LogDatabaseHelper(mainActivity.mDatabaseHelper, mainActivity)
 
-    fun showDatePicker(){
+    fun showDatePicker() {
         val calendar = Calendar.getInstance()
         val dp = DatePickerDialog(homeFragment.context!!, null, calendar.get(Calendar.YEAR),
                 calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH))
@@ -27,9 +27,9 @@ class HomeFragmentLogDatePicker(private val homeFragment: HomeFragment,
             val logDate = Integer.parseInt(converter.yearMonthDayTo8DigitString(logYear, logMonth, logDay))
 
             val testHeader = LogHeader(logDate, 0.0, 0.0)
-            if (testHeader in mainActivity.mLogHeaders){
+            if (testHeader in mainActivity.mLogHeaders) {
                 showOverrideLogDialog(logDate)
-            }else{
+            } else {
                 mainActivity.mLogHeaders.add(LogHeader(logDate, homeFragment.bac, homeFragment.drinkingDuration))
                 logDatabaseHelper.pushDrinksToLogDrinks(logDate)
                 val message = "Log created on ${testHeader.monthName} ${testHeader.day}, ${testHeader.year}"
@@ -41,7 +41,7 @@ class HomeFragmentLogDatePicker(private val homeFragment: HomeFragment,
         dp.show()
     }
 
-    private fun showOverrideLogDialog(logDate: Int){
+    private fun showOverrideLogDialog(logDate: Int) {
         val headerIndex = mainActivity.mLogHeaders.indexOf(LogHeader(logDate, 0.0, 0.0))
         val header = mainActivity.mLogHeaders[headerIndex]
 

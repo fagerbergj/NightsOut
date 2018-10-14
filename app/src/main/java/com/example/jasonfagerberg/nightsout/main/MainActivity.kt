@@ -64,7 +64,7 @@ class MainActivity : AppCompatActivity() {
 
         botNavBar.setOnNavigationItemSelectedListener { listener ->
             val curFrag: Fragment = supportFragmentManager.findFragmentById(R.id.main_frame)!!
-            when(listener.itemId){
+            when (listener.itemId) {
                 R.id.bottom_nav_home -> {
                     alertUserBeforeNavigation(curFrag, homeFragment)
                     true
@@ -75,7 +75,7 @@ class MainActivity : AppCompatActivity() {
                     true
                 }
                 R.id.bottom_nav_profile -> {
-                    if(curFrag !is ProfileFragment) setFragment(profileFragment)
+                    if (curFrag !is ProfileFragment) setFragment(profileFragment)
                     true
                 }
                 else -> false
@@ -83,8 +83,8 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun alertUserBeforeNavigation(curFrag: Fragment, destination: Fragment?){
-        if (curFrag == profileFragment && profileFragment.hasUnsavedData()){
+    private fun alertUserBeforeNavigation(curFrag: Fragment, destination: Fragment?) {
+        if (curFrag == profileFragment && profileFragment.hasUnsavedData()) {
             val builder = AlertDialog.Builder(this)
             val parent: ViewGroup? = null
             val dialogView = layoutInflater.inflate(
@@ -104,13 +104,13 @@ class MainActivity : AppCompatActivity() {
                 if (destination == null) supportFragmentManager.popBackStack()
                 else setFragment(destination)
             }
-        }else if(curFrag != destination){
+        } else if (curFrag != destination) {
             if (destination == null) supportFragmentManager.popBackStack()
             else setFragment(destination)
         }
     }
 
-    override fun onResume(){
+    override fun onResume() {
         initData()
         super.onResume()
     }
@@ -120,7 +120,7 @@ class MainActivity : AppCompatActivity() {
         super.onPause()
     }
 
-    private fun initData(){
+    private fun initData() {
         // get data
         preferences = PreferenceManager.getDefaultSharedPreferences(this)
         getGlobalData()
@@ -129,9 +129,9 @@ class MainActivity : AppCompatActivity() {
         mDatabaseHelper = DatabaseHelper(this, DB_NAME, null, DB_VERSION)
         mDatabaseHelper.openDatabase()
 
-        if(!profileInt){
+        if (!profileInt) {
             setFragment(profileFragment)
-        }else if (supportFragmentManager.backStackEntryCount == 0){
+        } else if (supportFragmentManager.backStackEntryCount == 0) {
             setFragment(homeFragment)
         }
 
@@ -140,16 +140,16 @@ class MainActivity : AppCompatActivity() {
         mDatabaseHelper.pullLogHeaders()
     }
 
-    private fun saveData(){
+    private fun saveData() {
         setGlobalData()
         mDatabaseHelper.pushLogHeaders()
         mDatabaseHelper.pushDrinks()
         mDatabaseHelper.closeDatabase()
     }
 
-    private fun setGlobalData(){
+    private fun setGlobalData() {
         // profile not init
-        if(weightMeasurement == "") return
+        if (weightMeasurement == "") return
 
         val editor = preferences.edit()
         editor.putBoolean("profileInit", true)
@@ -162,7 +162,7 @@ class MainActivity : AppCompatActivity() {
         editor.apply()
     }
 
-    private fun getGlobalData(){
+    private fun getGlobalData() {
         profileInt = preferences.getBoolean("profileInit", profileInt)
         if (profileInt) {
             sex = true
@@ -185,7 +185,7 @@ class MainActivity : AppCompatActivity() {
         transaction.commit()
     }
 
-    fun showBottomNavBar(id: Int){
+    fun showBottomNavBar(id: Int) {
         botNavBar.visibility = View.VISIBLE
         botNavBar.selectedItemId = id
 
@@ -195,7 +195,7 @@ class MainActivity : AppCompatActivity() {
         findViewById<FrameLayout>(R.id.main_frame).layoutParams = params
     }
 
-    fun hideBottomNavBar(){
+    fun hideBottomNavBar() {
         val botNavBar: BottomNavigationView = findViewById(R.id.bottom_navigation_view)
         botNavBar.visibility = View.INVISIBLE
 
@@ -204,13 +204,13 @@ class MainActivity : AppCompatActivity() {
         findViewById<FrameLayout>(R.id.main_frame).layoutParams = params
     }
 
-    fun showToast(message: String){
+    fun showToast(message: String) {
         val toast = Toast.makeText(this, message, Toast.LENGTH_LONG)
         toast.setGravity(Gravity.CENTER, 0, 450)
         toast.show()
     }
 
-    fun getTimeNow():Long{
+    fun getTimeNow(): Long {
         return Calendar.getInstance().timeInMillis
     }
 

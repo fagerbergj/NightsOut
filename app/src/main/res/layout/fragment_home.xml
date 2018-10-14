@@ -1,22 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<RelativeLayout
-    android:id="@+id/layout_home"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".home.HomeFragment"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layout_home"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:context=".home.HomeFragment">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar_home"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorPrimary"
+        android:theme="@style/Overflow"
         app:title="@string/fragment_home_name"
-        app:titleTextColor="@color/colorWhite"
-        android:theme="@style/Overflow"/>
+        app:titleTextColor="@color/colorWhite" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_home_add_drink"
@@ -25,12 +24,12 @@
         android:layout_below="@id/toolbar_home"
         android:layout_centerHorizontal="true"
         android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
         android:layout_marginTop="8dp"
+        android:layout_marginRight="16dp"
         android:text="@string/add_a_drink"
         android:textColor="@color/colorWhite"
-        android:theme="@style/HomeButtonTheme"
-        android:textSize="18sp"/>
+        android:textSize="18sp"
+        android:theme="@style/HomeButtonTheme" />
 
     <LinearLayout
         android:id="@+id/layout_start_drinking"
@@ -41,8 +40,8 @@
         android:gravity="center_horizontal"
         android:orientation="vertical"
         android:paddingStart="0dp"
-        android:paddingEnd="200dp"
-        android:paddingTop="8dp">
+        android:paddingTop="8dp"
+        android:paddingEnd="200dp">
 
         <TextView
             android:layout_width="wrap_content"
@@ -53,12 +52,12 @@
             android:id="@+id/edit_start_time"
             android:layout_width="112dp"
             android:layout_height="40dp"
-            android:textAlignment="center"
-            android:inputType="time"
-            android:hint="@string/empty"
             android:clickable="false"
             android:focusable="false"
+            android:hint="@string/empty"
             android:importantForAutofill="no"
+            android:inputType="time"
+            android:textAlignment="center"
             tools:targetApi="o" />
     </LinearLayout>
 
@@ -69,9 +68,9 @@
         android:layout_centerHorizontal="true"
         android:gravity="center_horizontal"
         android:orientation="vertical"
-        android:paddingEnd="0dp"
         android:paddingStart="200dp"
-        android:paddingTop="8dp">
+        android:paddingTop="8dp"
+        android:paddingEnd="0dp">
 
         <TextView
             android:layout_width="wrap_content"
@@ -82,12 +81,12 @@
             android:id="@+id/edit_end_time"
             android:layout_width="112dp"
             android:layout_height="40dp"
+            android:autofillHints=""
             android:clickable="false"
             android:focusable="false"
             android:hint="@string/empty"
             android:inputType="time"
             android:textAlignment="center"
-            android:autofillHints=""
             tools:targetApi="o" />
     </LinearLayout>
 
@@ -137,13 +136,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
-        android:paddingRight="16dp"
-        android:paddingLeft="16dp"
         android:layout_alignParentBottom="true"
+        android:layout_toEndOf="@id/text_home_bac_value"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
         android:paddingBottom="16dp"
         android:textColor="@color/colorGreen"
-        android:textSize="20sp"
-        android:layout_toEndOf="@id/text_home_bac_value" />
+        android:textSize="20sp" />
 
     <ImageButton
         android:id="@+id/btn_home_bac_info"
@@ -156,7 +155,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         android:background="@color/colorWhite"
-        android:src="@drawable/ic_info_gray_24dp"
-        android:contentDescription="@string/info"/>
+        android:contentDescription="@string/info"
+        android:src="@drawable/ic_info_gray_24dp" />
 
 </RelativeLayout>

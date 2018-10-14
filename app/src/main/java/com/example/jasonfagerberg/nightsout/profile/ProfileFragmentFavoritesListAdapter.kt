@@ -33,7 +33,7 @@ class ProfileFragmentFavoritesListAdapter(private val mContext: Context, drinksL
         holder.card.setOnClickListener { _ ->
             holder.favorited = !holder.favorited
 
-            if(holder.favorited){
+            if (holder.favorited) {
                 // make the toast
                 val toast = Toast.makeText(mContext, "${holder.name.text} favorited", Toast.LENGTH_SHORT)
                 toast.setGravity(Gravity.CENTER, 0, 450)
@@ -41,7 +41,7 @@ class ProfileFragmentFavoritesListAdapter(private val mContext: Context, drinksL
 
                 holder.image.setImageResource(R.drawable.favorite_white_24dp)
                 //mFavoriteDrinksList.add(drink)
-            }else{
+            } else {
                 // make the toast
                 val toast = Toast.makeText(mContext, "${holder.name.text} unfavored", Toast.LENGTH_SHORT)
                 toast.setGravity(Gravity.CENTER, 0, 450)

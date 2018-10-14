@@ -21,7 +21,7 @@ import android.widget.RelativeLayout
 
 //private const val TAG = "HomeFragment"
 
-class HomeFragment : Fragment(){
+class HomeFragment : Fragment() {
     lateinit var mDrinkListAdapter: HomeFragmentDrinkListAdapter
     private lateinit var mRelativeLayout: RelativeLayout
     private lateinit var mMainActivity: MainActivity
@@ -52,7 +52,7 @@ class HomeFragment : Fragment(){
 
         // add a drink button setup
         val btnAdd: MaterialButton = view.findViewById(R.id.btn_home_add_drink)
-        btnAdd.setOnClickListener{ _ ->
+        btnAdd.setOnClickListener { _ ->
             val mainActivity: MainActivity = context as MainActivity
             mMainActivity.addDrinkFragment.mFavorited = false
             mainActivity.setFragment(mainActivity.addDrinkFragment)
@@ -65,7 +65,7 @@ class HomeFragment : Fragment(){
         setupEditTexts(view)
 
         val bacInfoDialog = HomeFragmentBacInfoDialog(this, mMainActivity, mConverter)
-        view.findViewById<ImageButton>(R.id.btn_home_bac_info).setOnClickListener{ _ ->
+        view.findViewById<ImageButton>(R.id.btn_home_bac_info).setOnClickListener { _ ->
             bacInfoDialog.showBacInfoDialog()
         }
 
@@ -85,8 +85,8 @@ class HomeFragment : Fragment(){
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         val resId = item?.itemId
         val datePicker = HomeFragmentLogDatePicker(this, mMainActivity, mConverter)
-        when (resId){
-            R.id.btn_toolbar_home_done ->  datePicker.showDatePicker()
+        when (resId) {
+            R.id.btn_toolbar_home_done -> datePicker.showDatePicker()
             R.id.btn_clear_drink_list -> {
                 mMainActivity.mDrinksList.clear()
                 mDrinkListAdapter.notifyDataSetChanged()
@@ -98,9 +98,9 @@ class HomeFragment : Fragment(){
         return true
     }
 
-    private fun showDisclaimerDialog(){
+    private fun showDisclaimerDialog() {
         val builder = android.app.AlertDialog.Builder(view!!.context)
-        val parent:ViewGroup? = null
+        val parent: ViewGroup? = null
         val dialogView = mMainActivity.layoutInflater
                 .inflate(R.layout.fragment_home_dialog_disclaimer, parent, false)
         builder.setView(dialogView)
@@ -109,7 +109,7 @@ class HomeFragment : Fragment(){
         dialog.findViewById<Button>(R.id.btn_disclaimer_dismiss).setOnClickListener { dialog.dismiss() }
     }
 
-    private fun setupToolbar(view: View){
+    private fun setupToolbar(view: View) {
         val toolbar: Toolbar = view.findViewById(R.id.toolbar_home)
         toolbar.inflateMenu(R.menu.home_menu)
         mMainActivity.setSupportActionBar(toolbar)
@@ -117,7 +117,7 @@ class HomeFragment : Fragment(){
         setHasOptionsMenu(true)
     }
 
-    private fun setupRecycler(view: View){
+    private fun setupRecycler(view: View) {
         // mDrinkList recycler view setup
         val drinksListView: RecyclerView = view.findViewById(R.id.recycler_drink_list)
         val linearLayoutManager = LinearLayoutManager(context)
@@ -134,48 +134,48 @@ class HomeFragment : Fragment(){
         drinksListView.layoutManager!!.scrollToPosition(mMainActivity.mDrinksList.size - 1) //Nav to end of list
     }
 
-    private fun setupEditTexts(view: View){
-        val startPicker:EditText = view.findViewById(R.id.edit_start_time)
+    private fun setupEditTexts(view: View) {
+        val startPicker: EditText = view.findViewById(R.id.edit_start_time)
         val endPicker: EditText = view.findViewById(R.id.edit_end_time)
 
-        if(mMainActivity.startTimeMin == -1) {
+        if (mMainActivity.startTimeMin == -1) {
             mMainActivity.startTimeMin = getCurrentTimeInMinuets()
             startPicker.setText(mConverter.timeTo12HourString(mMainActivity.startTimeMin))
         }
-        if(mMainActivity.endTimeMin == -1){
+        if (mMainActivity.endTimeMin == -1) {
             mMainActivity.endTimeMin = getCurrentTimeInMinuets()
             endPicker.setText(mConverter.timeTo12HourString(mMainActivity.endTimeMin))
         }
 
-        if(mMainActivity.startTimeMin > -1) startPicker.setText(mConverter.timeTo12HourString(
+        if (mMainActivity.startTimeMin > -1) startPicker.setText(mConverter.timeTo12HourString(
                 mMainActivity.startTimeMin))
 
-        if(mMainActivity.endTimeMin > -1) endPicker.setText(mConverter.timeTo12HourString(
+        if (mMainActivity.endTimeMin > -1) endPicker.setText(mConverter.timeTo12HourString(
                 mMainActivity.endTimeMin))
 
-        startPicker.setOnClickListener{ _ ->
+        startPicker.setOnClickListener { _ ->
             startTimeEditTextOnCLickListener(startPicker)
         }
 
-        endPicker.setOnClickListener{ _ ->
+        endPicker.setOnClickListener { _ ->
             endTimeEditTextOnCLickListener(endPicker)
         }
     }
 
-    private fun startTimeEditTextOnCLickListener(startPicker: EditText){
+    private fun startTimeEditTextOnCLickListener(startPicker: EditText) {
         val currentTime = Calendar.getInstance()
         var hour = currentTime.get(Calendar.HOUR_OF_DAY)
         var minute = currentTime.get(Calendar.MINUTE)
-        if(mMainActivity.startTimeMin != -1){
-            hour = mMainActivity.startTimeMin/60
-            minute = mMainActivity.startTimeMin%60
+        if (mMainActivity.startTimeMin != -1) {
+            hour = mMainActivity.startTimeMin / 60
+            minute = mMainActivity.startTimeMin % 60
         }
         val mTimePicker: TimePickerDialog
         mTimePicker = TimePickerDialog(context!!,
-                TimePickerDialog.OnTimeSetListener { _ , selectedHour, selectedMinute ->
+                TimePickerDialog.OnTimeSetListener { _, selectedHour, selectedMinute ->
                     startPicker.setText(mConverter.timeTo12HourString(selectedHour, selectedMinute))
                     mMainActivity.startTimeMin = mConverter.militaryHoursAndMinutesToMinutes(selectedHour, selectedMinute)
-                    if(mMainActivity.endTimeMin == -1) mMainActivity.endTimeMin = mMainActivity.startTimeMin
+                    if (mMainActivity.endTimeMin == -1) mMainActivity.endTimeMin = mMainActivity.startTimeMin
                     calculateBAC()
                 }, hour, minute, false)
 
@@ -189,18 +189,18 @@ class HomeFragment : Fragment(){
         mTimePicker.show()
     }
 
-    private fun endTimeEditTextOnCLickListener(endPicker: EditText){
+    private fun endTimeEditTextOnCLickListener(endPicker: EditText) {
         val currentTime = Calendar.getInstance()
         var hour = currentTime.get(Calendar.HOUR_OF_DAY)
         var minute = currentTime.get(Calendar.MINUTE)
-        if(mMainActivity.endTimeMin != -1){
-            hour = mMainActivity.endTimeMin/60
-            minute = mMainActivity.endTimeMin%60
+        if (mMainActivity.endTimeMin != -1) {
+            hour = mMainActivity.endTimeMin / 60
+            minute = mMainActivity.endTimeMin % 60
         }
 
         val mTimePicker: TimePickerDialog
         mTimePicker = TimePickerDialog(context!!,
-                TimePickerDialog.OnTimeSetListener { _ , selectedHour, selectedMinute ->
+                TimePickerDialog.OnTimeSetListener { _, selectedHour, selectedMinute ->
                     endPicker.setText(mConverter.timeTo12HourString(selectedHour, selectedMinute))
                     mMainActivity.endTimeMin = mConverter.militaryHoursAndMinutesToMinutes(selectedHour, selectedMinute)
                     calculateBAC()
@@ -216,7 +216,7 @@ class HomeFragment : Fragment(){
         mTimePicker.show()
     }
 
-    private fun getCurrentTimeInMinuets(): Int{
+    private fun getCurrentTimeInMinuets(): Int {
         val calendar = GregorianCalendar.getInstance()
         val date = Date()
         calendar.time = date
@@ -225,25 +225,25 @@ class HomeFragment : Fragment(){
         return mConverter.militaryHoursAndMinutesToMinutes(curHour, curMin)
     }
 
-    fun showOrHideEmptyListText(view: View){
+    fun showOrHideEmptyListText(view: View) {
         val emptyText = view.findViewById<TextView>(R.id.text_home_empty_list)
-        if(mMainActivity.mDrinksList.isEmpty()){
+        if (mMainActivity.mDrinksList.isEmpty()) {
             emptyText.visibility = View.VISIBLE
-        }else{
+        } else {
             emptyText.visibility = View.INVISIBLE
         }
     }
 
-    fun calculateBAC(){
+    fun calculateBAC() {
         var a = 0.0
-        for (drink in mMainActivity.mDrinksList){
+        for (drink in mMainActivity.mDrinksList) {
             val volume = mConverter.drinkVolumeToFluidOz(drink.amount, drink.measurement)
-            val abv = drink.abv/100
-            a += (volume * abv )
+            val abv = drink.abv / 100
+            a += (volume * abv)
         }
-        standardDrinksConsumed = mConverter.fluidOzToGrams(a)/14.0
+        standardDrinksConsumed = mConverter.fluidOzToGrams(a) / 14.0
 
-        val r = if(mMainActivity.sex!!) .73 else .66
+        val r = if (mMainActivity.sex!!) .73 else .66
 
         val weightInOz = mConverter.weightToLbs(mMainActivity.weight, mMainActivity.weightMeasurement)
 
@@ -251,10 +251,10 @@ class HomeFragment : Fragment(){
 
         val instantBAC = (a * 5.14) / sexModifiedWeight
 
-        var hoursElapsed = (mMainActivity.endTimeMin - mMainActivity.startTimeMin)/60.0
-        if (mMainActivity.endTimeMin < mMainActivity.startTimeMin){
+        var hoursElapsed = (mMainActivity.endTimeMin - mMainActivity.startTimeMin) / 60.0
+        if (mMainActivity.endTimeMin < mMainActivity.startTimeMin) {
             val minInDay = 1440
-            hoursElapsed = ((mMainActivity.endTimeMin + minInDay) - mMainActivity.startTimeMin)/60.0
+            hoursElapsed = ((mMainActivity.endTimeMin + minInDay) - mMainActivity.startTimeMin) / 60.0
         }
 
         drinkingDuration = hoursElapsed
@@ -265,7 +265,7 @@ class HomeFragment : Fragment(){
         updateBACText()
     }
 
-    private fun updateBACText(){
+    private fun updateBACText() {
         val bacValueView = view!!.findViewById<TextView>(R.id.text_home_bac_value)
         val bacResultView = view!!.findViewById<TextView>(R.id.text_home_bac_result)
 
@@ -274,7 +274,7 @@ class HomeFragment : Fragment(){
         bacResultView.setOnClickListener { _ -> bacInfo.showBacInfoDialog() }
 
         val bacText = "%.3f".format(bac)
-        when{
+        when {
             bac > .2 -> {
                 changeTextViewColorAndText(bacValueView, bacText, R.color.colorBlack)
                 changeTextViewColorAndText(bacResultView, "In Danger", R.color.colorBlack)
@@ -300,7 +300,7 @@ class HomeFragment : Fragment(){
         bacValueView.requestLayout()
     }
 
-    private fun changeTextViewColorAndText(textView: TextView, text: String, color: Int){
+    private fun changeTextViewColorAndText(textView: TextView, text: String, color: Int) {
         textView.text = text
         textView.setTextColor(ContextCompat.getColor(context!!, color))
     }

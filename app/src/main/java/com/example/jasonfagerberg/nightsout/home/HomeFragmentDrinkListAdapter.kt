@@ -34,11 +34,9 @@ class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: Ar
         val drink = mDrinksList[position]
 
         when {
-            drink.abv > 20 -> holder.image.setImageBitmap(BitmapFactory.
-                    decodeResource(mContext.resources, R.mipmap.cocktail))
+            drink.abv > 20 -> holder.image.setImageBitmap(BitmapFactory.decodeResource(mContext.resources, R.mipmap.cocktail))
 
-            drink.abv > 9.5 -> holder.image.setImageBitmap(BitmapFactory.
-                    decodeResource(mContext.resources, R.mipmap.wine))
+            drink.abv > 9.5 -> holder.image.setImageBitmap(BitmapFactory.decodeResource(mContext.resources, R.mipmap.wine))
 
             else -> holder.image.setImageBitmap(BitmapFactory
                     .decodeResource(mContext.resources, R.mipmap.beer))
@@ -79,7 +77,7 @@ class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: Ar
     }
 
     @SuppressLint("InflateParams")
-    private fun showEditRemoveDialog(position: Int){
+    private fun showEditRemoveDialog(position: Int) {
         val drink = mDrinksList[position]
         val builder = AlertDialog.Builder(mContext)
         val dialogView = mMainActivity.layoutInflater.inflate(
@@ -93,7 +91,7 @@ class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: Ar
 
         // add another button
         val another = dialogView.findViewById<TextView>(R.id.text_drink_modify_add_another)
-        another.setOnClickListener{ _ ->
+        another.setOnClickListener { _ ->
             onAddAnotherClicked(position)
             dismissDialog(dialog)
         }
@@ -102,76 +100,75 @@ class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: Ar
 
         // edit button clicked
         val edit = dialogView.findViewById<TextView>(R.id.text_drink_modify_edit_drink)
-        edit.setOnClickListener{ _ ->
+        edit.setOnClickListener { _ ->
             showEditDialog(position)
             dialog.dismiss()
         }
 
         //delete button clicked
         val delete = dialogView.findViewById<TextView>(R.id.text_drink_modify_remove_drink)
-        delete.setOnClickListener{ _ ->
+        delete.setOnClickListener { _ ->
             removeItem(position)
             dismissDialog(dialog)
             mMainActivity.homeFragment.showOrHideEmptyListText(mMainActivity.homeFragment.view!!)
         }
     }
 
-    private fun setupFavoritesOption(dialogView: View, drink: Drink, dialog: AlertDialog){
+    private fun setupFavoritesOption(dialogView: View, drink: Drink, dialog: AlertDialog) {
         val favorite = dialogView.findViewById<TextView>(R.id.text_drink_modify_favorite_drink)
-        if (drink.favorited){
+        if (drink.favorited) {
             favorite.setText(R.string.unfavorite_drink)
-            favorite.setCompoundDrawablesWithIntrinsicBounds(R.drawable.favorite_border_red_18dp,0,0,0)
-        }else{
+            favorite.setCompoundDrawablesWithIntrinsicBounds(R.drawable.favorite_border_red_18dp, 0, 0, 0)
+        } else {
             favorite.setText(R.string.favorite_drink)
-            favorite.setCompoundDrawablesWithIntrinsicBounds(R.drawable.favorite_red_18dp,0,0,0)
+            favorite.setCompoundDrawablesWithIntrinsicBounds(R.drawable.favorite_red_18dp, 0, 0, 0)
         }
 
-        favorite.setOnClickListener{ _ ->
+        favorite.setOnClickListener { _ ->
             onFavoriteClicked(drink)
             dismissDialog(dialog)
         }
     }
 
-    private fun onAddAnotherClicked(position: Int){
+    private fun onAddAnotherClicked(position: Int) {
         val d = mDrinksList[position]
         val copy = Drink(d.id, d.name, d.abv, d.amount, d.measurement, d.favorited, d.recent, d.modifiedTime)
 
-        if(position <= mDrinksList.size/2){
+        if (position <= mDrinksList.size / 2) {
             mDrinksList.add(position + 1, copy)
             notifyItemInserted(position + 1)
             notifyItemRangeChanged(position + 1, mDrinksList.size)
-        }
-        else{
+        } else {
             mDrinksList.add(position, copy)
             notifyItemInserted(position)
             notifyItemRangeChanged(position, mDrinksList.size)
         }
     }
 
-    private fun onFavoriteClicked(drink: Drink){
+    private fun onFavoriteClicked(drink: Drink) {
         drink.favorited = !drink.favorited
-        if(drink.favorited) {
+        if (drink.favorited) {
             mMainActivity.mFavoritesList.add(drink)
             mMainActivity.mDatabaseHelper.insertRowInFavoritesTable(drink.name, drink.id)
-        } else{
+        } else {
             mMainActivity.mFavoritesList.remove(drink)
             mMainActivity.mDatabaseHelper.deleteRowsInTable("favorites", "drink_name = \"${drink.name}\"")
         }
 
-        for (i in mMainActivity.mDrinksList.indices){
+        for (i in mMainActivity.mDrinksList.indices) {
             val d = mMainActivity.mDrinksList[i]
-            if (d == drink){
+            if (d == drink) {
                 d.favorited = drink.favorited
                 notifyItemChanged(i)
             }
         }
     }
 
-    private fun showEditDialog(position: Int){
+    private fun showEditDialog(position: Int) {
         val drink = mDrinksList[position]
 
         val builder = AlertDialog.Builder(mContext)
-        val parent:ViewGroup? = null
+        val parent: ViewGroup? = null
         val dialogView = mMainActivity.layoutInflater
                 .inflate(R.layout.fragment_home_dialog_edit, parent, false)
 
@@ -195,7 +192,7 @@ class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: Ar
         val dropdown: Spinner = dialogView.findViewById(R.id.spinner_edit_drink_amount)
         val country = Locale.getDefault().country
         val items = arrayOf("ml", "oz", "beers", "shots", "wine glasses")
-        if (country == "US" || country == "LR" || country == "MM"){
+        if (country == "US" || country == "LR" || country == "MM") {
             items[0] = "oz"
             items[1] = "ml"
         }
@@ -203,7 +200,7 @@ class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: Ar
         dropdown.adapter = adapter
         dropdown.setSelection(items.indexOf(drink.measurement))
 
-        dialog.findViewById<MaterialButton>(R.id.btn_edit_drink_edit).setOnClickListener{ _ ->
+        dialog.findViewById<MaterialButton>(R.id.btn_edit_drink_edit).setOnClickListener { _ ->
             onDialogEditClick(drink, editName, editABV, editAmount, dropdown)
             this.notifyItemChanged(position)
             drink.modifiedTime = mMainActivity.getTimeNow()
@@ -212,28 +209,28 @@ class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: Ar
     }
 
     private fun onDialogEditClick(drink: Drink, editName: EditText, editABV: EditText,
-                                  editAmount: EditText, dropdown: Spinner){
+                                  editAmount: EditText, dropdown: Spinner) {
         val other = Drink(drink.id, drink.name, drink.abv, drink.amount, drink.measurement,
                 false, false, mMainActivity.getTimeNow())
         //pad 0s to end
-        if(!editABV.text.isEmpty() && "${editABV.text}"["${editABV.text}".length-1] == '.'){
+        if (!editABV.text.isEmpty() && "${editABV.text}"["${editABV.text}".length - 1] == '.') {
             val padded = "${editABV.text}0"
             editABV.setText(padded)
         }
 
-        if(!editAmount.text.isEmpty() && "${editAmount.text}"["${editAmount.text}".length-1] == '.'){
+        if (!editAmount.text.isEmpty() && "${editAmount.text}"["${editAmount.text}".length - 1] == '.') {
             val padded = "${editAmount.text}0"
             editAmount.setText(padded)
         }
 
         // set drink to new values
-        if(!editName.text.isEmpty()){
+        if (!editName.text.isEmpty()) {
             drink.name = editName.text.toString()
         }
-        if (!editABV.text.isEmpty()){
+        if (!editABV.text.isEmpty()) {
             drink.abv = "${editABV.text}".toDouble()
         }
-        if (!editAmount.text.isEmpty()){
+        if (!editAmount.text.isEmpty()) {
             drink.amount = "${editAmount.text}".toDouble()
         }
         drink.measurement = dropdown.selectedItem.toString()
@@ -241,13 +238,13 @@ class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: Ar
         val foundID = mMainActivity.mDatabaseHelper.getDrinkIdFromFullDrinkInfo(drink)
         val existsInDB = foundID != -1
         drink.id = foundID
-        if(!drink.isExactSameDrink(other) && !existsInDB){
+        if (!drink.isExactSameDrink(other) && !existsInDB) {
             mMainActivity.mDatabaseHelper.insertDrinkIntoDrinksTable(drink)
             drink.id = mMainActivity.mDatabaseHelper.getDrinkIdFromFullDrinkInfo(drink)
         }
     }
 
-    private fun dismissDialog(dialog: AlertDialog){
+    private fun dismissDialog(dialog: AlertDialog) {
         mMainActivity.homeFragment.calculateBAC()
         dialog.dismiss()
     }

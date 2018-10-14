@@ -30,13 +30,13 @@
 
             <ImageView
                 android:id="@+id/image_profile_favorite"
-                android:contentDescription="@string/favorites"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
                 android:layout_marginStart="8dp"
                 android:layout_toEndOf="@id/text_profile_favorite_drink_name"
-                android:src="@drawable/favorite_white_24dp"
-                android:layout_centerVertical="true"/>
+                android:contentDescription="@string/favorites"
+                android:src="@drawable/favorite_white_24dp" />
 
         </RelativeLayout>
     </androidx.cardview.widget.CardView>

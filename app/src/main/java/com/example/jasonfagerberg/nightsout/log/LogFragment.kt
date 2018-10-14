@@ -79,11 +79,11 @@ class LogFragment : Fragment() {
         inflater!!.inflate(R.menu.log_menu, menu)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean{
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         val resId = item?.itemId
-        when(resId){
+        when (resId) {
             R.id.btn_clear_all_logs -> {
-                for (header in mMainActivity.mLogHeaders){
+                for (header in mMainActivity.mLogHeaders) {
                     logDatabaseHelper.deleteLog(header.date)
                 }
                 mMainActivity.mLogHeaders.clear()
@@ -116,7 +116,7 @@ class LogFragment : Fragment() {
         setHasOptionsMenu(true)
     }
 
-    private fun setAdapter(){
+    private fun setAdapter() {
         mLogFragmentAdapter = LogFragmentAdapter(context!!, mLogList)
         val year = calendar.get(Calendar.YEAR)
         val month = calendar.get(Calendar.MONTH)
@@ -126,10 +126,10 @@ class LogFragment : Fragment() {
         mLogListView.adapter = mLogFragmentAdapter
     }
 
-    private fun highlightDays(){
+    private fun highlightDays() {
         val dates = ArrayList<CalendarDay>()
         val calendar = Calendar.getInstance()
-        for(log in mMainActivity.mLogHeaders){
+        for (log in mMainActivity.mLogHeaders) {
             calendar.set(log.year, log.month, log.day)
             val day = CalendarDay.from(Date(calendar.time.time))
             dates.add(day)
@@ -138,7 +138,7 @@ class LogFragment : Fragment() {
                 R.color.colorPrimaryDark), dates))
     }
 
-    private fun setupCalendar(view: View){
+    private fun setupCalendar(view: View) {
         calendarView = view.findViewById(R.id.calender_log)
         calendarView.selectedDate = CalendarDay.today()
         calendar.time = calendarView.selectedDate.date
@@ -150,7 +150,7 @@ class LogFragment : Fragment() {
         highlightDays()
 
         // when date is changed, change recycler list
-        calendarView.setOnDateChangedListener{_ , day, _ ->
+        calendarView.setOnDateChangedListener { _, day, _ ->
             calendar.set(day.year, day.month, day.day)
             mLogList.clear()
 
@@ -159,14 +159,14 @@ class LogFragment : Fragment() {
         }
     }
 
-    private fun setLogListBasedOnDay(date: Int){
-        val index = mMainActivity.mLogHeaders.indexOf(LogHeader(date, 0.0, 0.0 ))
-        if(index >= 0){
+    private fun setLogListBasedOnDay(date: Int) {
+        val index = mMainActivity.mLogHeaders.indexOf(LogHeader(date, 0.0, 0.0))
+        if (index >= 0) {
             val header = mMainActivity.mLogHeaders[index]
             mLogList.add(header)
-            mLogList.addAll( logDatabaseHelper.getLoggedDrinks(header.date))
-        }else{
-            mLogList.add(LogHeader(date, 0.0, 0.0 ))
+            mLogList.addAll(logDatabaseHelper.getLoggedDrinks(header.date))
+        } else {
+            mLogList.add(LogHeader(date, 0.0, 0.0))
         }
         mLogFragmentAdapter.notifyDataSetChanged()
         mLogListView.layoutManager?.scrollToPosition(0)
@@ -174,11 +174,11 @@ class LogFragment : Fragment() {
 
     }
 
-    private fun showOrHideEmptyTextViews(view: View){
+    private fun showOrHideEmptyTextViews(view: View) {
         val emptyLog = view.findViewById<TextView>(R.id.text_log_empty_list)
-        if(mLogList.size == 1){
+        if (mLogList.size == 1) {
             emptyLog.visibility = View.VISIBLE
-        }else{
+        } else {
             emptyLog.visibility = View.INVISIBLE
         }
     }

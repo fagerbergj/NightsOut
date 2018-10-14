@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:fillViewport="true"
@@ -18,9 +17,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/colorPrimary"
+            android:theme="@style/Overflow"
             app:title="@string/fragment_add_drink_name"
-            app:titleTextColor="@color/colorWhite"
-            android:theme="@style/Overflow"/>
+            app:titleTextColor="@color/colorWhite" />
 
         <TextView
             android:id="@+id/text_add_drink_recents"
@@ -28,8 +27,8 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/toolbar_add_drink"
             android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
             android:layout_marginTop="8dp"
+            android:layout_marginRight="16dp"
             android:text="@string/recents_quick_fill"
             android:textSize="16sp" />
 
@@ -39,8 +38,8 @@
             android:layout_height="70dp"
             android:layout_below="@+id/text_add_drink_recents"
             android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
             android:layout_marginTop="8dp"
+            android:layout_marginRight="16dp"
             android:background="#d1d1d1"
             android:orientation="vertical">
 
@@ -48,12 +47,12 @@
                 android:id="@+id/recycler_add_drink_recents_list"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginBottom="2dp"
                 android:layout_marginTop="2dp"
+                android:layout_marginBottom="2dp"
                 android:background="@color/colorWhite"
                 android:orientation="horizontal"
-                android:paddingBottom="8dp"
-                android:paddingTop="8dp" />
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp" />
 
             <TextView
                 android:id="@+id/text_recents_empty_list"
@@ -70,8 +69,8 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/layout_recents_foreground"
             android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
             android:layout_marginTop="8dp"
+            android:layout_marginRight="16dp"
             android:text="@string/favorites_quick_fill"
             android:textSize="16sp" />
 
@@ -81,8 +80,8 @@
             android:layout_height="70dp"
             android:layout_below="@+id/text_add_drink_favorites"
             android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
             android:layout_marginTop="8dp"
+            android:layout_marginRight="16dp"
             android:background="#d1d1d1"
             android:orientation="vertical">
 
@@ -90,12 +89,12 @@
                 android:id="@+id/recycler_add_drink_favorites_list"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginBottom="2dp"
                 android:layout_marginTop="2dp"
+                android:layout_marginBottom="2dp"
                 android:background="@color/colorWhite"
                 android:orientation="horizontal"
-                android:paddingBottom="8dp"
-                android:paddingTop="8dp" />
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp" />
 
             <TextView
                 android:id="@+id/text_favorites_empty_list"
@@ -110,14 +109,14 @@
             android:id="@+id/layout_add_drink_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_below="@id/layout_favorites_foreground"
             android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
             android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
             android:layout_marginTop="16dp"
+            android:layout_marginRight="16dp"
             android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:layout_below="@id/layout_favorites_foreground">
+            android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/text_add_drink_name"
@@ -130,10 +129,10 @@
                 android:id="@+id/edit_add_drink_name"
                 android:layout_width="225dp"
                 android:layout_height="50dp"
+                android:completionThreshold="0"
                 android:gravity="center_horizontal"
-                android:inputType="text"
                 android:hint="@string/empty"
-                android:completionThreshold="0"/>
+                android:inputType="text" />
 
         </LinearLayout>
 
@@ -141,12 +140,12 @@
             android:id="@+id/layout_add_drink_abv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
             android:layout_below="@id/layout_add_drink_name"
+            android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
             android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
             android:layout_marginTop="16dp"
+            android:layout_marginRight="16dp"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
@@ -162,9 +161,9 @@
                 android:layout_width="175dp"
                 android:layout_height="50dp"
                 android:gravity="center_horizontal"
-                android:inputType="numberDecimal"
                 android:hint="@string/empty"
                 android:importantForAutofill="no"
+                android:inputType="numberDecimal"
                 tools:targetApi="o" />
 
             <TextView
@@ -181,12 +180,12 @@
             android:id="@+id/layout_add_drink_amount"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
             android:layout_below="@id/layout_add_drink_abv"
+            android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
             android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
             android:layout_marginTop="16dp"
+            android:layout_marginRight="16dp"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
@@ -201,10 +200,10 @@
                 android:id="@+id/edit_add_drink_amount"
                 android:layout_width="175dp"
                 android:layout_height="50dp"
-                android:gravity="center_horizontal"
-                android:inputType="numberDecimal"
-                android:hint="@string/empty"
                 android:autofillHints=""
+                android:gravity="center_horizontal"
+                android:hint="@string/empty"
+                android:inputType="numberDecimal"
                 tools:targetApi="o" />
 
             <Spinner
@@ -221,10 +220,10 @@
             android:layout_height="60dp"
             android:layout_below="@id/layout_add_drink_amount"
             android:layout_centerHorizontal="true"
-            android:layout_marginBottom="32dp"
             android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
             android:layout_marginTop="64dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="32dp"
             android:text="@string/add"
             android:textSize="18sp"
             android:theme="@style/HomeButtonTheme" />

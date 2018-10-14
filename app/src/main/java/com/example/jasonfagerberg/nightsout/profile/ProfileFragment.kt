@@ -38,12 +38,12 @@ class ProfileFragment : Fragment() {
     private lateinit var btnFemale: MaterialButton
     private lateinit var btnSave: MaterialButton
 
-    private var sex:Boolean? = null
+    private var sex: Boolean? = null
     private var weight = 0.0
 
     private val country = Locale.getDefault().country
     private var weightMeasurement = if (country == "US" || country == "LR" || country == "MM") "lbs"
-                                    else "kg"
+    else "kg"
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -68,32 +68,34 @@ class ProfileFragment : Fragment() {
         mFavoritesListView.adapter = mFavoritesListAdapter
 
         // save button setup
-        btnSave = view.findViewById( R.id.btn_profile_save)
-        btnSave.setOnClickListener{ _ -> saveProfile(view) }
+        btnSave = view.findViewById(R.id.btn_profile_save)
+        btnSave.setOnClickListener { _ -> saveProfile(view) }
 
         // edit Text setup
         mWeightEditText = view.findViewById(R.id.edit_profile_weight)
-        mWeightEditText.addTextChangedListener(object : TextWatcher{
+        mWeightEditText.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(p0: Editable?) {
                 if (p0.toString() == "") return
-                weight = if (p0.toString()[p0!!.length-1] == '.')  ("$p0" + "0").toDouble()
+                weight = if (p0.toString()[p0!!.length - 1] == '.') ("$p0" + "0").toDouble()
                 else p0.toString().toDouble()
             }
+
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
         })
 
         // add favorite button setup
         val btnAddFavorite = view.findViewById<MaterialButton>(R.id.btn_profile_add_favorite)
-        btnAddFavorite.setOnClickListener{ _ ->
+        btnAddFavorite.setOnClickListener { _ ->
             mMainActivity.addDrinkFragment.mFavorited = true
             mMainActivity.setFragment(mMainActivity.addDrinkFragment)
         }
 
         return view
     }
+
     override fun onResume() {
-        if(profileInit) {
+        if (profileInit) {
             sex = mMainActivity.sex!!
             weight = mMainActivity.weight
             weightMeasurement = mMainActivity.weightMeasurement
@@ -116,13 +118,13 @@ class ProfileFragment : Fragment() {
         inflater!!.inflate(R.menu.profile_menu, menu)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean{
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         val resId = item?.itemId
-        when(resId){
+        when (resId) {
             R.id.btn_clear_favorites_list -> {
                 mMainActivity.mDatabaseHelper.deleteRowsInTable("favorites", null)
                 mMainActivity.mFavoritesList.clear()
-                for (drink in mMainActivity.mDrinksList){
+                for (drink in mMainActivity.mDrinksList) {
                     drink.favorited = false
                 }
                 showOrHideEmptyTextViews(view!!)
@@ -140,20 +142,20 @@ class ProfileFragment : Fragment() {
         setHasOptionsMenu(true)
     }
 
-    fun hasUnsavedData():Boolean{
+    fun hasUnsavedData(): Boolean {
         if (!profileInit) return false
         return sex != mMainActivity.sex || weight != mMainActivity.weight ||
                 weightMeasurement != mMainActivity.weightMeasurement
     }
 
-    private fun setupFavoritesRecyclerView(view: View){
+    private fun setupFavoritesRecyclerView(view: View) {
         mFavoritesListView = view.findViewById(R.id.recycler_profile_favorites_list)
         val linearLayoutManager = LinearLayoutManager(context)
         linearLayoutManager.orientation = LinearLayoutManager.HORIZONTAL
         mFavoritesListView.layoutManager = linearLayoutManager
     }
 
-    private fun pressMaleButton(){
+    private fun pressMaleButton() {
         sex = true
         btnMale.background.setColorFilter(ContextCompat.getColor(context!!,
                 R.color.colorLightRed), PorterDuff.Mode.MULTIPLY)
@@ -161,7 +163,7 @@ class ProfileFragment : Fragment() {
                 R.color.colorLightGray), PorterDuff.Mode.MULTIPLY)
     }
 
-    private fun pressFemaleButton(){
+    private fun pressFemaleButton() {
         sex = false
         btnFemale.background.setColorFilter(ContextCompat.getColor(context!!,
                 R.color.colorLightRed), PorterDuff.Mode.MULTIPLY)
@@ -169,21 +171,21 @@ class ProfileFragment : Fragment() {
                 R.color.colorLightGray), PorterDuff.Mode.MULTIPLY)
     }
 
-    private fun saveProfile(view: View){
+    private fun saveProfile(view: View) {
         val sexText = view.findViewById<TextView>(R.id.text_profile_sex)
         val weightText = view.findViewById<TextView>(R.id.text_profile_weight)
         resetTextView(sexText, R.string.sex)
         resetTextView(weightText, R.string.weight)
-        if(!mWeightEditText.text.isEmpty() && "${mWeightEditText.text}"["${mWeightEditText.text}".length-1] == '.'){
+        if (!mWeightEditText.text.isEmpty() && "${mWeightEditText.text}"["${mWeightEditText.text}".length - 1] == '.') {
             val w = "${mWeightEditText.text}0"
             mWeightEditText.setText(w)
         }
 
-        if(sex == null && !profileInit){
+        if (sex == null && !profileInit) {
             mMainActivity.showToast("Please Select A Sex")
             showErrorText(sexText, R.string.sex_error)
             return
-        }else if (mWeightEditText.text.isEmpty() || mWeightEditText.text.toString().toDouble()  < 20 ){
+        } else if (mWeightEditText.text.isEmpty() || mWeightEditText.text.toString().toDouble() < 20) {
             showErrorText(weightText, R.string.weight_error)
             mMainActivity.showToast("Please Enter a Valid Weight")
             return
@@ -196,29 +198,29 @@ class ProfileFragment : Fragment() {
         mMainActivity.weight = weight
         mMainActivity.weightMeasurement = weightMeasurement
 
-        if (profileInit){
+        if (profileInit) {
             mMainActivity.showToast("Profile Saved!")
             return
-        }else{
+        } else {
             mMainActivity.profileInt = true
             mMainActivity.setFragment(mMainActivity.homeFragment)
         }
     }
 
-    private fun resetTextView(view: TextView, id: Int){
+    private fun resetTextView(view: TextView, id: Int) {
         view.text = resources.getText(id)
         view.setTypeface(null, Typeface.NORMAL)
         view.setTextColor(ContextCompat.getColor(context!!, R.color.colorText))
         view.setText(id)
     }
 
-    private fun showErrorText(textView: TextView, errorMessageId: Int){
+    private fun showErrorText(textView: TextView, errorMessageId: Int) {
         textView.text = resources.getText(errorMessageId)
         textView.setTypeface(null, Typeface.BOLD)
         textView.setTextColor(ContextCompat.getColor(context!!, R.color.colorRed))
     }
 
-    private fun setupSpinner(view: View){
+    private fun setupSpinner(view: View) {
         mSpinner = view.findViewById(R.id.spinner_profile)
         val items = arrayOf("lbs", "kg")
         val adapter = ArrayAdapter(context!!, android.R.layout.simple_spinner_dropdown_item, items)
@@ -230,35 +232,36 @@ class ProfileFragment : Fragment() {
                 val selectedItem = parent.getItemAtPosition(position).toString()
                 weightMeasurement = selectedItem
             } // to close the onItemSelected
+
             override fun onNothingSelected(parent: AdapterView<*>) {}
         }
     }
 
-    private fun setupSexButtons(view: View){
+    private fun setupSexButtons(view: View) {
         btnMale = view.findViewById(R.id.btn_profile_male)
         btnFemale = view.findViewById(R.id.btn_profile_female)
 
         if (sex != null && sex!!) {
             pressMaleButton()
-        }else if(sex != null && !sex!!){
+        } else if (sex != null && !sex!!) {
             pressFemaleButton()
         }
 
-        btnMale.setOnClickListener{ _ ->
+        btnMale.setOnClickListener { _ ->
             pressMaleButton()
         }
 
-        btnFemale.setOnClickListener{ _ ->
+        btnFemale.setOnClickListener { _ ->
             pressFemaleButton()
         }
     }
 
-    private fun showOrHideEmptyTextViews(view: View){
+    private fun showOrHideEmptyTextViews(view: View) {
         val emptyFavorite = view.findViewById<TextView>(R.id.text_profile_favorites_empty_list)
 
-        if(mMainActivity.mFavoritesList.isEmpty()){
+        if (mMainActivity.mFavoritesList.isEmpty()) {
             emptyFavorite.visibility = View.VISIBLE
-        }else{
+        } else {
             emptyFavorite.visibility = View.INVISIBLE
         }
     }

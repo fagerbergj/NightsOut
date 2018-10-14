@@ -9,7 +9,7 @@
     <style name="HomeButtonTheme" parent="Theme.MaterialComponents.Light">
         <item name="colorPrimary">@color/colorGreen</item>
     </style>
-    
+
     <style name="ProfileButtonMaleTheme" parent="Theme.MaterialComponents.Light">
         <item name="colorPrimary">@color/colorLightRed</item>
     </style>
