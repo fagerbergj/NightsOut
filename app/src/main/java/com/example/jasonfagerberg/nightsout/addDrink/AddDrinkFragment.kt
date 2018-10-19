@@ -29,6 +29,7 @@ class AddDrinkFragment : Fragment() {
     // booleans that work together to change behavior based on fragment that set this fragment
     var mFavorited: Boolean = false
     private var canUnfavorite = true
+    private var complexMode = false
 
     private lateinit var mMainActivity: MainActivity
 
@@ -86,6 +87,19 @@ class AddDrinkFragment : Fragment() {
         val resId = item?.itemId
         val btnAdd = view!!.findViewById<MaterialButton>(R.id.btn_add_drink_add)
         when (resId) {
+            R.id.btn_toolbar_complex_drink -> {
+                if (!complexMode) {
+                    view!!.findViewById<MaterialButton>(R.id.btn_add_drink_add_alc_source).visibility = View.VISIBLE
+                    view!!.findViewById<RecyclerView>(R.id.recycler_add_drink_alcohol_source_list).visibility = View.VISIBLE
+                    mMainActivity.showToast("You can now add multiple alcohol sources")
+                    item.title = "Simple Drink"
+                }else{
+                    view!!.findViewById<MaterialButton>(R.id.btn_add_drink_add_alc_source).visibility = View.INVISIBLE
+                    view!!.findViewById<RecyclerView>(R.id.recycler_add_drink_alcohol_source_list).visibility = View.INVISIBLE
+                    item.title = "Complex Drink"
+                }
+                complexMode = !complexMode
+            }
             R.id.btn_toolbar_favorite -> {
                 if (canUnfavorite) mFavorited = !mFavorited
                 if (mFavorited) {

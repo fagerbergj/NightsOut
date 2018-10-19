@@ -2,6 +2,10 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
+        android:id="@+id/btn_toolbar_complex_drink"
+        android:title="@string/complex_drink"
+        app:showAsAction="ifRoom" />
+    <item
         android:id="@+id/btn_toolbar_favorite"
         android:icon="@drawable/favorite_border_white_24dp"
         android:title="@string/log_session"

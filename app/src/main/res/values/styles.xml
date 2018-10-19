@@ -13,9 +13,4 @@
     <style name="ProfileButtonMaleTheme" parent="Theme.MaterialComponents.Light">
         <item name="colorPrimary">@color/colorLightRed</item>
     </style>
-
-    <style name="Overflow" parent="Theme.MaterialComponents.Light.NoActionBar">
-        <item name="android:textColorSecondary">@color/colorWhite</item>
-    </style>
-
 </resources>
