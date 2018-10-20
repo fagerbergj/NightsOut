@@ -91,4 +91,10 @@ class Converter {
         val dayString = if (day < 10) "0$day" else day.toString()
         return "$year$monthString$dayString"
     }
+
+    fun stringToDouble(text: String): Double = when{
+            text.isEmpty() -> Double.NaN
+            text[text.length -1] == '.' -> "${text}0".toDouble()
+            else -> text.toDouble()
+        }
 }

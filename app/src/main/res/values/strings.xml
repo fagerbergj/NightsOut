@@ -34,8 +34,6 @@
     <string name="you_did_no_drink_this_day">You Did Not Drink This Day</string>
     <string name="add_favorite">Add Favorite</string>
     <string name="add_another">Add Another</string>
-    <string name="sex_error">Sex ***Please Select A Sex***</string>
-    <string name="weight_error">Weight ***Please Enter a Valid Weight***</string>
     <string name="favorite_drink">Favorite Drink</string>
     <string name="unfavorite_drink">Unfavorite Drink</string>
     <string name="unsaved_profile_changes">Unsaved Profile Changes</string>

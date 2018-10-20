@@ -2,29 +2,37 @@ package com.example.jasonfagerberg.nightsout.addDrink
 
 import android.graphics.Typeface
 import android.os.Bundle
+import android.util.Log
 import com.google.android.material.button.MaterialButton
 import androidx.fragment.app.Fragment
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.appcompat.widget.Toolbar
-//import android.util.Log
 import android.view.*
 import android.widget.*
 import com.example.jasonfagerberg.nightsout.main.Drink
 import com.example.jasonfagerberg.nightsout.R
 import android.widget.ArrayAdapter
 import android.widget.AdapterView
+import com.example.jasonfagerberg.nightsout.converter.Converter
 import com.example.jasonfagerberg.nightsout.databaseHelper.AddDrinkDatabaseHelper
 import com.example.jasonfagerberg.nightsout.main.MainActivity
 import java.util.*
 
-//private const val TAG = "AddDrinkFragment"
+private const val TAG = "AddDrinkFragment"
 
 class AddDrinkFragment : Fragment() {
 
+    val mConverter = Converter()
     private lateinit var mFavoritesListAdapter: AddDrinkFragmentFavoritesListAdapter
     private lateinit var mRecentsListAdapter: AddDrinkFragmentRecentsListAdapter
+    private lateinit var mComplexDrinkMode: AddDrinkFragmentComplexDrink
+
+    private lateinit var mEditName: EditText
+    lateinit var mEditAbv: EditText
+    lateinit var mEditAmount: EditText
+    lateinit var mSpinnerAmount: Spinner
 
     // booleans that work together to change behavior based on fragment that set this fragment
     var mFavorited: Boolean = false
@@ -48,7 +56,7 @@ class AddDrinkFragment : Fragment() {
         mMainActivity.hideBottomNavBar()
 
         // spinner setup
-        val dropdown: Spinner = view.findViewById(R.id.spinner_add_drink_amount)
+        mSpinnerAmount = view.findViewById(R.id.spinner_add_drink_amount)
         val country = Locale.getDefault().country
         val items = arrayOf("ml", "oz", "beers", "shots", "wine glasses")
         if (country == "US" || country == "LR" || country == "MM") {
@@ -56,7 +64,7 @@ class AddDrinkFragment : Fragment() {
             items[1] = "ml"
         }
         val adapter = ArrayAdapter(context!!, android.R.layout.simple_spinner_dropdown_item, items)
-        dropdown.adapter = adapter
+        mSpinnerAmount.adapter = adapter
 
         setupRecentsAndFavoritesRecycler(view)
 
@@ -67,6 +75,10 @@ class AddDrinkFragment : Fragment() {
         val btnAdd = view.findViewById<MaterialButton>(R.id.btn_add_drink_add)
         if (mFavorited) btnAdd.text = resources.getText(R.string.add_favorite)
         btnAdd.setOnClickListener { _ -> addDrink(view) }
+
+        mEditName = view.findViewById(R.id.edit_add_drink_name)
+        mEditAbv = view.findViewById(R.id.edit_add_drink_abv)
+        mEditAmount = view.findViewById(R.id.edit_add_drink_amount)
 
         // Inflate the layout for this fragment
         return view
@@ -89,6 +101,7 @@ class AddDrinkFragment : Fragment() {
         when (resId) {
             R.id.btn_toolbar_complex_drink -> {
                 if (!complexMode) {
+                    mComplexDrinkMode = AddDrinkFragmentComplexDrink(this)
                     view!!.findViewById<MaterialButton>(R.id.btn_add_drink_add_alc_source).visibility = View.VISIBLE
                     view!!.findViewById<RecyclerView>(R.id.recycler_add_drink_alcohol_source_list).visibility = View.VISIBLE
                     mMainActivity.showToast("You can now add multiple alcohol sources")
@@ -169,14 +182,14 @@ class AddDrinkFragment : Fragment() {
     }
 
     private fun drinkNameEditTextSetup(view: View) {
-        val editName = view.findViewById<AutoCompleteTextView>(R.id.edit_add_drink_name)
+        val mEditName = view.findViewById<AutoCompleteTextView>(R.id.edit_add_drink_name)
         val addDrinkDBHelper = AddDrinkDatabaseHelper(mMainActivity.mDatabaseHelper)
         val names = addDrinkDBHelper.pullDrinkNames()
         val adapter = ArrayAdapter<String>(context!!, R.layout.fragment_add_drink_name_suggestion_list,
                 R.id.text_view_list_item, names)
-        editName.setAdapter(adapter)
+        mEditName.setAdapter(adapter)
 
-        editName.onItemClickListener = AdapterView.OnItemClickListener { _, _, position: Int, _ ->
+        mEditName.onItemClickListener = AdapterView.OnItemClickListener { _, _, position: Int, _ ->
             val item = adapter.getItem(position)
             val drink = addDrinkDBHelper.getDrinkFromName(item!!)
             fillViews(drink.name, drink.abv, drink.amount, drink.measurement)
@@ -207,14 +220,14 @@ class AddDrinkFragment : Fragment() {
     }
 
     fun fillViews(name: String, abv: Double, amount: Double, measurement: String) {
-        val editName = view!!.findViewById<EditText>(R.id.edit_add_drink_name)
-        val editABV = view!!.findViewById<EditText>(R.id.edit_add_drink_abv)
-        val editAmount = view!!.findViewById<EditText>(R.id.edit_add_drink_amount)
+        val mEditName = view!!.findViewById<EditText>(R.id.edit_add_drink_name)
+        val mEditAbv = view!!.findViewById<EditText>(R.id.edit_add_drink_abv)
+        val mEditAmount = view!!.findViewById<EditText>(R.id.edit_add_drink_amount)
         val dropdown = view!!.findViewById<Spinner>(R.id.spinner_add_drink_amount)
 
-        editName.setText(name)
-        editABV.setText(abv.toString())
-        editAmount.setText(amount.toString())
+        mEditName.setText(name)
+        mEditAbv.setText(abv.toString())
+        mEditAmount.setText(amount.toString())
         val country = Locale.getDefault().country
         val items = arrayOf("ml", "oz", "beers", "shots", "wine glasses")
         if (country == "US" || country == "LR" || country == "MM") {
@@ -225,23 +238,18 @@ class AddDrinkFragment : Fragment() {
     }
 
     private fun addDrink(view: View) {
-        val editName = view.findViewById<EditText>(R.id.edit_add_drink_name)
-        val editABV = view.findViewById<EditText>(R.id.edit_add_drink_abv)
-        val editAmount = view.findViewById<EditText>(R.id.edit_add_drink_amount)
+        if (isInputErrors()) return
 
-        // if user input invalid shit, return
-        if (isInputErrors(editName, editABV, editAmount)) return
-
-        val name = editName.text.toString()
-        val abv = editABV.text.toString().toDouble()
-        val amount = editAmount.text.toString().toDouble()
+        val name = mEditName.text.toString()
+        val abv = mEditAbv.text.toString().toDouble()
+        val amount = mEditAmount.text.toString().toDouble()
         val measurement = view.findViewById<Spinner>(R.id.spinner_add_drink_amount).selectedItem.toString()
         val dbTalker = AddDrinkFragmentDatabaseTalker(this, mMainActivity, canUnfavorite, mFavorited)
         dbTalker.buildDrinkAndAddToList(name, abv, amount, measurement)
 
-        editName.text.clear()
-        editABV.text.clear()
-        editAmount.text.clear()
+        mEditName.text.clear()
+        mEditAbv.text.clear()
+        mEditAmount.text.clear()
         mMainActivity.onBackPressed()
     }
 
@@ -269,7 +277,7 @@ class AddDrinkFragment : Fragment() {
         mMainActivity.mFavoritesList.add(0, drink)
     }
 
-    private fun isInputErrors(editName: EditText, editABV: EditText, editAmount: EditText): Boolean {
+    fun isInputErrors(): Boolean {
         val textName = view!!.findViewById<TextView>(R.id.text_add_drink_name)
         val textABV = view!!.findViewById<TextView>(R.id.text_add_drink_abv)
         val textAmount = view!!.findViewById<TextView>(R.id.text_add_drink_amount)
@@ -278,31 +286,34 @@ class AddDrinkFragment : Fragment() {
         resetTextView(textABV, R.string.abv)
         resetTextView(textAmount, R.string.amount)
 
-        // make sure string can be parsed to double
-        if (!editABV.text.isEmpty() && "${editABV.text}"["${editABV.text}".length - 1] == '.') {
-            val w = "${editABV.text}0"
-            editABV.setText(w)
-        }
-        if (!editAmount.text.isEmpty() && "${editAmount.text}"["${editAmount.text}".length - 1] == '.') {
-            val w = "${editAmount.text}0"
-            editAmount.setText(w)
+        val abv = mConverter.stringToDouble(mEditAbv.text.toString())
+        val amount = mConverter.stringToDouble(mEditAmount.text.toString())
+
+        if (!abv.isNaN()) mEditAbv.setText(abv.toString())
+        if (!amount.isNaN()) mEditAmount.setText(amount.toString())
+
+        var inputError = false
+        var message = " "
+
+        if (amount.isNaN()) {
+            message = ", amount$message"
+            setTextViewToRedAndBold(textAmount)
+            inputError = true
         }
 
-        // check name isn't empty
-        if (editName.text.isEmpty()) {
-            mMainActivity.showToast("Please Input a Name")
-            setTextViewToRedAndBold(textName)
-            return true
-        } else if (editABV.text.isEmpty() || ("${editABV.text}".toDouble() > 100.0)) {
-            mMainActivity.showToast("Please Input a Valid A.A.V.")
+        if (abv.isNaN() || (abv > 100.0)) {
+            message = ", abv$message"
             setTextViewToRedAndBold(textABV)
-            return true
-        } else if (editAmount.text.isEmpty()) {
-            mMainActivity.showToast("Please Input a Valid Amount")
-            setTextViewToRedAndBold(textAmount)
-            return true
+            inputError = true
         }
-        return false
+
+        if (mEditName.text.isEmpty()) {
+            message = ", name$message"
+            setTextViewToRedAndBold(textName)
+            inputError = true
+        }
+        if (inputError) mMainActivity.showToast("Please enter a valid ${message.substring(2, message.length)}")
+        return inputError
     }
 
     private fun setTextViewToRedAndBold(text: TextView) {

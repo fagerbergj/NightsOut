@@ -20,6 +20,7 @@ import java.util.*
 import android.widget.AdapterView
 import android.widget.AdapterView.OnItemSelectedListener
 import android.widget.TextView
+import com.example.jasonfagerberg.nightsout.converter.Converter
 
 //private const val TAG = "ProfileFragment"
 
@@ -213,17 +214,16 @@ class ProfileFragment : Fragment() {
         val weightText = view.findViewById<TextView>(R.id.text_profile_weight)
         resetTextView(sexText, R.string.sex)
         resetTextView(weightText, R.string.weight)
-        if (!mWeightEditText.text.isEmpty() && "${mWeightEditText.text}"["${mWeightEditText.text}".length - 1] == '.') {
-            val w = "${mWeightEditText.text}0"
-            mWeightEditText.setText(w)
-        }
+
+        val w = Converter().stringToDouble(mWeightEditText.text.toString())
+        if (!w.isNaN()) mWeightEditText.setText(w.toString())
 
         if (sex == null && !profileInit) {
             mMainActivity.showToast("Please Select A Sex")
-            showErrorText(sexText, R.string.sex_error)
+            showErrorText(sexText)
             return
-        } else if (mWeightEditText.text.isEmpty() || mWeightEditText.text.toString().toDouble() < 20) {
-            showErrorText(weightText, R.string.weight_error)
+        } else if (w.isNaN() || w < 20) {
+            showErrorText(weightText)
             mMainActivity.showToast("Please Enter a Valid Weight")
             return
         }
@@ -244,8 +244,7 @@ class ProfileFragment : Fragment() {
         }
     }
 
-    private fun showErrorText(textView: TextView, errorMessageId: Int) {
-        textView.text = resources.getText(errorMessageId)
+    private fun showErrorText(textView: TextView) {
         textView.setTypeface(null, Typeface.BOLD)
         textView.setTextColor(ContextCompat.getColor(context!!, R.color.colorRed))
     }
