@@ -13,6 +13,7 @@ import com.example.jasonfagerberg.nightsout.R
 import java.util.ArrayList
 import android.content.DialogInterface
 import android.widget.RelativeLayout
+import com.example.jasonfagerberg.nightsout.dialogs.LightSimpleDialog
 
 
 class AddDrinkFragmentAlcoholSourceAdapter(private val mContext: Context, alcoholSource: ArrayList<AlcoholSource>) :
@@ -40,20 +41,14 @@ class AddDrinkFragmentAlcoholSourceAdapter(private val mContext: Context, alcoho
         holder.textAmount.text = alcoholSource.amount.toString()
         holder.textMeasurement.text = alcoholSource.measurement
 
-        //todo make custom delete dialog
         holder.layout.setOnClickListener { _ ->
-            val dialogClickListener = DialogInterface.OnClickListener { _ , which ->
-                when (which) {
-                    DialogInterface.BUTTON_POSITIVE -> {
-                        mAlcoholSourceList.remove(alcoholSource)
-                        notifyDataSetChanged()
-                    }
-                }
+            val lightSimpleDialog = LightSimpleDialog(mContext)
+            val posAction = {
+                mAlcoholSourceList.remove(alcoholSource)
+                notifyDataSetChanged()
             }
-
-            val builder = AlertDialog.Builder(mContext)
-            builder.setMessage("Remove Alcohol Source?").setPositiveButton("Yes", dialogClickListener)
-                    .setNegativeButton("No", dialogClickListener).show()
+            lightSimpleDialog.setActions(posAction, {})
+            lightSimpleDialog.show("Remove Alcohol Source?")
         }
     }
 
