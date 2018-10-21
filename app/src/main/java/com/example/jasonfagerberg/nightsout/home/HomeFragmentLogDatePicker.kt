@@ -9,6 +9,7 @@ import com.example.jasonfagerberg.nightsout.log.LogHeader
 import com.example.jasonfagerberg.nightsout.converter.Converter
 import com.example.jasonfagerberg.nightsout.databaseHelper.LogDatabaseHelper
 import com.example.jasonfagerberg.nightsout.main.MainActivity
+import com.example.jasonfagerberg.nightsout.main.SimpleDialog
 import java.util.*
 
 class HomeFragmentLogDatePicker(private val homeFragment: HomeFragment,
@@ -45,25 +46,20 @@ class HomeFragmentLogDatePicker(private val homeFragment: HomeFragment,
         val headerIndex = mainActivity.mLogHeaders.indexOf(LogHeader(logDate, 0.0, 0.0))
         val header = mainActivity.mLogHeaders[headerIndex]
 
-        val builder = android.app.AlertDialog.Builder(homeFragment.context)
-        val parent: ViewGroup? = null
-        val dialogView = mainActivity.layoutInflater
-                .inflate(R.layout.fragment_home_dialog_update_log, parent, false)
+        val simpleDialog = SimpleDialog(homeFragment.context!!, mainActivity.layoutInflater)
+
+        simpleDialog.setTitle(mainActivity.resources.getString(R.string.update_log))
         var message = "There is already a log on ${header.monthName} ${header.day}," +
                 " ${header.year}.\nWould you like to update the old log?"
-        dialogView.findViewById<TextView>(R.id.text_update_log_body).text = message
+        simpleDialog.setBody(message)
 
-        builder.setView(dialogView)
-        val dialog = builder.create()
-        dialog.setCancelable(false)
-        dialog.show()
-
-        dialogView.findViewById<Button>(R.id.btn_update_log_cancel).setOnClickListener { _ ->
+        simpleDialog.setNegativeButtonText(mainActivity.resources.getString(R.string.cancel))
+        simpleDialog.setNegativeFunction { _ ->
             showDatePicker()
-            dialog.dismiss()
+            simpleDialog.dismiss()
         }
 
-        dialogView.findViewById<Button>(R.id.btn_update_log_update).setOnClickListener { _ ->
+        simpleDialog.setPositiveFunction { _ ->
             logDatabaseHelper.deleteLog(header.date)
             mainActivity.mLogHeaders[headerIndex] = LogHeader(header.date, homeFragment.bac, homeFragment.drinkingDuration)
             homeFragment.mDrinkListAdapter.notifyDataSetChanged()
@@ -71,7 +67,7 @@ class HomeFragmentLogDatePicker(private val homeFragment: HomeFragment,
             message = "Log on ${header.monthName} ${header.day}," +
                     " ${header.year} was updated"
             mainActivity.showToast(message)
-            dialog.dismiss()
+            simpleDialog.dismiss()
         }
     }
 }

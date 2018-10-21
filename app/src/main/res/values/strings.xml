@@ -37,7 +37,7 @@
     <string name="favorite_drink">Favorite Drink</string>
     <string name="unfavorite_drink">Unfavorite Drink</string>
     <string name="unsaved_profile_changes">Unsaved Profile Changes</string>
-    <string name="main_dialog_body">Are you sure you want to abandon unsaved profile changes?</string>
+    <string name="are_you_sure_you_want_to_abandon_changes">Are you sure you want to abandon unsaved profile changes?</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="bac_level">BAC Level: </string>

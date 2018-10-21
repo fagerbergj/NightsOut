@@ -40,6 +40,7 @@ class AddDrinkFragmentAlcoholSourceAdapter(private val mContext: Context, alcoho
         holder.textAmount.text = alcoholSource.amount.toString()
         holder.textMeasurement.text = alcoholSource.measurement
 
+        //todo make custom delete dialog
         holder.layout.setOnClickListener { _ ->
             val dialogClickListener = DialogInterface.OnClickListener { _ , which ->
                 when (which) {

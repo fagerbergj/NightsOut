@@ -163,25 +163,21 @@ class MainActivity : AppCompatActivity() {
 
     private fun alertUserBeforeNavigation(curFrag: Fragment, destination: Fragment?) {
         if (curFrag == profileFragment && profileFragment.hasUnsavedData()) {
-            val builder = AlertDialog.Builder(this)
-            val parent: ViewGroup? = null
-            val dialogView = layoutInflater.inflate(
-                    R.layout.activity_main_dialog_abandon_profile_changes, parent, false)
+            val simpleDialog = SimpleDialog(this, layoutInflater)
+            simpleDialog.setTitle(resources.getString(R.string.unsaved_profile_changes))
+            simpleDialog.setBody(resources.getString(R.string.are_you_sure_you_want_to_abandon_changes))
 
-            builder.setView(dialogView)
-            val dialog = builder.create()
-            dialog.show()
-
-            dialog.findViewById<Button>(R.id.btn_main_dialog_negative).setOnClickListener {
-                dialog.dismiss()
+            simpleDialog.setNegativeFunction {
+                simpleDialog.dismiss()
                 botNavBar.selectedItemId = R.id.bottom_nav_profile
             }
 
-            dialog.findViewById<Button>(R.id.btn_main_dialog_positive).setOnClickListener {
-                dialog.dismiss()
+            simpleDialog.setPositiveFunction {
+                simpleDialog.dismiss()
                 if (destination == null) supportFragmentManager.popBackStack()
                 else setFragment(destination)
             }
+
         } else if (curFrag != destination) {
             if (destination == null) supportFragmentManager.popBackStack()
             else setFragment(destination)

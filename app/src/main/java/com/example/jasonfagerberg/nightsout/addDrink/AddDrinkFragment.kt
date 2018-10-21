@@ -74,7 +74,7 @@ class AddDrinkFragment : Fragment() {
         // add button setup
         val btnAdd = view.findViewById<MaterialButton>(R.id.btn_add_drink_add)
         if (mFavorited) btnAdd.text = resources.getText(R.string.add_favorite)
-        btnAdd.setOnClickListener { _ -> addDrink(view) }
+        btnAdd.setOnClickListener { _ -> addDrink() }
 
         mEditName = view.findViewById(R.id.edit_add_drink_name)
         mEditAbv = view.findViewById(R.id.edit_add_drink_abv)
@@ -237,7 +237,7 @@ class AddDrinkFragment : Fragment() {
         dropdown.setSelection(items.indexOf(measurement))
     }
 
-    private fun addDrink(view: View) {
+    private fun addDrink() {
         if (isInputErrors() && !complexMode) return
         if (complexMode && mComplexDrinkMode.listIsEmpty() && isInputErrors()) return
         if (complexMode) mComplexDrinkMode.addToAlcoholSourceList()

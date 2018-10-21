@@ -6,11 +6,10 @@
     android:padding="16dp">
 
     <TextView
-        android:id="@+id/text_main_dialog_title"
+        android:id="@+id/text_simple_dialog_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingBottom="8dp"
-        android:text="@string/unsaved_profile_changes"
         android:textColor="@color/colorBlack"
         android:textSize="24sp"
         android:textStyle="bold" />
@@ -19,17 +18,16 @@
         android:id="@+id/line"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_below="@+id/text_main_dialog_title"
+        android:layout_below="@+id/text_simple_dialog_title"
         android:layout_marginBottom="4dp"
         android:background="@android:color/darker_gray" />
 
     <TextView
-        android:id="@+id/text_main_dialog_body"
+        android:id="@+id/text_simple_dialog_body"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/line"
         android:paddingTop="8dp"
-        android:text="@string/main_dialog_body"
         android:textColor="@color/colorDarkGray"
         android:textSize="18sp" />
 
@@ -37,13 +35,13 @@
         style="?android:attr/buttonBarStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/text_main_dialog_body"
+        android:layout_below="@id/text_simple_dialog_body"
         android:layout_alignParentEnd="true"
         android:orientation="horizontal"
         android:paddingTop="8dp">
 
         <Button
-            android:id="@+id/btn_main_dialog_negative"
+            android:id="@+id/btn_simple_dialog_negative"
             style="?android:attr/buttonBarButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -52,7 +50,7 @@
             app:backgroundTint="@color/colorWhite" />
 
         <Button
-            android:id="@+id/btn_main_dialog_positive"
+            android:id="@+id/btn_simple_dialog_positive"
             style="?android:attr/buttonBarButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
