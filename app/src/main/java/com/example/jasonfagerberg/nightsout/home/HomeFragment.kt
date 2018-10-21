@@ -17,6 +17,7 @@ import com.example.jasonfagerberg.nightsout.R
 import com.example.jasonfagerberg.nightsout.converter.Converter
 import java.util.*
 import android.widget.RelativeLayout
+import com.example.jasonfagerberg.nightsout.dialogs.LightSimpleDialog
 
 
 //private const val TAG = "HomeFragment"
@@ -87,10 +88,15 @@ class HomeFragment : Fragment() {
         when (resId) {
             R.id.btn_toolbar_home_done -> datePicker.showDatePicker()
             R.id.btn_clear_drink_list -> {
-                mMainActivity.mDrinksList.clear()
-                mDrinkListAdapter.notifyDataSetChanged()
-                calculateBAC()
-                showOrHideEmptyListText(view!!)
+                val lightSimpleDialog = LightSimpleDialog(context!!)
+                val posAction = {
+                    mMainActivity.mDrinksList.clear()
+                    mDrinkListAdapter.notifyDataSetChanged()
+                    calculateBAC()
+                    showOrHideEmptyListText(view!!)
+                }
+                lightSimpleDialog.setActions(posAction, {})
+                lightSimpleDialog.show("Are you sure you want to clear all drinks?")
             }
             R.id.btn_disclaimer -> showDisclaimerDialog()
         }
