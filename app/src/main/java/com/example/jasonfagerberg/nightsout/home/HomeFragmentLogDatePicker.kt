@@ -59,6 +59,7 @@ class HomeFragmentLogDatePicker(private val homeFragment: HomeFragment,
             simpleDialog.dismiss()
         }
 
+        simpleDialog.setPositiveButtonText(mainActivity.resources.getString(R.string.update))
         simpleDialog.setPositiveFunction { _ ->
             logDatabaseHelper.deleteLog(header.date)
             mainActivity.mLogHeaders[headerIndex] = LogHeader(header.date, homeFragment.bac, homeFragment.drinkingDuration)

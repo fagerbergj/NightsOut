@@ -1,8 +1,6 @@
 package com.example.jasonfagerberg.nightsout.addDrink
 
 import android.content.Context
-import android.content.DialogInterface
-import androidx.appcompat.app.AlertDialog
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import android.view.Gravity
@@ -15,6 +13,7 @@ import android.widget.Toast
 import com.example.jasonfagerberg.nightsout.main.Drink
 import com.example.jasonfagerberg.nightsout.main.MainActivity
 import com.example.jasonfagerberg.nightsout.R
+import com.example.jasonfagerberg.nightsout.main.LightSimpleDialog
 import java.util.ArrayList
 
 class AddDrinkFragmentRecentsListAdapter(private val mContext: Context, drinksList: ArrayList<Drink>) :
@@ -36,32 +35,19 @@ class AddDrinkFragmentRecentsListAdapter(private val mContext: Context, drinksLi
         val drink = mRecentDrinksList[position]
         holder.name.text = drink.name
         holder.card.setOnClickListener { _ ->
-            val toast = Toast.makeText(mContext, "${holder.name.text} information filled in", Toast.LENGTH_SHORT)
-            toast.setGravity(Gravity.CENTER, 0, 600)
-            toast.show()
+            mMainActivity.showToast("${holder.name.text} information filled in")
             mMainActivity.addDrinkFragment.fillViews(drink.name, drink.abv, drink.amount, drink.measurement)
         }
 
         holder.card.setOnLongClickListener { v: View ->
-            val dialogClickListener = DialogInterface.OnClickListener { _, which ->
-                when (which) {
-                    DialogInterface.BUTTON_POSITIVE -> {
-                        //Yes is pressed
-                        mRecentDrinksList.remove(drink)
-                        this.notifyItemRemoved(position)
-                        val toast = Toast.makeText(v.context,
-                                "Drink Removed ", Toast.LENGTH_SHORT)
-                        toast.setGravity(Gravity.CENTER, 0, 0)
-                        toast.show()
-                    }
-                    DialogInterface.BUTTON_NEGATIVE -> {/* no action for clicking no */
-                    }
-                }
+            val lightSimpleDialog = LightSimpleDialog(v.context!!)
+            val posAction = {
+                mRecentDrinksList.remove(drink)
+                this.notifyItemRemoved(position)
+                mMainActivity.showToast("Drink Removed")
             }
-            //Build Actual box
-            val builder = AlertDialog.Builder(v.context!!)
-            builder.setMessage("Remove from recents?").setPositiveButton("Yes", dialogClickListener)
-                    .setNegativeButton("No", dialogClickListener).show()
+            lightSimpleDialog.setActions(posAction, {})
+            lightSimpleDialog.show("Remove from recents?")
             true
         }
     }
