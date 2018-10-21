@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.example.jasonfagerberg.nightsout">
+    package="com.wit.jasonfagerberg.nightsout">
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
@@ -15,7 +15,7 @@
         android:fullBackupContent="true"
         tools:ignore="GoogleAppIndexingWarning">
     <activity
-        android:name=".main.MainActivity"
+        android:name="com.wit.jasonfagerberg.nightsout.main.MainActivity"
         android:configChanges="orientation|keyboardHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
