@@ -84,6 +84,7 @@ class LogFragment : Fragment() {
         val resId = item?.itemId
         when (resId) {
             R.id.btn_clear_all_logs -> {
+                if (mMainActivity.mLogHeaders.isEmpty()) return false
                 val lightSimpleDialog = LightSimpleDialog(context!!)
                 val posAction = {
                     for (header in mMainActivity.mLogHeaders) {

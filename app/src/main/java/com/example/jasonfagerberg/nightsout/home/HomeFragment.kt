@@ -88,6 +88,7 @@ class HomeFragment : Fragment() {
         when (resId) {
             R.id.btn_toolbar_home_done -> datePicker.showDatePicker()
             R.id.btn_clear_drink_list -> {
+                if (mMainActivity.mDrinksList.isEmpty()) return false
                 val lightSimpleDialog = LightSimpleDialog(context!!)
                 val posAction = {
                     mMainActivity.mDrinksList.clear()

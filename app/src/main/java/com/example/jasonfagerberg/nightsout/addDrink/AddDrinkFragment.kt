@@ -17,6 +17,7 @@ import android.widget.ArrayAdapter
 import android.widget.AdapterView
 import com.example.jasonfagerberg.nightsout.converter.Converter
 import com.example.jasonfagerberg.nightsout.databaseHelper.AddDrinkDatabaseHelper
+import com.example.jasonfagerberg.nightsout.dialogs.LightSimpleDialog
 import com.example.jasonfagerberg.nightsout.main.MainActivity
 import java.util.*
 
@@ -126,22 +127,34 @@ class AddDrinkFragment : Fragment() {
                 }
             }
             R.id.btn_clear_favorites_list -> {
-                mMainActivity.mDatabaseHelper.deleteRowsInTable("favorites", null)
-                mMainActivity.mFavoritesList.clear()
-                for (drink in mMainActivity.mDrinksList) {
-                    drink.favorited = false
+                if (mMainActivity.mFavoritesList.isEmpty()) return false
+                val posAction = {
+                    mMainActivity.mDatabaseHelper.deleteRowsInTable("favorites", null)
+                    mMainActivity.mFavoritesList.clear()
+                    for (drink in mMainActivity.mDrinksList) {
+                        drink.favorited = false
+                    }
+                    showOrHideEmptyTextViews(view!!)
+                    mFavoritesListAdapter.notifyDataSetChanged()
                 }
-                showOrHideEmptyTextViews(view!!)
-                mFavoritesListAdapter.notifyDataSetChanged()
+                val lightSimpleDialog = LightSimpleDialog(context!!)
+                lightSimpleDialog.setActions(posAction, {})
+                lightSimpleDialog.show("Are you sure you want to clear all favorites?")
             }
             R.id.btn_clear_recents_list -> {
-                mMainActivity.mDatabaseHelper.deleteRowsInTable("drinks", "recent = 1")
-                mMainActivity.mRecentsList.clear()
-                for (drink in mMainActivity.mDrinksList) {
-                    drink.recent = false
+                if (mMainActivity.mRecentsList.isEmpty()) return false
+                val posAction = {
+                    mMainActivity.mDatabaseHelper.deleteRowsInTable("drinks", "recent = 1")
+                    mMainActivity.mRecentsList.clear()
+                    for (drink in mMainActivity.mDrinksList) {
+                        drink.recent = false
+                    }
+                    showOrHideEmptyTextViews(view!!)
+                    mRecentsListAdapter.notifyDataSetChanged()
                 }
-                showOrHideEmptyTextViews(view!!)
-                mRecentsListAdapter.notifyDataSetChanged()
+                val lightSimpleDialog = LightSimpleDialog(context!!)
+                lightSimpleDialog.setActions(posAction, {})
+                lightSimpleDialog.show("Are you sure you want to clear all recent drinks?")
             }
         }
         return true
