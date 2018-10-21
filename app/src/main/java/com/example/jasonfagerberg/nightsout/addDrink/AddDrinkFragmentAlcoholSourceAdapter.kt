@@ -1,19 +1,17 @@
 package com.example.jasonfagerberg.nightsout.addDrink
 
-import android.app.AlertDialog
 import android.content.Context
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
-import com.example.jasonfagerberg.nightsout.main.MainActivity
-import com.example.jasonfagerberg.nightsout.addDrink.AddDrinkFragmentComplexDrink.AlcoholSource
-import com.example.jasonfagerberg.nightsout.R
-import java.util.ArrayList
-import android.content.DialogInterface
 import android.widget.RelativeLayout
+import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
+import com.example.jasonfagerberg.nightsout.R
+import com.example.jasonfagerberg.nightsout.addDrink.AddDrinkFragmentComplexDrink.AlcoholSource
 import com.example.jasonfagerberg.nightsout.dialogs.LightSimpleDialog
+import com.example.jasonfagerberg.nightsout.main.MainActivity
+import java.util.*
 
 
 class AddDrinkFragmentAlcoholSourceAdapter(private val mContext: Context, alcoholSource: ArrayList<AlcoholSource>) :
@@ -34,7 +32,7 @@ class AddDrinkFragmentAlcoholSourceAdapter(private val mContext: Context, alcoho
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val alcoholSource = mAlcoholSourceList[position]
         val number = "#${mAlcoholSourceList.size}"
-        val abv = "${"%.3f".format(alcoholSource.abv)}%"
+        val abv = "${"%.2f".format(alcoholSource.abv)}%"
 
         holder.textNumber.text = number
         holder.textAbv.text = abv
