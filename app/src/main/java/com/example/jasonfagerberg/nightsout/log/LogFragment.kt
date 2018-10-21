@@ -87,25 +87,33 @@ class LogFragment : Fragment() {
                     logDatabaseHelper.deleteLog(header.date)
                 }
                 mMainActivity.mLogHeaders.clear()
-                mLogList.clear()
-                calendarView.removeDecorators()
-                setAdapter()
-                mLogFragmentAdapter.notifyDataSetChanged()
-                mLogFragmentAdapter.notifyDataSetChanged()
+                resetCalendar()
             }
             R.id.btn_clear_selected_day_log -> {
                 val date = converter.yearMonthDayTo8DigitString(calendarView.selectedDate.year,
                         calendarView.selectedDate.month, calendarView.selectedDate.day).toInt()
                 mMainActivity.mLogHeaders.remove(LogHeader(date, 0.0, 0.0))
                 logDatabaseHelper.deleteLog(date)
-                mLogList.clear()
-                calendarView.removeDecorators()
-                setAdapter()
-                mLogFragmentAdapter.notifyDataSetChanged()
-                highlightDays()
+                resetCalendar()
+            }
+            R.id.btn_move_selected_log -> {
+                val date = converter.yearMonthDayTo8DigitString(calendarView.selectedDate.year,
+                        calendarView.selectedDate.month, calendarView.selectedDate.day).toInt()
+                val index = mMainActivity.mLogHeaders.indexOf(LogHeader(date,0.0,0.0))
+                val header = mMainActivity.mLogHeaders[index]
+                val datePicker = LogFragmentDatePicker(this, mMainActivity, Converter(), header)
+                datePicker.showDatePicker()
             }
         }
         return true
+    }
+
+    fun resetCalendar(){
+        mLogList.clear()
+        calendarView.removeDecorators()
+        setAdapter()
+        mLogFragmentAdapter.notifyDataSetChanged()
+        highlightDays()
     }
 
     private fun setupToolbar(view: View) {

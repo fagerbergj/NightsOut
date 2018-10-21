@@ -11,7 +11,7 @@ import android.widget.TextView
 import com.example.jasonfagerberg.nightsout.main.Drink
 import com.example.jasonfagerberg.nightsout.main.MainActivity
 import com.example.jasonfagerberg.nightsout.R
-import com.example.jasonfagerberg.nightsout.main.LightSimpleDialog
+import com.example.jasonfagerberg.nightsout.dialogs.LightSimpleDialog
 import java.util.ArrayList
 
 class AddDrinkFragmentFavoritesListAdapter(private val mContext: Context, drinksList: ArrayList<Drink>) :

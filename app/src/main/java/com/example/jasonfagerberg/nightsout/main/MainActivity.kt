@@ -1,6 +1,5 @@
 package com.example.jasonfagerberg.nightsout.main
 
-import android.app.AlertDialog
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.preference.PreferenceManager
@@ -10,14 +9,13 @@ import androidx.fragment.app.Fragment
 import androidx.appcompat.app.AppCompatActivity
 //import android.util.Log
 import android.view.View
-import android.view.ViewGroup
-import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.RelativeLayout
 import android.widget.Toast
 import com.example.jasonfagerberg.nightsout.R
 import com.example.jasonfagerberg.nightsout.addDrink.AddDrinkFragment
 import com.example.jasonfagerberg.nightsout.databaseHelper.DatabaseHelper
+import com.example.jasonfagerberg.nightsout.dialogs.SimpleDialog
 import com.example.jasonfagerberg.nightsout.home.HomeFragment
 import com.example.jasonfagerberg.nightsout.log.LogFragment
 import com.example.jasonfagerberg.nightsout.log.LogHeader

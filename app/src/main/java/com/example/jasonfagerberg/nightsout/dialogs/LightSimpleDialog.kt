@@ -1,4 +1,4 @@
-package com.example.jasonfagerberg.nightsout.main
+package com.example.jasonfagerberg.nightsout.dialogs
 
 import android.content.Context
 import android.content.DialogInterface

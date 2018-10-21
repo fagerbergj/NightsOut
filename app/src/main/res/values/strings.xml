@@ -58,6 +58,7 @@
     <string name="log">Log</string>
     <string name="complex_drink">Complex Drink</string>
     <string name="add_alcohol_source">Add Alcohol Source</string>
+    <string name="move_selected_log">Move Selected Log</string>
     <string name="disclaimer_body">The BAC value provided by the app is only an estimate. The status
         given by the app is an estimation based on the calculated BAC. Your actual BAC will vary
         depending on a host of different factors, such as your hydration status, recent meals,

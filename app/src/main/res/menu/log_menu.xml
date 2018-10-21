@@ -10,4 +10,9 @@
         android:title="@string/clear_selected_day_logs"
         app:showAsAction="never" />
 
+    <item
+        android:id="@+id/btn_move_selected_log"
+        android:title="@string/move_selected_log"
+        app:showAsAction="never"/>
+
 </menu>

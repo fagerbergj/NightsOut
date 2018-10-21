@@ -25,6 +25,13 @@ class LogDatabaseHelper(private val databaseHelper: DatabaseHelper, private val 
         }
     }
 
+    fun changeLogDate(oldDate: Int, newDate: Int){
+        var sql = "UPDATE log SET date = $newDate WHERE date = $oldDate"
+        databaseHelper.db.execSQL(sql)
+        sql = "UPDATE log_drink SET log_date = $newDate WHERE log_date = $oldDate"
+        databaseHelper.db.execSQL(sql)
+    }
+
     fun deleteLog(date: Int) {
         var sql = "DELETE FROM log WHERE date = $date"
         databaseHelper.db.execSQL(sql)

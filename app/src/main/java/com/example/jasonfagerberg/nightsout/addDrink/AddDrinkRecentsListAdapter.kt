@@ -3,17 +3,15 @@ package com.example.jasonfagerberg.nightsout.addDrink
 import android.content.Context
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import com.example.jasonfagerberg.nightsout.main.Drink
 import com.example.jasonfagerberg.nightsout.main.MainActivity
 import com.example.jasonfagerberg.nightsout.R
-import com.example.jasonfagerberg.nightsout.main.LightSimpleDialog
+import com.example.jasonfagerberg.nightsout.dialogs.LightSimpleDialog
 import java.util.ArrayList
 
 class AddDrinkFragmentRecentsListAdapter(private val mContext: Context, drinksList: ArrayList<Drink>) :
