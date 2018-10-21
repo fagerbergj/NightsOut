@@ -12,7 +12,6 @@
         android:paddingTop="8dp"
         android:paddingEnd="8dp"
         android:paddingBottom="8dp"
-        android:text="#1"
         android:textSize="24sp"
         android:textStyle="bold" />
 
@@ -32,7 +31,6 @@
             android:paddingTop="8dp"
             android:paddingEnd="32dp"
             android:paddingBottom="8dp"
-            android:text="10.0%"
             android:textSize="20sp" />
 
         <TextView
@@ -40,9 +38,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingStart="32dp"
+            android:paddingEnd="8dp"
             android:paddingTop="8dp"
             android:paddingBottom="8dp"
-            android:text="15.5"
             android:textSize="20sp" />
 
         <TextView
@@ -50,8 +48,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="8dp"
-            android:textSize="20sp"
-            android:text="oz" />
+            android:textSize="20sp" />
 
     </LinearLayout>
 

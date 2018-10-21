@@ -1,6 +1,5 @@
 package com.example.jasonfagerberg.nightsout.home
 
-import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Context
 import android.graphics.BitmapFactory

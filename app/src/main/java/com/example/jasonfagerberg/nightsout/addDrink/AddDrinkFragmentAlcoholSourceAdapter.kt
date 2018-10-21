@@ -1,17 +1,14 @@
 package com.example.jasonfagerberg.nightsout.addDrink
 
 import android.content.Context
-import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.TextView
 import com.example.jasonfagerberg.nightsout.main.MainActivity
 import com.example.jasonfagerberg.nightsout.addDrink.AddDrinkFragmentComplexDrink.AlcoholSource
 import com.example.jasonfagerberg.nightsout.R
-import org.w3c.dom.Text
 import java.util.ArrayList
 
 class AddDrinkFragmentAlcoholSourceAdapter(private val mContext: Context, alcoholSource: ArrayList<AlcoholSource>) :

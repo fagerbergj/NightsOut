@@ -219,7 +219,7 @@
             android:id="@+id/btn_add_drink_add_alc_source"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Add Alcohol Source"
+            android:text="@string/add_alcohol_source"
             android:layout_below="@id/layout_add_drink_amount"
             android:layout_marginStart="16dp"
             android:theme="@style/ProfileButtonMaleTheme"
