@@ -13,6 +13,7 @@ import android.widget.TextView
 import com.example.jasonfagerberg.nightsout.R
 import com.example.jasonfagerberg.nightsout.converter.Converter
 import com.example.jasonfagerberg.nightsout.databaseHelper.LogDatabaseHelper
+import com.example.jasonfagerberg.nightsout.dialogs.LightSimpleDialog
 import com.example.jasonfagerberg.nightsout.main.MainActivity
 import com.prolificinteractive.materialcalendarview.CalendarDay
 import com.prolificinteractive.materialcalendarview.DayViewDecorator
@@ -83,11 +84,17 @@ class LogFragment : Fragment() {
         val resId = item?.itemId
         when (resId) {
             R.id.btn_clear_all_logs -> {
-                for (header in mMainActivity.mLogHeaders) {
-                    logDatabaseHelper.deleteLog(header.date)
+                if (mMainActivity.mLogHeaders.isEmpty()) return false
+                val lightSimpleDialog = LightSimpleDialog(context!!)
+                val posAction = {
+                    for (header in mMainActivity.mLogHeaders) {
+                        logDatabaseHelper.deleteLog(header.date)
+                    }
+                    mMainActivity.mLogHeaders.clear()
+                    resetCalendar()
                 }
-                mMainActivity.mLogHeaders.clear()
-                resetCalendar()
+                lightSimpleDialog.setActions(posAction, {})
+                lightSimpleDialog.show("Are you sure you want to clear all logs?")
             }
             R.id.btn_clear_selected_day_log -> {
                 val date = converter.yearMonthDayTo8DigitString(calendarView.selectedDate.year,

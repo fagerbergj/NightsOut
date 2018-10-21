@@ -21,6 +21,7 @@ import android.widget.AdapterView
 import android.widget.AdapterView.OnItemSelectedListener
 import android.widget.TextView
 import com.example.jasonfagerberg.nightsout.converter.Converter
+import com.example.jasonfagerberg.nightsout.dialogs.LightSimpleDialog
 
 //private const val TAG = "ProfileFragment"
 
@@ -123,13 +124,19 @@ class ProfileFragment : Fragment() {
         val resId = item?.itemId
         when (resId) {
             R.id.btn_clear_favorites_list -> {
-                mMainActivity.mDatabaseHelper.deleteRowsInTable("favorites", null)
-                mMainActivity.mFavoritesList.clear()
-                for (drink in mMainActivity.mDrinksList) {
-                    drink.favorited = false
+                if (mMainActivity.mFavoritesList.isEmpty()) return false
+                val posAction = {
+                    mMainActivity.mDatabaseHelper.deleteRowsInTable("favorites", null)
+                    mMainActivity.mFavoritesList.clear()
+                    for (drink in mMainActivity.mDrinksList) {
+                        drink.favorited = false
+                    }
+                    showOrHideEmptyTextViews(view!!)
+                    mFavoritesListAdapter.notifyDataSetChanged()
                 }
-                showOrHideEmptyTextViews(view!!)
-                mFavoritesListAdapter.notifyDataSetChanged()
+                val lightSimpleDialog = LightSimpleDialog(context!!)
+                lightSimpleDialog.setActions(posAction, {})
+                lightSimpleDialog.show("Are you sure you want to clear all favorites?")
             }
         }
         return true
