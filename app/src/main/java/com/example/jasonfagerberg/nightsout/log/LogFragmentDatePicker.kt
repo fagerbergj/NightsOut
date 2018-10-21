@@ -4,10 +4,9 @@ import android.app.DatePickerDialog
 import com.example.jasonfagerberg.nightsout.R
 import com.example.jasonfagerberg.nightsout.converter.Converter
 import com.example.jasonfagerberg.nightsout.databaseHelper.LogDatabaseHelper
-import com.example.jasonfagerberg.nightsout.main.MainActivity
 import com.example.jasonfagerberg.nightsout.dialogs.SimpleDialog
+import com.example.jasonfagerberg.nightsout.main.MainActivity
 import java.util.*
-import kotlin.math.log
 
 class LogFragmentDatePicker(private val logFragment: LogFragment,
                                 private val mainActivity: MainActivity, private val converter: Converter, val header: LogHeader) {

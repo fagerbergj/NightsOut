@@ -1,19 +1,17 @@
 package com.example.jasonfagerberg.nightsout.profile
 
 import android.content.Context
-import androidx.cardview.widget.CardView
-import androidx.recyclerview.widget.RecyclerView
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
-import com.example.jasonfagerberg.nightsout.main.Drink
+import androidx.cardview.widget.CardView
+import androidx.recyclerview.widget.RecyclerView
 import com.example.jasonfagerberg.nightsout.R
+import com.example.jasonfagerberg.nightsout.main.Drink
 import com.example.jasonfagerberg.nightsout.main.MainActivity
-import java.util.ArrayList
+import java.util.*
 
 class ProfileFragmentFavoritesListAdapter(private val mContext: Context, drinksList: ArrayList<Drink>) :
         RecyclerView.Adapter<ProfileFragmentFavoritesListAdapter.ViewHolder>() {

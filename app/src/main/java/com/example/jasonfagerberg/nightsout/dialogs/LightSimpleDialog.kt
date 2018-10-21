@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.DialogInterface
 import androidx.appcompat.app.AlertDialog
 
-class LightSimpleDialog(private val context: Context) {
+class LightSimpleDialog(context: Context) {
     private var dialogClickListener = DialogInterface.OnClickListener { _ , _ ->  }
     private var builder = AlertDialog.Builder(context)
 
