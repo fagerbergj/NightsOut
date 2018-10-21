@@ -240,7 +240,7 @@
             android:layout_below="@id/recycler_add_drink_alcohol_source_list"
             android:layout_centerHorizontal="true"
             android:layout_marginLeft="16dp"
-            android:layout_marginTop="64dp"
+            android:layout_marginTop="32dp"
             android:layout_marginRight="16dp"
             android:layout_marginBottom="32dp"
             android:text="@string/add"

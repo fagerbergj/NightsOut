@@ -2,7 +2,7 @@ package com.example.jasonfagerberg.nightsout.addDrink
 
 import android.graphics.Typeface
 import android.os.Bundle
-import android.util.Log
+//import android.util.Log
 import com.google.android.material.button.MaterialButton
 import androidx.fragment.app.Fragment
 import androidx.core.content.ContextCompat
@@ -20,7 +20,7 @@ import com.example.jasonfagerberg.nightsout.databaseHelper.AddDrinkDatabaseHelpe
 import com.example.jasonfagerberg.nightsout.main.MainActivity
 import java.util.*
 
-private const val TAG = "AddDrinkFragment"
+//private const val TAG = "AddDrinkFragment"
 
 class AddDrinkFragment : Fragment() {
 
@@ -100,7 +100,8 @@ class AddDrinkFragment : Fragment() {
         val btnAdd = view!!.findViewById<MaterialButton>(R.id.btn_add_drink_add)
         when (resId) {
             R.id.btn_toolbar_complex_drink -> {
-                if (!complexMode) {
+                complexMode = !complexMode
+                if (complexMode) {
                     mComplexDrinkMode = AddDrinkFragmentComplexDrink(this)
                     view!!.findViewById<MaterialButton>(R.id.btn_add_drink_add_alc_source).visibility = View.VISIBLE
                     view!!.findViewById<RecyclerView>(R.id.recycler_add_drink_alcohol_source_list).visibility = View.VISIBLE
@@ -111,7 +112,6 @@ class AddDrinkFragment : Fragment() {
                     view!!.findViewById<RecyclerView>(R.id.recycler_add_drink_alcohol_source_list).visibility = View.INVISIBLE
                     item.title = "Complex Drink"
                 }
-                complexMode = !complexMode
             }
             R.id.btn_toolbar_favorite -> {
                 if (canUnfavorite) mFavorited = !mFavorited
@@ -238,12 +238,14 @@ class AddDrinkFragment : Fragment() {
     }
 
     private fun addDrink(view: View) {
-        if (isInputErrors()) return
+        if (isInputErrors() && !complexMode) return
+        if (complexMode && mComplexDrinkMode.listIsEmpty() && isInputErrors()) return
+        if (complexMode) mComplexDrinkMode.addToAlcoholSourceList()
 
         val name = mEditName.text.toString()
-        val abv = mEditAbv.text.toString().toDouble()
-        val amount = mEditAmount.text.toString().toDouble()
-        val measurement = view.findViewById<Spinner>(R.id.spinner_add_drink_amount).selectedItem.toString()
+        val abv = if (!complexMode) mEditAbv.text.toString().toDouble() else mComplexDrinkMode.weightedAverageAbv()
+        val amount = if (!complexMode) mEditAmount.text.toString().toDouble() else mComplexDrinkMode.sumAmount()
+        val measurement = if (!complexMode) mSpinnerAmount.selectedItem.toString() else "oz"
         val dbTalker = AddDrinkFragmentDatabaseTalker(this, mMainActivity, canUnfavorite, mFavorited)
         dbTalker.buildDrinkAndAddToList(name, abv, amount, measurement)
 

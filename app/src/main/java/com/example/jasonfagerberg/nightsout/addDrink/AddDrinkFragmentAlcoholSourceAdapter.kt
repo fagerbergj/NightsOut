@@ -11,6 +11,7 @@ import android.widget.TextView
 import com.example.jasonfagerberg.nightsout.main.MainActivity
 import com.example.jasonfagerberg.nightsout.addDrink.AddDrinkFragmentComplexDrink.AlcoholSource
 import com.example.jasonfagerberg.nightsout.R
+import org.w3c.dom.Text
 import java.util.ArrayList
 
 class AddDrinkFragmentAlcoholSourceAdapter(private val mContext: Context, alcoholSource: ArrayList<AlcoholSource>) :
@@ -30,8 +31,11 @@ class AddDrinkFragmentAlcoholSourceAdapter(private val mContext: Context, alcoho
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val alcoholSource = mAlcoholSourceList[position]
+        val number = "#${mAlcoholSourceList.size}"
+        val abv = "${"%.3f".format(alcoholSource.abv)}%"
 
-        holder.textAbv.text = alcoholSource.abv.toString()
+        holder.textNumber.text = number
+        holder.textAbv.text = abv
         holder.textAmount.text = alcoholSource.amount.toString()
         holder.textMeasurement.text = alcoholSource.measurement
     }
@@ -42,6 +46,7 @@ class AddDrinkFragmentAlcoholSourceAdapter(private val mContext: Context, alcoho
 
     // ViewHolder for each item in list
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        internal val textNumber = itemView.findViewById<TextView>(R.id.alc_source_number)
         internal val textAbv = itemView.findViewById<TextView>(R.id.alc_source_abv)
         internal val textAmount = itemView.findViewById<TextView>(R.id.alc_source_amount)
         internal val textMeasurement = itemView.findViewById<TextView>(R.id.alc_source_measurement)

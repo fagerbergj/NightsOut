@@ -14,25 +14,50 @@ class AddDrinkFragmentComplexDrink(val parent: AddDrinkFragment) {
     init {
         recyclerAlcoholSource.adapter = alcoholSourceAdapter
         val linearLayoutManagerRecents = LinearLayoutManager(parent.context)
-        linearLayoutManagerRecents.orientation = LinearLayoutManager.HORIZONTAL
+        linearLayoutManagerRecents.orientation = RecyclerView.VERTICAL
         recyclerAlcoholSource.layoutManager = linearLayoutManagerRecents
 
         btnAddAnotherAlcoholSource.setOnClickListener { _ ->
-            if (!parent.isInputErrors()){
-                val abv = parent.mConverter.stringToDouble(parent.mEditAbv.text.toString())
-                val amount = parent.mConverter.stringToDouble(parent.mEditAmount.text.toString())
-                val measurement = parent.mSpinnerAmount.selectedItem.toString()
-                addToAlcoholSourceList(abv, amount, measurement)
-            }
+                addToAlcoholSourceList()
         }
     }
 
-    private fun addToAlcoholSourceList(abv: Double, amount: Double, measurement: String){
+    fun addToAlcoholSourceList(){
+        if (parent.isInputErrors()) return
+        val abv = parent.mConverter.stringToDouble(parent.mEditAbv.text.toString())
+        val amount = parent.mConverter.stringToDouble(parent.mEditAmount.text.toString())
+        val measurement = parent.mSpinnerAmount.selectedItem.toString()
+
         val source = AlcoholSource(abv, amount, measurement)
         listAlcoholSources.add(source)
         alcoholSourceAdapter.notifyItemInserted(listAlcoholSources.size)
         parent.mEditAbv.setText("")
         parent.mEditAmount.setText("")
+    }
+
+    fun weightedAverageAbv(): Double{
+        if (listAlcoholSources.isEmpty()) return Double.NaN
+        var ave = 0.0
+        val sum = sumAmount()
+        for (alcSource in listAlcoholSources){
+            val weight = alcSource.amount/sum
+            ave += alcSource.abv * weight
+        }
+
+        return ave
+    }
+
+    fun sumAmount(): Double{
+        if (listAlcoholSources.isEmpty()) return Double.NaN
+        var sum = 0.0
+        for (alcSource in listAlcoholSources){
+            sum += parent.mConverter.drinkVolumeToFluidOz(alcSource.amount, alcSource.measurement)
+        }
+        return sum
+    }
+
+    fun listIsEmpty():Boolean{
+        return listAlcoholSources.isEmpty()
     }
 
     inner class AlcoholSource(val abv: Double, val amount: Double, val measurement: String)
