@@ -224,6 +224,7 @@ class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: Ar
         val existsInDB = foundID != -1
         drink.id = foundID
         if (!drink.isExactSameDrink(other) && !existsInDB) {
+            if (drink.name != other.name) drink.favorited = false
             mMainActivity.mDatabaseHelper.insertDrinkIntoDrinksTable(drink)
             drink.id = mMainActivity.mDatabaseHelper.getDrinkIdFromFullDrinkInfo(drink)
         }
