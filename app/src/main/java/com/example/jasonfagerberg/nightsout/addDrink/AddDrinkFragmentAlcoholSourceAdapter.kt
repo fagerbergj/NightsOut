@@ -1,5 +1,6 @@
 package com.example.jasonfagerberg.nightsout.addDrink
 
+import android.app.AlertDialog
 import android.content.Context
 import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
@@ -10,6 +11,9 @@ import com.example.jasonfagerberg.nightsout.main.MainActivity
 import com.example.jasonfagerberg.nightsout.addDrink.AddDrinkFragmentComplexDrink.AlcoholSource
 import com.example.jasonfagerberg.nightsout.R
 import java.util.ArrayList
+import android.content.DialogInterface
+import android.widget.RelativeLayout
+
 
 class AddDrinkFragmentAlcoholSourceAdapter(private val mContext: Context, alcoholSource: ArrayList<AlcoholSource>) :
         RecyclerView.Adapter<AddDrinkFragmentAlcoholSourceAdapter.ViewHolder>() {
@@ -35,6 +39,21 @@ class AddDrinkFragmentAlcoholSourceAdapter(private val mContext: Context, alcoho
         holder.textAbv.text = abv
         holder.textAmount.text = alcoholSource.amount.toString()
         holder.textMeasurement.text = alcoholSource.measurement
+
+        holder.layout.setOnClickListener { _ ->
+            val dialogClickListener = DialogInterface.OnClickListener { _ , which ->
+                when (which) {
+                    DialogInterface.BUTTON_POSITIVE -> {
+                        mAlcoholSourceList.remove(alcoholSource)
+                        notifyDataSetChanged()
+                    }
+                }
+            }
+
+            val builder = AlertDialog.Builder(mContext)
+            builder.setMessage("Remove Alcohol Source?").setPositiveButton("Yes", dialogClickListener)
+                    .setNegativeButton("No", dialogClickListener).show()
+        }
     }
 
     override fun getItemCount(): Int {
@@ -47,5 +66,6 @@ class AddDrinkFragmentAlcoholSourceAdapter(private val mContext: Context, alcoho
         internal val textAbv = itemView.findViewById<TextView>(R.id.alc_source_abv)
         internal val textAmount = itemView.findViewById<TextView>(R.id.alc_source_amount)
         internal val textMeasurement = itemView.findViewById<TextView>(R.id.alc_source_measurement)
+        internal val layout = itemView.findViewById<RelativeLayout>(R.id.alc_source_layout)
     }
 }
