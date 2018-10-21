@@ -40,7 +40,7 @@ class AddDrinkFragmentComplexDrink(val parent: AddDrinkFragment) {
         var ave = 0.0
         val sum = sumAmount()
         for (alcSource in listAlcoholSources){
-            val weight = alcSource.amount/sum
+            val weight = parent.mConverter.drinkVolumeToFluidOz(alcSource.amount, alcSource.measurement)/sum
             ave += alcSource.abv * weight
         }
 
@@ -60,5 +60,14 @@ class AddDrinkFragmentComplexDrink(val parent: AddDrinkFragment) {
         return listAlcoholSources.isEmpty()
     }
 
-    inner class AlcoholSource(val abv: Double, val amount: Double, val measurement: String)
+    inner class AlcoholSource(val abv: Double, val amount: Double, val measurement: String){
+        override fun equals(other: Any?): Boolean {
+            val o = other as AlcoholSource
+            return this.abv == o.abv && this.amount == o.amount && this.measurement == o.measurement
+        }
+
+        override fun hashCode(): Int {
+            return abv.hashCode() + amount.hashCode() + measurement.hashCode()
+        }
+    }
 }
