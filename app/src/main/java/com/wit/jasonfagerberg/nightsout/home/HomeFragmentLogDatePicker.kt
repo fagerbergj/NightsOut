@@ -62,8 +62,7 @@ class HomeFragmentLogDatePicker(private val homeFragment: HomeFragment,
             mainActivity.mLogHeaders[headerIndex] = LogHeader(header.date, homeFragment.bac, homeFragment.drinkingDuration)
             homeFragment.mDrinkListAdapter.notifyDataSetChanged()
             logDatabaseHelper.pushDrinksToLogDrinks(header.date)
-            message = "Log on ${header.monthName} ${header.day}," +
-                    " ${header.year} was updated"
+            message = "Log on ${header.monthName} ${header.day}, ${header.year} was updated"
             mainActivity.showToast(message)
             simpleDialog.dismiss()
         }

@@ -113,8 +113,8 @@ class MainActivity : AppCompatActivity() {
 
     private fun saveData() {
         setProfileAndTimeData()
-        mDatabaseHelper.pushLogHeaders()
         mDatabaseHelper.pushDrinks()
+        mDatabaseHelper.pushLogHeaders()
         mDatabaseHelper.closeDatabase()
     }
 

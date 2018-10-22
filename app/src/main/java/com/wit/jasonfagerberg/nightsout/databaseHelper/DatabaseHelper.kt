@@ -3,6 +3,7 @@ package com.wit.jasonfagerberg.nightsout.databaseHelper
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+import android.util.Log
 import com.wit.jasonfagerberg.nightsout.log.LogHeader
 import com.wit.jasonfagerberg.nightsout.main.Drink
 import com.wit.jasonfagerberg.nightsout.main.MainActivity
@@ -78,6 +79,7 @@ class DatabaseHelper(val context: Context?, val name: String?, factory: SQLiteDa
     }
 
     private fun pullAllDrinks() {
+        mMainActivity.mLogHeaders.clear()
         val cursor = db.query("drinks", null, null, null, null, null, null, null)
         while (cursor.moveToNext()) {
             val id = cursor.getInt(cursor.getColumnIndex("id"))
@@ -152,6 +154,8 @@ class DatabaseHelper(val context: Context?, val name: String?, factory: SQLiteDa
     }
 
     fun pullLogHeaders() {
+        mMainActivity.mLogHeaders.clear()
+
         val cursor = db.query("log", null, null, null, null, null, null)
         while (cursor.moveToNext()) {
             val date = cursor.getInt(cursor.getColumnIndex("date"))
