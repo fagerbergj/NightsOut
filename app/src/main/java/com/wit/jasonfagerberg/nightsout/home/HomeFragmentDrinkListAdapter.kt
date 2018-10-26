@@ -228,6 +228,7 @@ class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: Ar
             mMainActivity.mDatabaseHelper.insertDrinkIntoDrinksTable(drink)
             drink.id = mMainActivity.mDatabaseHelper.getDrinkIdFromFullDrinkInfo(drink)
         }
+        mMainActivity.mDatabaseHelper.updateDrinkModifiedTime(drink.id, drink.modifiedTime)
     }
 
     private fun dismissDialog(dialog: AlertDialog) {

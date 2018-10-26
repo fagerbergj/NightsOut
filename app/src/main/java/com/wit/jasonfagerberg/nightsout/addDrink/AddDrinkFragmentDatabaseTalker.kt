@@ -11,6 +11,7 @@ class AddDrinkFragmentDatabaseTalker(private val addDrinkFragment: AddDrinkFragm
         val drink = Drink(-1, name, abv, amount, measurement, favorited, true, mainActivity.getTimeNow())
 
         setDrinkId(drink)
+        mainActivity.mDatabaseHelper.updateDrinkModifiedTime(drink.id, drink.modifiedTime)
         setDrinkFavorited(drink)
 
         if (canUnfavorite) addDrinkFragment.addToDrinkList(drink)
@@ -47,5 +48,4 @@ class AddDrinkFragmentDatabaseTalker(private val addDrinkFragment: AddDrinkFragm
             }
         }
     }
-
 }

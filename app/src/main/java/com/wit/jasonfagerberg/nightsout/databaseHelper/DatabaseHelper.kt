@@ -3,7 +3,6 @@ package com.wit.jasonfagerberg.nightsout.databaseHelper
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
-import android.util.Log
 import com.wit.jasonfagerberg.nightsout.log.LogHeader
 import com.wit.jasonfagerberg.nightsout.main.Drink
 import com.wit.jasonfagerberg.nightsout.main.MainActivity
@@ -280,6 +279,11 @@ class DatabaseHelper(val context: Context?, val name: String?, factory: SQLiteDa
         if (drink.recent) recent = 1
         val sql = "UPDATE drinks SET name=\"${drink.name}\", abv=${drink.abv}, amount=${drink.amount}," +
                 " measurement=\"${drink.measurement}\", recent=$recent WHERE id=${drink.id}"
+        db.execSQL(sql)
+    }
+
+    fun updateDrinkModifiedTime(drinkId: Int, modifiedTime: Long){
+        val sql = "UPDATE drinks SET modifiedTime=$modifiedTime WHERE id = $drinkId"
         db.execSQL(sql)
     }
 

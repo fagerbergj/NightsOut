@@ -204,11 +204,6 @@ class AddDrinkFragment : Fragment() {
 
         mEditName.onItemClickListener = AdapterView.OnItemClickListener { _, _, position: Int, _ ->
             val item = adapter.getItem(position)
-//            val test = Drink(0,item!!,0.0,0.0,"", false, false, 0)
-//            val testIndex = mMainActivity.mRecentsList.indexOf(test)
-//
-//            val drink = if (testIndex > -1) mMainActivity.mRecentsList[testIndex]
-//                        else addDrinkDBHelper.getDrinkFromName(item)
             val drink = addDrinkDBHelper.getDrinkFromName(item)
 
             if (drink != null) fillViews(drink.name, drink.abv, drink.amount, drink.measurement)
