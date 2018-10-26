@@ -4,6 +4,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.wit.jasonfagerberg.nightsout.R
 import com.google.android.material.button.MaterialButton
+import java.text.DecimalFormat
 
 class AddDrinkFragmentComplexDrink(val parent: AddDrinkFragment) {
     private val btnAddAnotherAlcoholSource: MaterialButton = parent.view!!.findViewById(R.id.btn_add_drink_add_alc_source)
@@ -44,7 +45,8 @@ class AddDrinkFragmentComplexDrink(val parent: AddDrinkFragment) {
             ave += alcSource.abv * weight
         }
 
-        return ave
+        val twoDForm = DecimalFormat("#.##")
+        return java.lang.Double.valueOf(twoDForm.format(ave))
     }
 
     fun sumAmount(): Double{

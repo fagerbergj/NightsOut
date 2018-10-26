@@ -17,18 +17,23 @@ class AddDrinkDatabaseHelper(private val databaseHelper: DatabaseHelper) {
         return names
     }
 
-    fun getDrinkFromName(name: String): Drink {
+    fun getDrinkFromName(name: String): Drink? {
         val cursor = databaseHelper.db.query("drinks", null, "name = ?", arrayOf(name),
                 null, null, "modifiedTime DESC")
-        cursor.moveToFirst()
-        val id = cursor.getInt(cursor.getColumnIndex("id"))
-        val drinkName = cursor.getString(cursor.getColumnIndex("name"))
-        val abv = cursor.getDouble(cursor.getColumnIndex("abv"))
-        val amount = cursor.getDouble(cursor.getColumnIndex("amount"))
-        val measurement = cursor.getString(cursor.getColumnIndex("measurement"))
-        val recent = cursor.getInt(cursor.getColumnIndex("recent")) == 1
-        val modifiedTime = cursor.getLong(cursor.getColumnIndex("modifiedTime"))
+
+        if (cursor.moveToFirst()){
+            val id = cursor.getInt(cursor.getColumnIndex("id"))
+            val drinkName = cursor.getString(cursor.getColumnIndex("name"))
+            val abv = cursor.getDouble(cursor.getColumnIndex("abv"))
+            val amount = cursor.getDouble(cursor.getColumnIndex("amount"))
+            val measurement = cursor.getString(cursor.getColumnIndex("measurement"))
+            val recent = cursor.getInt(cursor.getColumnIndex("recent")) == 1
+            val modifiedTime = cursor.getLong(cursor.getColumnIndex("modifiedTime"))
+            cursor.close()
+            return Drink(id, drinkName, abv, amount, measurement, databaseHelper.isFavoritedInDB(name), recent, modifiedTime)
+        }
+
         cursor.close()
-        return Drink(id, drinkName, abv, amount, measurement, databaseHelper.isFavoritedInDB(name), recent, modifiedTime)
+        return null
     }
 }

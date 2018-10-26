@@ -79,16 +79,12 @@ class MainActivity : AppCompatActivity() {
                 else -> false
             }
         }
-    }
-
-    override fun onResume() {
         initData()
-        super.onResume()
     }
 
-    override fun onPause() {
+    override fun onDestroy() {
+        super.onDestroy()
         saveData()
-        super.onPause()
     }
 
     private fun initData() {
