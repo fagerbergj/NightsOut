@@ -10,8 +10,8 @@ android {
         applicationId "com.wit.jasonfagerberg.nightsout"
         minSdkVersion 17
         targetSdkVersion 28
-        versionCode 3
-        versionName "venusaur"
+        versionCode 4
+        versionName "charmander"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         setProperty("archivesBaseName", "nightsout-$versionName")
     }
