@@ -79,22 +79,32 @@ class MainActivity : AppCompatActivity() {
                 else -> false
             }
         }
+
+        // database
+        mDatabaseHelper = DatabaseHelper(this, DB_NAME, null, DB_VERSION)
+        mDatabaseHelper.openDatabase()
+    }
+
+    override fun onResume() {
         initData()
+        super.onResume()
+    }
+
+    override fun onPause() {
+        saveData()
+        super.onPause()
     }
 
     override fun onDestroy() {
+        mDatabaseHelper.closeDatabase()
         super.onDestroy()
-        saveData()
     }
+
 
     private fun initData() {
         // get data
         preferences = PreferenceManager.getDefaultSharedPreferences(this)
         getProfileAndTimeData()
-
-        // database
-        mDatabaseHelper = DatabaseHelper(this, DB_NAME, null, DB_VERSION)
-        mDatabaseHelper.openDatabase()
 
         if (!profileInt) {
             setFragment(profileFragment)
@@ -111,7 +121,6 @@ class MainActivity : AppCompatActivity() {
         setProfileAndTimeData()
         mDatabaseHelper.pushDrinks()
         mDatabaseHelper.pushLogHeaders()
-        mDatabaseHelper.closeDatabase()
     }
 
     private fun setProfileAndTimeData() {
