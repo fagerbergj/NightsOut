@@ -92,9 +92,9 @@ class Converter {
         return "$year$monthString$dayString"
     }
 
-    fun stringToDouble(text: String): Double = when{
-            text.isEmpty() -> Double.NaN
-            text[text.length -1] == '.' -> "${text}0".toDouble()
-            else -> text.toDouble()
-        }
+    fun stringToDouble(text: String): Double = when {
+        text.isEmpty() -> Double.NaN
+        text[text.length - 1] == '.' -> "${text}0".toDouble()
+        else -> text.toDouble()
+    }
 }

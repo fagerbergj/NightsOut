@@ -21,7 +21,7 @@ class AddDrinkDatabaseHelper(private val databaseHelper: DatabaseHelper) {
         val cursor = databaseHelper.db.query("drinks", null, "name = ?", arrayOf(name),
                 null, null, "modifiedTime DESC")
 
-        if (cursor.moveToFirst()){
+        if (cursor.moveToFirst()) {
             val id = cursor.getInt(cursor.getColumnIndex("id"))
             val drinkName = cursor.getString(cursor.getColumnIndex("name"))
             val abv = cursor.getDouble(cursor.getColumnIndex("abv"))

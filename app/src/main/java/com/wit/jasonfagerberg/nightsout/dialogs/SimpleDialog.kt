@@ -13,6 +13,7 @@ class SimpleDialog(context: Context, layoutInflater: LayoutInflater) {
     private val dialog: AlertDialog
     private val posButton: Button
     private val negButton: Button
+
     init {
         val builder = AlertDialog.Builder(context)
         val parent: ViewGroup? = null
@@ -26,31 +27,31 @@ class SimpleDialog(context: Context, layoutInflater: LayoutInflater) {
         negButton = dialog.findViewById(R.id.btn_simple_dialog_negative)
     }
 
-    fun setTitle(title: String){
+    fun setTitle(title: String) {
         dialog.findViewById<TextView>(R.id.text_simple_dialog_title).text = title
     }
 
-    fun setBody(body: String){
+    fun setBody(body: String) {
         dialog.findViewById<TextView>(R.id.text_simple_dialog_body).text = body
     }
 
-    fun setPositiveFunction(listener: (View) -> Unit){
+    fun setPositiveFunction(listener: (View) -> Unit) {
         posButton.setOnClickListener(listener)
     }
 
-    fun setNegativeFunction(listener: (View) -> Unit){
+    fun setNegativeFunction(listener: (View) -> Unit) {
         negButton.setOnClickListener(listener)
     }
 
-    fun setPositiveButtonText(text: String){
+    fun setPositiveButtonText(text: String) {
         posButton.text = text
     }
 
-    fun setNegativeButtonText(text: String){
+    fun setNegativeButtonText(text: String) {
         negButton.text = text
     }
 
-    fun dismiss(){
+    fun dismiss() {
         dialog.dismiss()
     }
 }

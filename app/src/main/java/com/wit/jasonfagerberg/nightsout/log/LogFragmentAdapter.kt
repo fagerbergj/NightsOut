@@ -35,7 +35,7 @@ class LogFragmentAdapter(private val mContext: Context, logList: ArrayList<Any>)
     // When view is rendered set appropriate elements in the view holder
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val viewType = getItemViewType(position)
-        when(viewType){
+        when (viewType) {
             DRINK -> {
                 val drink: Drink = mLogList[position] as Drink
 
@@ -76,13 +76,13 @@ class LogFragmentAdapter(private val mContext: Context, logList: ArrayList<Any>)
     // holder, elements may be null depending on which layout is inflated
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         // drink views
-        internal var name: TextView ?= itemView.findViewById(R.id.text_log_drink_name)
-        internal var abv: TextView ?= itemView.findViewById(R.id.text_log_drink_abv)
-        internal var amount: TextView ?= itemView.findViewById(R.id.text_log_drink_amount)
+        internal var name: TextView? = itemView.findViewById(R.id.text_log_drink_name)
+        internal var abv: TextView? = itemView.findViewById(R.id.text_log_drink_abv)
+        internal var amount: TextView? = itemView.findViewById(R.id.text_log_drink_amount)
 
         // header views
-        internal var day: TextView ?= itemView.findViewById(R.id.text_log_day)
-        internal var duration: TextView ?= itemView.findViewById(R.id.text_log_duration)
-        internal var bac: TextView ?= itemView.findViewById(R.id.text_log_BAC)
+        internal var day: TextView? = itemView.findViewById(R.id.text_log_day)
+        internal var duration: TextView? = itemView.findViewById(R.id.text_log_duration)
+        internal var bac: TextView? = itemView.findViewById(R.id.text_log_BAC)
     }
 }

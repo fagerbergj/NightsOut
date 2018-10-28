@@ -106,7 +106,7 @@ class LogFragment : Fragment() {
             R.id.btn_move_selected_log -> {
                 val date = converter.yearMonthDayTo8DigitString(calendarView.selectedDate.year,
                         calendarView.selectedDate.month, calendarView.selectedDate.day).toInt()
-                val index = mMainActivity.mLogHeaders.indexOf(LogHeader(date,0.0,0.0))
+                val index = mMainActivity.mLogHeaders.indexOf(LogHeader(date, 0.0, 0.0))
                 val header = mMainActivity.mLogHeaders[index]
                 val datePicker = LogFragmentDatePicker(this, mMainActivity, Converter(), header)
                 datePicker.showDatePicker()
@@ -115,7 +115,7 @@ class LogFragment : Fragment() {
         return true
     }
 
-    fun resetCalendar(){
+    fun resetCalendar() {
         mLogList.clear()
         calendarView.removeDecorators()
         setAdapter()

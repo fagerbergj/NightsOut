@@ -111,7 +111,7 @@ class AddDrinkFragment : Fragment() {
                     view!!.findViewById<RecyclerView>(R.id.recycler_add_drink_alcohol_source_list).visibility = View.VISIBLE
                     mMainActivity.showToast("You can now add multiple alcohol sources")
                     item.title = "Simple Drink"
-                }else{
+                } else {
                     view!!.findViewById<MaterialButton>(R.id.btn_add_drink_add_alc_source).visibility = View.INVISIBLE
                     view!!.findViewById<RecyclerView>(R.id.recycler_add_drink_alcohol_source_list).visibility = View.INVISIBLE
                     item.title = "Complex Drink"

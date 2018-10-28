@@ -282,7 +282,7 @@ class DatabaseHelper(val context: Context?, val name: String?, factory: SQLiteDa
         db.execSQL(sql)
     }
 
-    fun updateDrinkModifiedTime(drinkId: Int, modifiedTime: Long){
+    fun updateDrinkModifiedTime(drinkId: Int, modifiedTime: Long) {
         val sql = "UPDATE drinks SET modifiedTime=$modifiedTime WHERE id = $drinkId"
         db.execSQL(sql)
     }

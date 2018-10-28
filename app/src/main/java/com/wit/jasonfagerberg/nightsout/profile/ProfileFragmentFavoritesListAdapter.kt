@@ -36,7 +36,7 @@ class ProfileFragmentFavoritesListAdapter(private val mContext: Context, drinksL
                 // make the toast
                 (mContext as MainActivity).showToast("${holder.name.text} favorited")
                 mFavoriteDrinksList.add(position, drink)
-                for (d in mContext.mDrinksList){
+                for (d in mContext.mDrinksList) {
                     if (d == drink) d.favorited = true
                 }
                 //(mContext as MainActivity).mDatabaseHelper.insertRowInFavoritesTable(drink.name, drink.id)
@@ -45,7 +45,7 @@ class ProfileFragmentFavoritesListAdapter(private val mContext: Context, drinksL
                 //mFavoriteDrinksList.add(drink)
             } else {
                 (mContext as MainActivity).showToast("${holder.name.text} unfavored")
-                for (d in mContext.mDrinksList){
+                for (d in mContext.mDrinksList) {
                     if (d == drink) d.favorited = false
                 }
                 mFavoriteDrinksList.removeAt(position)

@@ -9,7 +9,7 @@ import com.wit.jasonfagerberg.nightsout.main.MainActivity
 import java.util.*
 
 class LogFragmentDatePicker(private val logFragment: LogFragment,
-                                private val mainActivity: MainActivity, private val converter: Converter, val header: LogHeader) {
+                            private val mainActivity: MainActivity, private val converter: Converter, val header: LogHeader) {
     private val logDatabaseHelper = LogDatabaseHelper(mainActivity.mDatabaseHelper, mainActivity)
 
     fun showDatePicker() {

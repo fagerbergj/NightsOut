@@ -19,11 +19,11 @@ class AddDrinkFragmentComplexDrink(val parent: AddDrinkFragment) {
         recyclerAlcoholSource.layoutManager = linearLayoutManagerRecents
 
         btnAddAnotherAlcoholSource.setOnClickListener { _ ->
-                addToAlcoholSourceList()
+            addToAlcoholSourceList()
         }
     }
 
-    fun addToAlcoholSourceList(){
+    fun addToAlcoholSourceList() {
         if (parent.isInputErrors()) return
         val abv = parent.mConverter.stringToDouble(parent.mEditAbv.text.toString())
         val amount = parent.mConverter.stringToDouble(parent.mEditAmount.text.toString())
@@ -36,12 +36,12 @@ class AddDrinkFragmentComplexDrink(val parent: AddDrinkFragment) {
         parent.mEditAmount.setText("")
     }
 
-    fun weightedAverageAbv(): Double{
+    fun weightedAverageAbv(): Double {
         if (listAlcoholSources.isEmpty()) return Double.NaN
         var ave = 0.0
         val sum = sumAmount()
-        for (alcSource in listAlcoholSources){
-            val weight = parent.mConverter.drinkVolumeToFluidOz(alcSource.amount, alcSource.measurement)/sum
+        for (alcSource in listAlcoholSources) {
+            val weight = parent.mConverter.drinkVolumeToFluidOz(alcSource.amount, alcSource.measurement) / sum
             ave += alcSource.abv * weight
         }
 
@@ -49,20 +49,20 @@ class AddDrinkFragmentComplexDrink(val parent: AddDrinkFragment) {
         return java.lang.Double.valueOf(twoDForm.format(ave))
     }
 
-    fun sumAmount(): Double{
+    fun sumAmount(): Double {
         if (listAlcoholSources.isEmpty()) return Double.NaN
         var sum = 0.0
-        for (alcSource in listAlcoholSources){
+        for (alcSource in listAlcoholSources) {
             sum += parent.mConverter.drinkVolumeToFluidOz(alcSource.amount, alcSource.measurement)
         }
         return sum
     }
 
-    fun listIsEmpty():Boolean{
+    fun listIsEmpty(): Boolean {
         return listAlcoholSources.isEmpty()
     }
 
-    inner class AlcoholSource(val abv: Double, val amount: Double, val measurement: String){
+    inner class AlcoholSource(val abv: Double, val amount: Double, val measurement: String) {
         override fun equals(other: Any?): Boolean {
             val o = other as AlcoholSource
             return this.abv == o.abv && this.amount == o.amount && this.measurement == o.measurement

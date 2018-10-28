@@ -100,7 +100,6 @@ class MainActivity : AppCompatActivity() {
         super.onDestroy()
     }
 
-
     private fun initData() {
         // get data
         preferences = PreferenceManager.getDefaultSharedPreferences(this)
