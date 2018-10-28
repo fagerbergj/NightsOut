@@ -230,7 +230,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/btn_add_drink_add_alc_source"
-            android:visibility="invisible"></androidx.recyclerview.widget.RecyclerView>
+            android:visibility="invisible"/>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_add_drink_add"
