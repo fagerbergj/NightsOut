@@ -69,9 +69,6 @@ class AddDrinkFragment : Fragment() {
 
         setupRecentsAndFavoritesRecycler(view)
 
-        // set empty text views
-        showOrHideEmptyTextViews(view)
-
         // add button setup
         val btnAdd = view.findViewById<MaterialButton>(R.id.btn_add_drink_add)
         if (mFavorited) btnAdd.text = resources.getText(R.string.add_favorite)
@@ -83,6 +80,12 @@ class AddDrinkFragment : Fragment() {
 
         // Inflate the layout for this fragment
         return view
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // set empty text views
+        showOrHideEmptyTextViews(view!!)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {

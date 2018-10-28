@@ -62,9 +62,6 @@ class ProfileFragment : Fragment() {
         // recycler v setup
         setupFavoritesRecyclerView(view)
 
-        // empty text v setup
-        showOrHideEmptyTextViews(view)
-
         // adapter setup
         mFavoritesListAdapter = ProfileFragmentFavoritesListAdapter(context!!, mMainActivity.mFavoritesList)
         mFavoritesListView.adapter = mFavoritesListAdapter
@@ -112,6 +109,9 @@ class ProfileFragment : Fragment() {
 
         // spinner setup
         setupSpinner(view!!)
+
+        // empty text v setup
+        showOrHideEmptyTextViews(view!!)
 
         super.onResume()
     }

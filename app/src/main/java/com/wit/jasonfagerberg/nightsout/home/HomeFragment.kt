@@ -47,11 +47,8 @@ class HomeFragment : Fragment() {
         // setup list
         setupRecycler(view)
 
-        // show or hide empty text
-        showOrHideEmptyListText(view)
-
         // add a drink button setup
-        val btnAdd: MaterialButton = view.findViewById(R.id.btn_home_add_drink)
+        val btnAdd = view.findViewById<MaterialButton>(R.id.btn_home_add_drink)
         btnAdd.setOnClickListener { _ ->
             val mainActivity: MainActivity = context as MainActivity
             mMainActivity.addDrinkFragment.mFavorited = false
@@ -74,8 +71,9 @@ class HomeFragment : Fragment() {
     }
 
     override fun onResume() {
-        calculateBAC()
         super.onResume()
+        calculateBAC()
+        showOrHideEmptyListText(view!!)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
@@ -272,7 +270,7 @@ class HomeFragment : Fragment() {
 
         val bacText = "%.3f".format(bac)
         when {
-            bac > .2 -> {
+            bac >= .2 -> {
                 changeTextViewColorAndText(bacValueView, bacText, R.color.colorBlack)
                 changeTextViewColorAndText(bacResultView, "In Danger", R.color.colorBlack)
             }
