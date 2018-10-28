@@ -3,7 +3,6 @@ package com.wit.jasonfagerberg.nightsout.home
 import android.app.TimePickerDialog
 import android.content.DialogInterface
 import android.os.Bundle
-import android.util.Log
 import com.google.android.material.button.MaterialButton
 import androidx.fragment.app.Fragment
 import androidx.core.content.ContextCompat
@@ -104,7 +103,6 @@ class HomeFragment : Fragment() {
             R.id.btn_disclaimer -> showDisclaimerDialog()
             R.id.btn_toolbar_toggle_time_display -> {
                 mMainActivity.use24HourTime = !mMainActivity.use24HourTime
-                Log.v(TAG, "use24HourTime is switched to ${mMainActivity.use24HourTime}")
                 setupEditTexts(view!!)
             }
         }
