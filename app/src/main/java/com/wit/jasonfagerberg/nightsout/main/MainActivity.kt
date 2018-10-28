@@ -44,6 +44,9 @@ class MainActivity : AppCompatActivity() {
     var weightMeasurement = ""
     var startTimeMin: Int = -1
     var endTimeMin: Int = -1
+    private val country = Locale.getDefault().country
+    private val twelveHourCountries = arrayListOf("US", "UK", "PH", "CA", "AU", "NZ", "IN", "EG", "SA", "CO", "PK", "MY")
+    var use24HourTime = !twelveHourCountries.contains(country)
 
     // global lists
     var mDrinksList: ArrayList<Drink> = ArrayList()
@@ -134,6 +137,7 @@ class MainActivity : AppCompatActivity() {
 
         editor.putInt("homeStartTimeMin", startTimeMin)
         editor.putInt("homeEndTimeMin", endTimeMin)
+        editor.putBoolean("homeUse24HourTime", use24HourTime)
         editor.apply()
     }
 
@@ -141,14 +145,15 @@ class MainActivity : AppCompatActivity() {
         profileInt = preferences.getBoolean("profileInit", profileInt)
         if (profileInt) {
             sex = true
-            sex = preferences.getBoolean("profileSex", sex!!)
+            preferences.getBoolean("profileSex", sex!!)
             var weightFloat: Float = 0.toFloat()
             weightFloat = preferences.getFloat("profileWeight", weightFloat)
             weight = weightFloat.toDouble()
             weightMeasurement = preferences.getString("profileWeightMeasurement", weightMeasurement)!!
 
-            startTimeMin = preferences.getInt("homeStartTimeMin", startTimeMin)
-            endTimeMin = preferences.getInt("homeEndTimeMin", endTimeMin)
+            preferences.getInt("homeStartTimeMin", startTimeMin)
+            preferences.getInt("homeEndTimeMin", endTimeMin)
+            preferences.getBoolean("homeUse24HourTime", use24HourTime)
         }
     }
 

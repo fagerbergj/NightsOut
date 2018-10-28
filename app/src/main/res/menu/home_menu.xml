@@ -13,7 +13,13 @@
         app:showAsAction="never" />
 
     <item
+        android:id="@+id/btn_toolbar_toggle_time_display"
+        android:title="@string/empty"
+        app:showAsAction="never"/>
+
+    <item
         android:id="@+id/btn_disclaimer"
         android:title="@string/disclaimer"
         app:showAsAction="never" />
+
 </menu>

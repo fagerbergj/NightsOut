@@ -78,6 +78,9 @@ class HomeFragment : Fragment() {
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
         inflater!!.inflate(R.menu.home_menu, menu)
+        menu?.findItem(R.id.btn_toolbar_toggle_time_display)?.title = if (mMainActivity.use24HourTime){
+            "Use 12 Hour Time"
+        } else "Use 24 Hour Time"
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
@@ -98,6 +101,10 @@ class HomeFragment : Fragment() {
                 lightSimpleDialog.show("Are you sure you want to clear all drinks?")
             }
             R.id.btn_disclaimer -> showDisclaimerDialog()
+            R.id.btn_toolbar_toggle_time_display -> {
+                mMainActivity.use24HourTime = !mMainActivity.use24HourTime
+                setupEditTexts(view!!)
+            }
         }
         return true
     }
@@ -133,18 +140,18 @@ class HomeFragment : Fragment() {
 
         if (mMainActivity.startTimeMin == -1) {
             mMainActivity.startTimeMin = getCurrentTimeInMinuets()
-            startPicker.setText(mConverter.timeTo12HourString(mMainActivity.startTimeMin))
+            startPicker.setText(mConverter.timeToString(mMainActivity.startTimeMin, mMainActivity.use24HourTime))
         }
         if (mMainActivity.endTimeMin == -1) {
             mMainActivity.endTimeMin = getCurrentTimeInMinuets()
-            endPicker.setText(mConverter.timeTo12HourString(mMainActivity.endTimeMin))
+            endPicker.setText(mConverter.timeToString(mMainActivity.endTimeMin, mMainActivity.use24HourTime))
         }
 
-        if (mMainActivity.startTimeMin > -1) startPicker.setText(mConverter.timeTo12HourString(
-                mMainActivity.startTimeMin))
+        if (mMainActivity.startTimeMin > -1) startPicker.setText(mConverter.timeToString(
+                mMainActivity.startTimeMin, mMainActivity.use24HourTime))
 
-        if (mMainActivity.endTimeMin > -1) endPicker.setText(mConverter.timeTo12HourString(
-                mMainActivity.endTimeMin))
+        if (mMainActivity.endTimeMin > -1) endPicker.setText(mConverter.timeToString(
+                mMainActivity.endTimeMin, mMainActivity.use24HourTime))
 
         startPicker.setOnClickListener { _ ->
             startTimeEditTextOnCLickListener(startPicker)
@@ -166,15 +173,15 @@ class HomeFragment : Fragment() {
         val mTimePicker: TimePickerDialog
         mTimePicker = TimePickerDialog(context!!,
                 TimePickerDialog.OnTimeSetListener { _, selectedHour, selectedMinute ->
-                    startPicker.setText(mConverter.timeTo12HourString(selectedHour, selectedMinute))
+                    startPicker.setText(mConverter.timeToString(selectedHour, selectedMinute, mMainActivity.use24HourTime))
                     mMainActivity.startTimeMin = mConverter.militaryHoursAndMinutesToMinutes(selectedHour, selectedMinute)
                     if (mMainActivity.endTimeMin == -1) mMainActivity.endTimeMin = mMainActivity.startTimeMin
                     calculateBAC()
-                }, hour, minute, false)
+                }, hour, minute, mMainActivity.use24HourTime)
 
         mTimePicker.setButton(DialogInterface.BUTTON_NEUTRAL, "Now") { _, _ ->
             mMainActivity.startTimeMin = getCurrentTimeInMinuets()
-            startPicker.setText(mConverter.timeTo12HourString(mMainActivity.startTimeMin))
+            startPicker.setText(mConverter.timeToString(mMainActivity.startTimeMin, mMainActivity.use24HourTime))
             calculateBAC()
         }
 
@@ -194,14 +201,14 @@ class HomeFragment : Fragment() {
         val mTimePicker: TimePickerDialog
         mTimePicker = TimePickerDialog(context!!,
                 TimePickerDialog.OnTimeSetListener { _, selectedHour, selectedMinute ->
-                    endPicker.setText(mConverter.timeTo12HourString(selectedHour, selectedMinute))
+                    endPicker.setText(mConverter.timeToString(selectedHour, selectedMinute, mMainActivity.use24HourTime))
                     mMainActivity.endTimeMin = mConverter.militaryHoursAndMinutesToMinutes(selectedHour, selectedMinute)
                     calculateBAC()
-                }, hour, minute, false)
+                }, hour, minute, mMainActivity.use24HourTime)
 
         mTimePicker.setButton(DialogInterface.BUTTON_NEUTRAL, "Now") { _, _ ->
             mMainActivity.endTimeMin = getCurrentTimeInMinuets()
-            endPicker.setText(mConverter.timeTo12HourString(mMainActivity.endTimeMin))
+            endPicker.setText(mConverter.timeToString(mMainActivity.endTimeMin, mMainActivity.use24HourTime))
             calculateBAC()
         }
 

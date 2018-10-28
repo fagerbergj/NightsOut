@@ -40,32 +40,36 @@ class Converter {
         return Pair(hour, min)
     }
 
-    fun timeTo12HourString(selectedHour: Int, selectedMinute: Int): String {
+    fun timeToString(selectedHour: Int, selectedMinute: Int, use24HourTime: Boolean): String {
         val timePeriod: String
         var displayHour = selectedHour
         var displayMinuet = selectedMinute.toString()
-        if (selectedHour >= 12) {
+        if (selectedHour >= 12 && !use24HourTime) {
             displayHour -= 12
             timePeriod = "PM"
-        } else {
+        } else if (!use24HourTime){
             timePeriod = "AM"
+        } else {
+            timePeriod = ""
         }
-        if (displayHour == 0) displayHour = 12
+        if (displayHour == 0 && !use24HourTime) displayHour = 12
         if (displayMinuet.length == 1) displayMinuet = "0$displayMinuet"
         return "$displayHour:$displayMinuet $timePeriod"
     }
 
-    fun timeTo12HourString(min: Int): String {
+    fun timeToString(min: Int, use24HourTime: Boolean): String {
         var hour = min / 60
         val minutes = min % 60
         val timePeriod: String
-        if (hour >= 12) {
+        if (hour >= 12 && !use24HourTime) {
             hour -= 12
             timePeriod = "PM"
-        } else {
+        } else if (!use24HourTime) {
             timePeriod = "AM"
+        } else {
+            timePeriod = ""
         }
-        if (hour == 0) hour = 12
+        if (hour == 0 && use24HourTime) hour = 12
         var displayMinuet = minutes.toString()
         if (displayMinuet.length == 1) displayMinuet = "0$displayMinuet"
         return "$hour:$displayMinuet $timePeriod"
