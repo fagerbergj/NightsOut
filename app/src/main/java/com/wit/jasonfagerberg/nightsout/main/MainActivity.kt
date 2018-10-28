@@ -7,7 +7,7 @@ import android.view.Gravity
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.fragment.app.Fragment
 import androidx.appcompat.app.AppCompatActivity
-//import android.util.Log
+import android.util.Log
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.RelativeLayout
@@ -22,7 +22,7 @@ import com.wit.jasonfagerberg.nightsout.log.LogHeader
 import com.wit.jasonfagerberg.nightsout.profile.ProfileFragment
 import java.util.*
 
-//private const val TAG = "MainActivity"
+private const val TAG = "MainActivity"
 
 private const val DB_NAME = "nights_out_db.db"
 private const val DB_VERSION = 37
@@ -47,6 +47,7 @@ class MainActivity : AppCompatActivity() {
     private val country = Locale.getDefault().country
     private val twelveHourCountries = arrayListOf("US", "UK", "PH", "CA", "AU", "NZ", "IN", "EG", "SA", "CO", "PK", "MY")
     var use24HourTime = !twelveHourCountries.contains(country)
+    val log = Log.v(TAG, "use24HourTime initialized to $use24HourTime")
 
     // global lists
     var mDrinksList: ArrayList<Drink> = ArrayList()
@@ -138,6 +139,7 @@ class MainActivity : AppCompatActivity() {
         editor.putInt("homeStartTimeMin", startTimeMin)
         editor.putInt("homeEndTimeMin", endTimeMin)
         editor.putBoolean("homeUse24HourTime", use24HourTime)
+        Log.v(TAG, "use24HourTime saved as $use24HourTime")
         editor.apply()
     }
 
@@ -151,9 +153,10 @@ class MainActivity : AppCompatActivity() {
             weight = weightFloat.toDouble()
             weightMeasurement = preferences.getString("profileWeightMeasurement", weightMeasurement)!!
 
-            preferences.getInt("homeStartTimeMin", startTimeMin)
-            preferences.getInt("homeEndTimeMin", endTimeMin)
-            preferences.getBoolean("homeUse24HourTime", use24HourTime)
+            use24HourTime = preferences.getBoolean("homeUse24HourTime", use24HourTime)
+            Log.v(TAG, "use24HourTime retrieved as $use24HourTime")
+            startTimeMin = preferences.getInt("homeStartTimeMin", startTimeMin)
+            endTimeMin = preferences.getInt("homeEndTimeMin", endTimeMin)
         }
     }
 

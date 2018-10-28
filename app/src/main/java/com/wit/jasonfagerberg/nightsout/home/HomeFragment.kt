@@ -3,6 +3,7 @@ package com.wit.jasonfagerberg.nightsout.home
 import android.app.TimePickerDialog
 import android.content.DialogInterface
 import android.os.Bundle
+import android.util.Log
 import com.google.android.material.button.MaterialButton
 import androidx.fragment.app.Fragment
 import androidx.core.content.ContextCompat
@@ -20,7 +21,7 @@ import android.widget.RelativeLayout
 import com.wit.jasonfagerberg.nightsout.dialogs.LightSimpleDialog
 
 
-//private const val TAG = "HomeFragment"
+private const val TAG = "HomeFragment"
 
 class HomeFragment : Fragment() {
     lateinit var mDrinkListAdapter: HomeFragmentDrinkListAdapter
@@ -78,7 +79,7 @@ class HomeFragment : Fragment() {
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
         inflater!!.inflate(R.menu.home_menu, menu)
-        menu?.findItem(R.id.btn_toolbar_toggle_time_display)?.title = if (mMainActivity.use24HourTime){
+        menu?.findItem(R.id.btn_toolbar_toggle_time_display)?.title = if (mMainActivity.use24HourTime!!){
             "Use 12 Hour Time"
         } else "Use 24 Hour Time"
     }
@@ -103,6 +104,7 @@ class HomeFragment : Fragment() {
             R.id.btn_disclaimer -> showDisclaimerDialog()
             R.id.btn_toolbar_toggle_time_display -> {
                 mMainActivity.use24HourTime = !mMainActivity.use24HourTime
+                Log.v(TAG, "use24HourTime is switched to ${mMainActivity.use24HourTime}")
                 setupEditTexts(view!!)
             }
         }
