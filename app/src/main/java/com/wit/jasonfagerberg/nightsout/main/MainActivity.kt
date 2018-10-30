@@ -88,14 +88,14 @@ class MainActivity : AppCompatActivity() {
         mDatabaseHelper.openDatabase()
     }
 
-    override fun onResume() {
+    override fun onStart() {
         initData()
-        super.onResume()
+        super.onStart()
     }
 
-    override fun onPause() {
+    override fun onStop() {
         saveData()
-        super.onPause()
+        super.onStop()
     }
 
     override fun onDestroy() {
