@@ -3,6 +3,7 @@ package com.wit.jasonfagerberg.nightsout.home
 import android.app.TimePickerDialog
 import android.content.DialogInterface
 import android.os.Bundle
+import com.google.android.material.button.MaterialButton
 import androidx.fragment.app.Fragment
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -19,7 +20,7 @@ import android.widget.RelativeLayout
 import com.wit.jasonfagerberg.nightsout.dialogs.LightSimpleDialog
 
 
-//private const val TAG = "HomeFragment"
+private const val TAG = "HomeFragment"
 
 class HomeFragment : Fragment() {
     lateinit var mDrinkListAdapter: HomeFragmentDrinkListAdapter
@@ -47,7 +48,7 @@ class HomeFragment : Fragment() {
         setupRecycler(view)
 
         // add a drink button setup
-        val btnAdd = view.findViewById<Button>(R.id.btn_home_add_drink)
+        val btnAdd = view.findViewById<MaterialButton>(R.id.btn_home_add_drink)
         btnAdd.setOnClickListener { _ ->
             val mainActivity: MainActivity = context as MainActivity
             mMainActivity.addDrinkFragment.mFavorited = false
@@ -56,6 +57,9 @@ class HomeFragment : Fragment() {
 
         // setup bottom nav bar
         mMainActivity.showBottomNavBar(R.id.bottom_nav_home)
+
+        // set edit texts
+        setupEditTexts(view)
 
         val bacInfoDialog = HomeFragmentBacInfoDialog(this, mMainActivity, mConverter)
         view.findViewById<ImageButton>(R.id.btn_home_bac_info).setOnClickListener { _ ->
@@ -68,14 +72,13 @@ class HomeFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        setupEditTexts(view!!)
         calculateBAC()
         showOrHideEmptyListText(view!!)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
         inflater!!.inflate(R.menu.home_menu, menu)
-        menu?.findItem(R.id.btn_toolbar_toggle_time_display)?.title = if (mMainActivity.use24HourTime){
+        menu?.findItem(R.id.btn_toolbar_toggle_time_display)?.title = if (mMainActivity.use24HourTime!!){
             "Use 12 Hour Time"
         } else "Use 24 Hour Time"
     }
@@ -135,11 +138,14 @@ class HomeFragment : Fragment() {
         val startPicker: EditText = view.findViewById(R.id.edit_start_time)
         val endPicker: EditText = view.findViewById(R.id.edit_end_time)
 
-        if (mMainActivity.startTimeMin == -1)
-            startPicker.setText(mConverter.timeToString(getCurrentTimeInMinuets(), mMainActivity.use24HourTime))
-
-        if (mMainActivity.endTimeMin == -1)
-            endPicker.setText(mConverter.timeToString(getCurrentTimeInMinuets(), mMainActivity.use24HourTime))
+        if (mMainActivity.startTimeMin == -1) {
+            mMainActivity.startTimeMin = getCurrentTimeInMinuets()
+            startPicker.setText(mConverter.timeToString(mMainActivity.startTimeMin, mMainActivity.use24HourTime))
+        }
+        if (mMainActivity.endTimeMin == -1) {
+            mMainActivity.endTimeMin = getCurrentTimeInMinuets()
+            endPicker.setText(mConverter.timeToString(mMainActivity.endTimeMin, mMainActivity.use24HourTime))
+        }
 
         if (mMainActivity.startTimeMin > -1) startPicker.setText(mConverter.timeToString(
                 mMainActivity.startTimeMin, mMainActivity.use24HourTime))
@@ -157,7 +163,6 @@ class HomeFragment : Fragment() {
     }
 
     private fun startTimeEditTextOnCLickListener(startPicker: EditText) {
-        val endPicker = view!!.findViewById<EditText>(R.id.edit_end_time)
         val currentTime = Calendar.getInstance()
         var hour = currentTime.get(Calendar.HOUR_OF_DAY)
         var minute = currentTime.get(Calendar.MINUTE)
@@ -170,13 +175,14 @@ class HomeFragment : Fragment() {
                 TimePickerDialog.OnTimeSetListener { _, selectedHour, selectedMinute ->
                     startPicker.setText(mConverter.timeToString(selectedHour, selectedMinute, mMainActivity.use24HourTime))
                     mMainActivity.startTimeMin = mConverter.militaryHoursAndMinutesToMinutes(selectedHour, selectedMinute)
-                    calculateBAC(endPicker, false)
+                    if (mMainActivity.endTimeMin == -1) mMainActivity.endTimeMin = mMainActivity.startTimeMin
+                    calculateBAC()
                 }, hour, minute, mMainActivity.use24HourTime)
 
         mTimePicker.setButton(DialogInterface.BUTTON_NEUTRAL, "Now") { _, _ ->
             mMainActivity.startTimeMin = getCurrentTimeInMinuets()
             startPicker.setText(mConverter.timeToString(mMainActivity.startTimeMin, mMainActivity.use24HourTime))
-            calculateBAC(endPicker, false)
+            calculateBAC()
         }
 
         mTimePicker.setTitle("Start Time")
@@ -184,8 +190,6 @@ class HomeFragment : Fragment() {
     }
 
     private fun endTimeEditTextOnCLickListener(endPicker: EditText) {
-        val startPicker = view!!.findViewById<EditText>(R.id.edit_start_time)
-
         val currentTime = Calendar.getInstance()
         var hour = currentTime.get(Calendar.HOUR_OF_DAY)
         var minute = currentTime.get(Calendar.MINUTE)
@@ -199,26 +203,17 @@ class HomeFragment : Fragment() {
                 TimePickerDialog.OnTimeSetListener { _, selectedHour, selectedMinute ->
                     endPicker.setText(mConverter.timeToString(selectedHour, selectedMinute, mMainActivity.use24HourTime))
                     mMainActivity.endTimeMin = mConverter.militaryHoursAndMinutesToMinutes(selectedHour, selectedMinute)
-                    calculateBAC(startPicker, true)
+                    calculateBAC()
                 }, hour, minute, mMainActivity.use24HourTime)
 
         mTimePicker.setButton(DialogInterface.BUTTON_NEUTRAL, "Now") { _, _ ->
             mMainActivity.endTimeMin = getCurrentTimeInMinuets()
             endPicker.setText(mConverter.timeToString(mMainActivity.endTimeMin, mMainActivity.use24HourTime))
-            calculateBAC(startPicker, true)
+            calculateBAC()
         }
 
         mTimePicker.setTitle("End Time")
         mTimePicker.show()
-    }
-
-    private fun calculateBAC(otherEditText: EditText, setStartTime: Boolean){
-        val min = mConverter.timeStringToMinuets(otherEditText.text.toString(), mMainActivity.use24HourTime)
-        if (setStartTime && mMainActivity.startTimeMin == -1)
-            mMainActivity.startTimeMin = min
-        else if (!setStartTime && mMainActivity.endTimeMin == -1)
-            mMainActivity.endTimeMin = min
-        calculateBAC()
     }
 
     fun showOrHideEmptyListText(view: View) {
