@@ -75,6 +75,22 @@ class Converter {
         return "$hour:$displayMinuet $timePeriod"
     }
 
+    fun timeStringToMinuets(timeString: String, use24HourTime: Boolean): Int{
+        val len = timeString.length
+        val mins = if (use24HourTime){
+            val min = timeString.substring(len-3, len-1).toInt()
+            val hour = timeString.substring(0, len-4).toInt()
+            hour*60 + min
+        } else {
+            val timeFrame = timeString.substring(len-2, len)
+            val min = timeString.substring(len-5, len-3).toInt()
+            var hour = timeString.substring(0,len-6).toInt()
+            if (timeFrame == "PM") hour += 12
+            hour*60 + min
+        }
+        return mins
+    }
+
     fun decimalTimeToTwoDigitStrings(time: Double): Pair<String, String> {
         val hm = decimalTimeToHoursAndMinuets(time)
         return hoursAndMinuetsToTwoDigitStrings(hm)
