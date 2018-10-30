@@ -8,7 +8,7 @@ class AddDrinkFragmentDatabaseTalker(private val addDrinkFragment: AddDrinkFragm
                                      private val favorited: Boolean) {
 
     fun buildDrinkAndAddToList(name: String, abv: Double, amount: Double, measurement: String) {
-        val drink = Drink(-1, name, abv, amount, measurement, favorited, true, mainActivity.getTimeNow())
+        val drink = Drink(-1, name, abv, amount, measurement, favorited, true, mainActivity.getLongTimeNow())
 
         setDrinkId(drink)
         mainActivity.mDatabaseHelper.updateDrinkModifiedTime(drink.id, drink.modifiedTime)

@@ -187,7 +187,7 @@ class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: Ar
         dialog.findViewById<MaterialButton>(R.id.btn_edit_drink_edit).setOnClickListener { _ ->
             onDialogEditClick(drink, editName, editABV, editAmount, dropdown)
             this.notifyItemChanged(position)
-            drink.modifiedTime = mMainActivity.getTimeNow()
+            drink.modifiedTime = mMainActivity.getLongTimeNow()
             dismissDialog(dialog)
         }
     }
@@ -196,7 +196,7 @@ class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: Ar
     private fun onDialogEditClick(drink: Drink, editName: EditText, editABV: EditText,
                                   editAmount: EditText, dropdown: Spinner) {
         val other = Drink(drink.id, drink.name, drink.abv, drink.amount, drink.measurement,
-                false, false, mMainActivity.getTimeNow())
+                false, false, mMainActivity.getLongTimeNow())
         //pad 0s to end
         if (!editABV.text.isEmpty() && "${editABV.text}"["${editABV.text}".length - 1] == '.') {
             val padded = "${editABV.text}0"

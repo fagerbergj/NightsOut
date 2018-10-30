@@ -14,6 +14,7 @@ import android.widget.RelativeLayout
 import android.widget.Toast
 import com.wit.jasonfagerberg.nightsout.R
 import com.wit.jasonfagerberg.nightsout.addDrink.AddDrinkFragment
+import com.wit.jasonfagerberg.nightsout.converter.Converter
 import com.wit.jasonfagerberg.nightsout.databaseHelper.DatabaseHelper
 import com.wit.jasonfagerberg.nightsout.dialogs.SimpleDialog
 import com.wit.jasonfagerberg.nightsout.home.HomeFragment
@@ -143,6 +144,8 @@ class MainActivity : AppCompatActivity() {
 
     private fun getProfileAndTimeData() {
         profileInt = preferences.getBoolean("profileInit", profileInt)
+        startTimeMin = getCurrentTimeInMinuets()
+        endTimeMin = getCurrentTimeInMinuets()
         if (profileInt) {
             sex = true
             preferences.getBoolean("profileSex", sex!!)
@@ -218,7 +221,16 @@ class MainActivity : AppCompatActivity() {
         transaction.commit()
     }
 
-    fun getTimeNow(): Long {
+    fun getCurrentTimeInMinuets(): Int {
+        val calendar = GregorianCalendar.getInstance()
+        val date = Date()
+        calendar.time = date
+        val curHour = calendar.get(Calendar.HOUR_OF_DAY)
+        val curMin = calendar.get(Calendar.MINUTE)
+        return Converter().militaryHoursAndMinutesToMinutes(curHour, curMin)
+    }
+
+    fun getLongTimeNow(): Long {
         return Calendar.getInstance().timeInMillis
     }
 
