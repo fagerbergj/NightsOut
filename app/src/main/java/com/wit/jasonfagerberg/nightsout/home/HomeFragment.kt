@@ -18,6 +18,10 @@ import com.wit.jasonfagerberg.nightsout.converter.Converter
 import java.util.*
 import android.widget.RelativeLayout
 import com.wit.jasonfagerberg.nightsout.dialogs.LightSimpleDialog
+import androidx.recyclerview.widget.ItemTouchHelper
+import android.widget.TextView
+
+
 
 
 private const val TAG = "HomeFragment"
@@ -132,6 +136,36 @@ class HomeFragment : Fragment() {
         //update list
         drinksListView.adapter = mDrinkListAdapter //Update display with new list
         drinksListView.layoutManager!!.scrollToPosition(mMainActivity.mDrinksList.size - 1) //Nav to end of list
+
+
+        val simpleItemTouchCallback = object : ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP or ItemTouchHelper.DOWN, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
+            override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
+                val fromPosition = viewHolder.adapterPosition
+                val toPosition = target.adapterPosition
+                if (fromPosition < toPosition) {
+                    for (i in fromPosition until toPosition) {
+                        Collections.swap(mMainActivity.mDrinksList, i, i + 1)
+                    }
+                } else {
+                    for (i in fromPosition downTo toPosition + 1) {
+                        Collections.swap(mMainActivity.mDrinksList, i, i - 1)
+                    }
+                }
+                mDrinkListAdapter.notifyItemMoved(fromPosition, toPosition)
+                return true
+            }
+
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, swipeDir: Int) {
+                mMainActivity.mDrinksList.removeAt(viewHolder.adapterPosition)
+                mDrinkListAdapter.notifyItemRemoved(viewHolder.adapterPosition)
+                mDrinkListAdapter.notifyItemRangeChanged(0, mMainActivity.mDrinksList.size)
+                showOrHideEmptyListText(view)
+                mMainActivity.showToast("Drink removed")
+            }
+        }
+
+        val itemTouchHelper = ItemTouchHelper(simpleItemTouchCallback)
+        itemTouchHelper.attachToRecyclerView(drinksListView)
     }
 
     private fun setupEditTexts(view: View) {
