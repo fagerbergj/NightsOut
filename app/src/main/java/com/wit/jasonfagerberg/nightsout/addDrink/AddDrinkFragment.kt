@@ -15,11 +15,13 @@ import com.wit.jasonfagerberg.nightsout.main.Drink
 import com.wit.jasonfagerberg.nightsout.R
 import android.widget.ArrayAdapter
 import android.widget.AdapterView
+import androidx.recyclerview.widget.ItemTouchHelper
 import com.wit.jasonfagerberg.nightsout.converter.Converter
 import com.wit.jasonfagerberg.nightsout.databaseHelper.AddDrinkDatabaseHelper
 import com.wit.jasonfagerberg.nightsout.dialogs.LightSimpleDialog
 import com.wit.jasonfagerberg.nightsout.main.MainActivity
 import java.util.*
+import kotlin.collections.ArrayList
 
 //private const val TAG = "AddDrinkFragment"
 

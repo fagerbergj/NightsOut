@@ -137,7 +137,10 @@ class HomeFragment : Fragment() {
         drinksListView.adapter = mDrinkListAdapter //Update display with new list
         drinksListView.layoutManager!!.scrollToPosition(mMainActivity.mDrinksList.size - 1) //Nav to end of list
 
+        setupDrinkItemTouchHelper(drinksListView)
+    }
 
+    private fun setupDrinkItemTouchHelper(drinksListView: RecyclerView){
         val simpleItemTouchCallback = object : ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP or ItemTouchHelper.DOWN, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
             override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
                 val fromPosition = viewHolder.adapterPosition
@@ -159,7 +162,7 @@ class HomeFragment : Fragment() {
                 mMainActivity.mDrinksList.removeAt(viewHolder.adapterPosition)
                 mDrinkListAdapter.notifyItemRemoved(viewHolder.adapterPosition)
                 mDrinkListAdapter.notifyItemRangeChanged(0, mMainActivity.mDrinksList.size)
-                showOrHideEmptyListText(view)
+                showOrHideEmptyListText(view!!)
                 mMainActivity.showToast("Drink removed")
             }
         }
