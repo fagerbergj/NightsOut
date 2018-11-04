@@ -69,7 +69,7 @@ class Converter {
         } else {
             timePeriod = ""
         }
-        if (hour == 0 && use24HourTime) hour = 12
+        if (hour == 0 && !use24HourTime) hour = 12
         var displayMinuet = minutes.toString()
         if (displayMinuet.length == 1) displayMinuet = "0$displayMinuet"
         return "$hour:$displayMinuet $timePeriod"
