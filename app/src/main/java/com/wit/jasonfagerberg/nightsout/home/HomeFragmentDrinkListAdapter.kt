@@ -48,7 +48,7 @@ class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: Ar
         if (drink.favorited) holder.favorited.setImageResource(R.drawable.favorite_red_18dp)
         else holder.favorited.setImageResource(R.drawable.favorite_border_red_18dp)
 
-        holder.foreground.setOnClickListener { _ -> showEditRemoveDialog(position) }
+        holder.foreground.setOnClickListener { showEditRemoveDialog(position) }
     }
 
     override fun getItemCount(): Int {

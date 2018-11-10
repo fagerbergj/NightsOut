@@ -11,6 +11,7 @@ import android.widget.TextView
 import com.wit.jasonfagerberg.nightsout.main.Drink
 import com.wit.jasonfagerberg.nightsout.main.MainActivity
 import com.wit.jasonfagerberg.nightsout.R
+import com.wit.jasonfagerberg.nightsout.databaseHelper.AddDrinkDatabaseHelper
 import com.wit.jasonfagerberg.nightsout.dialogs.LightSimpleDialog
 import java.util.ArrayList
 
@@ -43,6 +44,10 @@ class AddDrinkFragmentRecentsListAdapter(private val mContext: Context, drinksLi
                 mRecentDrinksList.remove(drink)
                 this.notifyItemRemoved(position)
                 mMainActivity.showToast("Drink Removed")
+                mMainActivity.addDrinkFragment.showOrHideEmptyTextViews(mMainActivity.addDrinkFragment.view!!)
+                drink.recent = false
+                val addDrinkDBHelper = AddDrinkDatabaseHelper(mMainActivity.mDatabaseHelper)
+                addDrinkDBHelper.updateDrinkFavoriteStatus(drink)
             }
             lightSimpleDialog.setActions(posAction, {})
             lightSimpleDialog.show("Remove from recents?")
