@@ -15,13 +15,11 @@ import com.wit.jasonfagerberg.nightsout.main.Drink
 import com.wit.jasonfagerberg.nightsout.R
 import android.widget.ArrayAdapter
 import android.widget.AdapterView
-import androidx.recyclerview.widget.ItemTouchHelper
 import com.wit.jasonfagerberg.nightsout.converter.Converter
 import com.wit.jasonfagerberg.nightsout.databaseHelper.AddDrinkDatabaseHelper
 import com.wit.jasonfagerberg.nightsout.dialogs.LightSimpleDialog
 import com.wit.jasonfagerberg.nightsout.main.MainActivity
 import java.util.*
-import kotlin.collections.ArrayList
 
 //private const val TAG = "AddDrinkFragment"
 
@@ -204,7 +202,7 @@ class AddDrinkFragment : Fragment() {
         val addDrinkDBHelper = AddDrinkDatabaseHelper(mMainActivity.mDatabaseHelper)
         val names = addDrinkDBHelper.pullDrinkNames()
         val adapter = ArrayAdapter<String>(context!!, R.layout.fragment_add_drink_name_suggestion_list,
-                R.id.text_view_list_item, names)
+                R.id.text_add_drink_suggestion_name, names)
         mEditName.setAdapter(adapter)
 
         mEditName.onItemClickListener = AdapterView.OnItemClickListener { _, _, position: Int, _ ->
