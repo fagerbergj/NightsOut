@@ -160,7 +160,7 @@ class ProfileFragment : Fragment() {
     }
 
     private fun setupFavoritesItemTouchHelper(){
-        val simpleItemTouchCallback = object : ItemTouchHelper.SimpleCallback(ItemTouchHelper.RIGHT or ItemTouchHelper.LEFT, ItemTouchHelper.DOWN or ItemTouchHelper.UP) {
+        val simpleItemTouchCallback = object : ItemTouchHelper.SimpleCallback(ItemTouchHelper.RIGHT or ItemTouchHelper.LEFT, 0) {
             override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
                 val fromPosition = viewHolder.adapterPosition
                 val toPosition = target.adapterPosition
