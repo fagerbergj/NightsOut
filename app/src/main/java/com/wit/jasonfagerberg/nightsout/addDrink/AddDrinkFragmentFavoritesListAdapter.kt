@@ -47,6 +47,10 @@ class AddDrinkFragmentFavoritesListAdapter(private val mContext: Context, drinks
                 notifyItemRemoved(position)
                 notifyItemRangeChanged(position, mFavoriteDrinksList.size)
                 mMainActivity.addDrinkFragment.showOrHideEmptyTextViews(mMainActivity.addDrinkFragment.view!!)
+                for (d in mMainActivity.mDrinksList) {
+                    if (d == drink) d.favorited = false
+                }
+                mMainActivity.mDatabaseHelper.deleteRowsInTable("favorites", "drink_name = \"${drink.name}\"")
             }
             lightSimpleDialog.setActions(posAction, {})
             lightSimpleDialog.show("Remove from favorites?")

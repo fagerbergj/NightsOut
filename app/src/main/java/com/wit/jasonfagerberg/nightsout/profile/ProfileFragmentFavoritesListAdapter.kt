@@ -49,7 +49,7 @@ class ProfileFragmentFavoritesListAdapter(private val mContext: Context, drinksL
                     if (d == drink) d.favorited = false
                 }
                 mFavoriteDrinksList.removeAt(position)
-                //(mContext as MainActivity).mDatabaseHelper.deleteRowsInTable("favorites", "drink_name = \"${drink.name}\"")
+                mContext.mDatabaseHelper.deleteRowsInTable("favorites", "drink_name = \"${drink.name}\"")
 
                 holder.image.setImageResource(R.drawable.favorite_border_white_24dp)
                 //mFavoriteDrinksList.remove(drink)
