@@ -48,4 +48,24 @@ class AddDrinkFragmentDatabaseTalker(private val addDrinkFragment: AddDrinkFragm
             }
         }
     }
+
+    fun getSuggestedDrinks(filter: String): ArrayList<Drink>{
+        val res = ArrayList<Drink>()
+        val cursor = mainActivity.mDatabaseHelper.db.query(true, "drinks", null,
+                "name LIKE ?", arrayOf("%$filter%"), null, null, "name", null)
+        while (cursor.moveToNext()){
+            val id = cursor.getInt(cursor.getColumnIndex("id"))
+            val drinkName = cursor.getString(cursor.getColumnIndex("name"))
+            val abv = cursor.getDouble(cursor.getColumnIndex("abv"))
+            val amount = cursor.getDouble(cursor.getColumnIndex("amount"))
+            val measurement = cursor.getString(cursor.getColumnIndex("measurement"))
+            val modifiedTime = cursor.getLong(cursor.getColumnIndex("modifiedTime"))
+            val recent = cursor.getInt(cursor.getColumnIndex("recent"))
+            val favorited = mainActivity.mDatabaseHelper.isFavoritedInDB(drinkName)
+
+            res.add(Drink(id, drinkName, abv, amount, measurement, favorited, recent == 1, modifiedTime))
+        }
+        cursor.close()
+        return res
+    }
 }

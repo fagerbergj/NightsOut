@@ -2,6 +2,8 @@ package com.wit.jasonfagerberg.nightsout.addDrink
 
 import android.graphics.Typeface
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 //import android.util.Log
 import com.google.android.material.button.MaterialButton
 import androidx.fragment.app.Fragment
@@ -14,12 +16,15 @@ import android.widget.*
 import com.wit.jasonfagerberg.nightsout.main.Drink
 import com.wit.jasonfagerberg.nightsout.R
 import android.widget.ArrayAdapter
-import android.widget.AdapterView
 import com.wit.jasonfagerberg.nightsout.converter.Converter
-import com.wit.jasonfagerberg.nightsout.databaseHelper.AddDrinkDatabaseHelper
 import com.wit.jasonfagerberg.nightsout.dialogs.LightSimpleDialog
 import com.wit.jasonfagerberg.nightsout.main.MainActivity
 import java.util.*
+import android.widget.TextView
+import com.wit.jasonfagerberg.nightsout.addDrink.drinkSuggestion.DrinkSuggestionAutoCompleteView
+import com.wit.jasonfagerberg.nightsout.addDrink.drinkSuggestion.DrinkSuggestionArrayAdapter
+import kotlin.collections.ArrayList
+
 
 //private const val TAG = "AddDrinkFragment"
 
@@ -72,9 +77,9 @@ class AddDrinkFragment : Fragment() {
         // add button setup
         val btnAdd = view.findViewById<MaterialButton>(R.id.btn_add_drink_add)
         if (mFavorited) btnAdd.text = resources.getText(R.string.add_favorite)
-        btnAdd.setOnClickListener { _ -> addDrink() }
+        btnAdd.setOnClickListener { addDrink() }
 
-        mEditName = view.findViewById(R.id.edit_add_drink_name)
+        mEditName = view.findViewById(R.id.auto_drink_suggestion)
         mEditAbv = view.findViewById(R.id.edit_add_drink_abv)
         mEditAmount = view.findViewById(R.id.edit_add_drink_amount)
 
@@ -198,18 +203,33 @@ class AddDrinkFragment : Fragment() {
     }
 
     private fun drinkNameEditTextSetup(view: View) {
-        val mEditName = view.findViewById<AutoCompleteTextView>(R.id.edit_add_drink_name)
-        val addDrinkDBHelper = AddDrinkDatabaseHelper(mMainActivity.mDatabaseHelper)
-        val names = addDrinkDBHelper.pullDrinkNames()
-        val adapter = ArrayAdapter<String>(context!!, R.layout.fragment_add_drink_name_suggestion_list,
-                R.id.text_add_drink_suggestion_name, names)
-        mEditName.setAdapter(adapter)
+        val databaseTalker = AddDrinkFragmentDatabaseTalker(this, mMainActivity, canUnfavorite, mFavorited)
+        val autoComplete = view.findViewById<DrinkSuggestionAutoCompleteView>(R.id.auto_drink_suggestion)
 
-        mEditName.onItemClickListener = AdapterView.OnItemClickListener { _, _, position: Int, _ ->
-            val item = adapter.getItem(position)
-            val drink = addDrinkDBHelper.getDrinkFromName(item!!)
+        // ObjectItemData has no value at first
+        var drinks = ArrayList<Drink>().toTypedArray()
 
-            if (drink != null) fillViews(drink.name, drink.abv, drink.amount, drink.measurement)
+        // set the custom ArrayAdapter
+        var adapter = DrinkSuggestionArrayAdapter(context!!, R.layout.fragment_add_drink_name_suggestion_list, drinks)
+        autoComplete.setAdapter(adapter)
+
+        // add the listener so it will tries to suggest while the user types
+        autoComplete.addTextChangedListener(object: TextWatcher {
+            override fun afterTextChanged(s: Editable?) {}
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                val temp = databaseTalker.getSuggestedDrinks(s.toString()).toTypedArray()
+                drinks = if (temp.isNotEmpty()) temp else drinks
+                adapter = DrinkSuggestionArrayAdapter(context!!, R.layout.fragment_add_drink_name_suggestion_list, drinks)
+                autoComplete.setAdapter(adapter)
+                adapter.notifyDataSetChanged()
+            }
+        })
+
+        autoComplete.setOnItemClickListener{ parent , arg1 , position, id ->
+            val drink = adapter.data[position]
+            fillViews(drink.name, drink.abv, drink.amount, drink.measurement)
+            autoComplete.dismissDropDown()
         }
     }
 
@@ -237,7 +257,7 @@ class AddDrinkFragment : Fragment() {
     }
 
     fun fillViews(name: String, abv: Double, amount: Double, measurement: String) {
-        val mEditName = view!!.findViewById<EditText>(R.id.edit_add_drink_name)
+        val mEditName = view!!.findViewById<EditText>(R.id.auto_drink_suggestion)
         val mEditAbv = view!!.findViewById<EditText>(R.id.edit_add_drink_abv)
         val mEditAmount = view!!.findViewById<EditText>(R.id.edit_add_drink_amount)
         val dropdown = view!!.findViewById<Spinner>(R.id.spinner_add_drink_amount)
