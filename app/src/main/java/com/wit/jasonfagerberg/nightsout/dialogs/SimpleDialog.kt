@@ -17,7 +17,7 @@ class SimpleDialog(context: Context, layoutInflater: LayoutInflater) {
     init {
         val builder = AlertDialog.Builder(context)
         val parent: ViewGroup? = null
-        val dialogView = layoutInflater.inflate(R.layout.simple_dialog, parent, false)
+        val dialogView = layoutInflater.inflate(R.layout.dialog_simple, parent, false)
 
         builder.setView(dialogView)
         dialog = builder.create()

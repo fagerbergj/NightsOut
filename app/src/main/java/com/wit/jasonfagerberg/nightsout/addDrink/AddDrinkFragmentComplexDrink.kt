@@ -18,7 +18,7 @@ class AddDrinkFragmentComplexDrink(val parent: AddDrinkFragment) {
         linearLayoutManagerRecents.orientation = RecyclerView.VERTICAL
         recyclerAlcoholSource.layoutManager = linearLayoutManagerRecents
 
-        btnAddAnotherAlcoholSource.setOnClickListener { _ ->
+        btnAddAnotherAlcoholSource.setOnClickListener {
             addToAlcoholSourceList()
         }
     }

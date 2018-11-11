@@ -21,7 +21,7 @@ class ProfileFragmentFavoritesListAdapter(private val mContext: Context, drinksL
     // set layout inflater & inflate layout
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(mContext)
-        val view = inflater.inflate(R.layout.favorites_item, parent, false)
+        val view = inflater.inflate(R.layout.item_favorite, parent, false)
         return ViewHolder(view)
     }
 
@@ -29,7 +29,7 @@ class ProfileFragmentFavoritesListAdapter(private val mContext: Context, drinksL
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val drink = mFavoriteDrinksList[position]
         holder.name.text = drink.name
-        holder.card.setOnClickListener { _ ->
+        holder.card.setOnClickListener {
             holder.favorited = !holder.favorited
 
             if (holder.favorited) {

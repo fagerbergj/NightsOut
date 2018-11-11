@@ -23,7 +23,7 @@ class AddDrinkFragmentFavoritesListAdapter(private val mContext: Context, drinks
     // set layout inflater & inflate layout
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(mContext)
-        val view = inflater.inflate(R.layout.favorites_item, parent, false)
+        val view = inflater.inflate(R.layout.item_favorite, parent, false)
         mMainActivity = mContext as MainActivity
         return ViewHolder(view)
     }
@@ -32,7 +32,7 @@ class AddDrinkFragmentFavoritesListAdapter(private val mContext: Context, drinks
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val drink = mFavoriteDrinksList[position]
         holder.name.text = drink.name
-        holder.card.setOnClickListener { _ ->
+        holder.card.setOnClickListener {
             mMainActivity.showToast("${holder.name.text} information filled in")
             holder.image.setImageResource(R.drawable.favorite_white_24dp)
             mMainActivity.addDrinkFragment.fillViews(drink.name, drink.abv, drink.amount, drink.measurement)

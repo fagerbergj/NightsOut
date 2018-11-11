@@ -24,7 +24,7 @@ class AddDrinkFragmentRecentsListAdapter(private val mContext: Context, drinksLi
     // set layout inflater & inflate layout
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(mContext)
-        val view = inflater.inflate(R.layout.recents_item, parent, false)
+        val view = inflater.inflate(R.layout.item_recents, parent, false)
         mMainActivity = mContext as MainActivity
         return ViewHolder(view)
     }
@@ -33,7 +33,7 @@ class AddDrinkFragmentRecentsListAdapter(private val mContext: Context, drinksLi
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val drink = mRecentDrinksList[position]
         holder.name.text = drink.name
-        holder.card.setOnClickListener { _ ->
+        holder.card.setOnClickListener {
             mMainActivity.showToast("${holder.name.text} information filled in")
             mMainActivity.addDrinkFragment.fillViews(drink.name, drink.abv, drink.amount, drink.measurement)
         }
@@ -46,7 +46,7 @@ class AddDrinkFragmentRecentsListAdapter(private val mContext: Context, drinksLi
                 mMainActivity.showToast("Drink Removed")
                 mMainActivity.addDrinkFragment.showOrHideEmptyTextViews(mMainActivity.addDrinkFragment.view!!)
                 drink.recent = false
-                val addDrinkDBHelper = AddDrinkDatabaseHelper(mMainActivity.mDatabaseHelper)
+                val addDrinkDBHelper = AddDrinkDatabaseHelper(mMainActivity)
                 addDrinkDBHelper.updateDrinkFavoriteStatus(drink)
             }
             lightSimpleDialog.setActions(posAction, {})

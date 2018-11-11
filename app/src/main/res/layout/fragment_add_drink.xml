@@ -126,8 +126,8 @@
                 android:text="@string/name"
                 android:textSize="18sp" />
 
-            <AutoCompleteTextView
-                android:id="@+id/edit_add_drink_name"
+            <com.wit.jasonfagerberg.nightsout.addDrink.drinkSuggestion.DrinkSuggestionAutoCompleteView
+                android:id="@+id/auto_drink_suggestion"
                 android:layout_width="225dp"
                 android:layout_height="50dp"
                 android:completionThreshold="0"
