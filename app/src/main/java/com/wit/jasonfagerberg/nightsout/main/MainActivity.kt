@@ -23,7 +23,7 @@ import com.wit.jasonfagerberg.nightsout.log.LogHeader
 import com.wit.jasonfagerberg.nightsout.profile.ProfileFragment
 import java.util.*
 
-private const val TAG = "MainActivity"
+//private const val TAG = "MainActivity"
 
 private const val DB_NAME = "nights_out_db.db"
 private const val DB_VERSION = 37

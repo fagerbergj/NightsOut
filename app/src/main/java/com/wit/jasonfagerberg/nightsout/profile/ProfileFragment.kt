@@ -69,7 +69,7 @@ class ProfileFragment : Fragment() {
 
         // save button setup
         btnSave = view.findViewById(R.id.btn_profile_save)
-        btnSave.setOnClickListener { _ -> saveProfile(view) }
+        btnSave.setOnClickListener { saveProfile(view) }
 
         // edit Text setup
         mWeightEditText = view.findViewById(R.id.edit_profile_weight)
@@ -86,7 +86,7 @@ class ProfileFragment : Fragment() {
 
         // add favorite button setup
         val btnAddFavorite = view.findViewById<MaterialButton>(R.id.btn_profile_add_favorite)
-        btnAddFavorite.setOnClickListener { _ ->
+        btnAddFavorite.setOnClickListener {
             mMainActivity.addDrinkFragment.mFavorited = true
             mMainActivity.setFragment(mMainActivity.addDrinkFragment)
         }
@@ -211,11 +211,11 @@ class ProfileFragment : Fragment() {
             pressFemaleButton()
         }
 
-        btnMale.setOnClickListener { _ ->
+        btnMale.setOnClickListener {
             pressMaleButton()
         }
 
-        btnFemale.setOnClickListener { _ ->
+        btnFemale.setOnClickListener {
             pressFemaleButton()
         }
     }

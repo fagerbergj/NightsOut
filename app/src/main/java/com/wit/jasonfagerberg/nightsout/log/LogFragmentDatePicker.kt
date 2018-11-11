@@ -53,12 +53,12 @@ class LogFragmentDatePicker(private val logFragment: LogFragment,
         simpleDialog.setBody(message)
 
         simpleDialog.setNegativeButtonText(mainActivity.resources.getString(R.string.cancel))
-        simpleDialog.setNegativeFunction { _ ->
+        simpleDialog.setNegativeFunction {
             simpleDialog.dismiss()
         }
 
         simpleDialog.setPositiveButtonText(mainActivity.resources.getString(R.string.update))
-        simpleDialog.setPositiveFunction { _ ->
+        simpleDialog.setPositiveFunction {
             logDatabaseHelper.deleteLog(logDate)
             mainActivity.mLogHeaders.add(LogHeader(logDate, header.bac, header.duration))
             logDatabaseHelper.changeLogDate(header.date, logDate)

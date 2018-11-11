@@ -24,7 +24,7 @@ import android.widget.TextView
 
 
 
-private const val TAG = "HomeFragment"
+//private const val TAG = "HomeFragment"
 
 class HomeFragment : Fragment() {
     lateinit var mDrinkListAdapter: HomeFragmentDrinkListAdapter
@@ -53,7 +53,7 @@ class HomeFragment : Fragment() {
 
         // add a drink button setup
         val btnAdd = view.findViewById<MaterialButton>(R.id.btn_home_add_drink)
-        btnAdd.setOnClickListener { _ ->
+        btnAdd.setOnClickListener {
             val mainActivity: MainActivity = context as MainActivity
             mMainActivity.addDrinkFragment.mFavorited = false
             mainActivity.setFragment(mainActivity.addDrinkFragment)
@@ -66,7 +66,7 @@ class HomeFragment : Fragment() {
         setupEditTexts(view)
 
         val bacInfoDialog = HomeFragmentBacInfoDialog(this, mMainActivity, mConverter)
-        view.findViewById<ImageButton>(R.id.btn_home_bac_info).setOnClickListener { _ ->
+        view.findViewById<ImageButton>(R.id.btn_home_bac_info).setOnClickListener {
             bacInfoDialog.showBacInfoDialog()
         }
 
@@ -179,11 +179,11 @@ class HomeFragment : Fragment() {
         startPicker.setText(mConverter.timeToString(mMainActivity.startTimeMin, mMainActivity.use24HourTime))
         endPicker.setText(mConverter.timeToString(mMainActivity.endTimeMin, mMainActivity.use24HourTime))
 
-        startPicker.setOnClickListener { _ ->
+        startPicker.setOnClickListener {
             startTimeEditTextOnCLickListener(startPicker)
         }
 
-        endPicker.setOnClickListener { _ ->
+        endPicker.setOnClickListener {
             endTimeEditTextOnCLickListener(endPicker)
         }
     }
@@ -298,8 +298,8 @@ class HomeFragment : Fragment() {
         val bacResultView = view!!.findViewById<TextView>(R.id.text_home_bac_result)
 
         val bacInfo = HomeFragmentBacInfoDialog(this, mMainActivity, mConverter)
-        bacValueView.setOnClickListener { _ -> bacInfo.showBacInfoDialog() }
-        bacResultView.setOnClickListener { _ -> bacInfo.showBacInfoDialog() }
+        bacValueView.setOnClickListener { bacInfo.showBacInfoDialog() }
+        bacResultView.setOnClickListener { bacInfo.showBacInfoDialog() }
 
         val bacText = "%.3f".format(bac)
         when {

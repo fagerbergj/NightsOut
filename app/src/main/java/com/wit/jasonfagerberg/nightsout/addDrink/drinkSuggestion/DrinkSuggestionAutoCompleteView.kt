@@ -2,9 +2,9 @@ package com.wit.jasonfagerberg.nightsout.addDrink.drinkSuggestion
 
 import android.content.Context
 import android.util.AttributeSet
-import android.widget.AutoCompleteTextView
+import androidx.appcompat.widget.AppCompatAutoCompleteTextView
 
-class DrinkSuggestionAutoCompleteView : AutoCompleteTextView {
+class DrinkSuggestionAutoCompleteView : AppCompatAutoCompleteTextView {
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs)

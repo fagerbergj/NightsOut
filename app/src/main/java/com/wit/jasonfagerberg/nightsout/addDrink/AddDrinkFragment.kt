@@ -23,6 +23,7 @@ import java.util.*
 import android.widget.TextView
 import com.wit.jasonfagerberg.nightsout.addDrink.drinkSuggestion.DrinkSuggestionAutoCompleteView
 import com.wit.jasonfagerberg.nightsout.addDrink.drinkSuggestion.DrinkSuggestionArrayAdapter
+import com.wit.jasonfagerberg.nightsout.databaseHelper.AddDrinkDatabaseHelper
 import kotlin.collections.ArrayList
 
 
@@ -177,7 +178,7 @@ class AddDrinkFragment : Fragment() {
 
         toolbar.setNavigationIcon(R.drawable.arrow_back_white_24dp)
 
-        toolbar.setNavigationOnClickListener { _: View -> activity!!.onBackPressed() }
+        toolbar.setNavigationOnClickListener { activity!!.onBackPressed() }
     }
 
     private fun setupRecentsAndFavoritesRecycler(view: View) {
@@ -203,7 +204,7 @@ class AddDrinkFragment : Fragment() {
     }
 
     private fun drinkNameEditTextSetup(view: View) {
-        val databaseTalker = AddDrinkFragmentDatabaseTalker(this, mMainActivity, canUnfavorite, mFavorited)
+        val databaseTalker = AddDrinkDatabaseHelper(mMainActivity)
         val autoComplete = view.findViewById<DrinkSuggestionAutoCompleteView>(R.id.auto_drink_suggestion)
 
         // ObjectItemData has no value at first
@@ -226,7 +227,7 @@ class AddDrinkFragment : Fragment() {
             }
         })
 
-        autoComplete.setOnItemClickListener{ parent , arg1 , position, id ->
+        autoComplete.setOnItemClickListener{ _ , _ , position, _ ->
             val drink = adapter.data[position]
             fillViews(drink.name, drink.abv, drink.amount, drink.measurement)
             autoComplete.dismissDropDown()
@@ -283,8 +284,8 @@ class AddDrinkFragment : Fragment() {
         val abv = if (!complexMode) mEditAbv.text.toString().toDouble() else mComplexDrinkMode.weightedAverageAbv()
         val amount = if (!complexMode) mEditAmount.text.toString().toDouble() else mComplexDrinkMode.sumAmount()
         val measurement = if (!complexMode) mSpinnerAmount.selectedItem.toString() else "oz"
-        val dbTalker = AddDrinkFragmentDatabaseTalker(this, mMainActivity, canUnfavorite, mFavorited)
-        dbTalker.buildDrinkAndAddToList(name, abv, amount, measurement)
+        val dbTalker = AddDrinkDatabaseHelper(mMainActivity)
+        dbTalker.buildDrinkAndAddToList(name, abv, amount, measurement, mFavorited, canUnfavorite)
 
         mEditName.text.clear()
         mEditAbv.text.clear()

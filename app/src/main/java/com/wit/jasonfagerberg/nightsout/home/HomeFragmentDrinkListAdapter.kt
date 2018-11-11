@@ -65,7 +65,7 @@ class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: Ar
             favorite.setCompoundDrawablesWithIntrinsicBounds(R.drawable.favorite_red_18dp, 0, 0, 0)
         }
 
-        favorite.setOnClickListener { _ ->
+        favorite.setOnClickListener {
             onFavoriteClicked(drink)
             dismissDialog(dialog)
         }
@@ -85,7 +85,7 @@ class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: Ar
 
         // add another button
         val another = dialogView.findViewById<TextView>(R.id.text_drink_modify_add_another)
-        another.setOnClickListener { _ ->
+        another.setOnClickListener {
             onAddAnotherClicked(position)
             dismissDialog(dialog)
         }
@@ -94,14 +94,14 @@ class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: Ar
 
         // edit button clicked
         val edit = dialogView.findViewById<TextView>(R.id.text_drink_modify_edit_drink)
-        edit.setOnClickListener { _ ->
+        edit.setOnClickListener {
             showEditDialog(position)
             dialog.dismiss()
         }
 
         //delete button clicked
         val delete = dialogView.findViewById<TextView>(R.id.text_drink_modify_remove_drink)
-        delete.setOnClickListener { _ ->
+        delete.setOnClickListener {
             removeItem(position)
             dismissDialog(dialog)
             mMainActivity.homeFragment.showOrHideEmptyListText(mMainActivity.homeFragment.view!!)
@@ -184,7 +184,7 @@ class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: Ar
         dropdown.adapter = adapter
         dropdown.setSelection(items.indexOf(drink.measurement))
 
-        dialog.findViewById<MaterialButton>(R.id.btn_edit_drink_edit).setOnClickListener { _ ->
+        dialog.findViewById<MaterialButton>(R.id.btn_edit_drink_edit).setOnClickListener {
             onDialogEditClick(drink, editName, editABV, editAmount, dropdown)
             this.notifyItemChanged(position)
             drink.modifiedTime = mMainActivity.getLongTimeNow()
@@ -223,7 +223,7 @@ class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: Ar
         val foundID = mMainActivity.mDatabaseHelper.getDrinkIdFromFullDrinkInfo(drink)
         val existsInDB = foundID != -1
         drink.id = foundID
-        if (!drink.isExactSameDrink(other) && !existsInDB) {
+        if (!drink.isExactDrink(other) && !existsInDB) {
             if (drink.name != other.name) drink.favorited = false
             mMainActivity.mDatabaseHelper.insertDrinkIntoDrinksTable(drink)
             drink.id = mMainActivity.mDatabaseHelper.getDrinkIdFromFullDrinkInfo(drink)

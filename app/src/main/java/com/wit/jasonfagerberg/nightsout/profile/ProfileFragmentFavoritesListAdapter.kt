@@ -29,7 +29,7 @@ class ProfileFragmentFavoritesListAdapter(private val mContext: Context, drinksL
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val drink = mFavoriteDrinksList[position]
         holder.name.text = drink.name
-        holder.card.setOnClickListener { _ ->
+        holder.card.setOnClickListener {
             holder.favorited = !holder.favorited
 
             if (holder.favorited) {

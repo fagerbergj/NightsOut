@@ -39,7 +39,7 @@ class AddDrinkFragmentAlcoholSourceAdapter(private val mContext: Context, alcoho
         holder.textAmount.text = alcoholSource.amount.toString()
         holder.textMeasurement.text = alcoholSource.measurement
 
-        holder.layout.setOnClickListener { _ ->
+        holder.layout.setOnClickListener {
             val lightSimpleDialog = LightSimpleDialog(mContext)
             val posAction = {
                 mAlcoholSourceList.remove(alcoholSource)
