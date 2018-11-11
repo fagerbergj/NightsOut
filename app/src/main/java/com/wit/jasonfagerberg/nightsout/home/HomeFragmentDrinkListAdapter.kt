@@ -3,12 +3,12 @@ package com.wit.jasonfagerberg.nightsout.home
 import android.app.AlertDialog
 import android.content.Context
 import android.graphics.BitmapFactory
-import com.google.android.material.button.MaterialButton
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import com.wit.jasonfagerberg.nightsout.R
+import com.wit.jasonfagerberg.nightsout.dialogs.EditDrinkDialog
 import com.wit.jasonfagerberg.nightsout.main.Drink
 import com.wit.jasonfagerberg.nightsout.main.MainActivity
 import java.util.*
@@ -151,45 +151,19 @@ class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: Ar
     private fun showEditDialog(position: Int) {
         val drink = mDrinksList[position]
 
-        val builder = AlertDialog.Builder(mContext)
-        val parent: ViewGroup? = null
-        val dialogView = mMainActivity.layoutInflater
-                .inflate(R.layout.fragment_home_dialog_edit, parent, false)
-
-        builder.setView(dialogView)
-        val dialog = builder.create()
-        dialog.show()
-
-        val title = dialogView.findViewById<TextView>(R.id.text_edit_drink_title)
+        val dialog = EditDrinkDialog(mContext, mMainActivity.layoutInflater)
         val titleString = "Edit: ${drink.name}"
-        title.text = titleString
-
-        val editName = dialogView.findViewById<EditText>(R.id.edit_edit_drink_name)
-        editName.setText(drink.name)
-
-        val editABV = dialogView.findViewById<EditText>(R.id.edit_edit_drink_abv)
-        editABV.setText(drink.abv.toString())
-
-        val editAmount = dialogView.findViewById<EditText>(R.id.edit_edit_drink_amount)
-        editAmount.setText(drink.amount.toString())
-
-        val dropdown: Spinner = dialogView.findViewById(R.id.spinner_edit_drink_amount)
-        val country = Locale.getDefault().country
-        val items = arrayOf("ml", "oz", "beers", "shots", "wine glasses")
-        if (country == "US" || country == "LR" || country == "MM") {
-            items[0] = "oz"
-            items[1] = "ml"
-        }
-        val adapter = ArrayAdapter(mContext, android.R.layout.simple_spinner_dropdown_item, items)
-        dropdown.adapter = adapter
-        dropdown.setSelection(items.indexOf(drink.measurement))
-
-        dialog.findViewById<MaterialButton>(R.id.btn_edit_drink_edit).setOnClickListener {
-            onDialogEditClick(drink, editName, editABV, editAmount, dropdown)
+        dialog.setTitle(titleString)
+        dialog.fillViews(drink.name, drink.abv.toString(), drink.amount.toString(), drink.measurement)
+        dialog.setEditOnClickAction {
+            onDialogEditClick(drink, dialog.editName, dialog.editAbv, dialog.editAmount, dialog.spinnerMeasurement)
             this.notifyItemChanged(position)
             drink.modifiedTime = mMainActivity.getLongTimeNow()
-            dismissDialog(dialog)
+            mMainActivity.homeFragment.calculateBAC()
+            dialog.dismiss()
         }
+
+        dialog.show()
     }
 
 

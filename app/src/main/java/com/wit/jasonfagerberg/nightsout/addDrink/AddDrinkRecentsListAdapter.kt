@@ -24,7 +24,7 @@ class AddDrinkFragmentRecentsListAdapter(private val mContext: Context, drinksLi
     // set layout inflater & inflate layout
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(mContext)
-        val view = inflater.inflate(R.layout.recents_item, parent, false)
+        val view = inflater.inflate(R.layout.item_recents, parent, false)
         mMainActivity = mContext as MainActivity
         return ViewHolder(view)
     }

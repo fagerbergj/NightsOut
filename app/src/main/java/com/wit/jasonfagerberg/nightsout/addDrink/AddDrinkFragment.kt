@@ -211,7 +211,7 @@ class AddDrinkFragment : Fragment() {
         var drinks = ArrayList<Drink>().toTypedArray()
 
         // set the custom ArrayAdapter
-        var adapter = DrinkSuggestionArrayAdapter(context!!, R.layout.fragment_add_drink_name_suggestion_list, drinks)
+        var adapter = DrinkSuggestionArrayAdapter(context!!, R.layout.fragment_add_drink_suggestion_list, drinks)
         autoComplete.setAdapter(adapter)
 
         // add the listener so it will tries to suggest while the user types
@@ -221,7 +221,7 @@ class AddDrinkFragment : Fragment() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 val temp = databaseTalker.getSuggestedDrinks(s.toString()).toTypedArray()
                 drinks = if (temp.isNotEmpty()) temp else drinks
-                adapter = DrinkSuggestionArrayAdapter(context!!, R.layout.fragment_add_drink_name_suggestion_list, drinks)
+                adapter = DrinkSuggestionArrayAdapter(context!!, R.layout.fragment_add_drink_suggestion_list, drinks)
                 autoComplete.setAdapter(adapter)
                 adapter.notifyDataSetChanged()
             }
