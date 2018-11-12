@@ -20,8 +20,7 @@ import android.widget.RelativeLayout
 import com.wit.jasonfagerberg.nightsout.dialogs.LightSimpleDialog
 import androidx.recyclerview.widget.ItemTouchHelper
 import android.widget.TextView
-
-
+import com.wit.jasonfagerberg.nightsout.manageDB.ManageDBFragment
 
 
 //private const val TAG = "HomeFragment"
@@ -108,6 +107,10 @@ class HomeFragment : Fragment() {
             R.id.btn_toolbar_toggle_time_display -> {
                 mMainActivity.use24HourTime = !mMainActivity.use24HourTime
                 setupEditTexts(view!!)
+            }
+            R.id.btn_toolbar_manage_db -> {
+                mMainActivity.hideBottomNavBar()
+                mMainActivity.setFragment(ManageDBFragment())
             }
         }
         return true
