@@ -20,8 +20,7 @@ import android.widget.RelativeLayout
 import com.wit.jasonfagerberg.nightsout.dialogs.LightSimpleDialog
 import androidx.recyclerview.widget.ItemTouchHelper
 import android.widget.TextView
-
-
+import com.wit.jasonfagerberg.nightsout.manageDB.ManageDBFragment
 
 
 //private const val TAG = "HomeFragment"
@@ -109,6 +108,10 @@ class HomeFragment : Fragment() {
                 mMainActivity.use24HourTime = !mMainActivity.use24HourTime
                 setupEditTexts(view!!)
             }
+            R.id.btn_toolbar_manage_db -> {
+                mMainActivity.hideBottomNavBar()
+                mMainActivity.setFragment(ManageDBFragment())
+            }
         }
         return true
     }
@@ -141,7 +144,8 @@ class HomeFragment : Fragment() {
     }
 
     private fun setupDrinkItemTouchHelper(drinksListView: RecyclerView){
-        val simpleItemTouchCallback = object : ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP or ItemTouchHelper.DOWN, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
+        val simpleItemTouchCallback = object : ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP
+                or ItemTouchHelper.DOWN, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
             override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
                 val fromPosition = viewHolder.adapterPosition
                 val toPosition = target.adapterPosition

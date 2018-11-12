@@ -11,6 +11,10 @@
         android:title="@string/log_session"
         app:showAsAction="ifRoom" />
     <item
+        android:id="@+id/btn_toolbar_manage_db"
+        android:title="@string/fragment_manage_db_name"
+        app:showAsAction="never"/>
+    <item
         android:id="@+id/btn_clear_recents_list"
         android:title="@string/clear_recents_list"
         app:showAsAction="never" />

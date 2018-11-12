@@ -17,7 +17,6 @@ class Drink(var id: Int, var name: String, var abv: Double, var amount: Double,
     }
 
     fun isExactDrink(other: Drink): Boolean {
-        return this.name == other.name && this.abv == other.abv && this.amount == other.amount
-                && this.measurement == other.measurement
+        return this.id == other.id
     }
 }

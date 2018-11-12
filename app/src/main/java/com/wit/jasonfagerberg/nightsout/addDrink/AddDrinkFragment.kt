@@ -24,6 +24,7 @@ import android.widget.TextView
 import com.wit.jasonfagerberg.nightsout.addDrink.drinkSuggestion.DrinkSuggestionAutoCompleteView
 import com.wit.jasonfagerberg.nightsout.addDrink.drinkSuggestion.DrinkSuggestionArrayAdapter
 import com.wit.jasonfagerberg.nightsout.databaseHelper.AddDrinkDatabaseHelper
+import com.wit.jasonfagerberg.nightsout.manageDB.ManageDBFragment
 import kotlin.collections.ArrayList
 
 
@@ -165,6 +166,9 @@ class AddDrinkFragment : Fragment() {
                 lightSimpleDialog.setActions(posAction, {})
                 lightSimpleDialog.show("Are you sure you want to clear all recent drinks?")
             }
+            R.id.btn_toolbar_manage_db -> {
+                mMainActivity.setFragment(ManageDBFragment())
+            }
         }
         return true
     }
@@ -220,7 +224,7 @@ class AddDrinkFragment : Fragment() {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 val temp = databaseTalker.getSuggestedDrinks(s.toString()).toTypedArray()
-                drinks = if (temp.isNotEmpty()) temp else drinks
+                drinks = if (temp.isNotEmpty() || count < 60) temp else drinks
                 adapter = DrinkSuggestionArrayAdapter(context!!, R.layout.fragment_add_drink_suggestion_list, drinks)
                 autoComplete.setAdapter(adapter)
                 adapter.notifyDataSetChanged()
