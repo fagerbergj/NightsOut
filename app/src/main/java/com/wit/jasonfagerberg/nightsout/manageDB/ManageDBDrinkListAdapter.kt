@@ -139,6 +139,7 @@ class ManageDBDrinkListAdapter(private val mContext: Context,private val mDrinks
                 if (!drinks.isEmpty()){
                     mMainActivity.mRecentsList.add(i, drinks[0])
                 }
+                break
             }
         }
     }
