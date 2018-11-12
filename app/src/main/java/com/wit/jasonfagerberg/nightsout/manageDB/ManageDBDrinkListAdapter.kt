@@ -58,7 +58,7 @@ class ManageDBDrinkListAdapter(private val mContext: Context,private val mDrinks
 
         holder.favorite.setOnClickListener {
             drink.favorited = !drink.favorited
-            drink.modifiedTime = mMainActivity.getLongTimeNow()
+            mMainActivity.mDatabaseHelper.updateDrinkModifiedTime(drink.id, mMainActivity.getLongTimeNow())
             for (d in mDrinksList){
                 if (d == drink) d.favorited = drink.favorited
             }

@@ -38,7 +38,7 @@ class ManageDBFragment : Fragment() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
-        inflater!!.inflate(R.menu.home_menu, menu)
+        inflater!!.inflate(R.menu.manage_db_menu, menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
