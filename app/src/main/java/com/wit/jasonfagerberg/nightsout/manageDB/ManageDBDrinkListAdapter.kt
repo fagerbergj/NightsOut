@@ -55,6 +55,24 @@ class ManageDBDrinkListAdapter(private val mContext: Context,private val mDrinks
             dialog.show("Are you sure that you want to delete \"${drink.name}\"" +
                     " from database, this will remove all references to the drink.\n\nReferences Lost:\n$loss")
         }
+
+        holder.favorite.setOnClickListener {
+            drink.favorited = !drink.favorited
+            drink.modifiedTime = mMainActivity.getLongTimeNow()
+            for (d in mDrinksList){
+                if (d == drink) d.favorited = drink.favorited
+            }
+            notifyDataSetChanged()
+
+            if (!drink.favorited) mMainActivity.mFavoritesList.remove(drink)
+            else mMainActivity.mFavoritesList.add(0, drink)
+
+            for (d in mMainActivity.mDrinksList){
+                if (d == drink) d.favorited = drink.favorited
+            }
+            if (drink.favorited) mMainActivity.showToast("${drink.name} favorited")
+            else mMainActivity.showToast("${drink.name} unfavorited")
+        }
     }
 
     override fun getItemCount(): Int {
