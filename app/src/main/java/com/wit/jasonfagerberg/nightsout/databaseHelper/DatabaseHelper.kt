@@ -52,7 +52,7 @@ class DatabaseHelper(val context: Context?, val name: String?, factory: SQLiteDa
 
     }
 
-    private fun copyDatabase() {
+    fun copyDatabase() {
         val inputStream = context!!.assets.open(name!!)
         val outputStream = FileOutputStream(path)
 

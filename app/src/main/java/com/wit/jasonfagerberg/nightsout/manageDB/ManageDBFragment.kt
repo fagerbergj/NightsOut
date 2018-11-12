@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.wit.jasonfagerberg.nightsout.R
 import com.wit.jasonfagerberg.nightsout.databaseHelper.AddDrinkDatabaseHelper
+import com.wit.jasonfagerberg.nightsout.dialogs.LightSimpleDialog
 import com.wit.jasonfagerberg.nightsout.main.Drink
 import com.wit.jasonfagerberg.nightsout.main.MainActivity
 
@@ -44,7 +45,20 @@ class ManageDBFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         val resId = item?.itemId
         when (resId) {
-            R.id.btn_reset_db -> {}//todo something
+            R.id.btn_reset_db -> {
+                val dialog = LightSimpleDialog(context!!)
+                val posAction = {
+                    mMainActivity.mDatabaseHelper.copyDatabase()
+                    mMainActivity.mDatabaseHelper.pullDrinks()
+                    mMainActivity.mDatabaseHelper.pullLogHeaders()
+
+                    mDrinksList.clear()
+                    mDrinksList.addAll(AddDrinkDatabaseHelper(mMainActivity).getSuggestedDrinks(""))
+                    mDrinkListAdapter.notifyDataSetChanged()
+                }
+                dialog.setActions(posAction, {})
+                dialog.show("Are you sure? You will lose everything.")
+            }
         }
         return true
     }
