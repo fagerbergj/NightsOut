@@ -26,7 +26,6 @@
         app:mcv_tileHeight="40dp" />
 
     <RelativeLayout
-        android:id="@+id/layout_log_drink_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/calender_log"
