@@ -141,7 +141,8 @@ class HomeFragment : Fragment() {
     }
 
     private fun setupDrinkItemTouchHelper(drinksListView: RecyclerView){
-        val simpleItemTouchCallback = object : ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP or ItemTouchHelper.DOWN, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
+        val simpleItemTouchCallback = object : ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP
+                or ItemTouchHelper.DOWN, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
             override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
                 val fromPosition = viewHolder.adapterPosition
                 val toPosition = target.adapterPosition

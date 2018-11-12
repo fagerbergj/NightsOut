@@ -56,6 +56,6 @@ class LogDatabaseHelper(private val databaseHelper: DatabaseHelper, private val 
         }
 
         cursor.close()
-        return null
+        return Drink(0, "[DRINK REMOVED]", 0.0, 0.0, "", false, false, 0)
     }
 }

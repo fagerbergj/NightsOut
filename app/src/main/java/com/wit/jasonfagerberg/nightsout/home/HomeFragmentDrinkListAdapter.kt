@@ -160,6 +160,7 @@ class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: Ar
             this.notifyItemChanged(position)
             drink.modifiedTime = mMainActivity.getLongTimeNow()
             mMainActivity.homeFragment.calculateBAC()
+            drink.favorited = mMainActivity.mFavoritesList.contains(drink)
             dialog.dismiss()
         }
 

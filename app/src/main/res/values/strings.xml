@@ -63,7 +63,6 @@
         depending on a host of different factors, such as your hydration status, recent meals,
         fluid intake, kidney function, and much more. A breathalyzer or blood test is the only way
         to have an accurate measurement.</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="fragment_manage_db_name">Manage Database</string>
+    <string name="reset_db">Reset Database</string>
 </resources>

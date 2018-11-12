@@ -300,4 +300,36 @@ class DatabaseHelper(val context: Context?, val name: String?, factory: SQLiteDa
         cursor.close()
         return -1
     }
+
+    fun isLoggedDrink(id: Int): Boolean{
+        val cursor = db.query("log_drink", null, "drink_id = ?",
+                arrayOf(id.toString()), null, null, null)
+        val res = cursor.count
+        cursor.close()
+        return res != 0
+    }
+
+    fun getDrinksFromName(name: String) : ArrayList<Drink>{
+        val drinks = ArrayList<Drink>()
+        val table = "drinks"
+        val where = "name = ?"
+        val whereArgs = arrayOf(name)
+        val order = "modifiedTime"
+        val cursor = db.query(table, null, where, whereArgs, null, null, order, null)
+        while (cursor.moveToNext()) {
+            val id = cursor.getInt(cursor.getColumnIndex("id"))
+            val drinkName = cursor.getString(cursor.getColumnIndex("name"))
+            val abv = cursor.getDouble(cursor.getColumnIndex("abv"))
+            val amount = cursor.getDouble(cursor.getColumnIndex("amount"))
+            val measurement = cursor.getString(cursor.getColumnIndex("measurement"))
+            val recent = cursor.getInt(cursor.getColumnIndex("recent")) == 1
+            val modifiedTime = cursor.getLong(cursor.getColumnIndex("modifiedTime"))
+
+            val drink = Drink(id, drinkName, abv, amount, measurement, false, recent, modifiedTime)
+            drink.favorited = mMainActivity.mFavoritesList.contains(drink)
+            drinks.add(drink)
+        }
+        cursor.close()
+        return drinks
+    }
 }
