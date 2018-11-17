@@ -28,8 +28,9 @@ class DrinkSuggestionArrayAdapter(private var mContext: Context, private var lay
         val nameTextView = view!!.findViewById<TextView>(R.id.text_add_drink_suggestion_name)
         val abvTextView = view.findViewById<TextView>(R.id.text_add_drink_suggestion_abv)
         val amountTextView = view.findViewById<TextView>(R.id.text_add_drink_suggestion_amount)
+
         view.findViewById<ImageView>(R.id.imgBtn_add_drink_suggestion_cancel).setOnClickListener {
-            data.removeAt(position)
+            remove(drink)
             notifyDataSetInvalidated()
         }
 
@@ -40,5 +41,14 @@ class DrinkSuggestionArrayAdapter(private var mContext: Context, private var lay
         amountTextView.text = amount
 
         return view
+    }
+
+    override fun remove(`object`: Drink?) {
+        data.remove(`object`)
+        val mainActivity = (mContext as MainActivity)
+        mainActivity.mDatabaseHelper.updateDrinkSuggestionStatus(`object`!!.id, true)
+        mainActivity.addDrinkFragment.autoCompleteView.setAdapter(DrinkSuggestionArrayAdapter(mContext, layoutResourceId, data))
+        if (!data.isEmpty()) mainActivity.addDrinkFragment.autoCompleteView.showDropDown()
+        else mainActivity.addDrinkFragment.autoCompleteView.dismissDropDown()
     }
 }

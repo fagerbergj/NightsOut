@@ -48,6 +48,7 @@ class AddDrinkFragment : Fragment() {
     private var complexMode = false
 
     private lateinit var mMainActivity: MainActivity
+    lateinit var autoCompleteView: DrinkSuggestionAutoCompleteView
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -209,32 +210,32 @@ class AddDrinkFragment : Fragment() {
 
     private fun drinkNameEditTextSetup(view: View) {
         val databaseTalker = AddDrinkDatabaseHelper(mMainActivity)
-        val autoComplete = view.findViewById<DrinkSuggestionAutoCompleteView>(R.id.auto_drink_suggestion)
+        autoCompleteView = view.findViewById(R.id.auto_drink_suggestion)
 
         // ObjectItemData has no value at first
         var drinks = ArrayList<Drink>()
 
         // set the custom ArrayAdapter
         var adapter = DrinkSuggestionArrayAdapter(context!!, R.layout.fragment_add_drink_suggestion_list, drinks)
-        autoComplete.setAdapter(adapter)
+        autoCompleteView.setAdapter(adapter)
 
         // add the listener so it will tries to suggest while the user types
-        autoComplete.addTextChangedListener(object: TextWatcher {
-            override fun afterTextChanged(s: Editable?) {}
+        autoCompleteView.addTextChangedListener(object: TextWatcher {
+             override fun afterTextChanged(s: Editable?) {}
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 val temp = databaseTalker.getSuggestedDrinks(s.toString())
                 drinks = if (temp.isNotEmpty() || count < 60) temp else drinks
                 adapter = DrinkSuggestionArrayAdapter(context!!, R.layout.fragment_add_drink_suggestion_list, drinks)
-                autoComplete.setAdapter(adapter)
+                autoCompleteView.setAdapter(adapter)
                 adapter.notifyDataSetChanged()
             }
         })
 
-        autoComplete.setOnItemClickListener{ _ , _ , position, _ ->
+        autoCompleteView.setOnItemClickListener{ _ , _ , position, _ ->
             val drink = adapter.data[position]
             fillViews(drink.name, drink.abv, drink.amount, drink.measurement)
-            autoComplete.dismissDropDown()
+            autoCompleteView.dismissDropDown()
         }
     }
 

@@ -51,7 +51,7 @@ class AddDrinkDatabaseHelper(private val mainActivity: MainActivity) {
     fun getSuggestedDrinks(filter: String): ArrayList<Drink>{
         val res = ArrayList<Drink>()
         val cursor = mainActivity.mDatabaseHelper.db.query(true, "drinks", null,
-                "name LIKE ?", arrayOf("%$filter%"), null, null, "name", null)
+                "name LIKE ? AND dontSuggest IS NOT 1", arrayOf("%$filter%"), null, null, "name", null)
         while (cursor.moveToNext()){
             val id = cursor.getInt(cursor.getColumnIndex("id"))
             val drinkName = cursor.getString(cursor.getColumnIndex("name"))
@@ -61,8 +61,9 @@ class AddDrinkDatabaseHelper(private val mainActivity: MainActivity) {
             val modifiedTime = cursor.getLong(cursor.getColumnIndex("modifiedTime"))
             val recent = cursor.getInt(cursor.getColumnIndex("recent"))
             val favorited = mainActivity.mDatabaseHelper.isFavoritedInDB(drinkName)
+            val dontSuggest = cursor.getInt(cursor.getColumnIndex("dontSuggest")) == 1
 
-            res.add(Drink(id, drinkName, abv, amount, measurement, favorited, recent == 1, modifiedTime))
+            if (!dontSuggest) res.add(Drink(id, drinkName, abv, amount, measurement, favorited, recent == 1, modifiedTime))
         }
         cursor.close()
         return res

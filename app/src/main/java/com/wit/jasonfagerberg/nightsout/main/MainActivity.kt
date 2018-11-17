@@ -26,7 +26,7 @@ import java.util.*
 //private const val TAG = "MainActivity"
 
 private const val DB_NAME = "nights_out_db.db"
-private const val DB_VERSION = 37
+private const val DB_VERSION = 39
 
 class MainActivity : AppCompatActivity() {
 
@@ -218,7 +218,7 @@ class MainActivity : AppCompatActivity() {
         val transaction = supportFragmentManager.beginTransaction()
         transaction.replace(R.id.main_frame, fragment)
         transaction.addToBackStack(null)
-        transaction.commit()
+        transaction.commitAllowingStateLoss()
     }
 
     fun getCurrentTimeInMinuets(): Int {
