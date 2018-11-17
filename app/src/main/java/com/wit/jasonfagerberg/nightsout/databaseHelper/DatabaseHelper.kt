@@ -75,7 +75,6 @@ class DatabaseHelper(val context: Context?, val name: String?, factory: SQLiteDa
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
         dropAllTables()
         rebuildTables()
-        createDatabase()
         db!!.version = newVersion
     }
 
@@ -127,7 +126,7 @@ class DatabaseHelper(val context: Context?, val name: String?, factory: SQLiteDa
         db.execSQL("CREATE TABLE `favorites` ( `drink_name` TEXT, `origin_id` INTEGER )")
         db.execSQL("CREATE TABLE \"log\" ( `date` INTEGER UNIQUE, `bac` NUMERIC, `duration` INTEGER, PRIMARY KEY(`date`) )")
         db.execSQL("CREATE TABLE \"log_drink\" ( `log_date` NUMERIC, `drink_id` INTEGER )")
-        pushDrinks()
+        createDatabase()
         for (id in mIgnoredDrinks) updateDrinkSuggestionStatus(id, true)
         pushLogHeaders()
         pushAllDrinks()
