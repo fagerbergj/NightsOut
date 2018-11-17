@@ -9,6 +9,7 @@ import com.wit.jasonfagerberg.nightsout.main.MainActivity
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
+import java.lang.Exception
 
 //private const val TAG = "DatabaseHelper"
 
@@ -21,6 +22,7 @@ class DatabaseHelper(val context: Context?, val name: String?, factory: SQLiteDa
     private lateinit var mMainActivity: MainActivity
     // temp array for maintaining db after upgrade
     private val mAllDrinks = ArrayList<Drink>()
+    private val mIgnoredDrinks = ArrayList<Int>()
 
     // general db
     override fun onCreate(db: SQLiteDatabase?) {}
@@ -88,7 +90,12 @@ class DatabaseHelper(val context: Context?, val name: String?, factory: SQLiteDa
             val measurement = cursor.getString(cursor.getColumnIndex("measurement"))
             val recent = cursor.getInt(cursor.getColumnIndex("recent")) == 1
             val modifiedTime = cursor.getLong(cursor.getColumnIndex("modifiedTime"))
+            var dontSuggest = 0
+            try {
+                dontSuggest = cursor.getInt(cursor.getColumnIndex("dontSuggest"))
+            } catch (e: Exception) {}
 
+            if (dontSuggest==1) mIgnoredDrinks.add(id)
             val drink = Drink(id, drinkName, abv, amount, measurement, false, recent, modifiedTime)
             drink.favorited = isFavoritedInDB(drinkName)
             mAllDrinks.add(drink)
@@ -116,11 +123,12 @@ class DatabaseHelper(val context: Context?, val name: String?, factory: SQLiteDa
 
     private fun rebuildTables() {
         db.execSQL("CREATE TABLE \"current_session_drinks\" ( `drink_id` INTEGER, `position` INTEGER )")
-        db.execSQL("CREATE TABLE \"drinks\" ( `id` INTEGER PRIMARY KEY AUTOINCREMENT, `name` TEXT, `abv` NUMERIC, `amount` NUMERIC, `measurement` TEXT, `recent` INTEGER, `modifiedTime` INTEGER )")
+        db.execSQL("CREATE TABLE \"drinks\" ( `id` INTEGER PRIMARY KEY AUTOINCREMENT, `name` TEXT, `abv` NUMERIC, `amount` NUMERIC, `measurement` TEXT, `recent` INTEGER, `modifiedTime` INTEGER, `dontSuggest` INTEGER)")
         db.execSQL("CREATE TABLE `favorites` ( `drink_name` TEXT, `origin_id` INTEGER )")
         db.execSQL("CREATE TABLE \"log\" ( `date` INTEGER UNIQUE, `bac` NUMERIC, `duration` INTEGER, PRIMARY KEY(`date`) )")
         db.execSQL("CREATE TABLE \"log_drink\" ( `log_date` NUMERIC, `drink_id` INTEGER )")
         pushDrinks()
+        for (id in mIgnoredDrinks) updateDrinkSuggestionStatus(id, true)
         pushLogHeaders()
         pushAllDrinks()
     }
@@ -280,6 +288,20 @@ class DatabaseHelper(val context: Context?, val name: String?, factory: SQLiteDa
         val sql = "UPDATE drinks SET name=\"${drink.name}\", abv=${drink.abv}, amount=${drink.amount}," +
                 " measurement=\"${drink.measurement}\", recent=$recent WHERE id=${drink.id}"
         db.execSQL(sql)
+    }
+
+    fun updateDrinkSuggestionStatus(id: Int, dontSuggest: Boolean){
+        val intSuggest = if (dontSuggest) 1 else 0
+        val sql = "UPDATE drinks SET dontSuggest=$intSuggest WHERE id=$id"
+        db.execSQL(sql)
+    }
+
+    fun getDrinkSuggestedStatus(id: Int):Boolean{
+        val cursor = db.query("drinks", arrayOf("dontSuggest"), "id = ?", arrayOf(id.toString()), null, null, null)
+        cursor.moveToFirst()
+        val dontSuggest = cursor.getInt(cursor.getColumnIndex("dontSuggest")) == 1
+        cursor.close()
+        return dontSuggest
     }
 
     fun updateDrinkModifiedTime(drinkId: Int, modifiedTime: Long) {
