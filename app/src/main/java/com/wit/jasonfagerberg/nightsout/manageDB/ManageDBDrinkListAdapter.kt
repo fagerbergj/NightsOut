@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.widget.PopupMenu
 import androidx.core.content.ContextCompat
 import com.wit.jasonfagerberg.nightsout.R
 import com.wit.jasonfagerberg.nightsout.dialogs.LightSimpleDialog
@@ -35,43 +36,52 @@ class ManageDBDrinkListAdapter(private val mContext: Context,private val mDrinks
 
         drink.favorited = mMainActivity.mFavoritesList.contains(drink)
 
-        if (drink.favorited) holder.favorite.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.favorite_red_36dp))
-        else holder.favorite.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.favorite_border_red_36dp))
+        holder.options.setOnClickListener {
+            val popup = PopupMenu(mContext, holder.options)
+            popup.inflate(R.menu.manage_db_item_options)
+            popup.setOnMenuItemClickListener {item ->
+                when(item.itemId){
+                    R.id.manage_db_item_favorite -> {
+                        drink.favorited = !drink.favorited
+                        mMainActivity.mDatabaseHelper.updateDrinkModifiedTime(drink.id, mMainActivity.getLongTimeNow())
+                        for (d in mDrinksList){
+                            if (d == drink) d.favorited = drink.favorited
+                        }
+                        notifyDataSetChanged()
 
-        holder.delete.setOnClickListener {
-            val dialog = LightSimpleDialog(mContext)
-            val loss = getLostReferenceString(drink)
+                        if (!drink.favorited) mMainActivity.mFavoritesList.remove(drink)
+                        else mMainActivity.mFavoritesList.add(0, drink)
 
-            val posAction = {
-                mMainActivity.mDatabaseHelper.deleteRowsInTable("drinks", "id = ${drink.id}")
-                mDrinksList.remove(drink)
-                removeCurrentSessionReference(drink)
-                removeOrUpdateFavoritesReference(drink)
-                removeOrUpdateRecentsReference(drink)
-                notifyItemRemoved(position)
-                notifyItemRangeChanged(position, mDrinksList.size)
+                        for (d in mMainActivity.mDrinksList){
+                            if (d == drink) d.favorited = drink.favorited
+                        }
+                        if (drink.favorited) mMainActivity.showToast("${drink.name} favorited")
+                        else mMainActivity.showToast("${drink.name} unfavorited")
+                        true
+                    }
+                    R.id.manage_db_item_suggestion -> true
+                    R.id.manage_db_item_delete ->{
+                        val dialog = LightSimpleDialog(mContext)
+                        val loss = getLostReferenceString(drink)
+
+                        val posAction = {
+                            mMainActivity.mDatabaseHelper.deleteRowsInTable("drinks", "id = ${drink.id}")
+                            mDrinksList.remove(drink)
+                            removeCurrentSessionReference(drink)
+                            removeOrUpdateFavoritesReference(drink)
+                            removeOrUpdateRecentsReference(drink)
+                            notifyItemRemoved(position)
+                            notifyItemRangeChanged(position, mDrinksList.size)
+                        }
+                        dialog.setActions(posAction, {})
+                        dialog.show("Are you sure that you want to delete \"${drink.name}\"" +
+                                " from database, this will remove all references to the drink.\n\nReferences Lost:\n$loss")
+                        true
+                    }
+                    else -> false
+                }
             }
-            dialog.setActions(posAction, {})
-            dialog.show("Are you sure that you want to delete \"${drink.name}\"" +
-                    " from database, this will remove all references to the drink.\n\nReferences Lost:\n$loss")
-        }
-
-        holder.favorite.setOnClickListener {
-            drink.favorited = !drink.favorited
-            mMainActivity.mDatabaseHelper.updateDrinkModifiedTime(drink.id, mMainActivity.getLongTimeNow())
-            for (d in mDrinksList){
-                if (d == drink) d.favorited = drink.favorited
-            }
-            notifyDataSetChanged()
-
-            if (!drink.favorited) mMainActivity.mFavoritesList.remove(drink)
-            else mMainActivity.mFavoritesList.add(0, drink)
-
-            for (d in mMainActivity.mDrinksList){
-                if (d == drink) d.favorited = drink.favorited
-            }
-            if (drink.favorited) mMainActivity.showToast("${drink.name} favorited")
-            else mMainActivity.showToast("${drink.name} unfavorited")
+            popup.show()
         }
     }
 
@@ -148,7 +158,8 @@ class ManageDBDrinkListAdapter(private val mContext: Context,private val mDrinks
         internal var name: TextView = itemView.findViewById(R.id.text_manage_db_drink_name)
         internal var abv: TextView = itemView.findViewById(R.id.text_manage_db_drink_abv)
         internal var amount: TextView = itemView.findViewById(R.id.text_manage_db_drink_amount)
-        internal var delete: ImageView = itemView.findViewById(R.id.imgBtn_manage_db_delete)
-        internal var favorite: ImageView = itemView.findViewById(R.id.imgBtn_manage_db_favorite)
+        internal var options: TextView = itemView.findViewById(R.id.text_item_options)
+//        internal var delete: ImageView = itemView.findViewById(R.id.imgBtn_manage_db_delete)
+//        internal var favorite: ImageView = itemView.findViewById(R.id.imgBtn_manage_db_favorite)
     }
 }

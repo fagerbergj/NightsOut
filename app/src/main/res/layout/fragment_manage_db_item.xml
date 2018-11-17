@@ -9,11 +9,10 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/imgBtn_manage_db_delete"
         android:gravity="center"
         android:orientation="vertical"
         android:layout_alignParentStart="true"
-        android:layout_toStartOf="@+id/imgBtn_manage_db_delete">
+        android:layout_toStartOf="@+id/text_item_options">
 
         <TextView
             android:id="@+id/text_manage_db_drink_name"
@@ -45,30 +44,17 @@
         </LinearLayout>
     </LinearLayout>
 
-    <ImageView
-        android:id="@+id/imgBtn_manage_db_delete"
+    <TextView
+        android:id="@+id/text_item_options"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_gravity="center"
-        android:layout_toStartOf="@+id/imgBtn_manage_db_favorite"
-        android:contentDescription="@string/empty"
-        android:padding="8dp"
-        android:src="@drawable/delete_gray_36dp"
-        android:clickable="true"
-        android:focusable="true"
-        android:background="?attr/selectableItemBackground" />
-
-    <ImageView
-        android:id="@+id/imgBtn_manage_db_favorite"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:contentDescription="@string/empty"
-        android:src="@drawable/favorite_red_36dp"
-        android:layout_gravity="center"
-        android:padding="8dp"
         android:layout_alignParentEnd="true"
-        android:clickable="true"
-        android:focusable="true"
+        android:layout_centerVertical="true"
+        android:gravity="center"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        android:text="&#8942;"
+        android:textAppearance="?android:textAppearanceLarge"
+        android:textColor="@color/colorDarkGray"
         android:background="?attr/selectableItemBackground" />
 </RelativeLayout>

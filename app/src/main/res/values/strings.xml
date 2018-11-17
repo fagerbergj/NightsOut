@@ -65,4 +65,7 @@
         to have an accurate measurement.</string>
     <string name="fragment_manage_db_name">Manage Database</string>
     <string name="reset_db">Reset Database</string>
+    <string name="show_auto_complete_suggestion">Show Auto Complete</string>
+    <string name="hide_auto_complete_suggestion">Hide Auto Complete</string>
+    <string name="delete_drink">Delete Drink</string>
 </resources>
