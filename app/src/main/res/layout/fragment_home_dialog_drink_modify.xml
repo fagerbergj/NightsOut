@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -13,14 +13,31 @@
         android:text="@string/drink"
         android:textColor="@color/colorBlack"
         android:textSize="24sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:layout_toStartOf="@+id/imgBtn_drink_modify_close"
+        android:layout_alignParentStart="true"/>
+
+    <ImageView
+        android:id="@+id/imgBtn_drink_modify_close"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/close_gray_18dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:padding="8dp"
+        android:scaleX="1.25"
+        android:scaleY="1.25"
+        android:background="?attr/selectableItemBackground"
+        android:contentDescription="@string/empty"
+        android:layout_alignTop="@+id/text_drink_modify_title"/>
 
     <View
         android:id="@+id/line"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_marginBottom="4dp"
-        android:background="@android:color/darker_gray" />
+        android:background="@android:color/darker_gray"
+        android:layout_below="@+id/text_drink_modify_title"/>
 
     <TextView
         android:id="@+id/text_drink_modify_add_another"
@@ -36,7 +53,8 @@
         android:padding="8dp"
         android:text="@string/add_another"
         android:textColor="@color/colorBlack"
-        android:textSize="18sp" />
+        android:textSize="18sp"
+        android:layout_below="@id/line"/>
 
     <TextView
         android:id="@+id/text_drink_modify_favorite_drink"
@@ -52,7 +70,8 @@
         android:padding="8dp"
         android:text="@string/favorite_drink"
         android:textColor="@color/colorBlack"
-        android:textSize="18sp" />
+        android:textSize="18sp"
+        android:layout_below="@+id/text_drink_modify_add_another"/>
 
     <TextView
         android:id="@+id/text_drink_modify_edit_drink"
@@ -68,7 +87,8 @@
         android:padding="8dp"
         android:text="@string/edit"
         android:textColor="@color/colorBlack"
-        android:textSize="18sp" />
+        android:textSize="18sp"
+        android:layout_below="@+id/text_drink_modify_favorite_drink"/>
 
     <TextView
         android:id="@+id/text_drink_modify_remove_drink"
@@ -85,6 +105,7 @@
         android:padding="8dp"
         android:text="@string/remove"
         android:textColor="@color/colorBlack"
-        android:textSize="18sp" />
+        android:textSize="18sp"
+        android:layout_below="@+id/text_drink_modify_edit_drink"/>
 
-</LinearLayout>
+</RelativeLayout>
