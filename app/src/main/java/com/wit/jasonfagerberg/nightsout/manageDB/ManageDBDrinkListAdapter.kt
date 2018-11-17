@@ -4,10 +4,8 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.widget.PopupMenu
-import androidx.core.content.ContextCompat
 import com.wit.jasonfagerberg.nightsout.R
 import com.wit.jasonfagerberg.nightsout.dialogs.LightSimpleDialog
 import com.wit.jasonfagerberg.nightsout.main.Drink
@@ -39,6 +37,16 @@ class ManageDBDrinkListAdapter(private val mContext: Context,private val mDrinks
         holder.options.setOnClickListener {
             val popup = PopupMenu(mContext, holder.options)
             popup.inflate(R.menu.manage_db_item_options)
+
+            val favString = if (drink.favorited) mMainActivity.resources.getString(R.string.unfavorite_drink)
+            else mMainActivity.resources.getString(R.string.favorite_drink)
+            popup.menu.findItem(R.id.manage_db_item_favorite).title = favString
+
+            val dontSuggest = mMainActivity.mDatabaseHelper.getDrinkSuggestedStatus(drink.id)
+            val suggestString = if (dontSuggest) mMainActivity.resources.getString(R.string.show_auto_complete_suggestion)
+            else mMainActivity.resources.getString(R.string.hide_auto_complete_suggestion)
+            popup.menu.findItem(R.id.manage_db_item_suggestion).title = suggestString
+
             popup.setOnMenuItemClickListener {item ->
                 when(item.itemId){
                     R.id.manage_db_item_favorite -> {
@@ -59,7 +67,10 @@ class ManageDBDrinkListAdapter(private val mContext: Context,private val mDrinks
                         else mMainActivity.showToast("${drink.name} unfavorited")
                         true
                     }
-                    R.id.manage_db_item_suggestion -> true
+                    R.id.manage_db_item_suggestion -> {
+                        mMainActivity.mDatabaseHelper.updateDrinkSuggestionStatus(drink.id, !dontSuggest)
+                        true
+                    }
                     R.id.manage_db_item_delete ->{
                         val dialog = LightSimpleDialog(mContext)
                         val loss = getLostReferenceString(drink)
