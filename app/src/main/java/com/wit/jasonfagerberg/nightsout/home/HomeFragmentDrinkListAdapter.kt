@@ -106,6 +106,9 @@ class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: Ar
             dismissDialog(dialog)
             mMainActivity.homeFragment.showOrHideEmptyListText(mMainActivity.homeFragment.view!!)
         }
+
+        dialogView.findViewById<ImageView>(R.id.imgBtn_drink_modify_close).setOnClickListener {dialog.dismiss()}
+
     }
 
     private fun onAddAnotherClicked(position: Int) {

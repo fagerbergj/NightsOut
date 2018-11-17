@@ -5,10 +5,7 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
-import android.widget.EditText
-import android.widget.Spinner
-import android.widget.TextView
+import android.widget.*
 import com.google.android.material.button.MaterialButton
 import com.wit.jasonfagerberg.nightsout.R
 import java.util.*
@@ -21,6 +18,7 @@ class EditDrinkDialog(private val context: Context, layoutInflater: LayoutInflat
     val editAmount: EditText
     val spinnerMeasurement: Spinner
     private val btnEdit: MaterialButton
+    private val btnClose: ImageView
 
     init {
         val builder = AlertDialog.Builder(context)
@@ -36,6 +34,10 @@ class EditDrinkDialog(private val context: Context, layoutInflater: LayoutInflat
         editAmount = dialogView.findViewById(R.id.edit_edit_drink_amount)
         spinnerMeasurement = dialogView.findViewById(R.id.spinner_edit_drink_amount)
         btnEdit = dialogView.findViewById(R.id.btn_edit_drink_edit)
+        btnClose = dialogView.findViewById(R.id.imgBtn_edit_drink_close)
+        btnClose.setOnClickListener {
+            dismiss()
+        }
     }
 
     fun show(){

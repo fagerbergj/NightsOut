@@ -11,6 +11,7 @@ class AddDrinkDatabaseHelper(private val mainActivity: MainActivity) {
 
         setDrinkId(drink)
         mainActivity.mDatabaseHelper.updateDrinkModifiedTime(drink.id, drink.modifiedTime)
+        mainActivity.mDatabaseHelper.updateDrinkSuggestionStatus(drink.id, false)
         setDrinkFavorited(drink, favorited)
 
         if (canUnfavorite) mainActivity.addDrinkFragment.addToDrinkList(drink)
