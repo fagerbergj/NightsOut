@@ -212,7 +212,7 @@ class AddDrinkFragment : Fragment() {
         val autoComplete = view.findViewById<DrinkSuggestionAutoCompleteView>(R.id.auto_drink_suggestion)
 
         // ObjectItemData has no value at first
-        var drinks = ArrayList<Drink>().toTypedArray()
+        var drinks = ArrayList<Drink>()
 
         // set the custom ArrayAdapter
         var adapter = DrinkSuggestionArrayAdapter(context!!, R.layout.fragment_add_drink_suggestion_list, drinks)
@@ -223,7 +223,7 @@ class AddDrinkFragment : Fragment() {
             override fun afterTextChanged(s: Editable?) {}
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                val temp = databaseTalker.getSuggestedDrinks(s.toString()).toTypedArray()
+                val temp = databaseTalker.getSuggestedDrinks(s.toString())
                 drinks = if (temp.isNotEmpty() || count < 60) temp else drinks
                 adapter = DrinkSuggestionArrayAdapter(context!!, R.layout.fragment_add_drink_suggestion_list, drinks)
                 autoComplete.setAdapter(adapter)
