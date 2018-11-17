@@ -73,6 +73,8 @@ class DatabaseHelper(val context: Context?, val name: String?, factory: SQLiteDa
     }
 
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
+        pullDrinks()
+        pullLogHeaders()
         dropAllTables()
         rebuildTables()
         db!!.version = newVersion
