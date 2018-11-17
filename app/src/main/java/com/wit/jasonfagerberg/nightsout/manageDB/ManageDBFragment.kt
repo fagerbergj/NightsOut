@@ -53,7 +53,7 @@ class ManageDBFragment : Fragment() {
                     mMainActivity.mDatabaseHelper.pullLogHeaders()
 
                     mDrinksList.clear()
-                    mDrinksList.addAll(AddDrinkDatabaseHelper(mMainActivity).getSuggestedDrinks(""))
+                    mDrinksList.addAll(AddDrinkDatabaseHelper(mMainActivity).getSuggestedDrinks("", true))
                     mDrinkListAdapter.notifyDataSetChanged()
                 }
                 dialog.setActions(posAction, {})
