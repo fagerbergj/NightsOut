@@ -22,7 +22,7 @@ class ManageDBFragment : Fragment() {
                               savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_manage_db, container, false)
         mMainActivity = context as MainActivity
-        mDrinksList = AddDrinkDatabaseHelper(mMainActivity).getSuggestedDrinks("")
+        mDrinksList = AddDrinkDatabaseHelper(mMainActivity).getSuggestedDrinks("", true)
         setupToolbar(view)
         setupRecycler(view)
         return view

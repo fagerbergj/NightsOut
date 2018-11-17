@@ -296,6 +296,14 @@ class DatabaseHelper(val context: Context?, val name: String?, factory: SQLiteDa
         db.execSQL(sql)
     }
 
+    fun getDrinkSuggestedStatus(id: Int):Boolean{
+        val cursor = db.query("drinks", arrayOf("dontSuggest"), "id = ?", arrayOf(id.toString()), null, null, null)
+        cursor.moveToFirst()
+        val dontSuggest = cursor.getInt(cursor.getColumnIndex("dontSuggest")) == 1
+        cursor.close()
+        return dontSuggest
+    }
+
     fun updateDrinkModifiedTime(drinkId: Int, modifiedTime: Long) {
         val sql = "UPDATE drinks SET modifiedTime=$modifiedTime WHERE id = $drinkId"
         db.execSQL(sql)
