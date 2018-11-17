@@ -12,7 +12,23 @@
         android:layout_marginTop="4dp"
         android:textColor="@color/colorBlack"
         android:textSize="24sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:layout_alignParentStart="true"
+        android:layout_toStartOf="@+id/imgBtn_edit_drink_close"/>
+
+    <ImageView
+        android:id="@+id/imgBtn_edit_drink_close"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/close_gray_18dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:padding="8dp"
+        android:scaleX="1.25"
+        android:scaleY="1.25"
+        android:background="?attr/selectableItemBackground"
+        android:contentDescription="@string/empty"
+        android:layout_alignTop="@+id/text_edit_drink_title"/>
 
     <View
         android:id="@+id/line"
