@@ -7,6 +7,7 @@ import android.widget.ArrayAdapter
 import android.widget.ImageView
 import android.widget.TextView
 import com.wit.jasonfagerberg.nightsout.R
+import com.wit.jasonfagerberg.nightsout.dialogs.LightSimpleDialog
 import com.wit.jasonfagerberg.nightsout.main.Drink
 import com.wit.jasonfagerberg.nightsout.main.MainActivity
 
@@ -30,8 +31,23 @@ class DrinkSuggestionArrayAdapter(private var mContext: Context, private var lay
         val amountTextView = view.findViewById<TextView>(R.id.text_add_drink_suggestion_amount)
 
         view.findViewById<ImageView>(R.id.imgBtn_add_drink_suggestion_cancel).setOnClickListener {
-            remove(drink)
-            notifyDataSetInvalidated()
+            val dialog = LightSimpleDialog(mContext)
+            val posAction = {
+                remove(drink)
+                notifyDataSetInvalidated()
+            }
+            val neuAction = {
+                remove(drink)
+                notifyDataSetChanged()
+                (mContext as MainActivity).showRemoveSuggestionDialog = false
+            }
+            dialog.setActions(posAction, {}, neuAction)
+            dialog.showNeutralButton = true
+            if ((mContext as MainActivity).showRemoveSuggestionDialog){
+                dialog.show("Are you sure you want to remove ${drink.name} from your suggestion list? This action can be reversed in the 'Manage Database' page.",
+                        neuText = "Don't Show Again")
+            } else posAction.invoke()
+
         }
 
         nameTextView.text = drink.name
