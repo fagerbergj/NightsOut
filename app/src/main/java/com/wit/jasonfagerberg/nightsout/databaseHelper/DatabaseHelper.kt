@@ -23,6 +23,7 @@ class DatabaseHelper(val context: Context?, val name: String?, factory: SQLiteDa
     // temp array for maintaining db after upgrade
     private val mAllDrinks = ArrayList<Drink>()
     private val mIgnoredDrinks = ArrayList<Int>()
+    private val mAllLoggedDrinks = ArrayList<Pair<Int, Int>>()
 
     // general db
     override fun onCreate(db: SQLiteDatabase?) {}
@@ -81,7 +82,7 @@ class DatabaseHelper(val context: Context?, val name: String?, factory: SQLiteDa
     }
 
     private fun pullAllDrinks() {
-        val cursor = db.query("drinks", null, null, null, null, null, null, null)
+        var cursor = db.query("drinks", null, null, null, null, null, null, null)
         while (cursor.moveToNext()) {
             val id = cursor.getInt(cursor.getColumnIndex("id"))
             val drinkName = cursor.getString(cursor.getColumnIndex("name"))
@@ -101,6 +102,14 @@ class DatabaseHelper(val context: Context?, val name: String?, factory: SQLiteDa
             mAllDrinks.add(drink)
         }
         cursor.close()
+
+        cursor = db.query("log_drink",null,null,null,null,null,null)
+        while (cursor.moveToNext()){
+            val logDate = cursor.getInt(cursor.getColumnIndex("log_date"))
+            val drinkId = cursor.getInt(cursor.getColumnIndex("drink_id"))
+            mAllLoggedDrinks.add(Pair(logDate, drinkId))
+        }
+        cursor.close()
     }
 
     private fun pushAllDrinks() {
@@ -108,6 +117,14 @@ class DatabaseHelper(val context: Context?, val name: String?, factory: SQLiteDa
             insertDrinkIntoDrinksTable(drink)
         }
         mAllDrinks.clear()
+        for (logDrink in mAllLoggedDrinks){
+            insertRowIntoLogDrinkTable(logDrink.first, logDrink.second)
+        }
+    }
+
+    private fun insertRowIntoLogDrinkTable(date: Int, id: Int){
+        val sql = "INSERT INTO log_drink VALUES ($date, $id")"
+        db.execSQL(sql)
     }
 
     private fun dropAllTables() {
