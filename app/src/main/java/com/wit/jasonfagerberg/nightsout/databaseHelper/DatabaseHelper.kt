@@ -123,7 +123,7 @@ class DatabaseHelper(val context: Context?, val name: String?, factory: SQLiteDa
     }
 
     private fun insertRowIntoLogDrinkTable(date: Int, id: Int){
-        val sql = "INSERT INTO log_drink VALUES ($date, $id")"
+        val sql = "INSERT INTO log_drink VALUES ($date, $id)"
         db.execSQL(sql)
     }
 
