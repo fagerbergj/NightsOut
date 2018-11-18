@@ -41,7 +41,7 @@ class DrinkSuggestionArrayAdapter(private var mContext: Context, private var lay
                 notifyDataSetChanged()
                 (mContext as MainActivity).showRemoveSuggestionDialog = false
             }
-            dialog.setActions(posAction, {}, neuAction)
+            dialog.setActions(posAction, {(mContext as MainActivity).addDrinkFragment.autoCompleteView.showDropDown()}, neuAction)
             dialog.showNeutralButton = true
             if ((mContext as MainActivity).showRemoveSuggestionDialog){
                 dialog.show("Are you sure you want to remove ${drink.name} from your suggestion list? This action can be reversed in the 'Manage Database' page.",
