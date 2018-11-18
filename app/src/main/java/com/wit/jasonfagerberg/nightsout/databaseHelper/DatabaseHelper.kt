@@ -81,7 +81,6 @@ class DatabaseHelper(val context: Context?, val name: String?, factory: SQLiteDa
     }
 
     private fun pullAllDrinks() {
-        mMainActivity.mLogHeaders.clear()
         val cursor = db.query("drinks", null, null, null, null, null, null, null)
         while (cursor.moveToNext()) {
             val id = cursor.getInt(cursor.getColumnIndex("id"))
