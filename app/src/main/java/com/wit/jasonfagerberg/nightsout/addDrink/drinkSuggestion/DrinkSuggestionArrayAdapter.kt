@@ -13,6 +13,11 @@ import com.wit.jasonfagerberg.nightsout.main.MainActivity
 
 class DrinkSuggestionArrayAdapter(private var mContext: Context, private var layoutResourceId: Int,
                                   var data: ArrayList<Drink>) : ArrayAdapter<Drink>(mContext, layoutResourceId, data) {
+    private val mainActivity = (mContext as MainActivity)
+
+    override fun getCount(): Int {
+        return data.size
+    }
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         var view = convertView
@@ -31,23 +36,7 @@ class DrinkSuggestionArrayAdapter(private var mContext: Context, private var lay
         val amountTextView = view.findViewById<TextView>(R.id.text_add_drink_suggestion_amount)
 
         view.findViewById<ImageView>(R.id.imgBtn_add_drink_suggestion_cancel).setOnClickListener {
-            val dialog = LightSimpleDialog(mContext)
-            val posAction = {
-                remove(drink)
-                notifyDataSetInvalidated()
-            }
-            val neuAction = {
-                remove(drink)
-                notifyDataSetChanged()
-                (mContext as MainActivity).showRemoveSuggestionDialog = false
-            }
-            dialog.setActions(posAction, {(mContext as MainActivity).addDrinkFragment.autoCompleteView.showDropDown()}, neuAction)
-            dialog.showNeutralButton = true
-            if ((mContext as MainActivity).showRemoveSuggestionDialog){
-                dialog.show("Are you sure you want to remove ${drink.name} from your suggestion list? This action can be reversed in the 'Manage Database' page.",
-                        neuText = "Don't Show Again")
-            } else posAction.invoke()
-
+            remove(drink)
         }
 
         nameTextView.text = drink.name
@@ -61,10 +50,7 @@ class DrinkSuggestionArrayAdapter(private var mContext: Context, private var lay
 
     override fun remove(`object`: Drink?) {
         data.remove(`object`)
-        val mainActivity = (mContext as MainActivity)
+        notifyDataSetChanged()
         mainActivity.mDatabaseHelper.updateDrinkSuggestionStatus(`object`!!.id, true)
-        mainActivity.addDrinkFragment.autoCompleteView.setAdapter(DrinkSuggestionArrayAdapter(mContext, layoutResourceId, data))
-        if (!data.isEmpty()) mainActivity.addDrinkFragment.autoCompleteView.showDropDown()
-        else mainActivity.addDrinkFragment.autoCompleteView.dismissDropDown()
     }
 }

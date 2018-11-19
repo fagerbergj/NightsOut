@@ -48,7 +48,6 @@ class MainActivity : AppCompatActivity() {
     private val country = Locale.getDefault().country
     private val twelveHourCountries = arrayListOf("US", "UK", "PH", "CA", "AU", "NZ", "IN", "EG", "SA", "CO", "PK", "MY")
     var use24HourTime = !twelveHourCountries.contains(country)
-    var showRemoveSuggestionDialog = true
 
     // global lists
     var mDrinksList: ArrayList<Drink> = ArrayList()
@@ -141,7 +140,6 @@ class MainActivity : AppCompatActivity() {
         editor.putInt("homeEndTimeMin", endTimeMin)
         editor.putBoolean("homeUse24HourTime", use24HourTime)
 
-        editor.putBoolean("showRemoveSuggestionDialog", showRemoveSuggestionDialog)
         editor.apply()
     }
 
@@ -160,8 +158,6 @@ class MainActivity : AppCompatActivity() {
             use24HourTime = preferences.getBoolean("homeUse24HourTime", use24HourTime)
             startTimeMin = preferences.getInt("homeStartTimeMin", startTimeMin)
             endTimeMin = preferences.getInt("homeEndTimeMin", endTimeMin)
-
-            showRemoveSuggestionDialog = preferences.getBoolean("showRemoveSuggestionDialog", showRemoveSuggestionDialog)
         }
     }
 
