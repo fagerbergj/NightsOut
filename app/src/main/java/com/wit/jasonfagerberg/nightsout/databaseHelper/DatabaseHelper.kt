@@ -25,7 +25,7 @@ class DatabaseHelper(val context: Context?, val name: String?, factory: SQLiteDa
     // temp array for maintaining db after upgrade
     private val mAllDrinks = ArrayList<Drink>()
     private val mIgnoredDrinks = ArrayList<UUID>()
-    private val mAllLoggedDrinks = ArrayList<Pair<Int, Int>>()
+    private val mAllLoggedDrinks = ArrayList<Pair<Int, UUID>>()
 
     //delete after everyone is using UUIDs
     private val mOldIdUUIDMap = HashMap<Int, UUID>()
@@ -116,7 +116,11 @@ class DatabaseHelper(val context: Context?, val name: String?, factory: SQLiteDa
         cursor = db.query("log_drink",null,null,null,null,null,null)
         while (cursor.moveToNext()){
             val logDate = cursor.getInt(cursor.getColumnIndex("log_date"))
-            val drinkId = cursor.getInt(cursor.getColumnIndex("drink_id"))
+            val drinkId = try {
+                UUID.fromString(cursor.getString(cursor.getColumnIndex("drink_id")))
+            } catch (e: Exception){
+                mOldIdUUIDMap[cursor.getInt(cursor.getColumnIndex("drink_id"))]!!
+            }
             mAllLoggedDrinks.add(Pair(logDate, drinkId))
         }
         cursor.close()
@@ -132,7 +136,7 @@ class DatabaseHelper(val context: Context?, val name: String?, factory: SQLiteDa
         }
     }
 
-    private fun insertRowIntoLogDrinkTable(date: Int, id: Int){
+    private fun insertRowIntoLogDrinkTable(date: Int, id: UUID){
         val sql = "INSERT INTO log_drink VALUES ($date, \"$id\")"
         db.execSQL(sql)
     }
