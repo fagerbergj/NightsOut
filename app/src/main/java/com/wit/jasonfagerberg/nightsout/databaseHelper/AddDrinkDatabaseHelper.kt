@@ -15,8 +15,12 @@ class AddDrinkDatabaseHelper(private val mainActivity: MainActivity) {
         mainActivity.mDatabaseHelper.updateDrinkSuggestionStatus(drink.id, false)
         setDrinkFavorited(drink, favorited)
 
-        if (canUnfavorite) mainActivity.addDrinkFragment.addToDrinkList(drink)
-        else mainActivity.addDrinkFragment.addToFavoritesList(drink)
+        if (canUnfavorite){
+            mainActivity.addDrinkFragment.addToDrinkList(drink)
+        } else{
+            drink.recent = false
+            mainActivity.addDrinkFragment.addToFavoritesList(drink)
+        }
     }
 
     private fun setDrinkId(drink: Drink) {

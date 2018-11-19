@@ -280,10 +280,13 @@ class DatabaseHelper(val context: Context?, val name: String?, factory: SQLiteDa
             val drink = mMainActivity.mDrinksList[i]
             insertRowInCurrentSessionTable(drink.id, i)
             updateRowInDrinksTable(drink)
-            if (drink.favorited && !isFavoritedInDB(drink.name)) {
-                insertRowInFavoritesTable(drink.name, drink.id)
-            } else if (!drink.favorited && isFavoritedInDB(drink.name)) {
+            if (!drink.favorited && isFavoritedInDB(drink.name)) {
                 deleteRowsInTable("favorites", "drink_name = \"${drink.name}\"")
+            }
+        }
+        for (drink in mMainActivity.mFavoritesList){
+            if (!isFavoritedInDB(drink.name)){
+                insertRowInFavoritesTable(drink.name, drink.id)
             }
         }
     }
