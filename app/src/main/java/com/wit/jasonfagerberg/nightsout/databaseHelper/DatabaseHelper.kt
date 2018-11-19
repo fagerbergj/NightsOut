@@ -119,9 +119,9 @@ class DatabaseHelper(val context: Context?, val name: String?, factory: SQLiteDa
             val drinkId = try {
                 UUID.fromString(cursor.getString(cursor.getColumnIndex("drink_id")))
             } catch (e: Exception){
-                mOldIdUUIDMap[cursor.getInt(cursor.getColumnIndex("drink_id"))]!!
+                mOldIdUUIDMap[cursor.getInt(cursor.getColumnIndex("drink_id"))]
             }
-            mAllLoggedDrinks.add(Pair(logDate, drinkId))
+            if (drinkId != null) mAllLoggedDrinks.add(Pair(logDate, drinkId))
         }
         cursor.close()
     }
