@@ -10,6 +10,8 @@ import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 import java.lang.Exception
+import java.util.*
+import kotlin.collections.HashMap
 
 //private const val TAG = "DatabaseHelper"
 
@@ -22,8 +24,11 @@ class DatabaseHelper(val context: Context?, val name: String?, factory: SQLiteDa
     private lateinit var mMainActivity: MainActivity
     // temp array for maintaining db after upgrade
     private val mAllDrinks = ArrayList<Drink>()
-    private val mIgnoredDrinks = ArrayList<Int>()
+    private val mIgnoredDrinks = ArrayList<UUID>()
     private val mAllLoggedDrinks = ArrayList<Pair<Int, Int>>()
+
+    //delete after everyone is using UUIDs
+    private val mOldIdUUIDMap = HashMap<Int, UUID>()
 
     // general db
     override fun onCreate(db: SQLiteDatabase?) {}
@@ -74,6 +79,7 @@ class DatabaseHelper(val context: Context?, val name: String?, factory: SQLiteDa
     }
 
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
+        mapOldIdsToUUIDs()
         pullDrinks()
         pullLogHeaders()
         dropAllTables()
@@ -84,7 +90,11 @@ class DatabaseHelper(val context: Context?, val name: String?, factory: SQLiteDa
     private fun pullAllDrinks() {
         var cursor = db.query("drinks", null, null, null, null, null, null, null)
         while (cursor.moveToNext()) {
-            val id = cursor.getInt(cursor.getColumnIndex("id"))
+            val id = try {
+                UUID.fromString(cursor.getString(cursor.getColumnIndex("id")))
+            } catch (e: Exception){
+                mOldIdUUIDMap[cursor.getInt(cursor.getColumnIndex("id"))]!!
+            }
             val drinkName = cursor.getString(cursor.getColumnIndex("name"))
             val abv = cursor.getDouble(cursor.getColumnIndex("abv"))
             val amount = cursor.getDouble(cursor.getColumnIndex("amount"))
@@ -123,7 +133,7 @@ class DatabaseHelper(val context: Context?, val name: String?, factory: SQLiteDa
     }
 
     private fun insertRowIntoLogDrinkTable(date: Int, id: Int){
-        val sql = "INSERT INTO log_drink VALUES ($date, $id)"
+        val sql = "INSERT INTO log_drink VALUES ($date, \"$id\")"
         db.execSQL(sql)
     }
 
@@ -139,11 +149,11 @@ class DatabaseHelper(val context: Context?, val name: String?, factory: SQLiteDa
     }
 
     private fun rebuildTables() {
-        db.execSQL("CREATE TABLE \"current_session_drinks\" ( `drink_id` INTEGER, `position` INTEGER )")
-        db.execSQL("CREATE TABLE \"drinks\" ( `id` INTEGER PRIMARY KEY AUTOINCREMENT, `name` TEXT, `abv` NUMERIC, `amount` NUMERIC, `measurement` TEXT, `recent` INTEGER, `modifiedTime` INTEGER, `dontSuggest` INTEGER)")
-        db.execSQL("CREATE TABLE `favorites` ( `drink_name` TEXT, `origin_id` INTEGER )")
+        db.execSQL("CREATE TABLE \"current_session_drinks\" ( `drink_id` TEXT, `position` INTEGER )")
+        db.execSQL("CREATE TABLE \"drinks\" ( `id` TEXT UNIQUE, `name` TEXT, `abv` NUMERIC, `amount` NUMERIC, `measurement` TEXT, `recent` INTEGER, `modifiedTime` INTEGER, `dontSuggest` INTEGER, PRIMARY KEY(`id`) )")
+        db.execSQL("CREATE TABLE \"favorites\" ( `drink_name` TEXT, `origin_id` TEXT )")
         db.execSQL("CREATE TABLE \"log\" ( `date` INTEGER UNIQUE, `bac` NUMERIC, `duration` INTEGER, PRIMARY KEY(`date`) )")
-        db.execSQL("CREATE TABLE \"log_drink\" ( `log_date` NUMERIC, `drink_id` INTEGER )")
+        db.execSQL("CREATE TABLE \"log_drink\" ( `log_date` NUMERIC, `drink_id` TEXT )")
         pushAllDrinks()
         pushDrinks()
         pushLogHeaders()
@@ -160,7 +170,11 @@ class DatabaseHelper(val context: Context?, val name: String?, factory: SQLiteDa
         val order = "current_session_drinks.position ASC"
         val cursor = db.query(table, null, where, null, null, null, order, null)
         while (cursor.moveToNext()) {
-            val id = cursor.getInt(cursor.getColumnIndex("id"))
+            val id = try {
+                UUID.fromString(cursor.getString(cursor.getColumnIndex("id")))
+            } catch (e: Exception){
+                mOldIdUUIDMap[cursor.getInt(cursor.getColumnIndex("id"))]!!
+            }
             val drinkName = cursor.getString(cursor.getColumnIndex("name"))
             val abv = cursor.getDouble(cursor.getColumnIndex("abv"))
             val amount = cursor.getDouble(cursor.getColumnIndex("amount"))
@@ -197,7 +211,11 @@ class DatabaseHelper(val context: Context?, val name: String?, factory: SQLiteDa
         val cursor = db.query(table, null, where, null, null, null, order, null)
 
         while (cursor.moveToNext()) {
-            val id = cursor.getInt(cursor.getColumnIndex("id"))
+            val id = try {
+                UUID.fromString(cursor.getString(cursor.getColumnIndex("id")))
+            } catch (e: Exception){
+                mOldIdUUIDMap[cursor.getInt(cursor.getColumnIndex("id"))]!!
+            }
             val drinkName = cursor.getString(cursor.getColumnIndex("name"))
             val abv = cursor.getDouble(cursor.getColumnIndex("abv"))
             val amount = cursor.getDouble(cursor.getColumnIndex("amount"))
@@ -219,7 +237,11 @@ class DatabaseHelper(val context: Context?, val name: String?, factory: SQLiteDa
         val cursor = db.query(table, null, where, null, null, null, order, null)
 
         while (cursor.moveToNext()) {
-            val id = cursor.getInt(cursor.getColumnIndex("id"))
+            val id = try {
+                UUID.fromString(cursor.getString(cursor.getColumnIndex("id")))
+            } catch (e: Exception){
+                mOldIdUUIDMap[cursor.getInt(cursor.getColumnIndex("id"))]!!
+            }
             val drinkName = cursor.getString(cursor.getColumnIndex("name"))
             val abv = cursor.getDouble(cursor.getColumnIndex("abv"))
             val amount = cursor.getDouble(cursor.getColumnIndex("amount"))
@@ -275,21 +297,21 @@ class DatabaseHelper(val context: Context?, val name: String?, factory: SQLiteDa
         db.execSQL(sql)
     }
 
-    private fun insertRowInCurrentSessionTable(id: Int, pos: Int) {
-        val sql = "INSERT INTO current_session_drinks VALUES ($id, $pos)"
+    private fun insertRowInCurrentSessionTable(id: UUID, pos: Int) {
+        val sql = "INSERT INTO current_session_drinks VALUES (\"$id\", $pos)"
         db.execSQL(sql)
     }
 
-    fun insertRowInFavoritesTable(name: String, id: Int) {
-        val sql = "INSERT INTO favorites VALUES (\"$name\", $id)"
+    fun insertRowInFavoritesTable(name: String, id: UUID) {
+        val sql = "INSERT INTO favorites VALUES (\"$name\", \"$id\")"
         db.execSQL(sql)
     }
 
     fun insertDrinkIntoDrinksTable(drink: Drink) {
         var recent = 0
         if (drink.recent) recent = 1
-        val sql = "INSERT INTO drinks (name, abv, amount, measurement, recent, modifiedTime) \n" +
-                "VALUES (\"${drink.name}\", ${drink.abv}, ${drink.amount}, \"${drink.measurement}\"," +
+        val sql = "INSERT INTO drinks (id, name, abv, amount, measurement, recent, modifiedTime)" +
+                "VALUES (\"${drink.id}\", \"${drink.name}\", ${drink.abv}, ${drink.amount}, \"${drink.measurement}\"," +
                 " $recent, ${drink.modifiedTime})"
         db.execSQL(sql)
     }
@@ -303,17 +325,17 @@ class DatabaseHelper(val context: Context?, val name: String?, factory: SQLiteDa
         var recent = 0
         if (drink.recent) recent = 1
         val sql = "UPDATE drinks SET name=\"${drink.name}\", abv=${drink.abv}, amount=${drink.amount}," +
-                " measurement=\"${drink.measurement}\", recent=$recent WHERE id=${drink.id}"
+                " measurement=\"${drink.measurement}\", recent=$recent WHERE id=\"${drink.id}\""
         db.execSQL(sql)
     }
 
-    fun updateDrinkSuggestionStatus(id: Int, dontSuggest: Boolean){
+    fun updateDrinkSuggestionStatus(id: UUID, dontSuggest: Boolean){
         val intSuggest = if (dontSuggest) 1 else 0
-        val sql = "UPDATE drinks SET dontSuggest=$intSuggest WHERE id=$id"
+        val sql = "UPDATE drinks SET dontSuggest=$intSuggest WHERE id=\"$id\""
         db.execSQL(sql)
     }
 
-    fun getDrinkSuggestedStatus(id: Int):Boolean{
+    fun getDrinkSuggestedStatus(id: UUID):Boolean{
         val cursor = db.query("drinks", arrayOf("dontSuggest"), "id = ?", arrayOf(id.toString()), null, null, null)
         cursor.moveToFirst()
         val dontSuggest = cursor.getInt(cursor.getColumnIndex("dontSuggest")) == 1
@@ -321,26 +343,26 @@ class DatabaseHelper(val context: Context?, val name: String?, factory: SQLiteDa
         return dontSuggest
     }
 
-    fun updateDrinkModifiedTime(drinkId: Int, modifiedTime: Long) {
-        val sql = "UPDATE drinks SET modifiedTime=$modifiedTime WHERE id = $drinkId"
+    fun updateDrinkModifiedTime(drinkId: UUID, modifiedTime: Long) {
+        val sql = "UPDATE drinks SET modifiedTime=$modifiedTime WHERE id = \"$drinkId\""
         db.execSQL(sql)
     }
 
-    fun getDrinkIdFromFullDrinkInfo(target: Drink): Int {
+    fun getDrinkIdFromFullDrinkInfo(target: Drink): UUID {
         val where = "name=? AND  abv=? AND amount=? AND measurement=?"
         val whereArgs = arrayOf(target.name, "${target.abv}", "${target.amount}", target.measurement)
         val cursor = db.query("drinks", null, where, whereArgs, null, null, null)
 
         while (cursor.moveToNext()) {
-            val foundId = cursor.getInt(cursor.getColumnIndex("id"))
+            val foundId = UUID.fromString(cursor.getString(cursor.getColumnIndex("id")))
             cursor.close()
             return foundId
         }
         cursor.close()
-        return -1
+        return UUID.randomUUID()
     }
 
-    fun isLoggedDrink(id: Int): Boolean{
+    fun isLoggedDrink(id: UUID): Boolean{
         val cursor = db.query("log_drink", null, "drink_id = ?",
                 arrayOf(id.toString()), null, null, null)
         val res = cursor.count
@@ -356,7 +378,7 @@ class DatabaseHelper(val context: Context?, val name: String?, factory: SQLiteDa
         val order = "modifiedTime"
         val cursor = db.query(table, null, where, whereArgs, null, null, order, null)
         while (cursor.moveToNext()) {
-            val id = cursor.getInt(cursor.getColumnIndex("id"))
+            val id = UUID.fromString(cursor.getString(cursor.getColumnIndex("id")))
             val drinkName = cursor.getString(cursor.getColumnIndex("name"))
             val abv = cursor.getDouble(cursor.getColumnIndex("abv"))
             val amount = cursor.getDouble(cursor.getColumnIndex("amount"))
@@ -370,5 +392,24 @@ class DatabaseHelper(val context: Context?, val name: String?, factory: SQLiteDa
         }
         cursor.close()
         return drinks
+    }
+
+    fun idInDb(id: UUID): Boolean{
+        val cursor = db.query("drinks", null, "id = ?", arrayOf(id.toString()), null, null, null, null)
+        val ret = cursor.count > 0
+        cursor.close()
+        return ret
+    }
+    private fun mapOldIdsToUUIDs(){
+        val cursor = db.query("drinks", null,null,null,null,null,null,null)
+        while (cursor.moveToNext()){
+            val id = cursor.getString(cursor.getColumnIndex("id"))
+            try {
+                UUID.fromString(id)
+            } catch (e: Exception) {
+                mOldIdUUIDMap[id.toInt()] = UUID.randomUUID()
+            }
+        }
+        cursor.close()
     }
 }

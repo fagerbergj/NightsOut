@@ -2,6 +2,7 @@ package com.wit.jasonfagerberg.nightsout.databaseHelper
 
 import com.wit.jasonfagerberg.nightsout.main.Drink
 import com.wit.jasonfagerberg.nightsout.main.MainActivity
+import java.util.*
 
 class LogDatabaseHelper(private val databaseHelper: DatabaseHelper, private val mainActivity: MainActivity) {
 
@@ -11,7 +12,7 @@ class LogDatabaseHelper(private val databaseHelper: DatabaseHelper, private val 
         val whereArgs = arrayOf(date.toString())
         val cursor = databaseHelper.db.query("log_drink", null, where, whereArgs, null, null, null)
         while (cursor.moveToNext()) {
-            val drinkId = cursor.getInt(cursor.getColumnIndex("drink_id"))
+            val drinkId = UUID.fromString(cursor.getString(cursor.getColumnIndex("drink_id")))
             drinks.add(getDrinkFromId(drinkId)!!)
         }
         cursor.close()
@@ -20,7 +21,7 @@ class LogDatabaseHelper(private val databaseHelper: DatabaseHelper, private val 
 
     fun pushDrinksToLogDrinks(date: Int) {
         for (drink in mainActivity.mDrinksList) {
-            val sql = "INSERT INTO log_drink VALUES ($date, ${drink.id})"
+            val sql = "INSERT INTO log_drink VALUES ($date, \"${drink.id}\")"
             databaseHelper.db.execSQL(sql)
         }
     }
@@ -28,7 +29,7 @@ class LogDatabaseHelper(private val databaseHelper: DatabaseHelper, private val 
     fun changeLogDate(oldDate: Int, newDate: Int) {
         var sql = "UPDATE log SET date = $newDate WHERE date = $oldDate"
         databaseHelper.db.execSQL(sql)
-        sql = "UPDATE log_drink SET log_date = $newDate WHERE log_date = $oldDate"
+        sql = "UPDATE log_drink SET log_date = \"$newDate\" WHERE log_date = $oldDate"
         databaseHelper.db.execSQL(sql)
     }
 
@@ -39,7 +40,7 @@ class LogDatabaseHelper(private val databaseHelper: DatabaseHelper, private val 
         databaseHelper.db.execSQL(sql)
     }
 
-    private fun getDrinkFromId(id: Int): Drink? {
+    private fun getDrinkFromId(id: UUID): Drink? {
         val where = "id = ?"
         val whereArgs = arrayOf(id.toString())
         val cursor = databaseHelper.db.query("drinks", null, where, whereArgs, null, null, null)
@@ -56,6 +57,6 @@ class LogDatabaseHelper(private val databaseHelper: DatabaseHelper, private val 
         }
 
         cursor.close()
-        return Drink(0, "[DRINK REMOVED]", 0.0, 0.0, "", false, false, 0)
+        return Drink(UUID.randomUUID(), "[DRINK REMOVED]", 0.0, 0.0, "", false, false, 0)
     }
 }

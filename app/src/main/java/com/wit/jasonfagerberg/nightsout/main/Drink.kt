@@ -1,6 +1,8 @@
 package com.wit.jasonfagerberg.nightsout.main
 
-class Drink(var id: Int, var name: String, var abv: Double, var amount: Double,
+import java.util.*
+
+class Drink(var id: UUID, var name: String, var abv: Double, var amount: Double,
             var measurement: String, var favorited: Boolean, var recent: Boolean,
             var modifiedTime: Long) {
 

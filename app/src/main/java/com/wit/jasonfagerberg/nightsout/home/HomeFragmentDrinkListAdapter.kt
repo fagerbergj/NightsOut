@@ -198,10 +198,10 @@ class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: Ar
         }
         drink.measurement = dropdown.selectedItem.toString()
 
-        val foundID = mMainActivity.mDatabaseHelper.getDrinkIdFromFullDrinkInfo(drink)
-        val existsInDB = foundID != -1
-        drink.id = foundID
-        if (!drink.isExactDrink(other) && !existsInDB) {
+        val id = mMainActivity.mDatabaseHelper.getDrinkIdFromFullDrinkInfo(drink)
+        drink.id = id
+
+        if (!drink.isExactDrink(other) && !mMainActivity.mDatabaseHelper.idInDb(id)) {
             if (drink.name != other.name) drink.favorited = false
             mMainActivity.mDatabaseHelper.insertDrinkIntoDrinksTable(drink)
             drink.id = mMainActivity.mDatabaseHelper.getDrinkIdFromFullDrinkInfo(drink)

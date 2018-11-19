@@ -2,12 +2,13 @@ package com.wit.jasonfagerberg.nightsout.databaseHelper
 
 import com.wit.jasonfagerberg.nightsout.main.Drink
 import com.wit.jasonfagerberg.nightsout.main.MainActivity
+import java.util.*
 
 class AddDrinkDatabaseHelper(private val mainActivity: MainActivity) {
 
     fun buildDrinkAndAddToList(name: String, abv: Double, amount: Double,
                                measurement: String, favorited: Boolean, canUnfavorite: Boolean) {
-        val drink = Drink(-1, name, abv, amount, measurement, favorited, true, mainActivity.getLongTimeNow())
+        val drink = Drink(UUID.randomUUID(), name, abv, amount, measurement, favorited, true, mainActivity.getLongTimeNow())
 
         setDrinkId(drink)
         mainActivity.mDatabaseHelper.updateDrinkModifiedTime(drink.id, drink.modifiedTime)
@@ -19,15 +20,9 @@ class AddDrinkDatabaseHelper(private val mainActivity: MainActivity) {
     }
 
     private fun setDrinkId(drink: Drink) {
-        val foundID = mainActivity.mDatabaseHelper.getDrinkIdFromFullDrinkInfo(drink)
-        val existsInDB = foundID != -1
-
-        if (!existsInDB) {
-            mainActivity.mDatabaseHelper.insertDrinkIntoDrinksTable(drink)
-            drink.id = mainActivity.mDatabaseHelper.getDrinkIdFromFullDrinkInfo(drink)
-        } else {
-            drink.id = foundID
-        }
+        val id = mainActivity.mDatabaseHelper.getDrinkIdFromFullDrinkInfo(drink)
+        drink.id = id
+        if (!mainActivity.mDatabaseHelper.idInDb(drink.id)) mainActivity.mDatabaseHelper.insertDrinkIntoDrinksTable(drink)
     }
 
     private fun setDrinkFavorited(drink: Drink, favorited: Boolean) {
@@ -52,9 +47,9 @@ class AddDrinkDatabaseHelper(private val mainActivity: MainActivity) {
     fun getSuggestedDrinks(filter: String, ignoreDontShow: Boolean = false): ArrayList<Drink>{
         val res = ArrayList<Drink>()
         val cursor = mainActivity.mDatabaseHelper.db.query(true, "drinks", null,
-                "name LIKE ?", arrayOf("%$filter%"), null, null, "name", null)
+                "name LIKE ?", arrayOf("%$filter%"), null, null, "name, modifiedTime ASC", null)
         while (cursor.moveToNext()){
-            val id = cursor.getInt(cursor.getColumnIndex("id"))
+            val id = UUID.fromString(cursor.getString(cursor.getColumnIndex("id")))
             val drinkName = cursor.getString(cursor.getColumnIndex("name"))
             val abv = cursor.getDouble(cursor.getColumnIndex("abv"))
             val amount = cursor.getDouble(cursor.getColumnIndex("amount"))
