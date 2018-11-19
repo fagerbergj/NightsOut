@@ -7,7 +7,7 @@ import androidx.appcompat.app.AlertDialog
 class LightSimpleDialog(context: Context) {
     private var dialogClickListener = DialogInterface.OnClickListener { _, _ -> }
     private var builder = AlertDialog.Builder(context)
-    var showNeutralButton = false
+    private var showNeutralButton = false
 
     fun show(message: String, posText: String = "Yes", negText: String = "No", neuText: String = "Neutral") {
         builder.setMessage(message)
