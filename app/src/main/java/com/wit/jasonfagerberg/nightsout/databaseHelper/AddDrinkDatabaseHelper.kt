@@ -51,7 +51,7 @@ class AddDrinkDatabaseHelper(private val mainActivity: MainActivity) {
     fun getSuggestedDrinks(filter: String, ignoreDontShow: Boolean = false): ArrayList<Drink>{
         val res = ArrayList<Drink>()
         val cursor = mainActivity.mDatabaseHelper.db.query(true, "drinks", null,
-                "name LIKE ?", arrayOf("%$filter%"), null, null, "name, modifiedTime ASC", null)
+                "name LIKE ?", arrayOf("%$filter%"), null, null, "name, modifiedTime DESC", null)
         while (cursor.moveToNext()){
             val id = UUID.fromString(cursor.getString(cursor.getColumnIndex("id")))
             val drinkName = cursor.getString(cursor.getColumnIndex("name"))

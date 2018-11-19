@@ -76,7 +76,7 @@ class ManageDBDrinkListAdapter(private val mContext: Context,private val mDrinks
                         val loss = getLostReferenceString(drink)
 
                         val posAction = {
-                            mMainActivity.mDatabaseHelper.deleteRowsInTable("drinks", "id = ${drink.id}")
+                            mMainActivity.mDatabaseHelper.deleteRowsInTable("drinks", "id = \"${drink.id}\"")
                             mDrinksList.remove(drink)
                             removeCurrentSessionReference(drink)
                             removeOrUpdateFavoritesReference(drink)
