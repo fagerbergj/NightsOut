@@ -122,6 +122,7 @@ class DatabaseHelper(val context: Context?, val name: String?, factory: SQLiteDa
                 mOldIdUUIDMap[cursor.getInt(cursor.getColumnIndex("drink_id"))]
             }
             if (drinkId != null) mAllLoggedDrinks.add(Pair(logDate, drinkId))
+            else mAllLoggedDrinks.add(Pair(logDate, UUID.randomUUID()))
         }
         cursor.close()
     }
