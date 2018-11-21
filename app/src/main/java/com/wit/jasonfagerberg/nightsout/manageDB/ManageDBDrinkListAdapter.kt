@@ -69,6 +69,8 @@ class ManageDBDrinkListAdapter(private val mContext: Context, private val mDrink
                     }
                     R.id.manage_db_item_suggestion -> {
                         mMainActivity.mDatabaseHelper.updateDrinkSuggestionStatus(drink.id, !dontSuggest)
+                        if (!dontSuggest) mMainActivity.showToast("This drink will not be suggested")
+                        else mMainActivity.showToast("This drink will be suggested")
                         true
                     }
                     R.id.manage_db_item_delete -> {

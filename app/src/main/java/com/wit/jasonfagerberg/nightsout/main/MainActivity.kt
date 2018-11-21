@@ -237,8 +237,9 @@ class MainActivity : AppCompatActivity() {
         return Calendar.getInstance().timeInMillis
     }
 
-    fun showToast(message: String) {
-        val toast = Toast.makeText(this, message, Toast.LENGTH_LONG)
+    fun showToast(message: String, isLongToast: Boolean = false) {
+        val toast = if (isLongToast) Toast.makeText(this, message, Toast.LENGTH_LONG)
+            else Toast.makeText(this, message, Toast.LENGTH_SHORT)
         toast.setGravity(Gravity.CENTER, 0, 450)
         toast.show()
     }

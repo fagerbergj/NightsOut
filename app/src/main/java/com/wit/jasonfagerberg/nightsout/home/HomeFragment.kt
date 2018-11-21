@@ -170,7 +170,7 @@ class HomeFragment : Fragment() {
             }
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, swipeDir: Int) {
-                mMainActivity.showToast("${mMainActivity.mDrinksList[viewHolder.adapterPosition].name} removed")
+                mMainActivity.showToast("${mMainActivity.mDrinksList[viewHolder.adapterPosition].name} removed", true)
                 mMainActivity.mDrinksList.removeAt(viewHolder.adapterPosition)
                 mDrinkListAdapter.notifyItemRemoved(viewHolder.adapterPosition)
                 mDrinkListAdapter.notifyItemRangeChanged(0, mMainActivity.mDrinksList.size)

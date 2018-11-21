@@ -263,12 +263,12 @@ class ProfileFragment : Fragment() {
         if (!w.isNaN()) mWeightEditText.setText(w.toString())
 
         if (sex == null && !profileInit) {
-            mMainActivity.showToast("Please Select A Sex")
+            mMainActivity.showToast("Please Select A Sex", true)
             showErrorText(sexText)
             return
         } else if (w.isNaN() || w < 20) {
             showErrorText(weightText)
-            mMainActivity.showToast("Please Enter a Valid Weight")
+            mMainActivity.showToast("Please Enter a Valid Weight", true)
             return
         }
 

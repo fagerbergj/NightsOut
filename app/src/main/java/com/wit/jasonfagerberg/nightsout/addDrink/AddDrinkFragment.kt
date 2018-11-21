@@ -125,7 +125,7 @@ class AddDrinkFragment : Fragment() {
                     mComplexDrinkMode = AddDrinkFragmentComplexDrink(this)
                     view!!.findViewById<MaterialButton>(R.id.btn_add_drink_add_alc_source).visibility = View.VISIBLE
                     view!!.findViewById<RecyclerView>(R.id.recycler_add_drink_alcohol_source_list).visibility = View.VISIBLE
-                    mMainActivity.showToast("You can now add multiple alcohol sources")
+                    mMainActivity.showToast("You can now add multiple alcohol sources", true)
                     item.title = "Simple Drink"
                 } else {
                     view!!.findViewById<MaterialButton>(R.id.btn_add_drink_add_alc_source).visibility = View.INVISIBLE
@@ -138,11 +138,11 @@ class AddDrinkFragment : Fragment() {
                 if (mFavorited) {
                     item.icon = ContextCompat.getDrawable(context!!, R.drawable.favorite_white_24dp)
                     if (canUnfavorite) btnAdd.setText(R.string.add_and_favorite)
-                    mMainActivity.showToast("Drink Will Be Favorited After Adding")
+                    mMainActivity.showToast("Drink Will Be Favorited After Adding", true)
                 } else {
                     item.icon = ContextCompat.getDrawable(context!!, R.drawable.favorite_border_white_24dp)
                     btnAdd.setText(R.string.add)
-                    mMainActivity.showToast("Drink Will Not Be Favorited")
+                    mMainActivity.showToast("Drink Will Not Be Favorited", true)
                 }
             }
             R.id.btn_clear_favorites_list -> {
@@ -366,7 +366,7 @@ class AddDrinkFragment : Fragment() {
             setTextViewToRedAndBold(textName)
             inputError = true
         }
-        if (inputError) mMainActivity.showToast("Please enter a valid ${message.substring(2, message.length)}")
+        if (inputError) mMainActivity.showToast("Please enter a valid ${message.substring(2, message.length)}", true)
         return inputError
     }
 
