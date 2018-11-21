@@ -5,12 +5,12 @@ import java.util.UUID
 class Drink(
     var id: UUID,
     var name: String,
-    var abv: Double,
-    var amount: Double,
-    var measurement: String,
-    var favorited: Boolean,
-    var recent: Boolean,
-    var modifiedTime: Long
+    var abv: Double = 0.0,
+    var amount: Double = 0.0,
+    var measurement: String = "",
+    var favorited: Boolean = false,
+    var recent: Boolean = false,
+    var modifiedTime: Long = 0
 ) {
 
     override fun toString(): String {

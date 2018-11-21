@@ -28,7 +28,7 @@ class HomeFragmentLogDatePicker(
             val logDay = dp.datePicker.dayOfMonth
             val logDate = Integer.parseInt(converter.yearMonthDayTo8DigitString(logYear, logMonth, logDay))
 
-            val testHeader = LogHeader(logDate, 0.0, 0.0)
+            val testHeader = LogHeader(logDate)
             if (testHeader in mainActivity.mLogHeaders) {
                 showOverrideLogDialog(logDate)
             } else {
@@ -44,7 +44,7 @@ class HomeFragmentLogDatePicker(
     }
 
     private fun showOverrideLogDialog(logDate: Int) {
-        val headerIndex = mainActivity.mLogHeaders.indexOf(LogHeader(logDate, 0.0, 0.0))
+        val headerIndex = mainActivity.mLogHeaders.indexOf(LogHeader(logDate))
         val header = mainActivity.mLogHeaders[headerIndex]
 
         val simpleDialog = SimpleDialog(homeFragment.context!!, mainActivity.layoutInflater)

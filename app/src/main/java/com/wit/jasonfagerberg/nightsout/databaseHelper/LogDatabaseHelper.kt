@@ -57,6 +57,6 @@ class LogDatabaseHelper(private val databaseHelper: DatabaseHelper, private val 
         }
 
         cursor.close()
-        return Drink(UUID.randomUUID(), "[DRINK REMOVED]", 0.0, 0.0, "", false, false, 0)
+        return Drink(UUID.randomUUID(), "[DRINK REMOVED]")
     }
 }

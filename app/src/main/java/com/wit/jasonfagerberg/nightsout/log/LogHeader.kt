@@ -6,7 +6,7 @@ import java.text.DateFormatSymbols
 import java.util.Locale
 
 // private const val TAG = "LogHeader"
-class LogHeader(val date: Int, val bac: Double, val duration: Double) {
+class LogHeader(val date: Int, val bac: Double = 0.0, val duration: Double = 0.0) {
     private val converter = Converter()
     private val durationHoursMinuets = converter.decimalTimeToHoursAndMinuets(duration)
     private val durationHours = durationHoursMinuets.first

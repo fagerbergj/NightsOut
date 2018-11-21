@@ -72,17 +72,16 @@ class HomeFragment : Fragment() {
         // set edit texts
         setupEditTexts(view)
 
-        val bacInfoDialog = BacInfoDialog(context!!)
-        view.findViewById<ImageButton>(R.id.btn_home_bac_info).setOnClickListener {
-            bacInfoDialog.showBacInfoDialog()
-        }
-
         // return
         return view
     }
 
     override fun onResume() {
         super.onResume()
+        val bacInfoDialog = BacInfoDialog(context!!)
+        view!!.findViewById<ImageButton>(R.id.btn_home_bac_info).setOnClickListener {
+            bacInfoDialog.showBacInfoDialog()
+        }
         calculateBAC()
         showOrHideEmptyListText(view!!)
     }

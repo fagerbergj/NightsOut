@@ -108,14 +108,19 @@ class LogFragment : Fragment() {
             R.id.btn_clear_selected_day_log -> {
                 val date = converter.yearMonthDayTo8DigitString(calendarView.selectedDate.year,
                         calendarView.selectedDate.month, calendarView.selectedDate.day).toInt()
-                mMainActivity.mLogHeaders.remove(LogHeader(date, 0.0, 0.0))
+                if (mMainActivity.mLogHeaders.indexOf(LogHeader(date)) == -1) return false
+                mMainActivity.mLogHeaders.remove(LogHeader(date))
                 logDatabaseHelper.deleteLog(date)
                 resetCalendar()
             }
             R.id.btn_move_selected_log -> {
                 val date = converter.yearMonthDayTo8DigitString(calendarView.selectedDate.year,
                         calendarView.selectedDate.month, calendarView.selectedDate.day).toInt()
-                val index = mMainActivity.mLogHeaders.indexOf(LogHeader(date, 0.0, 0.0))
+                val index = mMainActivity.mLogHeaders.indexOf(LogHeader(date))
+                if (index == -1) {
+                    mMainActivity.showToast("Cannot move empty log")
+                    return false
+                }
                 val header = mMainActivity.mLogHeaders[index]
                 val datePicker = LogFragmentDatePicker(this, mMainActivity, Converter(), header)
                 datePicker.showDatePicker()
@@ -184,13 +189,13 @@ class LogFragment : Fragment() {
     }
 
     private fun setLogListBasedOnDay(date: Int) {
-        val index = mMainActivity.mLogHeaders.indexOf(LogHeader(date, 0.0, 0.0))
+        val index = mMainActivity.mLogHeaders.indexOf(LogHeader(date))
         if (index >= 0) {
             val header = mMainActivity.mLogHeaders[index]
             mLogList.add(header)
             mLogList.addAll(logDatabaseHelper.getLoggedDrinks(header.date))
         } else {
-            mLogList.add(LogHeader(date, 0.0, 0.0))
+            mLogList.add(LogHeader(date))
         }
         mLogFragmentAdapter.notifyDataSetChanged()
         mLogListView.layoutManager?.scrollToPosition(0)
