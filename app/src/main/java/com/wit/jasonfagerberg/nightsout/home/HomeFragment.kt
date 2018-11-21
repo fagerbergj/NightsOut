@@ -26,7 +26,7 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import android.widget.TextView
 import android.widget.ImageButton
 import android.widget.EditText
-import com.wit.jasonfagerberg.nightsout.dialogs.bacInfoDialog
+import com.wit.jasonfagerberg.nightsout.dialogs.BacInfoDialog
 import com.wit.jasonfagerberg.nightsout.manageDB.ManageDBFragment
 import java.util.Collections
 import java.util.Calendar
@@ -72,7 +72,7 @@ class HomeFragment : Fragment() {
         // set edit texts
         setupEditTexts(view)
 
-        val bacInfoDialog = bacInfoDialog(context!!)
+        val bacInfoDialog = BacInfoDialog(context!!)
         view.findViewById<ImageButton>(R.id.btn_home_bac_info).setOnClickListener {
             bacInfoDialog.showBacInfoDialog()
         }
@@ -309,7 +309,7 @@ class HomeFragment : Fragment() {
         val bacValueView = view!!.findViewById<TextView>(R.id.text_home_bac_value)
         val bacResultView = view!!.findViewById<TextView>(R.id.text_home_bac_result)
 
-        val bacInfo = bacInfoDialog(context!!)
+        val bacInfo = BacInfoDialog(context!!)
         bacValueView.setOnClickListener { bacInfo.showBacInfoDialog() }
         bacResultView.setOnClickListener { bacInfo.showBacInfoDialog() }
 

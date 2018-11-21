@@ -12,7 +12,7 @@ import com.jjoe64.graphview.GraphView
 import com.jjoe64.graphview.series.DataPoint
 import com.jjoe64.graphview.series.LineGraphSeries
 
-class bacInfoDialog(
+class BacInfoDialog(
     context: Context
 ) {
     private val mainActivity = context as MainActivity
