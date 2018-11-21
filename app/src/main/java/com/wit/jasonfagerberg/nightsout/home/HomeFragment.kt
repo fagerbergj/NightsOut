@@ -26,6 +26,7 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import android.widget.TextView
 import android.widget.ImageButton
 import android.widget.EditText
+import com.wit.jasonfagerberg.nightsout.dialogs.bacInfoDialog
 import com.wit.jasonfagerberg.nightsout.manageDB.ManageDBFragment
 import java.util.Collections
 import java.util.Calendar
@@ -36,7 +37,7 @@ class HomeFragment : Fragment() {
     lateinit var mDrinkListAdapter: HomeFragmentDrinkListAdapter
     private lateinit var mRelativeLayout: RelativeLayout
     private lateinit var mMainActivity: MainActivity
-    private val mConverter = Converter()
+    val mConverter = Converter()
     var bac = 0.000
 
     var drinkingDuration = 0.0
@@ -71,7 +72,7 @@ class HomeFragment : Fragment() {
         // set edit texts
         setupEditTexts(view)
 
-        val bacInfoDialog = HomeFragmentBacInfoDialog(this, mMainActivity, mConverter)
+        val bacInfoDialog = bacInfoDialog(context!!)
         view.findViewById<ImageButton>(R.id.btn_home_bac_info).setOnClickListener {
             bacInfoDialog.showBacInfoDialog()
         }
@@ -95,7 +96,7 @@ class HomeFragment : Fragment() {
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         val resId = item?.itemId
-        val datePicker = HomeFragmentLogDatePicker(this, mMainActivity, mConverter)
+        val datePicker = HomeFragmentLogDatePicker(context!!)
         when (resId) {
             R.id.btn_toolbar_home_done -> datePicker.showDatePicker()
             R.id.btn_clear_drink_list -> {
@@ -308,7 +309,7 @@ class HomeFragment : Fragment() {
         val bacValueView = view!!.findViewById<TextView>(R.id.text_home_bac_value)
         val bacResultView = view!!.findViewById<TextView>(R.id.text_home_bac_result)
 
-        val bacInfo = HomeFragmentBacInfoDialog(this, mMainActivity, mConverter)
+        val bacInfo = bacInfoDialog(context!!)
         bacValueView.setOnClickListener { bacInfo.showBacInfoDialog() }
         bacResultView.setOnClickListener { bacInfo.showBacInfoDialog() }
 

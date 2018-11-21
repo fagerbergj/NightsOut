@@ -1,22 +1,23 @@
-package com.wit.jasonfagerberg.nightsout.home
+package com.wit.jasonfagerberg.nightsout.dialogs
 
 import android.app.AlertDialog
+import android.content.Context
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.wit.jasonfagerberg.nightsout.R
-import com.wit.jasonfagerberg.nightsout.converter.Converter
 import com.wit.jasonfagerberg.nightsout.main.MainActivity
 import com.jjoe64.graphview.GraphView
 import com.jjoe64.graphview.series.DataPoint
 import com.jjoe64.graphview.series.LineGraphSeries
 
-class HomeFragmentBacInfoDialog(
-    private val homeFragment: HomeFragment,
-    private val mainActivity: MainActivity,
-    private val converter: Converter
+class bacInfoDialog(
+    context: Context
 ) {
+    private val mainActivity = context as MainActivity
+    private val homeFragment = mainActivity.homeFragment
+    private val converter = homeFragment.mConverter
     fun showBacInfoDialog() {
         val builder = android.app.AlertDialog.Builder(homeFragment.context)
         val parent: ViewGroup? = null
