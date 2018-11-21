@@ -8,10 +8,13 @@ Ad free Blood Alcohol Concentration calculator
 * See chart of [BAC decilne over time.](http://stepupprogram.org/docs/handouts/Hours_to_Zero_BAC.pdf)
 
 # Download
-https://play.google.com/store/apps/details?id=com.wit.jasonfagerberg.nightsout
+[![alt text](https://github.com/fagerbergj/NightsOut/blob/master/imgs/download.png "Logo Title Text 1")](https://play.google.com/store/apps/details?id=com.wit.jasonfagerberg.nightsout)
 
 # Screenshots
-![alt text](https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png "Logo Title Text 1")
+![alt text](https://github.com/fagerbergj/NightsOut/blob/master/imgs/screenshot1.webp "Logo Title Text 1")
+![alt text](https://github.com/fagerbergj/NightsOut/blob/master/imgs/screenshot2.webp "Logo Title Text 1")
+![alt text](https://github.com/fagerbergj/NightsOut/blob/master/imgs/screenshot3.webp "Logo Title Text 1")
+
 
 # Developer
 * Jason Fagerberg
