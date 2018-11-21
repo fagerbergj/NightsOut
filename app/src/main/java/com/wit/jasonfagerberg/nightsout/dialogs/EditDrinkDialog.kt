@@ -5,10 +5,14 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.EditText
+import android.widget.ImageView
+import android.widget.Spinner
+import android.widget.TextView
+import android.widget.ArrayAdapter
 import com.google.android.material.button.MaterialButton
 import com.wit.jasonfagerberg.nightsout.R
-import java.util.*
+import java.util.Locale
 
 class EditDrinkDialog(private val context: Context, layoutInflater: LayoutInflater) {
     private val dialog: AlertDialog
@@ -40,15 +44,15 @@ class EditDrinkDialog(private val context: Context, layoutInflater: LayoutInflat
         }
     }
 
-    fun show(){
+    fun show() {
         dialog.show()
     }
 
-    fun setTitle(title: String){
+    fun setTitle(title: String) {
         textTitle.text = title
     }
 
-    fun fillViews(name: String, abv: String, amount: String, measure: String){
+    fun fillViews(name: String, abv: String, amount: String, measure: String) {
         editName.setText(name)
         editAbv.setText(abv)
         editAmount.setText(amount)
@@ -64,11 +68,11 @@ class EditDrinkDialog(private val context: Context, layoutInflater: LayoutInflat
         spinnerMeasurement.setSelection(items.indexOf(measure))
     }
 
-    fun setEditOnClickAction(listener: (View) -> Unit){
+    fun setEditOnClickAction(listener: (View) -> Unit) {
         btnEdit.setOnClickListener(listener)
     }
 
-    fun dismiss(){
+    fun dismiss() {
         dialog.dismiss()
     }
 }

@@ -10,8 +10,11 @@ import com.wit.jasonfagerberg.nightsout.R
 import com.wit.jasonfagerberg.nightsout.main.Drink
 import com.wit.jasonfagerberg.nightsout.main.MainActivity
 
-class DrinkSuggestionArrayAdapter(private var mContext: Context, private var layoutResourceId: Int,
-                                  var data: ArrayList<Drink>) : ArrayAdapter<Drink>(mContext, layoutResourceId, data) {
+class DrinkSuggestionArrayAdapter(
+    private var mContext: Context,
+    private var layoutResourceId: Int,
+    var data: ArrayList<Drink>
+) : ArrayAdapter<Drink>(mContext, layoutResourceId, data) {
     private val mainActivity = (mContext as MainActivity)
 
     override fun getCount(): Int {

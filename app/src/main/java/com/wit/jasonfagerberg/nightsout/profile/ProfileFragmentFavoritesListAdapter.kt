@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.wit.jasonfagerberg.nightsout.R
 import com.wit.jasonfagerberg.nightsout.main.Drink
 import com.wit.jasonfagerberg.nightsout.main.MainActivity
-import java.util.*
 
 class ProfileFragmentFavoritesListAdapter(private val mContext: Context, drinksList: ArrayList<Drink>) :
         RecyclerView.Adapter<ProfileFragmentFavoritesListAdapter.ViewHolder>() {
@@ -39,10 +38,10 @@ class ProfileFragmentFavoritesListAdapter(private val mContext: Context, drinksL
                 for (d in mContext.mDrinksList) {
                     if (d == drink) d.favorited = true
                 }
-                //(mContext as MainActivity).mDatabaseHelper.insertRowInFavoritesTable(drink.name, drink.id)
+                // (mContext as MainActivity).mDatabaseHelper.insertRowInFavoritesTable(drink.name, drink.id)
 
                 holder.image.setImageResource(R.drawable.favorite_white_24dp)
-                //mFavoriteDrinksList.add(drink)
+                // mFavoriteDrinksList.add(drink)
             } else {
                 (mContext as MainActivity).showToast("${holder.name.text} unfavored")
                 for (d in mContext.mDrinksList) {
@@ -52,7 +51,7 @@ class ProfileFragmentFavoritesListAdapter(private val mContext: Context, drinksL
                 mContext.mDatabaseHelper.deleteRowsInTable("favorites", "drink_name = \"${drink.name}\"")
 
                 holder.image.setImageResource(R.drawable.favorite_border_white_24dp)
-                //mFavoriteDrinksList.remove(drink)
+                // mFavoriteDrinksList.remove(drink)
             }
         }
     }

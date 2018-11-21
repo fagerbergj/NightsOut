@@ -12,8 +12,11 @@ import com.jjoe64.graphview.GraphView
 import com.jjoe64.graphview.series.DataPoint
 import com.jjoe64.graphview.series.LineGraphSeries
 
-class HomeFragmentBacInfoDialog(private val homeFragment: HomeFragment,
-                                private val mainActivity: MainActivity, private val converter: Converter) {
+class HomeFragmentBacInfoDialog(
+    private val homeFragment: HomeFragment,
+    private val mainActivity: MainActivity,
+    private val converter: Converter
+) {
     fun showBacInfoDialog() {
         val builder = android.app.AlertDialog.Builder(homeFragment.context)
         val parent: ViewGroup? = null
@@ -86,5 +89,4 @@ class HomeFragmentBacInfoDialog(private val homeFragment: HomeFragment,
         graph.viewport.setMaxY(homeFragment.bac + .0008)
         graph.viewport.setMaxX(elapsedTime + .5)
     }
-
 }

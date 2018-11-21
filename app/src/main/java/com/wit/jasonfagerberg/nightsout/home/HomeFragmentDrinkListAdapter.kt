@@ -6,12 +6,15 @@ import android.graphics.BitmapFactory
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.TextView
+import android.widget.ImageView
+import android.widget.EditText
+import android.widget.Spinner
+import android.widget.LinearLayout
 import com.wit.jasonfagerberg.nightsout.R
 import com.wit.jasonfagerberg.nightsout.dialogs.EditDrinkDialog
 import com.wit.jasonfagerberg.nightsout.main.Drink
 import com.wit.jasonfagerberg.nightsout.main.MainActivity
-import java.util.*
 
 class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: ArrayList<Drink>) :
         androidx.recyclerview.widget.RecyclerView.Adapter<HomeFragmentDrinkListAdapter.ViewHolder>() {
@@ -99,7 +102,7 @@ class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: Ar
             dialog.dismiss()
         }
 
-        //delete button clicked
+        // delete button clicked
         val delete = dialogView.findViewById<TextView>(R.id.text_drink_modify_remove_drink)
         delete.setOnClickListener {
             removeItem(position)
@@ -107,8 +110,7 @@ class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: Ar
             mMainActivity.homeFragment.showOrHideEmptyListText(mMainActivity.homeFragment.view!!)
         }
 
-        dialogView.findViewById<ImageView>(R.id.imgBtn_drink_modify_close).setOnClickListener {dialog.dismiss()}
-
+        dialogView.findViewById<ImageView>(R.id.imgBtn_drink_modify_close).setOnClickListener { dialog.dismiss() }
     }
 
     private fun onAddAnotherClicked(position: Int) {
@@ -170,12 +172,16 @@ class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: Ar
         dialog.show()
     }
 
-
-    private fun onDialogEditClick(drink: Drink, editName: EditText, editABV: EditText,
-                                  editAmount: EditText, dropdown: Spinner) {
+    private fun onDialogEditClick(
+        drink: Drink,
+        editName: EditText,
+        editABV: EditText,
+        editAmount: EditText,
+        dropdown: Spinner
+    ) {
         val other = Drink(drink.id, drink.name, drink.abv, drink.amount, drink.measurement,
                 false, false, mMainActivity.getLongTimeNow())
-        //pad 0s to end
+        // pad 0s to end
         if (!editABV.text.isEmpty() && "${editABV.text}"["${editABV.text}".length - 1] == '.') {
             val padded = "${editABV.text}0"
             editABV.setText(padded)

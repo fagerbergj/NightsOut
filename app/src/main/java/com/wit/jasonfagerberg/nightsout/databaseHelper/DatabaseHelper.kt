@@ -10,15 +10,19 @@ import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 import java.lang.Exception
-import java.util.*
+import java.util.UUID
 import kotlin.collections.HashMap
 
-//private const val TAG = "DatabaseHelper"
+// private const val TAG = "DatabaseHelper"
 
-class DatabaseHelper(val context: Context?, val name: String?, factory: SQLiteDatabase.CursorFactory?,
-                     val version: Int) : SQLiteOpenHelper(context, name, factory, version) {
+class DatabaseHelper(
+    val context: Context?,
+    val name: String?,
+    factory: SQLiteDatabase.CursorFactory?,
+    val version: Int
+) : SQLiteOpenHelper(context, name, factory, version) {
 
-    //private val path = context!!.getDatabasePath(name).toString()
+    // private val path = context!!.getDatabasePath(name).toString()
     private val path = "data/data/com.wit.jasonfagerberg.nightsout/$name"
     lateinit var db: SQLiteDatabase
     private lateinit var mMainActivity: MainActivity
@@ -27,7 +31,7 @@ class DatabaseHelper(val context: Context?, val name: String?, factory: SQLiteDa
     private val mIgnoredDrinks = ArrayList<UUID>()
     private val mAllLoggedDrinks = ArrayList<Pair<Int, UUID>>()
 
-    //delete after everyone is using UUIDs
+    // delete after everyone is using UUIDs
     private val mOldIdUUIDMap = HashMap<Int, UUID>()
 
     // general db
@@ -57,7 +61,6 @@ class DatabaseHelper(val context: Context?, val name: String?, factory: SQLiteDa
         } catch (e: IOException) {
             throw Error("Error copying database")
         }
-
     }
 
     fun copyDatabase() {
@@ -92,7 +95,7 @@ class DatabaseHelper(val context: Context?, val name: String?, factory: SQLiteDa
         while (cursor.moveToNext()) {
             val id = try {
                 UUID.fromString(cursor.getString(cursor.getColumnIndex("id")))
-            } catch (e: Exception){
+            } catch (e: Exception) {
                 mOldIdUUIDMap[cursor.getInt(cursor.getColumnIndex("id"))]!!
             }
             val drinkName = cursor.getString(cursor.getColumnIndex("name"))
@@ -106,19 +109,19 @@ class DatabaseHelper(val context: Context?, val name: String?, factory: SQLiteDa
                 dontSuggest = cursor.getInt(cursor.getColumnIndex("dontSuggest"))
             } catch (e: Exception) {}
 
-            if (dontSuggest==1) mIgnoredDrinks.add(id)
+            if (dontSuggest == 1) mIgnoredDrinks.add(id)
             val drink = Drink(id, drinkName, abv, amount, measurement, false, recent, modifiedTime)
             drink.favorited = isFavoritedInDB(drinkName)
             mAllDrinks.add(drink)
         }
         cursor.close()
 
-        cursor = db.query("log_drink",null,null,null,null,null,null)
-        while (cursor.moveToNext()){
+        cursor = db.query("log_drink", null, null, null, null, null, null)
+        while (cursor.moveToNext()) {
             val logDate = cursor.getInt(cursor.getColumnIndex("log_date"))
             val drinkId = try {
                 UUID.fromString(cursor.getString(cursor.getColumnIndex("drink_id")))
-            } catch (e: Exception){
+            } catch (e: Exception) {
                 mOldIdUUIDMap[cursor.getInt(cursor.getColumnIndex("drink_id"))]
             }
             if (drinkId != null) mAllLoggedDrinks.add(Pair(logDate, drinkId))
@@ -132,12 +135,12 @@ class DatabaseHelper(val context: Context?, val name: String?, factory: SQLiteDa
             insertDrinkIntoDrinksTable(drink)
         }
         mAllDrinks.clear()
-        for (logDrink in mAllLoggedDrinks){
+        for (logDrink in mAllLoggedDrinks) {
             insertRowIntoLogDrinkTable(logDrink.first, logDrink.second)
         }
     }
 
-    private fun insertRowIntoLogDrinkTable(date: Int, id: UUID){
+    private fun insertRowIntoLogDrinkTable(date: Int, id: UUID) {
         val sql = "INSERT INTO log_drink VALUES ($date, \"$id\")"
         db.execSQL(sql)
     }
@@ -177,7 +180,7 @@ class DatabaseHelper(val context: Context?, val name: String?, factory: SQLiteDa
         while (cursor.moveToNext()) {
             val id = try {
                 UUID.fromString(cursor.getString(cursor.getColumnIndex("id")))
-            } catch (e: Exception){
+            } catch (e: Exception) {
                 mOldIdUUIDMap[cursor.getInt(cursor.getColumnIndex("id"))]!!
             }
             val drinkName = cursor.getString(cursor.getColumnIndex("name"))
@@ -218,7 +221,7 @@ class DatabaseHelper(val context: Context?, val name: String?, factory: SQLiteDa
         while (cursor.moveToNext()) {
             val id = try {
                 UUID.fromString(cursor.getString(cursor.getColumnIndex("id")))
-            } catch (e: Exception){
+            } catch (e: Exception) {
                 mOldIdUUIDMap[cursor.getInt(cursor.getColumnIndex("id"))]!!
             }
             val drinkName = cursor.getString(cursor.getColumnIndex("name"))
@@ -244,7 +247,7 @@ class DatabaseHelper(val context: Context?, val name: String?, factory: SQLiteDa
         while (cursor.moveToNext()) {
             val id = try {
                 UUID.fromString(cursor.getString(cursor.getColumnIndex("id")))
-            } catch (e: Exception){
+            } catch (e: Exception) {
                 mOldIdUUIDMap[cursor.getInt(cursor.getColumnIndex("id"))]!!
             }
             val drinkName = cursor.getString(cursor.getColumnIndex("name"))
@@ -285,8 +288,8 @@ class DatabaseHelper(val context: Context?, val name: String?, factory: SQLiteDa
                 deleteRowsInTable("favorites", "drink_name = \"${drink.name}\"")
             }
         }
-        for (drink in mMainActivity.mFavoritesList){
-            if (!isFavoritedInDB(drink.name)){
+        for (drink in mMainActivity.mFavoritesList) {
+            if (!isFavoritedInDB(drink.name)) {
                 insertRowInFavoritesTable(drink.name, drink.id)
             }
         }
@@ -337,13 +340,13 @@ class DatabaseHelper(val context: Context?, val name: String?, factory: SQLiteDa
         db.execSQL(sql)
     }
 
-    fun updateDrinkSuggestionStatus(id: UUID, dontSuggest: Boolean){
+    fun updateDrinkSuggestionStatus(id: UUID, dontSuggest: Boolean) {
         val intSuggest = if (dontSuggest) 1 else 0
         val sql = "UPDATE drinks SET dontSuggest=$intSuggest WHERE id=\"$id\""
         db.execSQL(sql)
     }
 
-    fun getDrinkSuggestedStatus(id: UUID):Boolean{
+    fun getDrinkSuggestedStatus(id: UUID): Boolean {
         val cursor = db.query("drinks", arrayOf("dontSuggest"), "id = ?", arrayOf(id.toString()), null, null, null)
         cursor.moveToFirst()
         val dontSuggest = cursor.getInt(cursor.getColumnIndex("dontSuggest")) == 1
@@ -370,7 +373,7 @@ class DatabaseHelper(val context: Context?, val name: String?, factory: SQLiteDa
         return UUID.randomUUID()
     }
 
-    fun isLoggedDrink(id: UUID): Boolean{
+    fun isLoggedDrink(id: UUID): Boolean {
         val cursor = db.query("log_drink", null, "drink_id = ?",
                 arrayOf(id.toString()), null, null, null)
         val res = cursor.count
@@ -378,7 +381,7 @@ class DatabaseHelper(val context: Context?, val name: String?, factory: SQLiteDa
         return res != 0
     }
 
-    fun getDrinksFromName(name: String) : ArrayList<Drink>{
+    fun getDrinksFromName(name: String): ArrayList<Drink> {
         val drinks = ArrayList<Drink>()
         val table = "drinks"
         val where = "name = ?"
@@ -402,15 +405,15 @@ class DatabaseHelper(val context: Context?, val name: String?, factory: SQLiteDa
         return drinks
     }
 
-    fun idInDb(id: UUID): Boolean{
+    fun idInDb(id: UUID): Boolean {
         val cursor = db.query("drinks", null, "id = ?", arrayOf(id.toString()), null, null, null, null)
         val ret = cursor.count > 0
         cursor.close()
         return ret
     }
-    private fun mapOldIdsToUUIDs(){
-        val cursor = db.query("drinks", null,null,null,null,null,null,null)
-        while (cursor.moveToNext()){
+    private fun mapOldIdsToUUIDs() {
+        val cursor = db.query("drinks", null, null, null, null, null, null, null)
+        while (cursor.moveToNext()) {
             val id = cursor.getString(cursor.getColumnIndex("id"))
             try {
                 UUID.fromString(id)

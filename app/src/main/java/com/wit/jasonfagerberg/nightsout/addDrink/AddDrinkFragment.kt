@@ -4,22 +4,28 @@ import android.graphics.Typeface
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-//import android.util.Log
+// import android.util.Log
 import com.google.android.material.button.MaterialButton
 import androidx.fragment.app.Fragment
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.appcompat.widget.Toolbar
-import android.view.*
-import android.widget.*
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.View
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import android.view.MenuItem
+import android.widget.EditText
+import android.widget.Spinner
 import com.wit.jasonfagerberg.nightsout.main.Drink
 import com.wit.jasonfagerberg.nightsout.R
 import android.widget.ArrayAdapter
 import com.wit.jasonfagerberg.nightsout.converter.Converter
 import com.wit.jasonfagerberg.nightsout.dialogs.LightSimpleDialog
 import com.wit.jasonfagerberg.nightsout.main.MainActivity
-import java.util.*
+import java.util.Locale
 import android.widget.TextView
 import com.wit.jasonfagerberg.nightsout.addDrink.drinkSuggestion.DrinkSuggestionAutoCompleteView
 import com.wit.jasonfagerberg.nightsout.addDrink.drinkSuggestion.DrinkSuggestionArrayAdapter
@@ -27,8 +33,7 @@ import com.wit.jasonfagerberg.nightsout.databaseHelper.AddDrinkDatabaseHelper
 import com.wit.jasonfagerberg.nightsout.manageDB.ManageDBFragment
 import kotlin.collections.ArrayList
 
-
-//private const val TAG = "AddDrinkFragment"
+// private const val TAG = "AddDrinkFragment"
 
 class AddDrinkFragment : Fragment() {
 
@@ -50,14 +55,17 @@ class AddDrinkFragment : Fragment() {
     private lateinit var mMainActivity: MainActivity
     lateinit var autoCompleteView: DrinkSuggestionAutoCompleteView
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         canUnfavorite = true
         // inflate view
         val view = inflater.inflate(R.layout.fragment_add_drink, container, false)
         mMainActivity = context as MainActivity
 
-        //toolbar setup
+        // toolbar setup
         toolbarSetup(view)
         drinkNameEditTextSetup(view)
 
@@ -220,8 +228,8 @@ class AddDrinkFragment : Fragment() {
         autoCompleteView.setAdapter(adapter)
 
         // add the listener so it will tries to suggest while the user types
-        autoCompleteView.addTextChangedListener(object: TextWatcher {
-             override fun afterTextChanged(s: Editable?) {}
+        autoCompleteView.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {}
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 val temp = databaseTalker.getSuggestedDrinks(s.toString())
@@ -232,7 +240,7 @@ class AddDrinkFragment : Fragment() {
             }
         })
 
-        autoCompleteView.setOnItemClickListener{ _ , _ , position, _ ->
+        autoCompleteView.setOnItemClickListener { _, _, position, _ ->
             val drink = adapter.data[position]
             fillViews(drink.name, drink.abv, drink.amount, drink.measurement)
             autoCompleteView.dismissDropDown()

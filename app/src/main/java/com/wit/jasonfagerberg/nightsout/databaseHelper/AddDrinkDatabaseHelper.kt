@@ -2,12 +2,18 @@ package com.wit.jasonfagerberg.nightsout.databaseHelper
 
 import com.wit.jasonfagerberg.nightsout.main.Drink
 import com.wit.jasonfagerberg.nightsout.main.MainActivity
-import java.util.*
+import java.util.UUID
 
 class AddDrinkDatabaseHelper(private val mainActivity: MainActivity) {
 
-    fun buildDrinkAndAddToList(name: String, abv: Double, amount: Double,
-                               measurement: String, favorited: Boolean, canUnfavorite: Boolean) {
+    fun buildDrinkAndAddToList(
+        name: String,
+        abv: Double,
+        amount: Double,
+        measurement: String,
+        favorited: Boolean,
+        canUnfavorite: Boolean
+    ) {
         val drink = Drink(UUID.randomUUID(), name, abv, amount, measurement, favorited, true, mainActivity.getLongTimeNow())
 
         setDrinkId(drink)
@@ -15,9 +21,9 @@ class AddDrinkDatabaseHelper(private val mainActivity: MainActivity) {
         mainActivity.mDatabaseHelper.updateDrinkSuggestionStatus(drink.id, false)
         setDrinkFavorited(drink, favorited)
 
-        if (canUnfavorite){
+        if (canUnfavorite) {
             mainActivity.addDrinkFragment.addToDrinkList(drink)
-        } else{
+        } else {
             drink.recent = false
             mainActivity.addDrinkFragment.addToFavoritesList(drink)
         }
@@ -48,11 +54,11 @@ class AddDrinkDatabaseHelper(private val mainActivity: MainActivity) {
         }
     }
 
-    fun getSuggestedDrinks(filter: String, ignoreDontShow: Boolean = false): ArrayList<Drink>{
+    fun getSuggestedDrinks(filter: String, ignoreDontShow: Boolean = false): ArrayList<Drink> {
         val res = ArrayList<Drink>()
         val cursor = mainActivity.mDatabaseHelper.db.query(true, "drinks", null,
                 "name LIKE ?", arrayOf("%$filter%"), null, null, "name, modifiedTime DESC", null)
-        while (cursor.moveToNext()){
+        while (cursor.moveToNext()) {
             val id = UUID.fromString(cursor.getString(cursor.getColumnIndex("id")))
             val drinkName = cursor.getString(cursor.getColumnIndex("name"))
             val abv = cursor.getDouble(cursor.getColumnIndex("abv"))
@@ -69,7 +75,7 @@ class AddDrinkDatabaseHelper(private val mainActivity: MainActivity) {
         return res
     }
 
-    fun updateDrinkFavoriteStatus(drink: Drink){
+    fun updateDrinkFavoriteStatus(drink: Drink) {
         val recent = if (drink.recent) 1 else 0
         val name = "\"${drink.name}\""
         val sql = "UPDATE drinks SET recent = $recent WHERE name = $name"

@@ -7,7 +7,7 @@ import android.view.Gravity
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.fragment.app.Fragment
 import androidx.appcompat.app.AppCompatActivity
-//import android.util.Log
+// import android.util.Log
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.RelativeLayout
@@ -21,9 +21,12 @@ import com.wit.jasonfagerberg.nightsout.home.HomeFragment
 import com.wit.jasonfagerberg.nightsout.log.LogFragment
 import com.wit.jasonfagerberg.nightsout.log.LogHeader
 import com.wit.jasonfagerberg.nightsout.profile.ProfileFragment
-import java.util.*
+import java.util.Locale
+import java.util.GregorianCalendar
+import java.util.Calendar
+import java.util.Date
 
-//private const val TAG = "MainActivity"
+// private const val TAG = "MainActivity"
 
 private const val DB_NAME = "nights_out_db.db"
 private const val DB_VERSION = 40
@@ -188,7 +191,6 @@ class MainActivity : AppCompatActivity() {
                 if (destination == null) supportFragmentManager.popBackStack()
                 else setFragment(destination)
             }
-
         } else if (curFrag != destination) {
             if (destination == null) supportFragmentManager.popBackStack()
             else setFragment(destination)
@@ -215,7 +217,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun setFragment(fragment: Fragment) {
-        //transaction.replace(R.id.main_frame, fragment)
+        // transaction.replace(R.id.main_frame, fragment)
         val transaction = supportFragmentManager.beginTransaction()
         transaction.replace(R.id.main_frame, fragment)
         transaction.addToBackStack(null)

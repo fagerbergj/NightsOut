@@ -1,11 +1,11 @@
 package com.wit.jasonfagerberg.nightsout.log
 
-//import android.util.Log
+// import android.util.Log
 import com.wit.jasonfagerberg.nightsout.converter.Converter
 import java.text.DateFormatSymbols
-import java.util.*
+import java.util.Locale
 
-//private const val TAG = "LogHeader"
+// private const val TAG = "LogHeader"
 class LogHeader(val date: Int, val bac: Double, val duration: Double) {
     private val converter = Converter()
     private val durationHoursMinuets = converter.decimalTimeToHoursAndMinuets(duration)

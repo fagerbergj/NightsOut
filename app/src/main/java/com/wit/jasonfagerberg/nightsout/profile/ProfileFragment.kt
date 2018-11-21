@@ -11,20 +11,28 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.appcompat.widget.Toolbar
 import android.text.Editable
 import android.text.TextWatcher
-//import android.util.Log
-import android.view.*
-import android.widget.*
+// import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.widget.TextView
+import android.widget.EditText
+import android.widget.Spinner
+import android.widget.ArrayAdapter
 import com.wit.jasonfagerberg.nightsout.main.MainActivity
 import com.wit.jasonfagerberg.nightsout.R
-import java.util.*
+import java.util.Locale
+import java.util.Collections
 import android.widget.AdapterView
 import android.widget.AdapterView.OnItemSelectedListener
-import android.widget.TextView
 import androidx.recyclerview.widget.ItemTouchHelper
 import com.wit.jasonfagerberg.nightsout.converter.Converter
 import com.wit.jasonfagerberg.nightsout.dialogs.LightSimpleDialog
 
-//private const val TAG = "ProfileFragment"
+// private const val TAG = "ProfileFragment"
 
 class ProfileFragment : Fragment() {
     private lateinit var mFavoritesListAdapter: ProfileFragmentFavoritesListAdapter
@@ -48,16 +56,18 @@ class ProfileFragment : Fragment() {
     private var weightMeasurement = if (country == "US" || country == "LR" || country == "MM") "lbs"
     else "kg"
 
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_profile, container, false)
 
         mMainActivity = context as MainActivity
         profileInit = mMainActivity.profileInt
 
-        //toolbar setup
+        // toolbar setup
         setupToolbar(view!!)
 
         // recycler v setup
@@ -159,7 +169,7 @@ class ProfileFragment : Fragment() {
         setupFavoritesItemTouchHelper()
     }
 
-    private fun setupFavoritesItemTouchHelper(){
+    private fun setupFavoritesItemTouchHelper() {
         val simpleItemTouchCallback = object : ItemTouchHelper.SimpleCallback(ItemTouchHelper.RIGHT or ItemTouchHelper.LEFT, 0) {
             override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
                 val fromPosition = viewHolder.adapterPosition

@@ -7,10 +7,13 @@ import com.wit.jasonfagerberg.nightsout.converter.Converter
 import com.wit.jasonfagerberg.nightsout.databaseHelper.LogDatabaseHelper
 import com.wit.jasonfagerberg.nightsout.main.MainActivity
 import com.wit.jasonfagerberg.nightsout.dialogs.SimpleDialog
-import java.util.*
+import java.util.Calendar
 
-class HomeFragmentLogDatePicker(private val homeFragment: HomeFragment,
-                                private val mainActivity: MainActivity, private val converter: Converter) {
+class HomeFragmentLogDatePicker(
+    private val homeFragment: HomeFragment,
+    private val mainActivity: MainActivity,
+    private val converter: Converter
+) {
     private val logDatabaseHelper = LogDatabaseHelper(mainActivity.mDatabaseHelper, mainActivity)
 
     fun showDatePicker() {

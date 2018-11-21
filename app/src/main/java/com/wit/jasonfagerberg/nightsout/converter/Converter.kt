@@ -1,8 +1,8 @@
 package com.wit.jasonfagerberg.nightsout.converter
 
-//import android.util.Log
+// import android.util.Log
 //
-//private const val TAG = "Converter"
+// private const val TAG = "Converter"
 class Converter {
     private val weightConversionMap = HashMap<String, Double>()
     private val volumeConversionMap = HashMap<String, Double>()
@@ -47,7 +47,7 @@ class Converter {
         if (selectedHour >= 12 && !use24HourTime) {
             displayHour -= 12
             timePeriod = "PM"
-        } else if (!use24HourTime){
+        } else if (!use24HourTime) {
             timePeriod = "AM"
         } else {
             timePeriod = ""

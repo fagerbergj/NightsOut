@@ -2,7 +2,7 @@ package com.wit.jasonfagerberg.nightsout.databaseHelper
 
 import com.wit.jasonfagerberg.nightsout.main.Drink
 import com.wit.jasonfagerberg.nightsout.main.MainActivity
-import java.util.*
+import java.util.UUID
 
 class LogDatabaseHelper(private val databaseHelper: DatabaseHelper, private val mainActivity: MainActivity) {
 

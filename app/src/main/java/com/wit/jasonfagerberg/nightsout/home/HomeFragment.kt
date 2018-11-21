@@ -10,20 +10,27 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.appcompat.widget.Toolbar
-import android.view.*
-import android.widget.*
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import android.view.View
+import android.view.MenuItem
+import android.view.MenuInflater
+import android.view.Menu
 import com.wit.jasonfagerberg.nightsout.main.MainActivity
 import com.wit.jasonfagerberg.nightsout.R
 import com.wit.jasonfagerberg.nightsout.converter.Converter
-import java.util.*
 import android.widget.RelativeLayout
+import android.widget.Button
 import com.wit.jasonfagerberg.nightsout.dialogs.LightSimpleDialog
 import androidx.recyclerview.widget.ItemTouchHelper
 import android.widget.TextView
+import android.widget.ImageButton
+import android.widget.EditText
 import com.wit.jasonfagerberg.nightsout.manageDB.ManageDBFragment
+import java.util.Collections
+import java.util.Calendar
 
-
-//private const val TAG = "HomeFragment"
+// private const val TAG = "HomeFragment"
 
 class HomeFragment : Fragment() {
     lateinit var mDrinkListAdapter: HomeFragmentDrinkListAdapter
@@ -44,7 +51,7 @@ class HomeFragment : Fragment() {
         // set layout
         mRelativeLayout = view.findViewById(R.id.layout_home)
 
-        //toolbar setup
+        // toolbar setup
         setupToolbar(view)
 
         // setup list
@@ -81,7 +88,7 @@ class HomeFragment : Fragment() {
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
         inflater!!.inflate(R.menu.home_menu, menu)
-        menu?.findItem(R.id.btn_toolbar_toggle_time_display)?.title = if (mMainActivity.use24HourTime){
+        menu?.findItem(R.id.btn_toolbar_toggle_time_display)?.title = if (mMainActivity.use24HourTime) {
             "Use 12 Hour Time"
         } else "Use 24 Hour Time"
     }
@@ -136,14 +143,14 @@ class HomeFragment : Fragment() {
 
         // set adapter
         mDrinkListAdapter = HomeFragmentDrinkListAdapter(context!!, mMainActivity.mDrinksList)
-        //update list
-        drinksListView.adapter = mDrinkListAdapter //Update display with new list
-        drinksListView.layoutManager!!.scrollToPosition(mMainActivity.mDrinksList.size - 1) //Nav to end of list
+        // update list
+        drinksListView.adapter = mDrinkListAdapter // Update display with new list
+        drinksListView.layoutManager!!.scrollToPosition(mMainActivity.mDrinksList.size - 1) // Nav to end of list
 
         setupDrinkItemTouchHelper(drinksListView)
     }
 
-    private fun setupDrinkItemTouchHelper(drinksListView: RecyclerView){
+    private fun setupDrinkItemTouchHelper(drinksListView: RecyclerView) {
         val simpleItemTouchCallback = object : ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP
                 or ItemTouchHelper.DOWN, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
             override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {

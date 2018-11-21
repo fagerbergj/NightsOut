@@ -2,7 +2,12 @@ package com.wit.jasonfagerberg.nightsout.manageDB
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import android.view.*
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import android.view.View
+import android.view.MenuItem
+import android.view.MenuInflater
+import android.view.Menu
 import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -18,8 +23,11 @@ class ManageDBFragment : Fragment() {
     private lateinit var mDrinkListAdapter: ManageDBDrinkListAdapter
     private lateinit var mDrinksList: ArrayList<Drink>
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         val view = inflater.inflate(R.layout.fragment_manage_db, container, false)
         mMainActivity = context as MainActivity
         mDrinksList = AddDrinkDatabaseHelper(mMainActivity).getSuggestedDrinks("", true)
@@ -28,7 +36,7 @@ class ManageDBFragment : Fragment() {
         return view
     }
 
-    private fun setupToolbar(view: View){
+    private fun setupToolbar(view: View) {
         val toolbar: Toolbar = view.findViewById(R.id.toolbar_manage_db)
         toolbar.inflateMenu(R.menu.manage_db_menu)
         mMainActivity.setSupportActionBar(toolbar)
@@ -63,7 +71,7 @@ class ManageDBFragment : Fragment() {
         return true
     }
 
-    private fun setupRecycler(view: View){
+    private fun setupRecycler(view: View) {
         // mDrinkList recycler view setup
         val drinksListView: RecyclerView = view.findViewById(R.id.recycler_manage_db_list)
         val linearLayoutManager = LinearLayoutManager(context)
@@ -75,8 +83,8 @@ class ManageDBFragment : Fragment() {
 
         // set adapter
         mDrinkListAdapter = ManageDBDrinkListAdapter(context!!, mDrinksList)
-        //update list
-        drinksListView.adapter = mDrinkListAdapter //Update display with new list
-        drinksListView.layoutManager!!.scrollToPosition(mDrinksList.size - 1) //Nav to end of list
+        // update list
+        drinksListView.adapter = mDrinkListAdapter // Update display with new list
+        drinksListView.layoutManager!!.scrollToPosition(mDrinksList.size - 1) // Nav to end of list
     }
 }

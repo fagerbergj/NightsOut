@@ -7,8 +7,13 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.RecyclerView
-//import android.util.Log
-import android.view.*
+// import android.util.Log
+import android.view.View
+import android.view.ViewGroup
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.widget.TextView
 import com.wit.jasonfagerberg.nightsout.R
 import com.wit.jasonfagerberg.nightsout.converter.Converter
@@ -20,10 +25,11 @@ import com.prolificinteractive.materialcalendarview.DayViewDecorator
 import com.prolificinteractive.materialcalendarview.DayViewFacade
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView
 import com.prolificinteractive.materialcalendarview.spans.DotSpan
-import java.util.*
+import java.util.Calendar
+import java.util.Date
 import kotlin.collections.ArrayList
 
-//private const val TAG = "LogFragment"
+// private const val TAG = "LogFragment"
 
 class LogFragment : Fragment() {
 
@@ -36,8 +42,11 @@ class LogFragment : Fragment() {
     private val converter: Converter = Converter()
     private lateinit var logDatabaseHelper: LogDatabaseHelper
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_log, container, false)
         mMainActivity = context as MainActivity
@@ -186,7 +195,6 @@ class LogFragment : Fragment() {
         mLogFragmentAdapter.notifyDataSetChanged()
         mLogListView.layoutManager?.scrollToPosition(0)
         showOrHideEmptyTextViews(mLogListView.parent as View)
-
     }
 
     private fun showOrHideEmptyTextViews(view: View) {

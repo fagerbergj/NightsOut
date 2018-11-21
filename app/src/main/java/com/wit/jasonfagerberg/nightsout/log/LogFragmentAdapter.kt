@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import android.widget.TextView
 import com.wit.jasonfagerberg.nightsout.main.Drink
 import com.wit.jasonfagerberg.nightsout.R
-import java.util.*
 
 // view type identifier
 private const val DRINK = 0
