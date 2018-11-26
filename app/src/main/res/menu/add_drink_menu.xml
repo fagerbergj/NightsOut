@@ -2,6 +2,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
+        android:id="@+id/btn_toolbar_scab_barcode"
+        android:icon="@drawable/scan_barcode_white_36dp"
+        android:title="Scan Barcode"
+        app:showAsAction="ifRoom"/>
+    <item
         android:id="@+id/btn_toolbar_favorite"
         android:icon="@drawable/favorite_border_white_24dp"
         android:title="@string/log_session"
