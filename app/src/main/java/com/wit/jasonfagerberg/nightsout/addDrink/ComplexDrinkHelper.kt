@@ -6,13 +6,17 @@ import com.wit.jasonfagerberg.nightsout.R
 import com.google.android.material.button.MaterialButton
 import java.text.DecimalFormat
 
-class AddDrinkFragmentComplexDrink(val parent: AddDrinkFragment) {
-    private val btnAddAnotherAlcoholSource: MaterialButton = parent.view!!.findViewById(R.id.btn_add_drink_add_alc_source)
-    private val recyclerAlcoholSource: RecyclerView = parent.view!!.findViewById(R.id.recycler_add_drink_alcohol_source_list)
+class ComplexDrinkHelper(val parent: AddDrinkFragment) {
+    private lateinit var btnAddAnotherAlcoholSource: MaterialButton
+    private lateinit var recyclerAlcoholSource: RecyclerView
     private val listAlcoholSources: ArrayList<AlcoholSource> = ArrayList()
-    private val alcoholSourceAdapter = AddDrinkFragmentAlcoholSourceAdapter(parent.context!!, listAlcoholSources)
+    private lateinit var alcoholSourceAdapter: AddDrinkFragmentAlcoholSourceAdapter
 
-    init {
+    fun findViews(){
+        btnAddAnotherAlcoholSource = parent.view!!.findViewById(R.id.btn_add_drink_add_alc_source)
+        recyclerAlcoholSource  = parent.view!!.findViewById(R.id.recycler_add_drink_alcohol_source_list)
+        alcoholSourceAdapter = AddDrinkFragmentAlcoholSourceAdapter(parent.context!!, listAlcoholSources)
+
         recyclerAlcoholSource.adapter = alcoholSourceAdapter
         val linearLayoutManagerRecents = LinearLayoutManager(parent.context)
         linearLayoutManagerRecents.orientation = RecyclerView.VERTICAL

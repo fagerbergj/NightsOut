@@ -55,7 +55,7 @@
     <string name="update_log">Update Log</string>
     <string name="cancel">Cancel</string>
     <string name="update">Update</string>
-    <string name="complex_drink">Complex Drink</string>
+    <string name="multiple_alcohol_sources">Multiple Alcohol Sources</string>
     <string name="add_alcohol_source">Add Alcohol Source</string>
     <string name="move_selected_log">Move Selected Log</string>
     <string name="disclaimer_body">The BAC value provided by the app is only an estimate. The status
@@ -68,4 +68,7 @@
     <string name="show_auto_complete_suggestion">Show In Suggestions List</string>
     <string name="hide_auto_complete_suggestion">Hide In Suggestions List</string>
     <string name="delete_drink">Delete Drink</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

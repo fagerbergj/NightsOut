@@ -17,16 +17,13 @@ import android.view.View
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.view.MenuItem
-import android.widget.EditText
-import android.widget.Spinner
+import android.widget.*
 import com.wit.jasonfagerberg.nightsout.main.Drink
 import com.wit.jasonfagerberg.nightsout.R
-import android.widget.ArrayAdapter
 import com.wit.jasonfagerberg.nightsout.converter.Converter
 import com.wit.jasonfagerberg.nightsout.dialogs.LightSimpleDialog
 import com.wit.jasonfagerberg.nightsout.main.MainActivity
 import java.util.Locale
-import android.widget.TextView
 import com.wit.jasonfagerberg.nightsout.addDrink.drinkSuggestion.DrinkSuggestionAutoCompleteView
 import com.wit.jasonfagerberg.nightsout.addDrink.drinkSuggestion.DrinkSuggestionArrayAdapter
 import com.wit.jasonfagerberg.nightsout.databaseHelper.AddDrinkDatabaseHelper
@@ -40,7 +37,7 @@ class AddDrinkFragment : Fragment() {
     val mConverter = Converter()
     private lateinit var mFavoritesListAdapter: AddDrinkFragmentFavoritesListAdapter
     private lateinit var mRecentsListAdapter: AddDrinkFragmentRecentsListAdapter
-    private lateinit var mComplexDrinkMode: AddDrinkFragmentComplexDrink
+    private lateinit var mComplexDrinkHelper: ComplexDrinkHelper
 
     private lateinit var mEditName: EditText
     lateinit var mEditAbv: EditText
@@ -50,7 +47,7 @@ class AddDrinkFragment : Fragment() {
     // booleans that work together to change behavior based on fragment that set this fragment
     var mFavorited: Boolean = false
     private var canUnfavorite = true
-    private var complexMode = false
+    var complexMode = false
 
     private lateinit var mMainActivity: MainActivity
     lateinit var autoCompleteView: DrinkSuggestionAutoCompleteView
@@ -90,6 +87,22 @@ class AddDrinkFragment : Fragment() {
         if (mFavorited) btnAdd.text = resources.getText(R.string.add_favorite)
         btnAdd.setOnClickListener { addDrink() }
 
+        mComplexDrinkHelper = ComplexDrinkHelper(this)
+        val chkComplex = view.findViewById<CheckBox>(R.id.chkBox_complexDrink)
+        chkComplex.setOnClickListener {
+            complexMode = !complexMode
+            if (complexMode) {
+                mComplexDrinkHelper.findViews()
+                view.findViewById<MaterialButton>(R.id.btn_add_drink_add_alc_source).visibility = View.VISIBLE
+                view.findViewById<RecyclerView>(R.id.recycler_add_drink_alcohol_source_list).visibility = View.VISIBLE
+                mMainActivity.showToast("You can now add multiple alcohol sources", true)
+            } else {
+                view.findViewById<MaterialButton>(R.id.btn_add_drink_add_alc_source).visibility = View.INVISIBLE
+                view.findViewById<RecyclerView>(R.id.recycler_add_drink_alcohol_source_list).visibility = View.INVISIBLE
+                view.findViewById<RecyclerView>(R.id.recycler_add_drink_alcohol_source_list).adapter = null
+            }
+        }
+
         mEditName = view.findViewById(R.id.auto_drink_suggestion)
         mEditAbv = view.findViewById(R.id.edit_add_drink_abv)
         mEditAmount = view.findViewById(R.id.edit_add_drink_amount)
@@ -116,23 +129,9 @@ class AddDrinkFragment : Fragment() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        val resId = item?.itemId
+        val resId = item!!.itemId
         val btnAdd = view!!.findViewById<MaterialButton>(R.id.btn_add_drink_add)
         when (resId) {
-            R.id.btn_toolbar_complex_drink -> {
-                complexMode = !complexMode
-                if (complexMode) {
-                    mComplexDrinkMode = AddDrinkFragmentComplexDrink(this)
-                    view!!.findViewById<MaterialButton>(R.id.btn_add_drink_add_alc_source).visibility = View.VISIBLE
-                    view!!.findViewById<RecyclerView>(R.id.recycler_add_drink_alcohol_source_list).visibility = View.VISIBLE
-                    mMainActivity.showToast("You can now add multiple alcohol sources", true)
-                    item.title = "Simple Drink"
-                } else {
-                    view!!.findViewById<MaterialButton>(R.id.btn_add_drink_add_alc_source).visibility = View.INVISIBLE
-                    view!!.findViewById<RecyclerView>(R.id.recycler_add_drink_alcohol_source_list).visibility = View.INVISIBLE
-                    item.title = "Complex Drink"
-                }
-            }
             R.id.btn_toolbar_favorite -> {
                 if (canUnfavorite) mFavorited = !mFavorited
                 if (mFavorited) {
@@ -290,12 +289,12 @@ class AddDrinkFragment : Fragment() {
 
     private fun addDrink() {
         if (isInputErrors() && !complexMode) return
-        if (complexMode && mComplexDrinkMode.listIsEmpty() && isInputErrors()) return
-        if (complexMode) mComplexDrinkMode.addToAlcoholSourceList()
+        if (complexMode && mComplexDrinkHelper.listIsEmpty() && isInputErrors()) return
+        if (complexMode) mComplexDrinkHelper.addToAlcoholSourceList()
 
         val name = mEditName.text.toString()
-        val abv = if (!complexMode) mEditAbv.text.toString().toDouble() else mComplexDrinkMode.weightedAverageAbv()
-        val amount = if (!complexMode) mEditAmount.text.toString().toDouble() else mComplexDrinkMode.sumAmount()
+        val abv = if (!complexMode) mEditAbv.text.toString().toDouble() else mComplexDrinkHelper.weightedAverageAbv()
+        val amount = if (!complexMode) mEditAmount.text.toString().toDouble() else mComplexDrinkHelper.sumAmount()
         val measurement = if (!complexMode) mSpinnerAmount.selectedItem.toString() else "oz"
         val dbTalker = AddDrinkDatabaseHelper(mMainActivity)
         dbTalker.buildDrinkAndAddToList(name, abv, amount, measurement, mFavorited, canUnfavorite)
@@ -304,6 +303,7 @@ class AddDrinkFragment : Fragment() {
         mEditAbv.text.clear()
         mEditAmount.text.clear()
         complexMode = false
+        view!!.findViewById<CheckBox>(R.id.chkBox_complexDrink).isChecked = false
         mMainActivity.onBackPressed()
     }
 
