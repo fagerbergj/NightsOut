@@ -1,5 +1,6 @@
 package com.wit.jasonfagerberg.nightsout.addDrink
 
+import android.content.Intent
 import android.graphics.Typeface
 import android.os.Bundle
 import android.text.Editable
@@ -26,6 +27,7 @@ import com.wit.jasonfagerberg.nightsout.main.MainActivity
 import java.util.Locale
 import com.wit.jasonfagerberg.nightsout.addDrink.drinkSuggestion.DrinkSuggestionAutoCompleteView
 import com.wit.jasonfagerberg.nightsout.addDrink.drinkSuggestion.DrinkSuggestionArrayAdapter
+import com.wit.jasonfagerberg.nightsout.addDrink.scanBarcode.ScanBarcodeActivity
 import com.wit.jasonfagerberg.nightsout.databaseHelper.AddDrinkDatabaseHelper
 import com.wit.jasonfagerberg.nightsout.manageDB.ManageDBFragment
 import kotlin.collections.ArrayList
@@ -47,7 +49,7 @@ class AddDrinkFragment : Fragment() {
     // booleans that work together to change behavior based on fragment that set this fragment
     var mFavorited: Boolean = false
     private var canUnfavorite = true
-    var complexMode = false
+    private var complexMode = false
 
     private lateinit var mMainActivity: MainActivity
     lateinit var autoCompleteView: DrinkSuggestionAutoCompleteView
@@ -173,6 +175,10 @@ class AddDrinkFragment : Fragment() {
                 val lightSimpleDialog = LightSimpleDialog(context!!)
                 lightSimpleDialog.setActions(posAction, {})
                 lightSimpleDialog.show("Are you sure you want to clear all recent drinks?")
+            }
+            R.id.btn_toolbar_scan_barcode -> {
+                val intent = Intent(context, ScanBarcodeActivity::class.java)
+                startActivity(intent)
             }
             R.id.btn_toolbar_manage_db -> {
                 mMainActivity.setFragment(ManageDBFragment())

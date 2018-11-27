@@ -111,8 +111,11 @@ class MainActivity : AppCompatActivity() {
         // get data
         preferences = PreferenceManager.getDefaultSharedPreferences(this)
         getProfileAndTimeData()
+        val fragmentId = intent.getIntExtra("FRAGMENT_ID", 0)
 
-        if (!profileInt) {
+        if (fragmentId == 4){
+            setFragment(addDrinkFragment)
+        } else if (!profileInt) {
             setFragment(profileFragment)
         } else if (supportFragmentManager.backStackEntryCount == 0) {
             setFragment(homeFragment)
