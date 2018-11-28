@@ -1,7 +1,10 @@
 package com.wit.jasonfagerberg.nightsout.addDrink
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Typeface
+import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -19,6 +22,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.view.MenuItem
 import android.widget.*
+import androidx.core.app.ActivityCompat
 import com.wit.jasonfagerberg.nightsout.main.Drink
 import com.wit.jasonfagerberg.nightsout.R
 import com.wit.jasonfagerberg.nightsout.converter.Converter
@@ -177,14 +181,29 @@ class AddDrinkFragment : Fragment() {
                 lightSimpleDialog.show("Are you sure you want to clear all recent drinks?")
             }
             R.id.btn_toolbar_scan_barcode -> {
-                val intent = Intent(context, ScanBarcodeActivity::class.java)
-                startActivity(intent)
+                if (isCameraPermissionGranted()){
+                    val intent = Intent(context, ScanBarcodeActivity::class.java)
+                    startActivity(intent)
+                }
             }
             R.id.btn_toolbar_manage_db -> {
                 mMainActivity.setFragment(ManageDBFragment())
             }
         }
         return true
+    }
+
+    private fun isCameraPermissionGranted():Boolean{
+        return if (Build.VERSION.SDK_INT >= 23) {
+            if (activity!!.checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED){
+                true
+            } else {
+                ActivityCompat.requestPermissions(activity!!, arrayOf(Manifest.permission.CAMERA), 1)
+                false
+            }
+        } else {
+        true
+        }
     }
 
     private fun toolbarSetup(view: View) {

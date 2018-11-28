@@ -3,6 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.wit.jasonfagerberg.nightsout">
 
+
+    <uses-permission android:name="android.permission.CAMERA"/>
     <application
         android:allowBackup="true"
         android:fullBackupContent="true"
@@ -22,7 +24,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".addDrink.scanBarcode.ScanBarcodeActivity"></activity>
+        <activity android:name=".addDrink.scanBarcode.ScanBarcodeActivity"/>
+        <meta-data
+            android:name="com.google.firebase.ml.vision.DEPENDENCIES"
+            android:value="barcode" />
     </application>
 
 </manifest>

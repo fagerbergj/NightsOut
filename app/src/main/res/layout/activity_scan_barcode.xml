@@ -1,14 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+<RelativeLayout
+    android:id="@+id/parent_barcode_scan"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".addDrink.scanBarcode.ScanBarcodeFragment">
+    tools:context=".addDrink.scanBarcode.ScanBarcodeActivity">
     <FrameLayout
         android:id="@+id/layout_scan_barcode"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent">
+    </FrameLayout>
 
     <ImageView
         android:id="@+id/scan_barcode_close"
@@ -20,5 +23,5 @@
         android:scaleY="2"
         android:src="@drawable/close_gray_18dp"
         android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"/>
+        android:layout_alignParentEnd="true" />
 </RelativeLayout>
