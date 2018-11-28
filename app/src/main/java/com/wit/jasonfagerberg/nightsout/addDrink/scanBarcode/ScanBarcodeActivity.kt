@@ -43,13 +43,6 @@ class ScanBarcodeActivity : AppCompatActivity() {
         camView = CameraView(this, mCamera!!)
         val fl = findViewById<FrameLayout>(R.id.layout_scan_barcode)
         fl.addView(camView)
-
-        getCameraImage()
-
-        val options = FirebaseVisionBarcodeDetectorOptions.Builder()
-                .setBarcodeFormats(FirebaseVisionBarcode.FORMAT_UPC_A,
-                        FirebaseVisionBarcode.FORMAT_UPC_E).build()
-
         super.onResume()
     }
 
