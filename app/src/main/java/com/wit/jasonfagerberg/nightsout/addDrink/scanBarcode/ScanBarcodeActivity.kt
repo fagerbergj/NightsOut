@@ -2,21 +2,19 @@ package com.wit.jasonfagerberg.nightsout.addDrink.scanBarcode
 
 import android.content.Intent
 import android.content.pm.ActivityInfo
-import android.graphics.Bitmap
 import android.hardware.Camera
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Environment
 import android.view.Window
 import android.view.WindowManager
 import android.widget.FrameLayout
 import android.widget.ImageView
+import com.google.firebase.ml.vision.FirebaseVision
 import com.google.firebase.ml.vision.barcode.FirebaseVisionBarcode
 import com.google.firebase.ml.vision.barcode.FirebaseVisionBarcodeDetectorOptions
+import com.google.firebase.ml.vision.common.FirebaseVisionImage
 import com.wit.jasonfagerberg.nightsout.R
 import com.wit.jasonfagerberg.nightsout.main.MainActivity
-import java.io.File
-import java.io.FileOutputStream
 
 class ScanBarcodeActivity : AppCompatActivity() {
     private var mCamera: Camera? = null
@@ -43,6 +41,20 @@ class ScanBarcodeActivity : AppCompatActivity() {
         camView = CameraView(this, mCamera!!)
         val fl = findViewById<FrameLayout>(R.id.layout_scan_barcode)
         fl.addView(camView)
+
+
+        val options = FirebaseVisionBarcodeDetectorOptions.Builder()
+                .setBarcodeFormats(
+                        FirebaseVisionBarcode.FORMAT_UPC_A,
+                        FirebaseVisionBarcode.FORMAT_UPC_E)
+                .build()
+        val detector = FirebaseVision.getInstance().getVisionBarcodeDetector(options)
+        val image: FirebaseVisionImage?
+//        try {
+//            image = FirebaseVisionImage.fromFilePath(, uri)
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
         super.onResume()
     }
 
