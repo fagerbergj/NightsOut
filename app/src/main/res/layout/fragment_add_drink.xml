@@ -133,7 +133,8 @@
                 android:completionThreshold="0"
                 android:gravity="center_horizontal"
                 android:hint="@string/empty"
-                android:inputType="text" />
+                android:inputType="text"
+                android:maxLength="50"/>
 
         </LinearLayout>
 
