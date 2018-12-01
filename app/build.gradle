@@ -1,6 +1,7 @@
 apply plugin: 'com.android.application'
 
 apply plugin: 'kotlin-android'
+apply plugin: 'com.google.gms.google-services'
 
 apply plugin: 'kotlin-android-extensions'
 
@@ -37,4 +38,5 @@ dependencies {
     implementation 'com.github.prolificinteractive:material-calendarview:1.6.0'
     androidTestImplementation 'androidx.test:runner:1.1.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0'
+    implementation 'com.otaliastudios:cameraview:1.6.0'
 }

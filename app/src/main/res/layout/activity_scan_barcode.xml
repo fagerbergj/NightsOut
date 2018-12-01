@@ -1,27 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    android:id="@+id/parent_barcode_scan"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".addDrink.scanBarcode.ScanBarcodeActivity">
-    <FrameLayout
-        android:id="@+id/layout_scan_barcode"
+    android:layout_height="match_parent">
+
+    <com.otaliastudios.cameraview.CameraView
+        android:id="@+id/cameraView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:adjustViewBounds="true" />
+
+    <FrameLayout
+        android:id="@+id/framePreview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/imagePreview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop" />
+
+        <ImageButton
+            android:id="@+id/btnRetry"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:layout_gravity="center"
+            android:background="@null"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_refresh" />
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:indeterminate="true"
+            android:visibility="gone" />
+
     </FrameLayout>
 
-    <ImageView
-        android:id="@+id/scan_barcode_close"
-        android:contentDescription="@string/empty"
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_take_photo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="8dp"
-        android:scaleX="2"
-        android:scaleY="2"
-        android:src="@drawable/close_gray_18dp"
+        android:layout_margin="16dp"
+        android:src="@drawable/ic_camera"
+        app:fabSize="normal"
+        app:rippleColor="@color/colorAccent"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:padding="16dp"/>
+
+    <ImageButton
+        android:id="@+id/back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/arrow_back_white_24dp"
         android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentStart="true"
+        android:background="@null"
+        android:scaleY="1.25"
+        android:scaleX="1.25"
+        android:padding="16dp"/>
+
 </RelativeLayout>

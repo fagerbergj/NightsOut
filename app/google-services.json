@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "588919213156",
+    "firebase_url": "https://nightsout-barcode.firebaseio.com",
+    "project_id": "nightsout-barcode",
+    "storage_bucket": "nightsout-barcode.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:588919213156:android:7c3b3c3021f187e9",
+        "android_client_info": {
+          "package_name": "com.wit.jasonfagerberg.nightsout"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "588919213156-cd55vmp6svma3n89m2kscq39q1kqdv5a.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.wit.jasonfagerberg.nightsout",
+            "certificate_hash": "197f643507857d9a603513a956196ee000e6278b"
+          }
+        },
+        {
+          "client_id": "588919213156-ps49c7r7tdutjjbcfhsc3len91gebapv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCK9QMYl1txBgPnooMtGVCvVj-UOKAX5HU"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "588919213156-ps49c7r7tdutjjbcfhsc3len91gebapv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
