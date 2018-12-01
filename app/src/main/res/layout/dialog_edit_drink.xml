@@ -153,8 +153,8 @@
             android:id="@+id/spinner_edit_drink_amount"
             android:layout_width="90dp"
             android:layout_height="wrap_content"
-            android:spinnerMode="dropdown"
-            android:layout_alignParentEnd="true"/>
+            android:layout_alignParentEnd="true"
+            android:spinnerMode="dropdown" />
 
     </RelativeLayout>
 
