@@ -151,22 +151,9 @@ class HomeFragment : Fragment() {
     }
 
     private fun setupDrinkItemTouchHelper(drinksListView: RecyclerView) {
-        val simpleItemTouchCallback = object : ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP
-                or ItemTouchHelper.DOWN, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
+        val simpleItemTouchCallback = object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
             override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
-                val fromPosition = viewHolder.adapterPosition
-                val toPosition = target.adapterPosition
-                if (fromPosition < toPosition) {
-                    for (i in fromPosition until toPosition) {
-                        Collections.swap(mMainActivity.mDrinksList, i, i + 1)
-                    }
-                } else {
-                    for (i in fromPosition downTo toPosition + 1) {
-                        Collections.swap(mMainActivity.mDrinksList, i, i - 1)
-                    }
-                }
-                mDrinkListAdapter.notifyItemMoved(fromPosition, toPosition)
-                return true
+                return false
             }
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, swipeDir: Int) {

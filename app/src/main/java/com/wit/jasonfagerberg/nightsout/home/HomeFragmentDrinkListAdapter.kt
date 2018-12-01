@@ -13,6 +13,7 @@ import android.widget.Spinner
 import android.widget.LinearLayout
 import com.wit.jasonfagerberg.nightsout.R
 import com.wit.jasonfagerberg.nightsout.dialogs.EditDrinkDialog
+import com.wit.jasonfagerberg.nightsout.dialogs.LightSimpleDialog
 import com.wit.jasonfagerberg.nightsout.main.Drink
 import com.wit.jasonfagerberg.nightsout.main.MainActivity
 
@@ -52,6 +53,18 @@ class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: Ar
         else holder.favorited.setImageResource(R.drawable.favorite_border_red_18dp)
 
         holder.foreground.setOnClickListener { showEditRemoveDialog(position) }
+        holder.foreground.setOnLongClickListener {
+            val dialog = LightSimpleDialog(mContext)
+            val posAction = {
+                mMainActivity.showToast("${drink.name} removed")
+                removeItem(position)
+                notifyItemRemoved(position)
+                notifyItemRangeChanged(0, mDrinksList.size)
+            }
+            dialog.setActions(posAction, {})
+            dialog.show("Remove ${drink.name}?")
+            true
+        }
     }
 
     override fun getItemCount(): Int {
