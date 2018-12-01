@@ -1,259 +1,276 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:fillViewport="true"
-    android:isScrollContainer="false">
+    android:layout_height="match_parent">
 
-    <RelativeLayout
+    <ScrollView
+        android:id="@+id/scroll"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:context=".addDrink.AddDrinkFragment">
-
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar_add_drink"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/colorPrimary"
-            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-            app:title="@string/fragment_add_drink_name"
-            app:titleTextColor="@color/colorWhite" />
-
-        <TextView
-            android:id="@+id/text_add_drink_recents"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/toolbar_add_drink"
-            android:layout_marginLeft="16dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginRight="16dp"
-            android:text="@string/recents_quick_fill"
-            android:textSize="16sp" />
+        android:layout_above="@+id/btn_add_drink_add"
+        android:layout_alignParentTop="true">
 
         <RelativeLayout
-            android:id="@+id/layout_recents_foreground"
             android:layout_width="match_parent"
-            android:layout_height="70dp"
-            android:layout_below="@+id/text_add_drink_recents"
-            android:layout_marginLeft="16dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginRight="16dp"
-            android:background="#d1d1d1"
-            android:orientation="vertical">
+            android:layout_height="wrap_content"
+            tools:context=".addDrink.AddDrinkFragment">
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recycler_add_drink_recents_list"
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar_add_drink"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="2dp"
-                android:layout_marginBottom="2dp"
-                android:background="@color/colorWhite"
-                android:orientation="horizontal"
-                android:paddingTop="8dp"
-                android:paddingBottom="8dp" />
+                android:layout_height="wrap_content"
+                android:background="@color/colorPrimary"
+                android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+                app:title="@string/fragment_add_drink_name"
+                app:titleTextColor="@color/colorWhite" />
 
             <TextView
-                android:id="@+id/text_recents_empty_list"
+                android:id="@+id/text_add_drink_recents"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:text="@string/no_recent_drinks" />
+                android:layout_below="@id/toolbar_add_drink"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginRight="16dp"
+                android:text="@string/recents_quick_fill"
+                android:textSize="16sp" />
 
-        </RelativeLayout>
-
-        <TextView
-            android:id="@+id/text_add_drink_favorites"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/layout_recents_foreground"
-            android:layout_marginLeft="16dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginRight="16dp"
-            android:text="@string/favorites_quick_fill"
-            android:textSize="16sp" />
-
-        <RelativeLayout
-            android:id="@+id/layout_favorites_foreground"
-            android:layout_width="match_parent"
-            android:layout_height="70dp"
-            android:layout_below="@+id/text_add_drink_favorites"
-            android:layout_marginLeft="16dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginRight="16dp"
-            android:background="#d1d1d1"
-            android:orientation="vertical">
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recycler_add_drink_favorites_list"
+            <RelativeLayout
+                android:id="@+id/layout_recents_foreground"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="2dp"
-                android:layout_marginBottom="2dp"
-                android:background="@color/colorWhite"
-                android:orientation="horizontal"
-                android:paddingTop="8dp"
-                android:paddingBottom="8dp" />
+                android:layout_height="70dp"
+                android:layout_below="@+id/text_add_drink_recents"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginRight="16dp"
+                android:background="#d1d1d1"
+                android:orientation="vertical">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recycler_add_drink_recents_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="2dp"
+                    android:layout_marginBottom="2dp"
+                    android:background="@color/colorWhite"
+                    android:orientation="horizontal"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp" />
+
+                <TextView
+                    android:id="@+id/text_recents_empty_list"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:text="@string/no_recent_drinks" />
+
+            </RelativeLayout>
 
             <TextView
-                android:id="@+id/text_favorites_empty_list"
+                android:id="@+id/text_add_drink_favorites"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:text="@string/no_favorite_drinks" />
+                android:layout_below="@id/layout_recents_foreground"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginRight="16dp"
+                android:text="@string/favorites_quick_fill"
+                android:textSize="16sp" />
+
+            <RelativeLayout
+                android:id="@+id/layout_favorites_foreground"
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                android:layout_below="@+id/text_add_drink_favorites"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginRight="16dp"
+                android:background="#d1d1d1"
+                android:orientation="vertical">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recycler_add_drink_favorites_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="2dp"
+                    android:layout_marginBottom="2dp"
+                    android:background="@color/colorWhite"
+                    android:orientation="horizontal"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp" />
+
+                <TextView
+                    android:id="@+id/text_favorites_empty_list"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:text="@string/no_favorite_drinks" />
+
+            </RelativeLayout>
+
+            <LinearLayout
+                android:id="@+id/layout_add_drink_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/layout_favorites_foreground"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginRight="16dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/text_add_drink_name"
+                    android:layout_width="80dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/name"
+                    android:textSize="18sp" />
+
+                <com.wit.jasonfagerberg.nightsout.addDrink.drinkSuggestion.DrinkSuggestionAutoCompleteView
+                    android:id="@+id/auto_drink_suggestion"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginEnd="45dp"
+                    android:completionThreshold="0"
+                    android:gravity="center_horizontal"
+                    android:hint="@string/empty"
+                    android:inputType="text"
+                    android:maxLength="50" />
+
+            </LinearLayout>
+
+            <RelativeLayout
+                android:id="@+id/layout_add_drink_abv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/layout_add_drink_name"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginRight="16dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/text_add_drink_abv"
+                    android:layout_width="80dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/abv"
+                    android:textSize="18sp"
+                    android:layout_alignParentStart="true"/>
+
+                <EditText
+                    android:id="@+id/edit_add_drink_abv"
+                    android:layout_width="175dp"
+                    android:layout_height="50dp"
+                    android:gravity="center_horizontal"
+                    android:hint="@string/empty"
+                    android:importantForAutofill="no"
+                    android:inputType="numberDecimal"
+                    tools:targetApi="o"
+                    android:layout_toEndOf="@id/text_add_drink_abv"
+                    android:layout_toStartOf="@id/percent"/>
+
+                <TextView
+                    android:id="@+id/percent"
+                    android:layout_width="90dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="@string/percent"
+                    android:textColor="@color/colorBlack"
+                    android:textSize="24sp"
+                    android:layout_alignParentEnd="true"/>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/layout_add_drink_amount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/layout_add_drink_abv"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginRight="16dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/text_add_drink_amount"
+                    android:layout_width="80dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/amount"
+                    android:textSize="18sp"
+                    android:layout_alignParentStart="true"/>
+
+                <EditText
+                    android:id="@+id/edit_add_drink_amount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="50dp"
+                    android:autofillHints=""
+                    android:gravity="center_horizontal"
+                    android:hint="@string/empty"
+                    android:inputType="numberDecimal"
+                    tools:targetApi="o"
+                    android:layout_toEndOf="@+id/text_add_drink_amount"
+                    android:layout_toStartOf="@+id/spinner_add_drink_amount"/>
+
+                <Spinner
+                    android:id="@+id/spinner_add_drink_amount"
+                    android:layout_width="90dp"
+                    android:layout_height="match_parent"
+                    android:spinnerMode="dropdown"
+                    android:layout_alignParentEnd="true"
+                    android:textAlignment="center" />
+
+            </RelativeLayout>
+
+            <CheckBox
+                android:id="@+id/chkBox_complexDrink"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/layout_add_drink_amount"
+                android:layout_alignStart="@+id/text_add_drink_recents"
+                android:layout_marginTop="16dp"
+                android:padding="8dp"
+                android:text="@string/multiple_alcohol_sources" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_add_drink_add_alc_source"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/chkBox_complexDrink"
+                android:layout_marginStart="16dp"
+                android:text="@string/add_alcohol_source"
+                android:theme="@style/ProfileButtonMaleTheme"
+                android:visibility="invisible" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_add_drink_alcohol_source_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/btn_add_drink_add_alc_source"
+                android:visibility="invisible" />
 
         </RelativeLayout>
+    </ScrollView>
 
-        <LinearLayout
-            android:id="@+id/layout_add_drink_name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/layout_favorites_foreground"
-            android:layout_alignParentStart="true"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginRight="16dp"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/text_add_drink_name"
-                android:layout_width="75dp"
-                android:layout_height="wrap_content"
-                android:text="@string/name"
-                android:textSize="18sp" />
-
-            <com.wit.jasonfagerberg.nightsout.addDrink.drinkSuggestion.DrinkSuggestionAutoCompleteView
-                android:id="@+id/auto_drink_suggestion"
-                android:layout_width="225dp"
-                android:layout_height="50dp"
-                android:completionThreshold="0"
-                android:gravity="center_horizontal"
-                android:hint="@string/empty"
-                android:inputType="text"
-                android:maxLength="50"/>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/layout_add_drink_abv"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/layout_add_drink_name"
-            android:layout_alignParentStart="true"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginRight="16dp"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/text_add_drink_abv"
-                android:layout_width="75dp"
-                android:layout_height="wrap_content"
-                android:text="@string/abv"
-                android:textSize="18sp" />
-
-            <EditText
-                android:id="@+id/edit_add_drink_abv"
-                android:layout_width="175dp"
-                android:layout_height="50dp"
-                android:gravity="center_horizontal"
-                android:hint="@string/empty"
-                android:importantForAutofill="no"
-                android:inputType="numberDecimal"
-                tools:targetApi="o" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="@string/percent"
-                android:textColor="@color/colorBlack"
-                android:textSize="24sp" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/layout_add_drink_amount"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/layout_add_drink_abv"
-            android:layout_alignParentStart="true"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginRight="16dp"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/text_add_drink_amount"
-                android:layout_width="75dp"
-                android:layout_height="wrap_content"
-                android:text="@string/amount"
-                android:textSize="18sp" />
-
-            <EditText
-                android:id="@+id/edit_add_drink_amount"
-                android:layout_width="175dp"
-                android:layout_height="50dp"
-                android:autofillHints=""
-                android:gravity="center_horizontal"
-                android:hint="@string/empty"
-                android:inputType="numberDecimal"
-                tools:targetApi="o" />
-
-            <Spinner
-                android:id="@+id/spinner_add_drink_amount"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:spinnerMode="dropdown" />
-
-        </LinearLayout>
-
-        <CheckBox
-            android:id="@+id/chkBox_complexDrink"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/layout_add_drink_amount"
-            android:layout_alignStart="@+id/text_add_drink_recents"
-            android:text="@string/multiple_alcohol_sources" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_add_drink_add_alc_source"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/chkBox_complexDrink"
-            android:layout_marginStart="16dp"
-            android:text="@string/add_alcohol_source"
-            android:theme="@style/ProfileButtonMaleTheme"
-            android:visibility="invisible" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycler_add_drink_alcohol_source_list"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/btn_add_drink_add_alc_source"
-            android:visibility="invisible"/>
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_add_drink_add"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:layout_below="@id/recycler_add_drink_alcohol_source_list"
-            android:layout_centerHorizontal="true"
-            android:layout_marginLeft="16dp"
-            android:layout_marginTop="32dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginBottom="32dp"
-            android:text="@string/add"
-            android:textSize="18sp"
-            android:theme="@style/HomeButtonTheme" />
-
-    </RelativeLayout>
-</ScrollView>
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_add_drink_add"
+        android:layout_width="match_parent"
+        android:layout_height="75dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="-8dp"
+        android:layout_marginBottom="-8dp"
+        android:text="@string/add"
+        android:textSize="18sp"
+        android:theme="@style/HomeButtonTheme"
+        app:cornerRadius="0dp"/>
+</RelativeLayout>

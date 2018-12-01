@@ -95,7 +95,7 @@ class AddDrinkFragment : Fragment() {
                 mComplexDrinkHelper.findViews()
                 view.findViewById<MaterialButton>(R.id.btn_add_drink_add_alc_source).visibility = View.VISIBLE
                 view.findViewById<RecyclerView>(R.id.recycler_add_drink_alcohol_source_list).visibility = View.VISIBLE
-                mMainActivity.showToast("You can now add multiple alcohol sources", true)
+                mMainActivity.showToast("You can now add multiple alcohol sources")
             } else {
                 view.findViewById<MaterialButton>(R.id.btn_add_drink_add_alc_source).visibility = View.INVISIBLE
                 view.findViewById<RecyclerView>(R.id.recycler_add_drink_alcohol_source_list).visibility = View.INVISIBLE
@@ -232,7 +232,7 @@ class AddDrinkFragment : Fragment() {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 val temp = databaseTalker.getSuggestedDrinks(s.toString())
-                drinks = if (temp.isNotEmpty() || count < 60) temp else drinks
+                drinks = if (temp.isNotEmpty() || count < 50) temp else drinks
                 adapter = DrinkSuggestionArrayAdapter(context!!, R.layout.fragment_add_drink_suggestion_list, drinks)
                 autoCompleteView.setAdapter(adapter)
                 adapter.notifyDataSetChanged()

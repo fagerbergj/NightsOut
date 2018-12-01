@@ -8,6 +8,7 @@
 
     <style name="HomeButtonTheme" parent="Theme.MaterialComponents.Light">
         <item name="colorPrimary">@color/colorGreen</item>
+        <item name="android:padding">0dp</item>
     </style>
 
     <style name="ProfileButtonMaleTheme" parent="Theme.MaterialComponents.Light">
