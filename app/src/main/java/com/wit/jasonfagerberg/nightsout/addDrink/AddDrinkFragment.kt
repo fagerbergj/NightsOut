@@ -366,7 +366,9 @@ class AddDrinkFragment : Fragment() {
             setTextViewToRedAndBold(textName)
             inputError = true
         }
-        if (inputError) mMainActivity.showToast("Please enter a valid ${message.substring(2, message.length)}", true)
+        if (inputError && (!complexMode || mComplexDrinkHelper.listIsEmpty())){
+            mMainActivity.showToast("Please enter a valid ${message.substring(2, message.length)}", true)
+        }
         return inputError
     }
 
