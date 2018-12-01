@@ -47,7 +47,7 @@ class AddDrinkFragment : Fragment() {
     // booleans that work together to change behavior based on fragment that set this fragment
     var mFavorited: Boolean = false
     private var canUnfavorite = true
-    var complexMode = false
+    private var complexMode = false
 
     private lateinit var mMainActivity: MainActivity
     lateinit var autoCompleteView: DrinkSuggestionAutoCompleteView

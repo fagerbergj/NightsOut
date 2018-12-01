@@ -3,7 +3,7 @@ package com.wit.jasonfagerberg.nightsout.dialogs
 import android.app.AlertDialog
 import android.content.Context
 import android.view.ViewGroup
-import android.widget.Button
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.wit.jasonfagerberg.nightsout.R
@@ -22,14 +22,14 @@ class BacInfoDialog(
         val builder = android.app.AlertDialog.Builder(homeFragment.context)
         val parent: ViewGroup? = null
         val dialogView = mainActivity.layoutInflater
-                .inflate(R.layout.fragment_home_dialog_bac_info, parent, false)
+                .inflate(R.layout.dialog_bac_info, parent, false)
 
         builder.setView(dialogView)
         val dialog = builder.create()
         dialog.show()
         setupBacDeclineChart(dialog)
 
-        dialog.findViewById<Button>(R.id.btn_bac_info_dismiss).setOnClickListener {
+        dialog.findViewById<ImageView>(R.id.btn_bac_info_dismiss).setOnClickListener {
             dialog.dismiss()
         }
 

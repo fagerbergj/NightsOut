@@ -5,7 +5,7 @@ Ad free Blood Alcohol Concentration calculator
 * Simple design makes adding drinks easy
 * See how effected you are by the alcohol, based on [this article from alcohol.org](https://www.niaaa.nih.gov/alcohol-health/alcohols-effects-body)
 * Log drinking sessions to track drinking habits
-* See chart of [BAC decilne over time.](http://stepupprogram.org/docs/handouts/Hours_to_Zero_BAC.pdf)
+* See chart of [BAC decline over time.](http://stepupprogram.org/docs/handouts/Hours_to_Zero_BAC.pdf)
 
 # Download
 [![alt text](https://github.com/fagerbergj/NightsOut/blob/master/imgs/download.png "Logo Title Text 1")](https://play.google.com/store/apps/details?id=com.wit.jasonfagerberg.nightsout)

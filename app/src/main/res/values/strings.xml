@@ -68,7 +68,4 @@
     <string name="show_auto_complete_suggestion">Show In Suggestions List</string>
     <string name="hide_auto_complete_suggestion">Hide In Suggestions List</string>
     <string name="delete_drink">Delete Drink</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

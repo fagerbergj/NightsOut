@@ -11,10 +11,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingBottom="8dp"
+        android:layout_alignParentStart="true"
         android:text="@string/bac_level"
         android:textColor="@color/colorBlack"
         android:textSize="24sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:layout_toStartOf="@id/btn_bac_info_dismiss"/>
 
     <View
         android:id="@+id/line"
@@ -118,19 +120,18 @@
         android:layout_height="225dip"
         android:layout_below="@id/info_container" />
 
-    <Button
+    <ImageView
         android:id="@+id/btn_bac_info_dismiss"
-        style="?android:attr/buttonBarButtonStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/graph_bac_info_declining_bac"
+        android:src="@drawable/close_gray_18dp"
+        android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:paddingTop="4dp"
-        android:paddingBottom="4dp"
-        android:text="@string/dismiss"
-        android:textColor="@color/colorDarkGray"
-        app:backgroundTint="@color/colorWhite" />
+        android:padding="8dp"
+        android:scaleX="1.25"
+        android:scaleY="1.25"
+        android:background="?attr/selectableItemBackground"
+        android:contentDescription="@string/empty"
+        android:layout_alignTop="@+id/text_bac_info_title"/>
 
 </RelativeLayout>
