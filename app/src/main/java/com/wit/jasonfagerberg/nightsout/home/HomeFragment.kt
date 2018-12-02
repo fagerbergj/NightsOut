@@ -28,7 +28,6 @@ import android.widget.ImageButton
 import android.widget.EditText
 import com.wit.jasonfagerberg.nightsout.dialogs.BacInfoDialog
 import com.wit.jasonfagerberg.nightsout.manageDB.ManageDBFragment
-import java.util.Collections
 import java.util.Calendar
 
 // private const val TAG = "HomeFragment"

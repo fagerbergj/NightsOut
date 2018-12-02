@@ -18,6 +18,7 @@ class BacInfoDialog(
     private val mainActivity = context as MainActivity
     private val homeFragment = mainActivity.homeFragment
     private val converter = homeFragment.mConverter
+
     fun showBacInfoDialog() {
         val builder = android.app.AlertDialog.Builder(homeFragment.context)
         val parent: ViewGroup? = null

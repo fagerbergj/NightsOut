@@ -1,5 +1,6 @@
 package com.wit.jasonfagerberg.nightsout.addDrink
 
+import android.graphics.PorterDuff
 import android.graphics.Typeface
 import android.os.Bundle
 import android.text.Editable
@@ -17,7 +18,11 @@ import android.view.View
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.view.MenuItem
-import android.widget.*
+import android.widget.EditText
+import android.widget.Spinner
+import android.widget.ArrayAdapter
+import android.widget.CheckBox
+import android.widget.TextView
 import com.wit.jasonfagerberg.nightsout.main.Drink
 import com.wit.jasonfagerberg.nightsout.R
 import com.wit.jasonfagerberg.nightsout.converter.Converter
@@ -84,7 +89,11 @@ class AddDrinkFragment : Fragment() {
 
         // add button setup
         val btnAdd = view.findViewById<MaterialButton>(R.id.btn_add_drink_add)
-        if (mFavorited) btnAdd.text = resources.getText(R.string.add_favorite)
+        if (mFavorited) {
+            btnAdd.background.setColorFilter(ContextCompat.getColor(context!!,
+                    R.color.colorLightRed), PorterDuff.Mode.MULTIPLY)
+            btnAdd.text = resources.getText(R.string.add_favorite)
+        }
         btnAdd.setOnClickListener { addDrink() }
 
         mComplexDrinkHelper = ComplexDrinkHelper(this)
@@ -131,53 +140,64 @@ class AddDrinkFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         val resId = item!!.itemId
         val btnAdd = view!!.findViewById<MaterialButton>(R.id.btn_add_drink_add)
-        when (resId) {
-            R.id.btn_toolbar_favorite -> {
-                if (canUnfavorite) mFavorited = !mFavorited
-                if (mFavorited) {
-                    item.icon = ContextCompat.getDrawable(context!!, R.drawable.favorite_white_24dp)
-                    btnAdd.setText(R.string.add_and_favorite)
-                    mMainActivity.showToast("Drink Will Be Favorited After Adding", true)
-                } else {
-                    item.icon = ContextCompat.getDrawable(context!!, R.drawable.favorite_border_white_24dp)
-                    btnAdd.setText(R.string.add)
-                    mMainActivity.showToast("Drink Will Not Be Favorited", true)
-                }
-            }
-            R.id.btn_clear_favorites_list -> {
-                if (mMainActivity.mFavoritesList.isEmpty()) return false
-                val posAction = {
-                    mMainActivity.mDatabaseHelper.deleteRowsInTable("favorites", null)
-                    mMainActivity.mFavoritesList.clear()
-                    for (drink in mMainActivity.mDrinksList) {
-                        drink.favorited = false
-                    }
-                    showOrHideEmptyTextViews(view!!)
-                    mFavoritesListAdapter.notifyDataSetChanged()
-                }
-                val lightSimpleDialog = LightSimpleDialog(context!!)
-                lightSimpleDialog.setActions(posAction, {})
-                lightSimpleDialog.show("Are you sure you want to clear all favorites?")
-            }
-            R.id.btn_clear_recents_list -> {
-                if (mMainActivity.mRecentsList.isEmpty()) return false
-                val posAction = {
-                    mMainActivity.mDatabaseHelper.deleteRowsInTable("drinks", "recent = 1")
-                    mMainActivity.mRecentsList.clear()
-                    for (drink in mMainActivity.mDrinksList) {
-                        drink.recent = false
-                    }
-                    showOrHideEmptyTextViews(view!!)
-                    mRecentsListAdapter.notifyDataSetChanged()
-                }
-                val lightSimpleDialog = LightSimpleDialog(context!!)
-                lightSimpleDialog.setActions(posAction, {})
-                lightSimpleDialog.show("Are you sure you want to clear all recent drinks?")
-            }
-            R.id.btn_toolbar_manage_db -> {
-                mMainActivity.setFragment(ManageDBFragment())
-            }
+        return when (resId) {
+            R.id.btn_toolbar_favorite -> { favoriteOptionSelected(item, btnAdd) }
+            R.id.btn_clear_favorites_list -> { clearFavoritesOptionSelected() }
+            R.id.btn_clear_recents_list -> { clearRecentsOptionSelected() }
+            R.id.btn_toolbar_manage_db -> { mMainActivity.setFragment(ManageDBFragment()); true }
+            else -> false
         }
+    }
+
+    private fun favoriteOptionSelected(item: MenuItem, btnAdd: MaterialButton): Boolean {
+        if (canUnfavorite) mFavorited = !mFavorited
+        if (mFavorited) {
+            item.icon = ContextCompat.getDrawable(context!!, R.drawable.favorite_white_24dp)
+            if (canUnfavorite) btnAdd.setText(R.string.add_and_favorite)
+            mMainActivity.showToast("Drink Will Be Favorited After Adding", true)
+            btnAdd.background.setColorFilter(ContextCompat.getColor(context!!,
+                    R.color.colorLightRed), PorterDuff.Mode.MULTIPLY)
+        } else {
+            item.icon = ContextCompat.getDrawable(context!!, R.drawable.favorite_border_white_24dp)
+            btnAdd.setText(R.string.add)
+            mMainActivity.showToast("Drink Will Not Be Favorited", true)
+            btnAdd.background.setColorFilter(ContextCompat.getColor(context!!,
+                    R.color.colorGreen), PorterDuff.Mode.MULTIPLY)
+        }
+        return true
+    }
+
+    private fun clearFavoritesOptionSelected(): Boolean {
+        if (mMainActivity.mFavoritesList.isEmpty()) return false
+        val posAction = {
+            mMainActivity.mDatabaseHelper.deleteRowsInTable("favorites", null)
+            mMainActivity.mFavoritesList.clear()
+            for (drink in mMainActivity.mDrinksList) {
+                drink.favorited = false
+            }
+            showOrHideEmptyTextViews(view!!)
+            mFavoritesListAdapter.notifyDataSetChanged()
+        }
+        val lightSimpleDialog = LightSimpleDialog(context!!)
+        lightSimpleDialog.setActions(posAction, {})
+        lightSimpleDialog.show("Are you sure you want to clear all favorites?")
+        return true
+    }
+
+    private fun clearRecentsOptionSelected(): Boolean {
+        if (mMainActivity.mRecentsList.isEmpty()) return false
+        val posAction = {
+            mMainActivity.mDatabaseHelper.deleteRowsInTable("drinks", "recent = 1")
+            mMainActivity.mRecentsList.clear()
+            for (drink in mMainActivity.mDrinksList) {
+                drink.recent = false
+            }
+            showOrHideEmptyTextViews(view!!)
+            mRecentsListAdapter.notifyDataSetChanged()
+        }
+        val lightSimpleDialog = LightSimpleDialog(context!!)
+        lightSimpleDialog.setActions(posAction, {})
+        lightSimpleDialog.show("Are you sure you want to clear all recent drinks?")
         return true
     }
 
@@ -366,7 +386,7 @@ class AddDrinkFragment : Fragment() {
             setTextViewToRedAndBold(textName)
             inputError = true
         }
-        if (inputError && (!complexMode || mComplexDrinkHelper.listIsEmpty())){
+        if (inputError && (!complexMode || mComplexDrinkHelper.listIsEmpty())) {
             mMainActivity.showToast("Please enter a valid ${message.substring(2, message.length)}", false)
         }
         return inputError

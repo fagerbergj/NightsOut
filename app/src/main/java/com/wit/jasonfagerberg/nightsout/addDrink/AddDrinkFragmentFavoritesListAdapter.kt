@@ -16,11 +16,9 @@ import java.util.ArrayList
 
 class AddDrinkFragmentFavoritesListAdapter(private val mContext: Context, drinksList: ArrayList<Drink>) :
         RecyclerView.Adapter<AddDrinkFragmentFavoritesListAdapter.ViewHolder>() {
-    // vars
     private val mFavoriteDrinksList: MutableList<Drink> = drinksList
     private lateinit var mMainActivity: MainActivity
 
-    // set layout inflater & inflate layout
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(mContext)
         val view = inflater.inflate(R.layout.item_favorite, parent, false)
@@ -28,7 +26,6 @@ class AddDrinkFragmentFavoritesListAdapter(private val mContext: Context, drinks
         return ViewHolder(view)
     }
 
-    // When view is rendered bind the correct holder to it
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val drink = mFavoriteDrinksList[position]
         holder.name.text = drink.name

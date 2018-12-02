@@ -411,6 +411,7 @@ class DatabaseHelper(
         cursor.close()
         return ret
     }
+
     private fun mapOldIdsToUUIDs() {
         val cursor = db.query("drinks", null, null, null, null, null, null, null)
         while (cursor.moveToNext()) {
