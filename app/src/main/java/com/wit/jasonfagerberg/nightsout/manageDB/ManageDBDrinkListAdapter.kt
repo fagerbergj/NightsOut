@@ -50,53 +50,59 @@ class ManageDBDrinkListAdapter(private val mContext: Context, private val mDrink
 
             popup.setOnMenuItemClickListener { item ->
                 when (item.itemId) {
-                    R.id.manage_db_item_favorite -> {
-                        drink.favorited = !drink.favorited
-                        mMainActivity.mDatabaseHelper.updateDrinkModifiedTime(drink.id, mMainActivity.getLongTimeNow())
-                        for (d in mDrinksList) {
-                            if (d == drink) d.favorited = drink.favorited
-                        }
-                        notifyDataSetChanged()
-
-                        if (!drink.favorited) mMainActivity.mFavoritesList.remove(drink)
-                        else mMainActivity.mFavoritesList.add(0, drink)
-
-                        for (d in mMainActivity.mDrinksList) {
-                            if (d == drink) d.favorited = drink.favorited
-                        }
-                        if (drink.favorited) mMainActivity.showToast("${drink.name} favorited")
-                        else mMainActivity.showToast("${drink.name} unfavorited")
-                        true
-                    }
-                    R.id.manage_db_item_suggestion -> {
-                        mMainActivity.mDatabaseHelper.updateDrinkSuggestionStatus(drink.id, !dontSuggest)
-                        if (!dontSuggest) mMainActivity.showToast("This drink will not be suggested")
-                        else mMainActivity.showToast("This drink will be suggested")
-                        true
-                    }
-                    R.id.manage_db_item_delete -> {
-                        val dialog = LightSimpleDialog(mContext)
-                        val loss = getLostReferenceString(drink)
-
-                        val posAction = {
-                            mMainActivity.mDatabaseHelper.deleteRowsInTable("drinks", "id = \"${drink.id}\"")
-                            mDrinksList.remove(drink)
-                            removeCurrentSessionReference(drink)
-                            removeOrUpdateFavoritesReference(drink)
-                            removeOrUpdateRecentsReference(drink)
-                            notifyItemRemoved(position)
-                            notifyItemRangeChanged(position, mDrinksList.size)
-                        }
-                        dialog.setActions(posAction, {})
-                        dialog.show("Are you sure that you want to delete \"${drink.name}\"" +
-                                " from database, this will remove all references to the drink.\n\nReferences Lost:\n$loss")
-                        true
-                    }
+                    R.id.manage_db_item_favorite -> { favoriteItemOptionSelected(drink) }
+                    R.id.manage_db_item_suggestion -> { suggestItemOptionSelected(drink, dontSuggest) }
+                    R.id.manage_db_item_delete -> { deleteItemOptionSelected(drink, position) }
                     else -> false
                 }
             }
             popup.show()
         }
+    }
+
+    private fun favoriteItemOptionSelected(drink: Drink): Boolean {
+        drink.favorited = !drink.favorited
+        mMainActivity.mDatabaseHelper.updateDrinkModifiedTime(drink.id, mMainActivity.getLongTimeNow())
+        for (d in mDrinksList) {
+            if (d == drink) d.favorited = drink.favorited
+        }
+        notifyDataSetChanged()
+
+        if (!drink.favorited) mMainActivity.mFavoritesList.remove(drink)
+        else mMainActivity.mFavoritesList.add(0, drink)
+
+        for (d in mMainActivity.mDrinksList) {
+            if (d == drink) d.favorited = drink.favorited
+        }
+        if (drink.favorited) mMainActivity.showToast("${drink.name} favorited")
+        else mMainActivity.showToast("${drink.name} unfavorited")
+        return true
+    }
+
+    private fun suggestItemOptionSelected(drink: Drink, dontSuggest: Boolean): Boolean {
+        mMainActivity.mDatabaseHelper.updateDrinkSuggestionStatus(drink.id, !dontSuggest)
+        if (!dontSuggest) mMainActivity.showToast("This drink will not be suggested")
+        else mMainActivity.showToast("This drink will be suggested")
+        return true
+    }
+
+    private fun deleteItemOptionSelected(drink: Drink, position: Int): Boolean {
+        val dialog = LightSimpleDialog(mContext)
+        val loss = getLostReferenceString(drink)
+
+        val posAction = {
+            mMainActivity.mDatabaseHelper.deleteRowsInTable("drinks", "id = \"${drink.id}\"")
+            mDrinksList.remove(drink)
+            removeCurrentSessionReference(drink)
+            removeOrUpdateFavoritesReference(drink)
+            removeOrUpdateRecentsReference(drink)
+            notifyItemRemoved(position)
+            notifyItemRangeChanged(position, mDrinksList.size)
+        }
+        dialog.setActions(posAction, {})
+        dialog.show("Are you sure that you want to delete \"${drink.name}\"" +
+                " from database, this will remove all references to the drink.\n\nReferences Lost:\n$loss")
+        return true
     }
 
     override fun getItemCount(): Int {
@@ -173,7 +179,5 @@ class ManageDBDrinkListAdapter(private val mContext: Context, private val mDrink
         internal var abv: TextView = itemView.findViewById(R.id.text_manage_db_drink_abv)
         internal var amount: TextView = itemView.findViewById(R.id.text_manage_db_drink_amount)
         internal var options: ImageView = itemView.findViewById(R.id.text_item_options)
-//        internal var delete: ImageView = itemView.findViewById(R.id.imgBtn_manage_db_delete)
-//        internal var favorite: ImageView = itemView.findViewById(R.id.imgBtn_manage_db_favorite)
     }
 }

@@ -52,7 +52,6 @@ class AddDrinkFragmentAlcoholSourceAdapter(private val mContext: Context, alcoho
         return mAlcoholSourceList.size
     }
 
-    // ViewHolder for each item in list
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         internal val textNumber = itemView.findViewById<TextView>(R.id.alc_source_number)
         internal val textAbv = itemView.findViewById<TextView>(R.id.alc_source_abv)
