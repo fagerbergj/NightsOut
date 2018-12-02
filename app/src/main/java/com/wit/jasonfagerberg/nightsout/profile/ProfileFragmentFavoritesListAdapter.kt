@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.wit.jasonfagerberg.nightsout.R
 import com.wit.jasonfagerberg.nightsout.dialogs.LightSimpleDialog
 import com.wit.jasonfagerberg.nightsout.main.Drink
-import com.wit.jasonfagerberg.nightsout.main.MainActivity
 
 class ProfileFragmentFavoritesListAdapter(private val mContext: Context, drinksList: ArrayList<Drink>) :
         RecyclerView.Adapter<ProfileFragmentFavoritesListAdapter.ViewHolder>() {

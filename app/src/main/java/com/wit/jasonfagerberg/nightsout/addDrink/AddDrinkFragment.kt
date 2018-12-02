@@ -17,7 +17,11 @@ import android.view.View
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.view.MenuItem
-import android.widget.*
+import android.widget.EditText
+import android.widget.Spinner
+import android.widget.ArrayAdapter
+import android.widget.CheckBox
+import android.widget.TextView
 import com.wit.jasonfagerberg.nightsout.main.Drink
 import com.wit.jasonfagerberg.nightsout.R
 import com.wit.jasonfagerberg.nightsout.converter.Converter
@@ -366,7 +370,7 @@ class AddDrinkFragment : Fragment() {
             setTextViewToRedAndBold(textName)
             inputError = true
         }
-        if (inputError && (!complexMode || mComplexDrinkHelper.listIsEmpty())){
+        if (inputError && (!complexMode || mComplexDrinkHelper.listIsEmpty())) {
             mMainActivity.showToast("Please enter a valid ${message.substring(2, message.length)}", false)
         }
         return inputError

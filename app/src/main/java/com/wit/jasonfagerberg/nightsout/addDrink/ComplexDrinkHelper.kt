@@ -12,9 +12,9 @@ class ComplexDrinkHelper(val parent: AddDrinkFragment) {
     private val listAlcoholSources: ArrayList<AlcoholSource> = ArrayList()
     private lateinit var alcoholSourceAdapter: AddDrinkFragmentAlcoholSourceAdapter
 
-    fun findViews(){
+    fun findViews() {
         btnAddAnotherAlcoholSource = parent.view!!.findViewById(R.id.btn_add_drink_add_alc_source)
-        recyclerAlcoholSource  = parent.view!!.findViewById(R.id.recycler_add_drink_alcohol_source_list)
+        recyclerAlcoholSource = parent.view!!.findViewById(R.id.recycler_add_drink_alcohol_source_list)
         alcoholSourceAdapter = AddDrinkFragmentAlcoholSourceAdapter(parent.context!!, listAlcoholSources)
 
         recyclerAlcoholSource.adapter = alcoholSourceAdapter
