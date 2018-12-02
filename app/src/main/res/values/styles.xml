@@ -11,7 +11,7 @@
         <item name="android:padding">0dp</item>
     </style>
 
-    <style name="ProfileButtonMaleTheme" parent="Theme.MaterialComponents.Light">
+    <style name="ProfileSexButtonTheme" parent="Theme.MaterialComponents.Light">
         <item name="colorPrimary">@color/colorLightRed</item>
     </style>
 </resources>

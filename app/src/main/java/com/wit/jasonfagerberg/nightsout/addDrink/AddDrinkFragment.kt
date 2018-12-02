@@ -136,7 +136,7 @@ class AddDrinkFragment : Fragment() {
                 if (canUnfavorite) mFavorited = !mFavorited
                 if (mFavorited) {
                     item.icon = ContextCompat.getDrawable(context!!, R.drawable.favorite_white_24dp)
-                    if (canUnfavorite) btnAdd.setText(R.string.add_and_favorite)
+                    btnAdd.setText(R.string.add_and_favorite)
                     mMainActivity.showToast("Drink Will Be Favorited After Adding", true)
                 } else {
                     item.icon = ContextCompat.getDrawable(context!!, R.drawable.favorite_border_white_24dp)

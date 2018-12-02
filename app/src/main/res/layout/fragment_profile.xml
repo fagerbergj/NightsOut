@@ -53,7 +53,7 @@
                 android:layout_marginEnd="20dp"
                 android:text="@string/male"
                 android:textSize="18sp"
-                android:theme="@style/ProfileButtonMaleTheme" />
+                android:theme="@style/ProfileSexButtonTheme" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_profile_female"
@@ -63,7 +63,7 @@
                 android:layout_marginEnd="16dp"
                 android:text="@string/female"
                 android:textSize="18sp"
-                android:theme="@style/ProfileButtonMaleTheme" />
+                android:theme="@style/ProfileSexButtonTheme" />
         </LinearLayout>
 
         <TextView

@@ -175,7 +175,7 @@
                     android:inputType="numberDecimal"
                     tools:targetApi="o"
                     android:layout_toEndOf="@id/text_add_drink_abv"
-                    android:layout_toStartOf="@id/percent"/>
+                    android:layout_toStartOf="@id/percent" />
 
                 <TextView
                     android:id="@+id/percent"
@@ -249,7 +249,7 @@
                 android:layout_below="@id/chkBox_complexDrink"
                 android:layout_marginStart="16dp"
                 android:text="@string/add_alcohol_source"
-                android:theme="@style/ProfileButtonMaleTheme"
+                android:theme="@style/ProfileSexButtonTheme"
                 android:visibility="invisible" />
 
             <androidx.recyclerview.widget.RecyclerView

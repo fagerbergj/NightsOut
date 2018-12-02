@@ -4,6 +4,7 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.widget.PopupMenu
 import com.wit.jasonfagerberg.nightsout.R
@@ -171,7 +172,7 @@ class ManageDBDrinkListAdapter(private val mContext: Context, private val mDrink
         internal var name: TextView = itemView.findViewById(R.id.text_manage_db_drink_name)
         internal var abv: TextView = itemView.findViewById(R.id.text_manage_db_drink_abv)
         internal var amount: TextView = itemView.findViewById(R.id.text_manage_db_drink_amount)
-        internal var options: TextView = itemView.findViewById(R.id.text_item_options)
+        internal var options: ImageView = itemView.findViewById(R.id.text_item_options)
 //        internal var delete: ImageView = itemView.findViewById(R.id.imgBtn_manage_db_delete)
 //        internal var favorite: ImageView = itemView.findViewById(R.id.imgBtn_manage_db_favorite)
     }

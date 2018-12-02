@@ -9,6 +9,7 @@ import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.wit.jasonfagerberg.nightsout.R
+import com.wit.jasonfagerberg.nightsout.dialogs.LightSimpleDialog
 import com.wit.jasonfagerberg.nightsout.main.Drink
 import com.wit.jasonfagerberg.nightsout.main.MainActivity
 
@@ -29,30 +30,15 @@ class ProfileFragmentFavoritesListAdapter(private val mContext: Context, drinksL
         val drink = mFavoriteDrinksList[position]
         holder.name.text = drink.name
         holder.card.setOnClickListener {
-            holder.favorited = !holder.favorited
-
-            if (holder.favorited) {
-                // make the toast
-                (mContext as MainActivity).showToast("${holder.name.text} favorited")
-                mFavoriteDrinksList.add(position, drink)
-                for (d in mContext.mDrinksList) {
-                    if (d == drink) d.favorited = true
-                }
-                // (mContext as MainActivity).mDatabaseHelper.insertRowInFavoritesTable(drink.name, drink.id)
-
-                holder.image.setImageResource(R.drawable.favorite_white_24dp)
-                // mFavoriteDrinksList.add(drink)
-            } else {
-                (mContext as MainActivity).showToast("${holder.name.text} unfavored")
-                for (d in mContext.mDrinksList) {
-                    if (d == drink) d.favorited = false
-                }
-                mFavoriteDrinksList.removeAt(position)
-                mContext.mDatabaseHelper.deleteRowsInTable("favorites", "drink_name = \"${drink.name}\"")
-
-                holder.image.setImageResource(R.drawable.favorite_border_white_24dp)
-                // mFavoriteDrinksList.remove(drink)
+            val dialog = LightSimpleDialog(mContext)
+            val posAction = {
+                val i = mFavoriteDrinksList.indexOf(drink)
+                mFavoriteDrinksList.remove(drink)
+                notifyItemRemoved(i)
+                notifyItemRangeChanged(0, mFavoriteDrinksList.size)
             }
+            dialog.setActions(posAction, {})
+            dialog.show("Remove ${drink.name} from favorites list?")
         }
     }
 
