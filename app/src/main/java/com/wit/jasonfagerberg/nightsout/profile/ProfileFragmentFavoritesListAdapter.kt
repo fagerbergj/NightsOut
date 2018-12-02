@@ -33,6 +33,10 @@ class ProfileFragmentFavoritesListAdapter(private val mContext: Context, drinksL
             val dialog = LightSimpleDialog(mContext)
             val posAction = {
                 val i = mFavoriteDrinksList.indexOf(drink)
+                drink.favorited = false
+                for (d in (mContext as MainActivity).mDrinksList){
+                    if (d.isExactDrink(drink)) d.favorited = false
+                }
                 mFavoriteDrinksList.remove(drink)
                 notifyItemRemoved(i)
                 notifyItemRangeChanged(0, mFavoriteDrinksList.size)
