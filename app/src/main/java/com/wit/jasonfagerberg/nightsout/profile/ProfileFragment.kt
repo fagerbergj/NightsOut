@@ -39,9 +39,6 @@ class ProfileFragment : Fragment() {
     private lateinit var mMainActivity: MainActivity
     private lateinit var mFavoritesListView: RecyclerView
 
-    // shared pref data
-    private var profileInit = false
-
     private lateinit var mWeightEditText: EditText
     private lateinit var mSpinner: Spinner
 
@@ -56,6 +53,12 @@ class ProfileFragment : Fragment() {
     private var weightMeasurement = if (country == "US" || country == "LR" || country == "MM") "lbs"
     else "kg"
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        mMainActivity = context as MainActivity
+
+        super.onCreate(savedInstanceState)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -63,9 +66,6 @@ class ProfileFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_profile, container, false)
-
-        mMainActivity = context as MainActivity
-        profileInit = mMainActivity.profileInt
 
         // toolbar setup
         setupToolbar(view!!)
@@ -105,7 +105,7 @@ class ProfileFragment : Fragment() {
     }
 
     override fun onResume() {
-        if (profileInit) {
+        if (mMainActivity.profileInt) {
             sex = mMainActivity.sex!!
             weight = mMainActivity.weight
             weightMeasurement = mMainActivity.weightMeasurement
@@ -262,7 +262,7 @@ class ProfileFragment : Fragment() {
         val w = Converter().stringToDouble(mWeightEditText.text.toString())
         if (!w.isNaN()) mWeightEditText.setText(w.toString())
 
-        if (sex == null && !profileInit) {
+        if (sex == null && !mMainActivity.profileInt) {
             mMainActivity.showToast("Please Select A Sex", true)
             showErrorText(sexText)
             return
@@ -279,7 +279,7 @@ class ProfileFragment : Fragment() {
         mMainActivity.weight = weight
         mMainActivity.weightMeasurement = weightMeasurement
 
-        if (profileInit) {
+        if (mMainActivity.profileInt) {
             mMainActivity.showToast("Profile Saved!")
             return
         } else {
@@ -304,7 +304,7 @@ class ProfileFragment : Fragment() {
     }
 
     fun hasUnsavedData(): Boolean {
-        if (!profileInit) return false
+        if (!mMainActivity.profileInt) return false
         return sex != mMainActivity.sex || weight != mMainActivity.weight ||
                 weightMeasurement != mMainActivity.weightMeasurement
     }

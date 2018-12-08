@@ -57,15 +57,21 @@ class AddDrinkFragment : Fragment() {
     private lateinit var mMainActivity: MainActivity
     lateinit var autoCompleteView: DrinkSuggestionAutoCompleteView
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        canUnfavorite = true
+        mMainActivity = context as MainActivity
+
+
+        super.onCreate(savedInstanceState)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        canUnfavorite = true
         // inflate view
         val view = inflater.inflate(R.layout.fragment_add_drink, container, false)
-        mMainActivity = context as MainActivity
 
         // toolbar setup
         toolbarSetup(view)
@@ -124,6 +130,12 @@ class AddDrinkFragment : Fragment() {
         super.onResume()
         // set empty text views
         showOrHideEmptyTextViews(view!!)
+    }
+
+    override fun onPause() {
+        complexMode = false
+        view!!.findViewById<CheckBox>(R.id.chkBox_complexDrink).isChecked = false
+        super.onPause()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {

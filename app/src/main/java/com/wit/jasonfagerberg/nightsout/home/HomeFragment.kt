@@ -42,11 +42,14 @@ class HomeFragment : Fragment() {
     var drinkingDuration = 0.0
     var standardDrinksConsumed = 0.0
 
-    // android lifecycle
+    override fun onCreate(savedInstanceState: Bundle?) {
+        mMainActivity = context as MainActivity
+        super.onCreate(savedInstanceState)
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // inflate layout
         val view = inflater.inflate(R.layout.fragment_home, container, false)
-        mMainActivity = context as MainActivity
 
         // set layout
         mRelativeLayout = view.findViewById(R.id.layout_home)

@@ -42,6 +42,15 @@ class LogFragment : Fragment() {
     private val converter: Converter = Converter()
     private lateinit var logDatabaseHelper: LogDatabaseHelper
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        mMainActivity = context as MainActivity
+        calendar = Calendar.getInstance()
+        logDatabaseHelper = LogDatabaseHelper(mMainActivity.mDatabaseHelper, mMainActivity)
+        // take date from calender, pull correct session, pass to adapter
+        mLogList = ArrayList()
+        super.onCreate(savedInstanceState)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -49,10 +58,6 @@ class LogFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_log, container, false)
-        mMainActivity = context as MainActivity
-        calendar = Calendar.getInstance()
-        logDatabaseHelper = LogDatabaseHelper(mMainActivity.mDatabaseHelper, mMainActivity)
-
         // recycler view
         mLogListView = view.findViewById(R.id.recycler_log)
         val linearLayoutManager = LinearLayoutManager(context)
@@ -63,9 +68,6 @@ class LogFragment : Fragment() {
 
         // toolbar setup
         setupToolbar(view!!)
-
-        // take date from calender, pull correct session, pass to adapter
-        mLogList = ArrayList()
 
         // calender setup
         setupCalendar(view)
