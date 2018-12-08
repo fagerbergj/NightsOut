@@ -5,12 +5,13 @@ import android.content.Context
 import com.wit.jasonfagerberg.nightsout.R
 import com.wit.jasonfagerberg.nightsout.log.LogHeader
 import com.wit.jasonfagerberg.nightsout.databaseHelper.LogDatabaseHelper
+import com.wit.jasonfagerberg.nightsout.dialogs.LightSimpleDialog
 import com.wit.jasonfagerberg.nightsout.dialogs.SimpleDialog
 import com.wit.jasonfagerberg.nightsout.main.MainActivity
 import java.util.Calendar
 
 class HomeFragmentLogDatePicker(
-    context: Context
+    private val context: Context
 ) {
     private val mainActivity = context as MainActivity
     private val homeFragment = mainActivity.homeFragment
@@ -35,7 +36,11 @@ class HomeFragmentLogDatePicker(
                 mainActivity.mLogHeaders.add(LogHeader(logDate, homeFragment.bac, homeFragment.drinkingDuration))
                 logDatabaseHelper.pushDrinksToLogDrinks(logDate)
                 val message = "Log created on ${testHeader.monthName} ${testHeader.day}, ${testHeader.year}"
-                mainActivity.showToast(message)
+
+                val dialog = LightSimpleDialog(context)
+                val posAction = { mainActivity.homeFragment.clearSession();  mainActivity.showToast(message) }
+                dialog.setActions(posAction, { mainActivity.showToast(message) })
+                dialog.show("Would you like to create a new session?")
             }
         }
 
@@ -67,8 +72,12 @@ class HomeFragmentLogDatePicker(
             homeFragment.mDrinkListAdapter.notifyDataSetChanged()
             logDatabaseHelper.pushDrinksToLogDrinks(header.date)
             message = "Log on ${header.monthName} ${header.day}, ${header.year} was updated"
-            mainActivity.showToast(message)
             simpleDialog.dismiss()
+
+            val dialog = LightSimpleDialog(context)
+            val posAction = { mainActivity.homeFragment.clearSession(); mainActivity.showToast(message) }
+            dialog.setActions(posAction, { mainActivity.showToast(message) })
+            dialog.show("Would you like to create a new session?")
         }
     }
 }

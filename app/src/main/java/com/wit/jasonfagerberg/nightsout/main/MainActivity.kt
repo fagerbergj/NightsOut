@@ -243,4 +243,9 @@ class MainActivity : AppCompatActivity() {
         toast.setGravity(Gravity.CENTER, 0, 450)
         toast.show()
     }
+
+    fun resetTime(){
+        startTimeMin = getCurrentTimeInMinuets()
+        endTimeMin = getCurrentTimeInMinuets()
+    }
 }

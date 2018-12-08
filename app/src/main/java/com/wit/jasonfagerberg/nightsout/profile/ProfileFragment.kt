@@ -281,7 +281,7 @@ class ProfileFragment : Fragment() {
 
         if (mMainActivity.profileInt) {
             mMainActivity.showToast("Profile Saved!")
-            return
+            mMainActivity.setFragment(mMainActivity.homeFragment)
         } else {
             mMainActivity.profileInt = true
             mMainActivity.setFragment(mMainActivity.homeFragment)

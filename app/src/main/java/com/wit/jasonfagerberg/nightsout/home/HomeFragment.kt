@@ -103,12 +103,7 @@ class HomeFragment : Fragment() {
             R.id.btn_clear_drink_list -> {
                 if (mMainActivity.mDrinksList.isEmpty()) return false
                 val lightSimpleDialog = LightSimpleDialog(context!!)
-                val posAction = {
-                    mMainActivity.mDrinksList.clear()
-                    mDrinkListAdapter.notifyDataSetChanged()
-                    calculateBAC()
-                    showOrHideEmptyListText(view!!)
-                }
+                val posAction = { clearSession() }
                 lightSimpleDialog.setActions(posAction, {})
                 lightSimpleDialog.show("Are you sure you want to clear all drinks?")
             }
@@ -172,7 +167,7 @@ class HomeFragment : Fragment() {
         itemTouchHelper.attachToRecyclerView(drinksListView)
     }
 
-    private fun setupEditTexts(view: View) {
+    fun setupEditTexts(view: View) {
         val startPicker: EditText = view.findViewById(R.id.edit_start_time)
         val endPicker: EditText = view.findViewById(R.id.edit_end_time)
 
@@ -331,5 +326,14 @@ class HomeFragment : Fragment() {
     private fun changeTextViewColorAndText(textView: TextView, text: String, color: Int) {
         textView.text = text
         textView.setTextColor(ContextCompat.getColor(context!!, color))
+    }
+
+    fun clearSession() {
+        mMainActivity.mDrinksList.clear()
+        mDrinkListAdapter.notifyDataSetChanged()
+        calculateBAC()
+        showOrHideEmptyListText(view!!)
+        mMainActivity.resetTime()
+        setupEditTexts(view!!)
     }
 }
