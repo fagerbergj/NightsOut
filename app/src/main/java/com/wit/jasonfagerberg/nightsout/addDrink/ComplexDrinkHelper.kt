@@ -1,5 +1,7 @@
 package com.wit.jasonfagerberg.nightsout.addDrink
 
+import android.content.Context
+import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.wit.jasonfagerberg.nightsout.R
@@ -9,16 +11,16 @@ import java.text.DecimalFormat
 class ComplexDrinkHelper(val parent: AddDrinkFragment) {
     private lateinit var btnAddAnotherAlcoholSource: MaterialButton
     private lateinit var recyclerAlcoholSource: RecyclerView
-    private val listAlcoholSources: ArrayList<AlcoholSource> = ArrayList()
+    var listAlcoholSources: ArrayList<AlcoholSource> = ArrayList()
     private lateinit var alcoholSourceAdapter: AddDrinkFragmentAlcoholSourceAdapter
 
-    fun findViews() {
-        btnAddAnotherAlcoholSource = parent.view!!.findViewById(R.id.btn_add_drink_add_alc_source)
-        recyclerAlcoholSource = parent.view!!.findViewById(R.id.recycler_add_drink_alcohol_source_list)
-        alcoholSourceAdapter = AddDrinkFragmentAlcoholSourceAdapter(parent.context!!, listAlcoholSources)
+    fun findViews(view: View, context: Context) {
+        btnAddAnotherAlcoholSource = view.findViewById(R.id.btn_add_drink_add_alc_source)
+        recyclerAlcoholSource = view.findViewById(R.id.recycler_add_drink_alcohol_source_list)
+        alcoholSourceAdapter = AddDrinkFragmentAlcoholSourceAdapter(context, listAlcoholSources)
 
         recyclerAlcoholSource.adapter = alcoholSourceAdapter
-        val linearLayoutManagerRecents = LinearLayoutManager(parent.context)
+        val linearLayoutManagerRecents = LinearLayoutManager(context)
         linearLayoutManagerRecents.orientation = RecyclerView.VERTICAL
         recyclerAlcoholSource.layoutManager = linearLayoutManagerRecents
 
@@ -64,6 +66,15 @@ class ComplexDrinkHelper(val parent: AddDrinkFragment) {
 
     fun listIsEmpty(): Boolean {
         return listAlcoholSources.isEmpty()
+    }
+
+    fun rebuildAlcSourceList(sourceAbv : DoubleArray, sourceAmount : DoubleArray, sourceMeasurement : ArrayList<String>) {
+        for (i in sourceMeasurement.indices){
+            val abv = sourceAbv[i]
+            val amount = sourceAmount[i]
+            val measure = sourceMeasurement[i]
+            listAlcoholSources.add(AlcoholSource(abv, amount, measure))
+        }
     }
 
     inner class AlcoholSource(val abv: Double, val amount: Double, val measurement: String) {

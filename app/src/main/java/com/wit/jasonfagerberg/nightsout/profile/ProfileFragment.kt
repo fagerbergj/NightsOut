@@ -55,7 +55,7 @@ class ProfileFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         mMainActivity = context as MainActivity
-
+        mMainActivity.profileFragment = this
         super.onCreate(savedInstanceState)
     }
 
@@ -68,7 +68,7 @@ class ProfileFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_profile, container, false)
 
         // toolbar setup
-        setupToolbar(view!!)
+        setupToolbar(view)
 
         // recycler v setup
         setupFavoritesRecyclerView(view)

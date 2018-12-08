@@ -60,8 +60,17 @@ class AddDrinkFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         canUnfavorite = true
         mMainActivity = context as MainActivity
-
-
+        mMainActivity.addDrinkFragment = this
+        if (savedInstanceState != null) {
+            complexMode = savedInstanceState.getBoolean("complexMode")
+            mComplexDrinkHelper = ComplexDrinkHelper(this)
+            val sourceAbv = savedInstanceState.getDoubleArray("sourceAbv")!!
+            val sourceAmount = savedInstanceState.getDoubleArray("sourceAmount")!!
+            val sourceMeasurement = savedInstanceState.getStringArrayList("sourceMeasure") !!
+            mComplexDrinkHelper.rebuildAlcSourceList(sourceAbv, sourceAmount, sourceMeasurement)
+        } else if (!complexMode){
+            mComplexDrinkHelper = ComplexDrinkHelper(this)
+        }
         super.onCreate(savedInstanceState)
     }
 
@@ -102,20 +111,12 @@ class AddDrinkFragment : Fragment() {
         }
         btnAdd.setOnClickListener { addDrink() }
 
-        mComplexDrinkHelper = ComplexDrinkHelper(this)
         val chkComplex = view.findViewById<CheckBox>(R.id.chkBox_complexDrink)
+        chkComplex.isChecked = complexMode
+        setComplexDrinkViews(view!!)
         chkComplex.setOnClickListener {
-            complexMode = !complexMode
-            if (complexMode) {
-                mComplexDrinkHelper.findViews()
-                view.findViewById<MaterialButton>(R.id.btn_add_drink_add_alc_source).visibility = View.VISIBLE
-                view.findViewById<RecyclerView>(R.id.recycler_add_drink_alcohol_source_list).visibility = View.VISIBLE
-                mMainActivity.showToast("You can now add multiple alcohol sources")
-            } else {
-                view.findViewById<MaterialButton>(R.id.btn_add_drink_add_alc_source).visibility = View.INVISIBLE
-                view.findViewById<RecyclerView>(R.id.recycler_add_drink_alcohol_source_list).visibility = View.INVISIBLE
-                view.findViewById<RecyclerView>(R.id.recycler_add_drink_alcohol_source_list).adapter = null
-            }
+            complexMode = chkComplex.isChecked
+            setComplexDrinkViews(view)
         }
 
         mEditName = view.findViewById(R.id.auto_drink_suggestion)
@@ -126,16 +127,40 @@ class AddDrinkFragment : Fragment() {
         return view
     }
 
+    private fun setComplexDrinkViews(view: View) {
+        if (complexMode) {
+            mComplexDrinkHelper.findViews(view, context!!)
+            view.findViewById<MaterialButton>(R.id.btn_add_drink_add_alc_source).visibility = View.VISIBLE
+            view.findViewById<RecyclerView>(R.id.recycler_add_drink_alcohol_source_list).visibility = View.VISIBLE
+            mMainActivity.showToast("You can now add multiple alcohol sources")
+        } else {
+            view.findViewById<MaterialButton>(R.id.btn_add_drink_add_alc_source).visibility = View.INVISIBLE
+            view.findViewById<RecyclerView>(R.id.recycler_add_drink_alcohol_source_list).visibility = View.INVISIBLE
+            view.findViewById<RecyclerView>(R.id.recycler_add_drink_alcohol_source_list).adapter = null
+        }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putBoolean("complexMode", complexMode)
+        val sourceAbv = DoubleArray(mComplexDrinkHelper.listAlcoholSources.size)
+        val sourceAmount = DoubleArray(mComplexDrinkHelper.listAlcoholSources.size)
+        val sourceMeasure = ArrayList<String>()
+        for (i in mComplexDrinkHelper.listAlcoholSources.indices){
+            val source = mComplexDrinkHelper.listAlcoholSources[i]
+            sourceAbv[i] = source.abv
+            sourceAmount[i] = source.amount
+            sourceMeasure.add(source.measurement)
+        }
+        outState.putDoubleArray("sourceAbv", sourceAbv)
+        outState.putDoubleArray("sourceAmount", sourceAmount)
+        outState.putStringArrayList("sourceMeasure", sourceMeasure)
+        super.onSaveInstanceState(outState)
+    }
+
     override fun onResume() {
         super.onResume()
         // set empty text views
         showOrHideEmptyTextViews(view!!)
-    }
-
-    override fun onPause() {
-        complexMode = false
-        view!!.findViewById<CheckBox>(R.id.chkBox_complexDrink).isChecked = false
-        super.onPause()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {

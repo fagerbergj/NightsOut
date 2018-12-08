@@ -44,6 +44,7 @@ class HomeFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         mMainActivity = context as MainActivity
+        mMainActivity.homeFragment = this
         super.onCreate(savedInstanceState)
     }
 

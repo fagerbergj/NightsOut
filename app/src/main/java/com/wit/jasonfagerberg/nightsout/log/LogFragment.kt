@@ -44,6 +44,7 @@ class LogFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         mMainActivity = context as MainActivity
+        mMainActivity.logFragment = this
         calendar = Calendar.getInstance()
         logDatabaseHelper = LogDatabaseHelper(mMainActivity.mDatabaseHelper, mMainActivity)
         // take date from calender, pull correct session, pass to adapter
@@ -67,7 +68,7 @@ class LogFragment : Fragment() {
         mLogListView.addItemDecoration(itemDecor)
 
         // toolbar setup
-        setupToolbar(view!!)
+        setupToolbar(view)
 
         // calender setup
         setupCalendar(view)
@@ -191,6 +192,7 @@ class LogFragment : Fragment() {
     }
 
     private fun setLogListBasedOnDay(date: Int) {
+        mLogList.clear()
         val index = mMainActivity.mLogHeaders.indexOf(LogHeader(date))
         if (index >= 0) {
             val header = mMainActivity.mLogHeaders[index]

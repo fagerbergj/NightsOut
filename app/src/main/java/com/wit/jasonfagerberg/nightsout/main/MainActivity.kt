@@ -14,6 +14,7 @@ import android.widget.RelativeLayout
 import android.widget.Toast
 import com.wit.jasonfagerberg.nightsout.R
 import com.wit.jasonfagerberg.nightsout.addDrink.AddDrinkFragment
+import com.wit.jasonfagerberg.nightsout.addDrink.ComplexDrinkHelper
 import com.wit.jasonfagerberg.nightsout.converter.Converter
 import com.wit.jasonfagerberg.nightsout.databaseHelper.DatabaseHelper
 import com.wit.jasonfagerberg.nightsout.dialogs.SimpleDialog
@@ -34,10 +35,10 @@ private const val DB_VERSION = 40
 class MainActivity : AppCompatActivity() {
 
     // init fragments
-    val homeFragment = HomeFragment()
-    private val logFragment = LogFragment()
-    private val profileFragment = ProfileFragment()
-    val addDrinkFragment = AddDrinkFragment()
+    var homeFragment = HomeFragment()
+    var logFragment = LogFragment()
+    var profileFragment = ProfileFragment()
+    var addDrinkFragment = AddDrinkFragment()
     private lateinit var botNavBar: BottomNavigationView
 
     // shared pref data
@@ -61,7 +62,6 @@ class MainActivity : AppCompatActivity() {
     lateinit var mDatabaseHelper: DatabaseHelper
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         // bottom nav bar
@@ -90,6 +90,7 @@ class MainActivity : AppCompatActivity() {
         // database
         mDatabaseHelper = DatabaseHelper(this, DB_NAME, null, DB_VERSION)
         mDatabaseHelper.openDatabase()
+        super.onCreate(savedInstanceState)
     }
 
     override fun onStart() {
