@@ -68,8 +68,8 @@ class ComplexDrinkHelper(val parent: AddDrinkFragment) {
         return listAlcoholSources.isEmpty()
     }
 
-    fun rebuildAlcSourceList(sourceAbv : DoubleArray, sourceAmount : DoubleArray, sourceMeasurement : ArrayList<String>) {
-        for (i in sourceMeasurement.indices){
+    fun rebuildAlcSourceList(sourceAbv: DoubleArray, sourceAmount: DoubleArray, sourceMeasurement: ArrayList<String>) {
+        for (i in sourceMeasurement.indices) {
             val abv = sourceAbv[i]
             val amount = sourceAmount[i]
             val measure = sourceMeasurement[i]

@@ -14,7 +14,6 @@ import android.widget.RelativeLayout
 import android.widget.Toast
 import com.wit.jasonfagerberg.nightsout.R
 import com.wit.jasonfagerberg.nightsout.addDrink.AddDrinkFragment
-import com.wit.jasonfagerberg.nightsout.addDrink.ComplexDrinkHelper
 import com.wit.jasonfagerberg.nightsout.converter.Converter
 import com.wit.jasonfagerberg.nightsout.databaseHelper.DatabaseHelper
 import com.wit.jasonfagerberg.nightsout.dialogs.SimpleDialog
@@ -245,7 +244,7 @@ class MainActivity : AppCompatActivity() {
         toast.show()
     }
 
-    fun resetTime(){
+    fun resetTime() {
         startTimeMin = getCurrentTimeInMinuets()
         endTimeMin = getCurrentTimeInMinuets()
     }

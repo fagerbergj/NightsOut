@@ -68,7 +68,7 @@ class AddDrinkFragment : Fragment() {
             val sourceAmount = savedInstanceState.getDoubleArray("sourceAmount")!!
             val sourceMeasurement = savedInstanceState.getStringArrayList("sourceMeasure") !!
             mComplexDrinkHelper.rebuildAlcSourceList(sourceAbv, sourceAmount, sourceMeasurement)
-        } else if (!complexMode){
+        } else if (!complexMode) {
             mComplexDrinkHelper = ComplexDrinkHelper(this)
         }
         super.onCreate(savedInstanceState)
@@ -145,7 +145,7 @@ class AddDrinkFragment : Fragment() {
         val sourceAbv = DoubleArray(mComplexDrinkHelper.listAlcoholSources.size)
         val sourceAmount = DoubleArray(mComplexDrinkHelper.listAlcoholSources.size)
         val sourceMeasure = ArrayList<String>()
-        for (i in mComplexDrinkHelper.listAlcoholSources.indices){
+        for (i in mComplexDrinkHelper.listAlcoholSources.indices) {
             val source = mComplexDrinkHelper.listAlcoholSources[i]
             sourceAbv[i] = source.abv
             sourceAmount[i] = source.amount

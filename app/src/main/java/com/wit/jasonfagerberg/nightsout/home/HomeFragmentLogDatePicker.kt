@@ -38,7 +38,7 @@ class HomeFragmentLogDatePicker(
                 val message = "Log created on ${testHeader.monthName} ${testHeader.day}, ${testHeader.year}"
 
                 val dialog = LightSimpleDialog(context)
-                val posAction = { mainActivity.homeFragment.clearSession();  mainActivity.showToast(message) }
+                val posAction = { mainActivity.homeFragment.clearSession(); mainActivity.showToast(message) }
                 dialog.setActions(posAction, { mainActivity.showToast(message) })
                 dialog.show("Would you clear this session?")
             }

@@ -34,7 +34,7 @@ class ProfileFragmentFavoritesListAdapter(private val mContext: Context, drinksL
             val posAction = {
                 val i = mFavoriteDrinksList.indexOf(drink)
                 drink.favorited = false
-                for (d in (mContext as MainActivity).mDrinksList){
+                for (d in (mContext as MainActivity).mDrinksList) {
                     if (d.isExactDrink(drink)) d.favorited = false
                 }
                 mFavoriteDrinksList.remove(drink)
