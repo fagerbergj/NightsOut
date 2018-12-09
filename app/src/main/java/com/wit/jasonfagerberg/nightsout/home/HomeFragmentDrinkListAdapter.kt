@@ -58,8 +58,7 @@ class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: Ar
             val posAction = {
                 mMainActivity.showToast("${drink.name} removed")
                 removeItem(position)
-                notifyItemRemoved(position)
-                notifyItemRangeChanged(0, mDrinksList.size)
+                mMainActivity.homeFragment.showOrHideEmptyListText(mMainActivity.homeFragment.view!!)
             }
             dialog.setActions(posAction, {})
             dialog.show("Remove ${drink.name}?")
@@ -161,6 +160,7 @@ class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: Ar
     }
 
     private fun removeItem(position: Int) {
+        if (position >= mMainActivity.mDrinksList.size) return
         mDrinksList.removeAt(position)
         notifyItemRemoved(position)
         notifyItemRangeChanged(position, mDrinksList.size)
