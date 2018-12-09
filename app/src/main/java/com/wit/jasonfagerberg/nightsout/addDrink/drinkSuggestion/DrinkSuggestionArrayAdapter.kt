@@ -51,7 +51,15 @@ class DrinkSuggestionArrayAdapter(
     }
 
     override fun remove(`object`: Drink?) {
-        data.remove(`object`)
+        var i = data.indexOf(`object`)
+        for (x in data.indices) {
+            val d = data[x]
+            if (d.isExactDrink(`object` as Drink)){
+                i = x
+                break
+            }
+        }
+        data.removeAt(i)
         notifyDataSetChanged()
         mainActivity.mDatabaseHelper.updateDrinkSuggestionStatus(`object`!!.id, true)
     }
