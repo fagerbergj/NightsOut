@@ -168,7 +168,7 @@ class HomeFragment : Fragment() {
         itemTouchHelper.attachToRecyclerView(drinksListView)
     }
 
-    fun setupEditTexts(view: View) {
+    private fun setupEditTexts(view: View) {
         val startPicker: EditText = view.findViewById(R.id.edit_start_time)
         val endPicker: EditText = view.findViewById(R.id.edit_end_time)
 
