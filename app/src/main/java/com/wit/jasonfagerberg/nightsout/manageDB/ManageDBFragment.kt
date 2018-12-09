@@ -67,8 +67,33 @@ class ManageDBFragment : Fragment() {
                 dialog.setActions(posAction, {})
                 dialog.show("Are you sure? You will lose everything.")
             }
+            R.id.btn_clean_db -> {
+                val dialog = LightSimpleDialog(context!!)
+                dialog.setActions({ deleteDrinksWithNoReference() }, {})
+                dialog.show("Are you sure you want to clean your database? This will permanently delete all drinks:" +
+                        "\n    Not Currently in Use\n    Not in Favorited\n    Not Recently Used\n    Not Logged")
+            }
         }
         return true
+    }
+
+    private fun deleteDrinksWithNoReference() {
+        var size = mDrinksList.size
+        var offset = 0
+        var spaceFreed = 0
+        for (position in 0 until size){
+            val drink = mDrinksList[position - offset]
+            val loss = mDrinkListAdapter.getLostReferenceString(drink)
+            if (loss.isEmpty()){
+                mMainActivity.mDatabaseHelper.deleteRowsInTable("drinks", "id = \"${drink.id}\"")
+                mDrinksList.removeAt(position - offset)
+                mDrinkListAdapter.notifyItemRemoved(position - offset)
+                mDrinkListAdapter.notifyItemRangeChanged(position - offset, mDrinksList.size)
+                size --
+                offset ++
+            }
+        }
+        mMainActivity.showToast("$offset drinks deleted from database")
     }
 
     private fun setupRecycler(view: View) {

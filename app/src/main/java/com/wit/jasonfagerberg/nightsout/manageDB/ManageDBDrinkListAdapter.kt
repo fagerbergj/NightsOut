@@ -92,7 +92,7 @@ class ManageDBDrinkListAdapter(private val mContext: Context, private val mDrink
 
         val posAction = {
             mMainActivity.mDatabaseHelper.deleteRowsInTable("drinks", "id = \"${drink.id}\"")
-            mDrinksList.remove(drink)
+            mDrinksList.removeAt(position)
             removeCurrentSessionReference(drink)
             removeOrUpdateFavoritesReference(drink)
             removeOrUpdateRecentsReference(drink)
@@ -109,7 +109,7 @@ class ManageDBDrinkListAdapter(private val mContext: Context, private val mDrink
         return mDrinksList.size
     }
 
-    private fun getLostReferenceString(drink: Drink): String {
+    fun getLostReferenceString(drink: Drink): String {
         var loss = ""
 
         for (d in mMainActivity.mDrinksList) {

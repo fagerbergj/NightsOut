@@ -5,4 +5,9 @@
         android:id="@+id/btn_reset_db"
         android:title="@string/reset_db"
         app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/btn_clean_db"
+        android:title="@string/clean_db"
+        app:showAsAction="never"/>
 </menu>
