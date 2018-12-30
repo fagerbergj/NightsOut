@@ -85,7 +85,7 @@ class HomeFragment : Fragment() {
         view!!.findViewById<ImageButton>(R.id.btn_home_bac_info).setOnClickListener {
             bacInfoDialog.showBacInfoDialog()
         }
-        calculateBAC()
+        updateBACText(calculateBAC())
         showOrHideEmptyListText(view!!)
     }
 
@@ -160,7 +160,7 @@ class HomeFragment : Fragment() {
                 mDrinkListAdapter.notifyItemRemoved(viewHolder.adapterPosition)
                 mDrinkListAdapter.notifyItemRangeChanged(0, mMainActivity.mDrinksList.size)
                 showOrHideEmptyListText(view!!)
-                calculateBAC()
+                updateBACText(calculateBAC())
             }
         }
 
@@ -198,13 +198,13 @@ class HomeFragment : Fragment() {
                     startPicker.setText(mConverter.timeToString(selectedHour, selectedMinute, mMainActivity.use24HourTime))
                     mMainActivity.startTimeMin = mConverter.militaryHoursAndMinutesToMinutes(selectedHour, selectedMinute)
                     if (mMainActivity.endTimeMin == -1) mMainActivity.endTimeMin = mMainActivity.startTimeMin
-                    calculateBAC()
+                    updateBACText(calculateBAC())
                 }, hour, minute, mMainActivity.use24HourTime)
 
         mTimePicker.setButton(DialogInterface.BUTTON_NEUTRAL, "Now") { _, _ ->
             mMainActivity.startTimeMin = mMainActivity.getCurrentTimeInMinuets()
             startPicker.setText(mConverter.timeToString(mMainActivity.startTimeMin, mMainActivity.use24HourTime))
-            calculateBAC()
+            updateBACText(calculateBAC())
         }
 
         mTimePicker.setTitle("Start Time")
@@ -225,13 +225,13 @@ class HomeFragment : Fragment() {
                 TimePickerDialog.OnTimeSetListener { _, selectedHour, selectedMinute ->
                     endPicker.setText(mConverter.timeToString(selectedHour, selectedMinute, mMainActivity.use24HourTime))
                     mMainActivity.endTimeMin = mConverter.militaryHoursAndMinutesToMinutes(selectedHour, selectedMinute)
-                    calculateBAC()
+                    updateBACText(calculateBAC())
                 }, hour, minute, mMainActivity.use24HourTime)
 
         mTimePicker.setButton(DialogInterface.BUTTON_NEUTRAL, "Now") { _, _ ->
             mMainActivity.endTimeMin = mMainActivity.getCurrentTimeInMinuets()
             endPicker.setText(mConverter.timeToString(mMainActivity.endTimeMin, mMainActivity.use24HourTime))
-            calculateBAC()
+            updateBACText(calculateBAC())
         }
 
         mTimePicker.setTitle("End Time")
@@ -258,7 +258,7 @@ class HomeFragment : Fragment() {
         dialog.findViewById<Button>(R.id.btn_disclaimer_dismiss).setOnClickListener { dialog.dismiss() }
     }
 
-    fun calculateBAC() {
+    fun calculateBAC() : Double {
         var a = 0.0
         for (drink in mMainActivity.mDrinksList) {
             val volume = mConverter.drinkVolumeToFluidOz(drink.amount, drink.measurement)
@@ -284,12 +284,13 @@ class HomeFragment : Fragment() {
         drinkingDuration = hoursElapsed
 
         val bacDecayPerHour = 0.015
-        bac = instantBAC - (hoursElapsed * bacDecayPerHour)
-        bac = if (bac < 0.0) 0.0 else bac
-        updateBACText()
+        var res = instantBAC - (hoursElapsed * bacDecayPerHour)
+        res = if (res < 0.0) 0.0 else res
+        return res
     }
 
-    private fun updateBACText() {
+    fun updateBACText(update : Double) {
+        bac = update
         val bacValueView = view!!.findViewById<TextView>(R.id.text_home_bac_value)
         val bacResultView = view!!.findViewById<TextView>(R.id.text_home_bac_result)
 
@@ -332,7 +333,7 @@ class HomeFragment : Fragment() {
     fun clearSession() {
         mMainActivity.mDrinksList.clear()
         mDrinkListAdapter.notifyDataSetChanged()
-        calculateBAC()
+        updateBACText(calculateBAC())
         showOrHideEmptyListText(view!!)
         mMainActivity.resetTime()
         setupEditTexts(view!!)

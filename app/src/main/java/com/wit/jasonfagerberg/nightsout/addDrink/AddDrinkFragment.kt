@@ -392,6 +392,7 @@ class AddDrinkFragment : Fragment() {
         val textName = view!!.findViewById<TextView>(R.id.text_add_drink_name)
         val textABV = view!!.findViewById<TextView>(R.id.text_add_drink_abv)
         val textAmount = view!!.findViewById<TextView>(R.id.text_add_drink_amount)
+        val measurement = view!!.findViewById<Spinner>(R.id.spinner_add_drink_amount).selectedItem.toString()
 
         resetTextView(textName, R.string.name)
         resetTextView(textABV, R.string.abv)
@@ -406,7 +407,8 @@ class AddDrinkFragment : Fragment() {
         var inputError = false
         var message = " "
 
-        if (amount.isNaN()) {
+        val foz = mConverter.drinkVolumeToFluidOz(amount, measurement)
+        if (amount.isNaN() || mConverter.fluidOzToGrams(foz) > 560) {
             message = ", amount$message"
             setTextViewToRedAndBold(textAmount)
             inputError = true

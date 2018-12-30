@@ -80,7 +80,6 @@ class ManageDBFragment : Fragment() {
     private fun deleteDrinksWithNoReference() {
         var size = mDrinksList.size
         var offset = 0
-        var spaceFreed = 0
         for (position in 0 until size){
             val drink = mDrinksList[position - offset]
             val loss = mDrinkListAdapter.getLostReferenceString(drink)

@@ -53,17 +53,7 @@ class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: Ar
         else holder.favorited.setImageResource(R.drawable.favorite_border_red_18dp)
 
         holder.foreground.setOnClickListener { showEditRemoveDialog(position) }
-        holder.foreground.setOnLongClickListener {
-            val dialog = LightSimpleDialog(mContext)
-            val posAction = {
-                mMainActivity.showToast("${drink.name} removed")
-                removeItem(position)
-                mMainActivity.homeFragment.showOrHideEmptyListText(mMainActivity.homeFragment.view!!)
-            }
-            dialog.setActions(posAction, {})
-            dialog.show("Remove ${drink.name}?")
-            true
-        }
+        holder.foreground.setOnLongClickListener { showEditRemoveDialog(position); true }
     }
 
     override fun getItemCount(): Int {
@@ -177,7 +167,7 @@ class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: Ar
             onDialogEditClick(drink, dialog.editName, dialog.editAbv, dialog.editAmount, dialog.spinnerMeasurement)
             this.notifyItemChanged(position)
             drink.modifiedTime = mMainActivity.getLongTimeNow()
-            mMainActivity.homeFragment.calculateBAC()
+            mMainActivity.homeFragment.updateBACText(mMainActivity.homeFragment.calculateBAC())
             drink.favorited = mMainActivity.mFavoritesList.contains(drink)
             dialog.dismiss()
         }
@@ -229,7 +219,7 @@ class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: Ar
     }
 
     private fun dismissDialog(dialog: AlertDialog) {
-        mMainActivity.homeFragment.calculateBAC()
+        mMainActivity.homeFragment.updateBACText(mMainActivity.homeFragment.calculateBAC())
         dialog.dismiss()
     }
 

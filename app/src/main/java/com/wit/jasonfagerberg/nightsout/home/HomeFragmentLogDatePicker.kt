@@ -40,7 +40,7 @@ class HomeFragmentLogDatePicker(
                 val dialog = LightSimpleDialog(context)
                 val posAction = { mainActivity.homeFragment.clearSession(); mainActivity.showToast(message) }
                 dialog.setActions(posAction, { mainActivity.showToast(message) })
-                dialog.show("Would you clear this session?")
+                dialog.show("Do you want to start a new drink list?")
             }
         }
 

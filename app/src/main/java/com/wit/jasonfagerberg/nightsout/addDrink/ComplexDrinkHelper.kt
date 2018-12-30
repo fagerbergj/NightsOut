@@ -46,6 +46,7 @@ class ComplexDrinkHelper(val parent: AddDrinkFragment) {
         if (listAlcoholSources.isEmpty()) return Double.NaN
         var ave = 0.0
         val sum = sumAmount()
+        if (sum == 0.0) return listAlcoholSources.size.toDouble()
         for (alcSource in listAlcoholSources) {
             val weight = parent.mConverter.drinkVolumeToFluidOz(alcSource.amount, alcSource.measurement) / sum
             ave += alcSource.abv * weight
