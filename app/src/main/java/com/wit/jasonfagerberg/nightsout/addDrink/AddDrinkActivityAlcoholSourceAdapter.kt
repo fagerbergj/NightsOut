@@ -22,7 +22,7 @@ class AddDrinkActivityAlcoholSourceAdapter(private val mContext: Context, alcoho
     // set layout inflater & inflate layout
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(mContext)
-        view = inflater.inflate(R.layout.fragment_add_drink_alcohol_source, parent, false)
+        view = inflater.inflate(R.layout.activity_add_drink_alcohol_source, parent, false)
         mMainActivity = mContext as MainActivity
         return ViewHolder(view)
     }

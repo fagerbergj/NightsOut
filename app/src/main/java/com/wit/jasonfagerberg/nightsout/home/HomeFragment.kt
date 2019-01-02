@@ -65,6 +65,7 @@ class HomeFragment : Fragment() {
         val btnAdd = view.findViewById<MaterialButton>(R.id.btn_home_add_drink)
         btnAdd.setOnClickListener {
             val mainActivity: MainActivity = context as MainActivity
+            // todo set mFavorited in bundle, create intent
             mMainActivity.addDrinkFragment.mFavorited = false
             mainActivity.setFragment(mainActivity.addDrinkFragment)
         }

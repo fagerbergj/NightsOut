@@ -9,6 +9,7 @@ import android.widget.TextView
 import androidx.appcompat.widget.PopupMenu
 import com.wit.jasonfagerberg.nightsout.R
 import com.wit.jasonfagerberg.nightsout.dialogs.LightSimpleDialog
+import com.wit.jasonfagerberg.nightsout.main.Constants
 import com.wit.jasonfagerberg.nightsout.main.Drink
 import com.wit.jasonfagerberg.nightsout.main.MainActivity
 
@@ -62,7 +63,7 @@ class ManageDBDrinkListAdapter(private val mContext: Context, private val mDrink
 
     private fun favoriteItemOptionSelected(drink: Drink): Boolean {
         drink.favorited = !drink.favorited
-        mMainActivity.mDatabaseHelper.updateDrinkModifiedTime(drink.id, mMainActivity.getLongTimeNow())
+        mMainActivity.mDatabaseHelper.updateDrinkModifiedTime(drink.id, Constants.getLongTimeNow())
         for (d in mDrinksList) {
             if (d == drink) d.favorited = drink.favorited
         }

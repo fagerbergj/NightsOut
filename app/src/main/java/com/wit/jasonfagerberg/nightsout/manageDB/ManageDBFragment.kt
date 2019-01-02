@@ -30,7 +30,8 @@ class ManageDBFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_manage_db, container, false)
         mMainActivity = context as MainActivity
-        mDrinksList = AddDrinkDatabaseHelper(mMainActivity).getSuggestedDrinks("", true)
+        // fixme broken now that AddDrinkDBHelper extends Database Helper
+        //mDrinksList = AddDrinkDatabaseHelper(mMainActivity).getSuggestedDrinks("", true)
         setupToolbar(view)
         setupRecycler(view)
         return view
@@ -61,7 +62,8 @@ class ManageDBFragment : Fragment() {
                     mMainActivity.mDatabaseHelper.pullLogHeaders()
 
                     mDrinksList.clear()
-                    mDrinksList.addAll(AddDrinkDatabaseHelper(mMainActivity).getSuggestedDrinks("", true))
+                    // fixme broken now that AddDrinkDatabaseHelper extnds database helper
+                    //mDrinksList.addAll(AddDrinkDatabaseHelper(mMainActivity).getSuggestedDrinks("", true))
                     mDrinkListAdapter.notifyDataSetChanged()
                 }
                 dialog.setActions(posAction, {})

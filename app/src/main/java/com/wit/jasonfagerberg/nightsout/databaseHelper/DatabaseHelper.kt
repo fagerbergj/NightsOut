@@ -15,7 +15,8 @@ import kotlin.collections.HashMap
 
 // private const val TAG = "DatabaseHelper"
 
-class DatabaseHelper(
+// todo rework class to be more generic and not rely on MainActivity
+open class DatabaseHelper(
     val context: Context?,
     val name: String?,
     factory: SQLiteDatabase.CursorFactory?,
@@ -308,7 +309,7 @@ class DatabaseHelper(
         db.execSQL(sql)
     }
 
-    private fun insertRowInCurrentSessionTable(id: UUID, pos: Int) {
+    fun insertRowInCurrentSessionTable(id: UUID, pos: Int) {
         val sql = "INSERT INTO current_session_drinks VALUES (\"$id\", $pos)"
         db.execSQL(sql)
     }

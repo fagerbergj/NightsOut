@@ -1,53 +1,42 @@
 package com.wit.jasonfagerberg.nightsout.addDrink
 
-import android.content.Context
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import com.wit.jasonfagerberg.nightsout.main.Drink
-import com.wit.jasonfagerberg.nightsout.main.MainActivity
 import com.wit.jasonfagerberg.nightsout.R
-import com.wit.jasonfagerberg.nightsout.databaseHelper.AddDrinkDatabaseHelper
 import com.wit.jasonfagerberg.nightsout.dialogs.LightSimpleDialog
-import java.util.ArrayList
 
-class AddDrinkActivityRecentsListAdapter(private val mContext: Context, drinksList: ArrayList<Drink>) :
+class AddDrinkActivityRecentsListAdapter(private val mActivity : AddDrinkActivity) :
         RecyclerView.Adapter<AddDrinkActivityRecentsListAdapter.ViewHolder>() {
-    // vars
-    private val mRecentDrinksList: MutableList<Drink> = drinksList
-    private lateinit var mMainActivity: MainActivity
 
     // set layout inflater & inflate layout
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val inflater = LayoutInflater.from(mContext)
+        val inflater = mActivity.layoutInflater
         val view = inflater.inflate(R.layout.item_recents, parent, false)
-        mMainActivity = mContext as MainActivity
         return ViewHolder(view)
     }
 
     // When view is rendered bind the correct holder to it
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val drink = mRecentDrinksList[position]
+        val drink = mActivity.mRecentsList[position]
         holder.name.text = drink.name
         holder.card.setOnClickListener {
-            mMainActivity.showToast("${holder.name.text} information filled in")
-            mMainActivity.addDrinkFragment.fillViews(drink.name, drink.abv, drink.amount, drink.measurement)
+            mActivity.showToast("${holder.name.text} information filled in")
+            mActivity.fillViews(drink.name, drink.abv, drink.amount, drink.measurement)
         }
 
         holder.card.setOnLongClickListener { v: View ->
             val lightSimpleDialog = LightSimpleDialog(v.context!!)
             val posAction = {
-                mRecentDrinksList.remove(drink)
+                mActivity.mRecentsList.remove(drink)
                 this.notifyItemRemoved(position)
-                mMainActivity.showToast("Drink Removed")
-                mMainActivity.addDrinkFragment.showOrHideEmptyTextViews(mMainActivity.addDrinkFragment.view!!)
+                mActivity.showToast("Drink Removed")
+                mActivity.showOrHideEmptyTextViews()
                 drink.recent = false
-                val addDrinkDBHelper = AddDrinkDatabaseHelper(mMainActivity)
-                addDrinkDBHelper.updateDrinkFavoriteStatus(drink)
+                mActivity.mDatabaseHelper.updateDrinkFavoriteStatus(drink)
             }
             lightSimpleDialog.setActions(posAction, {})
             lightSimpleDialog.show("Remove from recents?")
@@ -56,7 +45,7 @@ class AddDrinkActivityRecentsListAdapter(private val mContext: Context, drinksLi
     }
 
     override fun getItemCount(): Int {
-        return mRecentDrinksList.size
+        return mActivity.mRecentsList.size
     }
 
     // ViewHolder for each item in list

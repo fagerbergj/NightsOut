@@ -14,6 +14,7 @@ import android.widget.LinearLayout
 import com.wit.jasonfagerberg.nightsout.R
 import com.wit.jasonfagerberg.nightsout.dialogs.EditDrinkDialog
 import com.wit.jasonfagerberg.nightsout.dialogs.LightSimpleDialog
+import com.wit.jasonfagerberg.nightsout.main.Constants
 import com.wit.jasonfagerberg.nightsout.main.Drink
 import com.wit.jasonfagerberg.nightsout.main.MainActivity
 
@@ -166,7 +167,7 @@ class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: Ar
         dialog.setEditOnClickAction {
             onDialogEditClick(drink, dialog.editName, dialog.editAbv, dialog.editAmount, dialog.spinnerMeasurement)
             this.notifyItemChanged(position)
-            drink.modifiedTime = mMainActivity.getLongTimeNow()
+            drink.modifiedTime = Constants.getLongTimeNow()
             mMainActivity.homeFragment.updateBACText(mMainActivity.homeFragment.calculateBAC())
             drink.favorited = mMainActivity.mFavoritesList.contains(drink)
             dialog.dismiss()
@@ -183,7 +184,7 @@ class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: Ar
         dropdown: Spinner
     ) {
         val other = Drink(drink.id, drink.name, drink.abv, drink.amount, drink.measurement,
-                false, false, mMainActivity.getLongTimeNow())
+                false, false, Constants.getLongTimeNow())
         // pad 0s to end
         if (!editABV.text.isEmpty() && "${editABV.text}"["${editABV.text}".length - 1] == '.') {
             val padded = "${editABV.text}0"

@@ -28,16 +28,12 @@ import java.util.Date
 
 // private const val TAG = "MainActivity"
 
-private const val DB_NAME = "nights_out_db.db"
-private const val DB_VERSION = 40
-
 class MainActivity : AppCompatActivity() {
 
     // init fragments
     var homeFragment = HomeFragment()
     var logFragment = LogFragment()
     var profileFragment = ProfileFragment()
-    var addDrinkFragment = AddDrinkActivity()
     private lateinit var botNavBar: BottomNavigationView
 
     // shared pref data
@@ -87,24 +83,20 @@ class MainActivity : AppCompatActivity() {
         }
 
         // database
-        mDatabaseHelper = DatabaseHelper(this, DB_NAME, null, DB_VERSION)
+        mDatabaseHelper = DatabaseHelper(this, Constants.DB_NAME, null, Constants.DB_VERSION)
         mDatabaseHelper.openDatabase()
         super.onCreate(savedInstanceState)
     }
 
-    override fun onStart() {
+    override fun onResume() {
         initData()
-        super.onStart()
+        super.onResume()
     }
 
-    override fun onStop() {
+    override fun onPause() {
         saveData()
-        super.onStop()
-    }
-
-    override fun onDestroy() {
         mDatabaseHelper.closeDatabase()
-        super.onDestroy()
+        super.onPause()
     }
 
     private fun initData() {
@@ -231,10 +223,6 @@ class MainActivity : AppCompatActivity() {
         val curHour = calendar.get(Calendar.HOUR_OF_DAY)
         val curMin = calendar.get(Calendar.MINUTE)
         return Converter().militaryHoursAndMinutesToMinutes(curHour, curMin)
-    }
-
-    fun getLongTimeNow(): Long {
-        return Calendar.getInstance().timeInMillis
     }
 
     fun showToast(message: String, isLongToast: Boolean = false) {
