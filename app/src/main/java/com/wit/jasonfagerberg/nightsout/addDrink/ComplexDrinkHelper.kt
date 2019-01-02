@@ -8,16 +8,16 @@ import com.wit.jasonfagerberg.nightsout.R
 import com.google.android.material.button.MaterialButton
 import java.text.DecimalFormat
 
-class ComplexDrinkHelper(val parent: AddDrinkFragment) {
+class ComplexDrinkHelper(val parent: AddDrinkActivity) {
     private lateinit var btnAddAnotherAlcoholSource: MaterialButton
     private lateinit var recyclerAlcoholSource: RecyclerView
     var listAlcoholSources: ArrayList<AlcoholSource> = ArrayList()
-    private lateinit var alcoholSourceAdapter: AddDrinkFragmentAlcoholSourceAdapter
+    private lateinit var alcoholSourceAdapter: AddDrinkActivityAlcoholSourceAdapter
 
     fun findViews(view: View, context: Context) {
         btnAddAnotherAlcoholSource = view.findViewById(R.id.btn_add_drink_add_alc_source)
         recyclerAlcoholSource = view.findViewById(R.id.recycler_add_drink_alcohol_source_list)
-        alcoholSourceAdapter = AddDrinkFragmentAlcoholSourceAdapter(context, listAlcoholSources)
+        alcoholSourceAdapter = AddDrinkActivityAlcoholSourceAdapter(context, listAlcoholSources)
 
         recyclerAlcoholSource.adapter = alcoholSourceAdapter
         val linearLayoutManagerRecents = LinearLayoutManager(context)

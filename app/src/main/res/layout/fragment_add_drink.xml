@@ -15,7 +15,7 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            tools:context=".addDrink.AddDrinkFragment">
+            tools:context=".addDrink.AddDrinkActivity">
 
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar_add_drink"

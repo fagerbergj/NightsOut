@@ -12,8 +12,8 @@ import com.wit.jasonfagerberg.nightsout.addDrink.ComplexDrinkHelper.AlcoholSourc
 import com.wit.jasonfagerberg.nightsout.dialogs.LightSimpleDialog
 import com.wit.jasonfagerberg.nightsout.main.MainActivity
 
-class AddDrinkFragmentAlcoholSourceAdapter(private val mContext: Context, alcoholSource: ArrayList<AlcoholSource>) :
-        RecyclerView.Adapter<AddDrinkFragmentAlcoholSourceAdapter.ViewHolder>() {
+class AddDrinkActivityAlcoholSourceAdapter(private val mContext: Context, alcoholSource: ArrayList<AlcoholSource>) :
+        RecyclerView.Adapter<AddDrinkActivityAlcoholSourceAdapter.ViewHolder>() {
     // vars
     private val mAlcoholSourceList: MutableList<AlcoholSource> = alcoholSource
     private lateinit var mMainActivity: MainActivity

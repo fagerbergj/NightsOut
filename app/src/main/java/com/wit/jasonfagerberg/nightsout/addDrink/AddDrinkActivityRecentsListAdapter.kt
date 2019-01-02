@@ -15,8 +15,8 @@ import com.wit.jasonfagerberg.nightsout.databaseHelper.AddDrinkDatabaseHelper
 import com.wit.jasonfagerberg.nightsout.dialogs.LightSimpleDialog
 import java.util.ArrayList
 
-class AddDrinkFragmentRecentsListAdapter(private val mContext: Context, drinksList: ArrayList<Drink>) :
-        RecyclerView.Adapter<AddDrinkFragmentRecentsListAdapter.ViewHolder>() {
+class AddDrinkActivityRecentsListAdapter(private val mContext: Context, drinksList: ArrayList<Drink>) :
+        RecyclerView.Adapter<AddDrinkActivityRecentsListAdapter.ViewHolder>() {
     // vars
     private val mRecentDrinksList: MutableList<Drink> = drinksList
     private lateinit var mMainActivity: MainActivity

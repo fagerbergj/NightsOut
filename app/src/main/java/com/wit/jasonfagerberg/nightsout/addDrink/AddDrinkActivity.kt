@@ -35,13 +35,13 @@ import com.wit.jasonfagerberg.nightsout.databaseHelper.AddDrinkDatabaseHelper
 import com.wit.jasonfagerberg.nightsout.manageDB.ManageDBFragment
 import kotlin.collections.ArrayList
 
-// private const val TAG = "AddDrinkFragment"
+// private const val TAG = "AddDrinkActivity"
 
-class AddDrinkFragment : Fragment() {
+class AddDrinkActivity : Fragment() {
 
     val mConverter = Converter()
-    private lateinit var mFavoritesListAdapter: AddDrinkFragmentFavoritesListAdapter
-    private lateinit var mRecentsListAdapter: AddDrinkFragmentRecentsListAdapter
+    private lateinit var mFavoritesListAdapter: AddDrinkActivityFavoritesListAdapter
+    private lateinit var mRecentsListAdapter: AddDrinkActivityRecentsListAdapter
     private lateinit var mComplexDrinkHelper: ComplexDrinkHelper
 
     private lateinit var mEditName: EditText
@@ -264,11 +264,11 @@ class AddDrinkFragment : Fragment() {
         recentsListView.layoutManager = linearLayoutManagerRecents
 
         // adapter setup
-        mFavoritesListAdapter = AddDrinkFragmentFavoritesListAdapter(context!!, mMainActivity.mFavoritesList)
+        mFavoritesListAdapter = AddDrinkActivityFavoritesListAdapter(context!!, mMainActivity.mFavoritesList)
         favoriteListView.adapter = mFavoritesListAdapter
 
         // adapter setup
-        mRecentsListAdapter = AddDrinkFragmentRecentsListAdapter(context!!, mMainActivity.mRecentsList)
+        mRecentsListAdapter = AddDrinkActivityRecentsListAdapter(context!!, mMainActivity.mRecentsList)
         recentsListView.adapter = mRecentsListAdapter
     }
 

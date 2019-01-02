@@ -14,8 +14,8 @@ import com.wit.jasonfagerberg.nightsout.R
 import com.wit.jasonfagerberg.nightsout.dialogs.LightSimpleDialog
 import java.util.ArrayList
 
-class AddDrinkFragmentFavoritesListAdapter(private val mContext: Context, drinksList: ArrayList<Drink>) :
-        RecyclerView.Adapter<AddDrinkFragmentFavoritesListAdapter.ViewHolder>() {
+class AddDrinkActivityFavoritesListAdapter(private val mContext: Context, drinksList: ArrayList<Drink>) :
+        RecyclerView.Adapter<AddDrinkActivityFavoritesListAdapter.ViewHolder>() {
     private val mFavoriteDrinksList: MutableList<Drink> = drinksList
     private lateinit var mMainActivity: MainActivity
 
