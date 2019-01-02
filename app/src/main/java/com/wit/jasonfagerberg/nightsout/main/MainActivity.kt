@@ -13,7 +13,6 @@ import android.widget.FrameLayout
 import android.widget.RelativeLayout
 import android.widget.Toast
 import com.wit.jasonfagerberg.nightsout.R
-import com.wit.jasonfagerberg.nightsout.addDrink.AddDrinkFragment
 import com.wit.jasonfagerberg.nightsout.converter.Converter
 import com.wit.jasonfagerberg.nightsout.databaseHelper.DatabaseHelper
 import com.wit.jasonfagerberg.nightsout.dialogs.SimpleDialog
@@ -21,15 +20,9 @@ import com.wit.jasonfagerberg.nightsout.home.HomeFragment
 import com.wit.jasonfagerberg.nightsout.log.LogFragment
 import com.wit.jasonfagerberg.nightsout.log.LogHeader
 import com.wit.jasonfagerberg.nightsout.profile.ProfileFragment
-import java.util.Locale
-import java.util.GregorianCalendar
-import java.util.Calendar
-import java.util.Date
+import java.util.*
 
 // private const val TAG = "MainActivity"
-
-private const val DB_NAME = "nights_out_db.db"
-private const val DB_VERSION = 40
 
 class MainActivity : AppCompatActivity() {
 
@@ -37,7 +30,6 @@ class MainActivity : AppCompatActivity() {
     var homeFragment = HomeFragment()
     var logFragment = LogFragment()
     var profileFragment = ProfileFragment()
-    var addDrinkFragment = AddDrinkFragment()
     private lateinit var botNavBar: BottomNavigationView
 
     // shared pref data
@@ -85,26 +77,29 @@ class MainActivity : AppCompatActivity() {
                 else -> false
             }
         }
-
-        // database
-        mDatabaseHelper = DatabaseHelper(this, DB_NAME, null, DB_VERSION)
-        mDatabaseHelper.openDatabase()
+        mDatabaseHelper = DatabaseHelper(this, Constants.DB_NAME, null, Constants.DB_VERSION)
         super.onCreate(savedInstanceState)
     }
 
     override fun onStart() {
+        mDatabaseHelper.openDatabase()
         initData()
+//        if (!profileInt) {
+//            for (i in 0..500) {
+//                val drink = Drink(UUID.randomUUID(), "Drink $i", i.toDouble(), i.toDouble(), "oz", true, true, Constants.getLongTimeNow())
+//                mDatabaseHelper.insertDrinkIntoDrinksTable(drink)
+//                mDrinksList.add(drink)
+//                mFavoritesList.add(drink)
+//                mRecentsList.add(drink)
+//            }
+//        }
         super.onStart()
     }
 
-    override fun onStop() {
+    override fun onPause() {
         saveData()
-        super.onStop()
-    }
-
-    override fun onDestroy() {
         mDatabaseHelper.closeDatabase()
-        super.onDestroy()
+        super.onPause()
     }
 
     private fun initData() {
@@ -112,24 +107,23 @@ class MainActivity : AppCompatActivity() {
         preferences = PreferenceManager.getDefaultSharedPreferences(this)
         getProfileAndTimeData()
 
-        if (!profileInt) {
+        val fragmentId = intent.getIntExtra("FRAGMENT_ID", -1)
+
+        if (!profileInt || fragmentId == 2) {
             setFragment(profileFragment)
-        } else if (supportFragmentManager.backStackEntryCount == 0) {
+        } else if (supportFragmentManager.backStackEntryCount == 0 || fragmentId == 0) {
             setFragment(homeFragment)
         }
+        intent.putExtra("FRAGMENT_ID", -1)
 
         // init data
-        mDatabaseHelper.pullDrinks()
-        mDatabaseHelper.pullLogHeaders()
+        mDrinksList = mDatabaseHelper.pullCurrentSessionDrinks()
+        mFavoritesList = mDatabaseHelper.pullFavoriteDrinks()
+        mRecentsList = mDatabaseHelper.pullRecentDrinks()
+        mLogHeaders = mDatabaseHelper.pullLogHeaders()
     }
 
     private fun saveData() {
-        setProfileAndTimeData()
-        mDatabaseHelper.pushDrinks()
-        mDatabaseHelper.pushLogHeaders()
-    }
-
-    private fun setProfileAndTimeData() {
         // profile not init
         if (weightMeasurement == "") return
 
@@ -231,10 +225,6 @@ class MainActivity : AppCompatActivity() {
         val curHour = calendar.get(Calendar.HOUR_OF_DAY)
         val curMin = calendar.get(Calendar.MINUTE)
         return Converter().militaryHoursAndMinutesToMinutes(curHour, curMin)
-    }
-
-    fun getLongTimeNow(): Long {
-        return Calendar.getInstance().timeInMillis
     }
 
     fun showToast(message: String, isLongToast: Boolean = false) {

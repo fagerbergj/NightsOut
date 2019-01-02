@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:context=".addDrink.AddDrinkActivity">
 
     <ScrollView
         android:id="@+id/scroll"
@@ -15,7 +16,7 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            tools:context=".addDrink.AddDrinkFragment">
+            tools:context=".addDrink.AddDrinkActivity">
 
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar_add_drink"

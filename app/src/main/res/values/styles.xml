@@ -6,6 +6,10 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="White" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="colorControlNormal">@color/colorWhite</item>
+    </style>
+
     <style name="HomeButtonTheme" parent="Theme.MaterialComponents.Light">
         <item name="colorPrimary">@color/colorGreen</item>
         <item name="android:padding">0dp</item>

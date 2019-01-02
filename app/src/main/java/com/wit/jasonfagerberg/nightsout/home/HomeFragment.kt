@@ -2,6 +2,7 @@ package com.wit.jasonfagerberg.nightsout.home
 
 import android.app.TimePickerDialog
 import android.content.DialogInterface
+import android.content.Intent
 import android.os.Bundle
 import com.google.android.material.button.MaterialButton
 import androidx.fragment.app.Fragment
@@ -26,6 +27,7 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import android.widget.TextView
 import android.widget.ImageButton
 import android.widget.EditText
+import com.wit.jasonfagerberg.nightsout.addDrink.AddDrinkActivity
 import com.wit.jasonfagerberg.nightsout.dialogs.BacInfoDialog
 import com.wit.jasonfagerberg.nightsout.manageDB.ManageDBFragment
 import java.util.Calendar
@@ -65,8 +67,10 @@ class HomeFragment : Fragment() {
         val btnAdd = view.findViewById<MaterialButton>(R.id.btn_home_add_drink)
         btnAdd.setOnClickListener {
             val mainActivity: MainActivity = context as MainActivity
-            mMainActivity.addDrinkFragment.mFavorited = false
-            mainActivity.setFragment(mainActivity.addDrinkFragment)
+            val intent = Intent(mainActivity, AddDrinkActivity::class.java)
+            intent.putExtra("CAN_UNFAVORITE", true)
+            intent.putExtra("FAVORITED", false)
+            startActivity(intent)
         }
 
         // setup bottom nav bar
@@ -104,7 +108,10 @@ class HomeFragment : Fragment() {
             R.id.btn_clear_drink_list -> {
                 if (mMainActivity.mDrinksList.isEmpty()) return false
                 val lightSimpleDialog = LightSimpleDialog(context!!)
-                val posAction = { clearSession() }
+                val posAction = {
+                    clearSession()
+                    mMainActivity.mDatabaseHelper.deleteRowsInTable("current_session_drinks", null)
+                }
                 lightSimpleDialog.setActions(posAction, {})
                 lightSimpleDialog.show("Are you sure you want to clear all drinks?")
             }
@@ -300,6 +307,10 @@ class HomeFragment : Fragment() {
 
         val bacText = "%.3f".format(bac)
         when {
+            bac >= .4 -> {
+                changeTextViewColorAndText(bacValueView, bacText, R.color.colorBlack)
+                changeTextViewColorAndText(bacResultView, "Dead", R.color.colorBlack)
+            }
             bac >= .2 -> {
                 changeTextViewColorAndText(bacValueView, bacText, R.color.colorBlack)
                 changeTextViewColorAndText(bacResultView, "In Danger", R.color.colorBlack)
@@ -337,5 +348,6 @@ class HomeFragment : Fragment() {
         showOrHideEmptyListText(view!!)
         mMainActivity.resetTime()
         setupEditTexts(view!!)
+        mMainActivity.mDatabaseHelper.deleteRowsInTable("current_session_drinks", null)
     }
 }

@@ -1,10 +1,16 @@
 package com.wit.jasonfagerberg.nightsout.databaseHelper
 
+import android.content.Context
+import android.database.sqlite.SQLiteDatabase
+import com.wit.jasonfagerberg.nightsout.addDrink.AddDrinkActivity
+import com.wit.jasonfagerberg.nightsout.main.Constants
 import com.wit.jasonfagerberg.nightsout.main.Drink
-import com.wit.jasonfagerberg.nightsout.main.MainActivity
 import java.util.UUID
 
-class AddDrinkDatabaseHelper(private val mainActivity: MainActivity) {
+class AddDrinkDatabaseHelper (context: Context?, name: String?, factory: SQLiteDatabase.CursorFactory?, version: Int)
+    : DatabaseHelper(context, name, factory, version) {
+
+    private val mActivity = context as AddDrinkActivity
 
     fun buildDrinkAndAddToList(
         name: String,
@@ -14,39 +20,39 @@ class AddDrinkDatabaseHelper(private val mainActivity: MainActivity) {
         favorited: Boolean,
         canUnfavorite: Boolean
     ) {
-        val drink = Drink(UUID.randomUUID(), name, abv, amount, measurement, favorited, true, mainActivity.getLongTimeNow())
+        val drink = Drink(UUID.randomUUID(), name, abv, amount, measurement, favorited, true, Constants.getLongTimeNow())
 
         setDrinkId(drink)
-        mainActivity.mDatabaseHelper.updateDrinkModifiedTime(drink.id, drink.modifiedTime)
-        mainActivity.mDatabaseHelper.updateDrinkSuggestionStatus(drink.id, false)
+        updateDrinkModifiedTime(drink.id, drink.modifiedTime)
+        updateDrinkSuggestionStatus(drink.id, false)
         setDrinkFavorited(drink, favorited)
 
         if (canUnfavorite) {
-            mainActivity.addDrinkFragment.addToDrinkList(drink)
+            mActivity.addDrinkToCurrentSessionAndRecentsTables(drink)
         } else {
             drink.recent = false
-            mainActivity.addDrinkFragment.addToFavoritesList(drink)
+            mActivity.addToFavoritesTable(drink)
         }
     }
 
     private fun setDrinkId(drink: Drink) {
-        val id = mainActivity.mDatabaseHelper.getDrinkIdFromFullDrinkInfo(drink)
+        val id = getDrinkIdFromFullDrinkInfo(drink)
         drink.id = id
-        if (!mainActivity.mDatabaseHelper.idInDb(drink.id)) mainActivity.mDatabaseHelper.insertDrinkIntoDrinksTable(drink)
+        if (!idInDb(drink.id)) insertDrinkIntoDrinksTable(drink)
     }
 
     private fun setDrinkFavorited(drink: Drink, favorited: Boolean) {
-        drink.favorited = mainActivity.mFavoritesList.contains(drink)
+        drink.favorited = mActivity.mFavoritesList.contains(drink)
 
-        if (mainActivity.mDrinksList.contains(drink)) {
-            val index = mainActivity.mDrinksList.indexOf(drink)
-            val drinkInSession = mainActivity.mDrinksList[index]
+        if (mActivity.mDrinksList.contains(drink)) {
+            val index = mActivity.mDrinksList.indexOf(drink)
+            val drinkInSession = mActivity.mDrinksList[index]
             drink.favorited = drinkInSession.favorited
         }
 
         if (favorited) {
             drink.favorited = true
-            for (d in mainActivity.mDrinksList) {
+            for (d in mActivity.mDrinksList) {
                 if (d == drink) {
                     d.favorited = true
                 }
@@ -56,7 +62,7 @@ class AddDrinkDatabaseHelper(private val mainActivity: MainActivity) {
 
     fun getSuggestedDrinks(filter: String, ignoreDontShow: Boolean = false): ArrayList<Drink> {
         val res = ArrayList<Drink>()
-        val cursor = mainActivity.mDatabaseHelper.db.query(true, "drinks", null,
+        val cursor = db.query(true, "drinks", null,
                 "name LIKE ?", arrayOf("%$filter%"), null, null, "name, modifiedTime DESC", null)
         while (cursor.moveToNext()) {
             val id = UUID.fromString(cursor.getString(cursor.getColumnIndex("id")))
@@ -66,7 +72,7 @@ class AddDrinkDatabaseHelper(private val mainActivity: MainActivity) {
             val measurement = cursor.getString(cursor.getColumnIndex("measurement"))
             val modifiedTime = cursor.getLong(cursor.getColumnIndex("modifiedTime"))
             val recent = cursor.getInt(cursor.getColumnIndex("recent"))
-            val favorited = mainActivity.mDatabaseHelper.isFavoritedInDB(drinkName)
+            val favorited = isFavoritedInDB(drinkName)
             val dontSuggest = cursor.getInt(cursor.getColumnIndex("dontSuggest")) == 1
 
             if (!dontSuggest || ignoreDontShow) res.add(Drink(id, drinkName, abv, amount, measurement, favorited, recent == 1, modifiedTime))
@@ -79,6 +85,6 @@ class AddDrinkDatabaseHelper(private val mainActivity: MainActivity) {
         val recent = if (drink.recent) 1 else 0
         val name = "\"${drink.name}\""
         val sql = "UPDATE drinks SET recent = $recent WHERE name = $name"
-        mainActivity.mDatabaseHelper.db.execSQL(sql)
+        db.execSQL(sql)
     }
 }

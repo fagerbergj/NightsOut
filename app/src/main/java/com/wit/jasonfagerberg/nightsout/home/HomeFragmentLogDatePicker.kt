@@ -41,6 +41,7 @@ class HomeFragmentLogDatePicker(
                 val posAction = { mainActivity.homeFragment.clearSession(); mainActivity.showToast(message) }
                 dialog.setActions(posAction, { mainActivity.showToast(message) })
                 dialog.show("Do you want to start a new drink list?")
+                mainActivity.mDatabaseHelper.insertRowInLogTable(logDate, homeFragment.bac, homeFragment.drinkingDuration)
             }
         }
 
@@ -77,7 +78,8 @@ class HomeFragmentLogDatePicker(
             val dialog = LightSimpleDialog(context)
             val posAction = { mainActivity.homeFragment.clearSession(); mainActivity.showToast(message) }
             dialog.setActions(posAction, { mainActivity.showToast(message) })
-            dialog.show("Would you like to create a new session?")
+            dialog.show("Do you want to start a new drink list?")
+            mainActivity.mDatabaseHelper.insertRowInLogTable(logDate, homeFragment.bac, homeFragment.drinkingDuration)
         }
     }
 }
