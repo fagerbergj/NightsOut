@@ -263,6 +263,7 @@ class AddDrinkActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         supportActionBar!!.setDisplayShowTitleEnabled(true)
 
+        toolbar.overflowIcon = ContextCompat.getDrawable(this, R.drawable.overflow_white)
         toolbar.setNavigationIcon(R.drawable.arrow_back_white_24dp)
 
         toolbar.setNavigationOnClickListener {
