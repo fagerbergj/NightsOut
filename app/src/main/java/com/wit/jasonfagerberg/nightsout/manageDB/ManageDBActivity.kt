@@ -17,7 +17,7 @@ import com.wit.jasonfagerberg.nightsout.dialogs.LightSimpleDialog
 import com.wit.jasonfagerberg.nightsout.main.Drink
 import com.wit.jasonfagerberg.nightsout.main.MainActivity
 
-class ManageDBFragment : Fragment() {
+class ManageDBActivity : Fragment() {
     private lateinit var mMainActivity: MainActivity
     private lateinit var mDrinkListAdapter: ManageDBDrinkListAdapter
     private lateinit var mDrinksList: ArrayList<Drink>
@@ -27,7 +27,7 @@ class ManageDBFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_manage_db, container, false)
+        val view = inflater.inflate(R.layout.activity_manage_db, container, false)
         mMainActivity = context as MainActivity
         // fixme broken now that AddDrinkDBHelper extends Database Helper
         //mDrinksList = AddDrinkDatabaseHelper(mMainActivity).getSuggestedDrinks("", true)

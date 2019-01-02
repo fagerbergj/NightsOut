@@ -20,7 +20,7 @@ class ManageDBDrinkListAdapter(private val mContext: Context, private val mDrink
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(mContext)
-        val view = inflater.inflate(R.layout.fragment_manage_db_item, parent, false)
+        val view = inflater.inflate(R.layout.activity_manage_db_item, parent, false)
         mMainActivity = mContext as MainActivity
         return ViewHolder(view)
     }

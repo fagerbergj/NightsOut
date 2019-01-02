@@ -198,7 +198,7 @@ class AddDrinkActivity : AppCompatActivity() {
             R.id.btn_clear_favorites_list -> { clearFavoritesOptionSelected() }
             R.id.btn_clear_recents_list -> { clearRecentsOptionSelected() }
             // fixme this will be broken until Manage DB Fragment is made an activity
-            //R.id.btn_toolbar_manage_db -> { mMainActivity.setFragment(ManageDBFragment()); true }
+            //R.id.btn_toolbar_manage_db -> { mMainActivity.setFragment(ManageDBActivity()); true }
             else -> false
         }
     }

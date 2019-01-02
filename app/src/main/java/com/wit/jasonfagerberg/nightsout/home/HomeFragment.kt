@@ -29,7 +29,7 @@ import android.widget.ImageButton
 import android.widget.EditText
 import com.wit.jasonfagerberg.nightsout.addDrink.AddDrinkActivity
 import com.wit.jasonfagerberg.nightsout.dialogs.BacInfoDialog
-import com.wit.jasonfagerberg.nightsout.manageDB.ManageDBFragment
+import com.wit.jasonfagerberg.nightsout.manageDB.ManageDBActivity
 import java.util.Calendar
 
 // private const val TAG = "HomeFragment"
@@ -122,7 +122,7 @@ class HomeFragment : Fragment() {
             }
             R.id.btn_toolbar_manage_db -> {
                 mMainActivity.hideBottomNavBar()
-                mMainActivity.setFragment(ManageDBFragment())
+                mMainActivity.setFragment(ManageDBActivity())
             }
         }
         return true
