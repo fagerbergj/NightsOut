@@ -60,9 +60,6 @@ class HomeFragment : Fragment() {
         // toolbar setup
         setupToolbar(view)
 
-        // setup list
-        setupRecycler(view)
-
         // add a drink button setup
         val btnAdd = view.findViewById<MaterialButton>(R.id.btn_home_add_drink)
         btnAdd.setOnClickListener {
@@ -73,9 +70,6 @@ class HomeFragment : Fragment() {
             startActivity(intent)
         }
 
-        // setup bottom nav bar
-        mMainActivity.showBottomNavBar(R.id.bottom_nav_home)
-
         // set edit texts
         setupEditTexts(view)
 
@@ -85,6 +79,9 @@ class HomeFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
+        // setup list
+        setupRecycler(view!!)
+        mMainActivity.showBottomNavBar(R.id.bottom_nav_home)
         val bacInfoDialog = BacInfoDialog(context!!)
         view!!.findViewById<ImageButton>(R.id.btn_home_bac_info).setOnClickListener {
             bacInfoDialog.showBacInfoDialog()
@@ -121,8 +118,9 @@ class HomeFragment : Fragment() {
                 setupEditTexts(view!!)
             }
             R.id.btn_toolbar_manage_db -> {
-                mMainActivity.hideBottomNavBar()
-                mMainActivity.setFragment(ManageDBActivity())
+                val intent = Intent(mMainActivity, ManageDBActivity::class.java)
+                intent.putExtra("FRAGMENT_ID", 0)
+                startActivity(intent)
             }
         }
         return true

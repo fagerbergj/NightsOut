@@ -24,11 +24,10 @@
         <activity
             android:name="com.wit.jasonfagerberg.nightsout.addDrink.AddDrinkActivity"
             android:configChanges="orientation|keyboardHidden"
-            android:windowSoftInputMode="stateVisible|adjustResize">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            android:windowSoftInputMode="adjustPan">
+        </activity>
+        <activity
+            android:name="com.wit.jasonfagerberg.nightsout.manageDB.ManageDBActivity" >
         </activity>
     </application>
 </manifest>

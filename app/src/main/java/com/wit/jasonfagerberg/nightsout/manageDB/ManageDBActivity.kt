@@ -1,75 +1,75 @@
 package com.wit.jasonfagerberg.nightsout.manageDB
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.ViewGroup
-import android.view.View
+import android.view.Gravity
 import android.view.MenuItem
-import android.view.MenuInflater
 import android.view.Menu
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.wit.jasonfagerberg.nightsout.R
+import com.wit.jasonfagerberg.nightsout.databaseHelper.AddDrinkDatabaseHelper
 import com.wit.jasonfagerberg.nightsout.dialogs.LightSimpleDialog
+import com.wit.jasonfagerberg.nightsout.main.Constants
 import com.wit.jasonfagerberg.nightsout.main.Drink
-import com.wit.jasonfagerberg.nightsout.main.MainActivity
 
-class ManageDBActivity : Fragment() {
-    private lateinit var mMainActivity: MainActivity
+class ManageDBActivity : AppCompatActivity() {
     private lateinit var mDrinkListAdapter: ManageDBDrinkListAdapter
-    private lateinit var mDrinksList: ArrayList<Drink>
+    lateinit var mDrinksList: ArrayList<Drink>
+    lateinit var dbh: AddDrinkDatabaseHelper
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        val view = inflater.inflate(R.layout.activity_manage_db, container, false)
-        mMainActivity = context as MainActivity
-        // fixme broken now that AddDrinkDBHelper extends Database Helper
-        //mDrinksList = AddDrinkDatabaseHelper(mMainActivity).getSuggestedDrinks("", true)
-        setupToolbar(view)
-        setupRecycler(view)
-        return view
+    override fun onCreate(savedInstanceState: Bundle?) {
+        setContentView(R.layout.activity_manage_db)
+        dbh = AddDrinkDatabaseHelper(this, Constants.DB_NAME, null, Constants.DB_VERSION)
+        dbh.openDatabase()
+        mDrinksList = dbh.getSuggestedDrinks("", true)
+        setupToolbar()
+        setupRecycler()
+        super.onCreate(savedInstanceState)
     }
 
-    private fun setupToolbar(view: View) {
-        val toolbar: Toolbar = view.findViewById(R.id.toolbar_manage_db)
+    override fun onPause() {
+        dbh.closeDatabase()
+        super.onPause()
+    }
+
+    private fun setupToolbar() {
+        val toolbar: Toolbar = findViewById(R.id.toolbar_manage_db)
         toolbar.inflateMenu(R.menu.manage_db_menu)
-        mMainActivity.setSupportActionBar(toolbar)
-        mMainActivity.supportActionBar!!.setDisplayShowTitleEnabled(true)
-        setHasOptionsMenu(true)
+        setSupportActionBar(toolbar)
+        supportActionBar!!.setDisplayShowTitleEnabled(true)
+        //setHasOptionsMenu(true)
         toolbar.setNavigationIcon(R.drawable.arrow_back_white_24dp)
-        toolbar.setNavigationOnClickListener { activity!!.onBackPressed() }
+        toolbar.setNavigationOnClickListener { onBackPressed() }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
-        inflater!!.inflate(R.menu.manage_db_menu, menu)
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.manage_db_menu, menu)
+        return super.onCreateOptionsMenu(menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         val resId = item?.itemId
         when (resId) {
             R.id.btn_reset_db -> {
-                val dialog = LightSimpleDialog(context!!)
+                val dialog = LightSimpleDialog(this)
                 val posAction = {
-                    mMainActivity.mDatabaseHelper.copyDatabase()
-                    mMainActivity.mDatabaseHelper.pullCurrentSessionDrinks()
-                    mMainActivity.mDatabaseHelper.pullLogHeaders()
+                    dbh.copyDatabase()
+                    dbh.pullCurrentSessionDrinks()
+                    dbh.pullLogHeaders()
 
                     mDrinksList.clear()
-                    // fixme broken now that AddDrinkDatabaseHelper extnds database helper
-                    //mDrinksList.addAll(AddDrinkDatabaseHelper(mMainActivity).getSuggestedDrinks("", true))
+                    mDrinksList.addAll(dbh.getSuggestedDrinks("", true))
                     mDrinkListAdapter.notifyDataSetChanged()
                 }
                 dialog.setActions(posAction, {})
                 dialog.show("Are you sure? You will lose everything.")
             }
             R.id.btn_clean_db -> {
-                val dialog = LightSimpleDialog(context!!)
+                val dialog = LightSimpleDialog(this)
                 dialog.setActions({ deleteDrinksWithNoReference() }, {})
                 dialog.show("Are you sure you want to clean your database? This will permanently delete all drinks:" +
                         "\n    Not Currently in Use\n    Not in Favorited\n    Not Recently Used\n    Not Logged")
@@ -85,7 +85,7 @@ class ManageDBActivity : Fragment() {
             val drink = mDrinksList[position - offset]
             val loss = mDrinkListAdapter.getLostReferenceString(drink)
             if (loss.isEmpty()){
-                mMainActivity.mDatabaseHelper.deleteRowsInTable("drinks", "id = \"${drink.id}\"")
+                dbh.deleteRowsInTable("drinks", "id = \"${drink.id}\"")
                 mDrinksList.removeAt(position - offset)
                 mDrinkListAdapter.notifyItemRemoved(position - offset)
                 mDrinkListAdapter.notifyItemRangeChanged(position - offset, mDrinksList.size)
@@ -93,13 +93,13 @@ class ManageDBActivity : Fragment() {
                 offset ++
             }
         }
-        mMainActivity.showToast("$offset drinks deleted from database")
+        showToast("$offset drinks deleted from database")
     }
 
-    private fun setupRecycler(view: View) {
+    private fun setupRecycler() {
         // mDrinkList recycler view setup
-        val drinksListView: RecyclerView = view.findViewById(R.id.recycler_manage_db_list)
-        val linearLayoutManager = LinearLayoutManager(context)
+        val drinksListView: RecyclerView = findViewById(R.id.recycler_manage_db_list)
+        val linearLayoutManager = LinearLayoutManager(this)
         linearLayoutManager.orientation = RecyclerView.VERTICAL
         drinksListView.layoutManager = linearLayoutManager
 
@@ -107,9 +107,16 @@ class ManageDBActivity : Fragment() {
         drinksListView.addItemDecoration(itemDecor)
 
         // set adapter
-        mDrinkListAdapter = ManageDBDrinkListAdapter(context!!, mDrinksList)
+        mDrinkListAdapter = ManageDBDrinkListAdapter(this, mDrinksList)
         // update list
         drinksListView.adapter = mDrinkListAdapter // Update display with new list
         drinksListView.layoutManager!!.scrollToPosition(mDrinksList.size - 1) // Nav to end of list
+    }
+
+    fun showToast(message: String, isLongToast: Boolean = false) {
+        val toast = if (isLongToast) Toast.makeText(this, message, Toast.LENGTH_LONG)
+        else Toast.makeText(this, message, Toast.LENGTH_SHORT)
+        toast.setGravity(Gravity.CENTER, 0, 450)
+        toast.show()
     }
 }

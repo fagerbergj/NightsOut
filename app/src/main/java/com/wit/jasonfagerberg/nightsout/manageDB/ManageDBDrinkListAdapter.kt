@@ -11,17 +11,22 @@ import com.wit.jasonfagerberg.nightsout.R
 import com.wit.jasonfagerberg.nightsout.dialogs.LightSimpleDialog
 import com.wit.jasonfagerberg.nightsout.main.Constants
 import com.wit.jasonfagerberg.nightsout.main.Drink
-import com.wit.jasonfagerberg.nightsout.main.MainActivity
 
 class ManageDBDrinkListAdapter(private val mContext: Context, private val mDrinksList: ArrayList<Drink>) :
         androidx.recyclerview.widget.RecyclerView.Adapter<ManageDBDrinkListAdapter.ViewHolder>() {
 
-    private lateinit var mMainActivity: MainActivity
+    private lateinit var mActivity: ManageDBActivity
+    private lateinit var mDrinkList: ArrayList<Drink>
+    private lateinit var mFavoritesList: ArrayList<Drink>
+    private lateinit var mRecentsList: ArrayList<Drink>
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(mContext)
         val view = inflater.inflate(R.layout.activity_manage_db_item, parent, false)
-        mMainActivity = mContext as MainActivity
+        mActivity = mContext as ManageDBActivity
+        mDrinkList = mActivity.mDrinksList
+        mFavoritesList = mActivity.dbh.pullFavoriteDrinks()
+        mRecentsList = mActivity.dbh.pullRecentDrinks()
         return ViewHolder(view)
     }
 
@@ -34,19 +39,19 @@ class ManageDBDrinkListAdapter(private val mContext: Context, private val mDrink
         val amount = "%.1f".format(drink.amount) + " " + drink.measurement
         holder.amount.text = amount
 
-        drink.favorited = mMainActivity.mFavoritesList.contains(drink)
+        drink.favorited = mFavoritesList.contains(drink)
 
         holder.options.setOnClickListener {
             val popup = PopupMenu(mContext, holder.options)
             popup.inflate(R.menu.manage_db_item_options)
 
-            val favString = if (drink.favorited) mMainActivity.resources.getString(R.string.unfavorite_drink)
-            else mMainActivity.resources.getString(R.string.favorite_drink)
+            val favString = if (drink.favorited) mActivity.resources.getString(R.string.unfavorite_drink)
+            else mActivity.resources.getString(R.string.favorite_drink)
             popup.menu.findItem(R.id.manage_db_item_favorite).title = favString
 
-            val dontSuggest = mMainActivity.mDatabaseHelper.getDrinkSuggestedStatus(drink.id)
-            val suggestString = if (dontSuggest) mMainActivity.resources.getString(R.string.show_auto_complete_suggestion)
-            else mMainActivity.resources.getString(R.string.hide_auto_complete_suggestion)
+            val dontSuggest = mActivity.dbh.getDrinkSuggestedStatus(drink.id)
+            val suggestString = if (dontSuggest) mActivity.resources.getString(R.string.show_auto_complete_suggestion)
+            else mActivity.resources.getString(R.string.hide_auto_complete_suggestion)
             popup.menu.findItem(R.id.manage_db_item_suggestion).title = suggestString
 
             popup.setOnMenuItemClickListener { item ->
@@ -63,27 +68,25 @@ class ManageDBDrinkListAdapter(private val mContext: Context, private val mDrink
 
     private fun favoriteItemOptionSelected(drink: Drink): Boolean {
         drink.favorited = !drink.favorited
-        mMainActivity.mDatabaseHelper.updateDrinkModifiedTime(drink.id, Constants.getLongTimeNow())
+        mActivity.dbh.updateDrinkModifiedTime(drink.id, Constants.getLongTimeNow())
         for (d in mDrinksList) {
             if (d == drink) d.favorited = drink.favorited
         }
         notifyDataSetChanged()
 
-        if (!drink.favorited) mMainActivity.mFavoritesList.remove(drink)
-        else mMainActivity.mFavoritesList.add(0, drink)
-
-        for (d in mMainActivity.mDrinksList) {
+        for (d in mDrinksList) {
             if (d == drink) d.favorited = drink.favorited
         }
-        if (drink.favorited) mMainActivity.showToast("${drink.name} favorited")
-        else mMainActivity.showToast("${drink.name} unfavorited")
+        if (drink.favorited) mActivity.showToast("${drink.name} favorited")
+        else mActivity.showToast("${drink.name} unfavorited")
+        mActivity.dbh.updateDrinkFavoriteStatus(drink)
         return true
     }
 
     private fun suggestItemOptionSelected(drink: Drink, dontSuggest: Boolean): Boolean {
-        mMainActivity.mDatabaseHelper.updateDrinkSuggestionStatus(drink.id, !dontSuggest)
-        if (!dontSuggest) mMainActivity.showToast("This drink will not be suggested")
-        else mMainActivity.showToast("This drink will be suggested")
+        mActivity.dbh.updateDrinkSuggestionStatus(drink.id, !dontSuggest)
+        if (!dontSuggest) mActivity.showToast("This drink will not be suggested")
+        else mActivity.showToast("This drink will be suggested")
         return true
     }
 
@@ -92,11 +95,10 @@ class ManageDBDrinkListAdapter(private val mContext: Context, private val mDrink
         val loss = getLostReferenceString(drink)
 
         val posAction = {
-            mMainActivity.mDatabaseHelper.deleteRowsInTable("drinks", "id = \"${drink.id}\"")
+            mActivity.dbh.deleteRowsInTable("drinks", "id = \"${drink.id}\"")
             mDrinksList.removeAt(position)
             removeCurrentSessionReference(drink)
-            removeOrUpdateFavoritesReference(drink)
-            removeOrUpdateRecentsReference(drink)
+            mActivity.dbh.updateDrinkFavoriteStatus(drink)
             notifyItemRemoved(position)
             notifyItemRangeChanged(position, mDrinksList.size)
         }
@@ -113,66 +115,33 @@ class ManageDBDrinkListAdapter(private val mContext: Context, private val mDrink
     fun getLostReferenceString(drink: Drink): String {
         var loss = ""
 
-        for (d in mMainActivity.mDrinksList) {
+        for (d in mDrinksList) {
             if (d.isExactDrink(drink)) {
                 loss += "Drink in Current Drinks List\n"
                 break
             }
         }
-        for (f in mMainActivity.mFavoritesList) {
+        for (f in mFavoritesList) {
             if (f.isExactDrink(drink)) {
                 loss += "Favorite Drink Reference\n"
                 break
             }
         }
-        for (r in mMainActivity.mRecentsList) {
+        for (r in mRecentsList) {
             if (r.isExactDrink(drink)) {
                 loss += "Recent Drink Reference\n"
                 break
             }
         }
 
-        if (mMainActivity.mDatabaseHelper.isLoggedDrink(drink.id)) loss += "Logged Drink Reference"
+        if (mActivity.dbh.isLoggedDrink(drink.id)) loss += "Logged Drink Reference"
 
         return loss
     }
 
     private fun removeCurrentSessionReference(drink: Drink) {
-        for (i in mMainActivity.mDrinksList.indices) {
-            val d = mMainActivity.mDrinksList[i]
-            if (d.isExactDrink(drink)) {
-                mMainActivity.mDrinksList.removeAt(i)
-                break
-            }
-        }
-    }
-
-    private fun removeOrUpdateFavoritesReference(drink: Drink) {
-        for (i in mMainActivity.mFavoritesList.indices) {
-            val f = mMainActivity.mFavoritesList[i]
-            if (f.isExactDrink(drink)) {
-                mMainActivity.mFavoritesList.removeAt(i)
-                val drinks = mMainActivity.mDatabaseHelper.getDrinksFromName(drink.name, mMainActivity.mFavoritesList)
-                if (!drinks.isEmpty()) {
-                    mMainActivity.mFavoritesList.add(i, drinks[0])
-                }
-                break
-            }
-        }
-    }
-
-    private fun removeOrUpdateRecentsReference(drink: Drink) {
-        for (i in mMainActivity.mRecentsList.indices) {
-            val r = mMainActivity.mRecentsList[i]
-            if (r.isExactDrink(drink)) {
-                mMainActivity.mRecentsList.removeAt(i)
-                val drinks = mMainActivity.mDatabaseHelper.getDrinksFromName(drink.name, mMainActivity.mFavoritesList)
-                if (!drinks.isEmpty()) {
-                    mMainActivity.mRecentsList.add(i, drinks[0])
-                }
-                break
-            }
-        }
+        mActivity.dbh.deleteRowsInTable("current_session_drinks", "drink_id=\"${drink.id}\"")
+        mActivity.dbh.reorderCurrentSessionInDatabase()
     }
 
     inner class ViewHolder(itemView: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(itemView) {

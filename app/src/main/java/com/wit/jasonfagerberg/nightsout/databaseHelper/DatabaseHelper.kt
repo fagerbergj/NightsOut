@@ -277,7 +277,7 @@ open class DatabaseHelper(
         return ret
     }
 
-    fun pushDrinks(current : ArrayList<Drink>, favorites : ArrayList<Drink>) {
+    private fun pushDrinks(current : ArrayList<Drink>, favorites : ArrayList<Drink>) {
         deleteRowsInTable("current_session_drinks", null)
         for (i in current.indices) {
             val drink = current[i]
@@ -294,7 +294,7 @@ open class DatabaseHelper(
         }
     }
 
-    fun pushLogHeaders(headers : ArrayList<LogHeader>) {
+    private fun pushLogHeaders(headers : ArrayList<LogHeader>) {
         deleteRowsInTable("log", null)
         for (header in headers) {
             insertRowInLogTable(header.date, header.bac, header.duration)
@@ -420,6 +420,18 @@ open class DatabaseHelper(
             } catch (e: Exception) {
                 mOldIdUUIDMap[id.toInt()] = UUID.randomUUID()
             }
+        }
+        cursor.close()
+    }
+
+    fun reorderCurrentSessionInDatabase() {
+        val cursor = db.query("current_session_drinks", null, null, null, null, null, "position")
+        var i = 0
+        while (cursor.moveToNext()) {
+            val id = cursor.getString(cursor.getColumnIndex("drink_id"))
+            val sql = "UPDATE current_session_drinks SET position=$i WHERE drink_id=\"$id\""
+            db.execSQL(sql)
+            i++
         }
         cursor.close()
     }

@@ -5,12 +5,23 @@ import android.database.sqlite.SQLiteDatabase
 import com.wit.jasonfagerberg.nightsout.addDrink.AddDrinkActivity
 import com.wit.jasonfagerberg.nightsout.main.Constants
 import com.wit.jasonfagerberg.nightsout.main.Drink
+import java.lang.Exception
 import java.util.UUID
 
 class AddDrinkDatabaseHelper (context: Context?, name: String?, factory: SQLiteDatabase.CursorFactory?, version: Int)
     : DatabaseHelper(context, name, factory, version) {
 
-    private val mActivity = context as AddDrinkActivity
+    private lateinit var mActivity : AddDrinkActivity
+
+    init {
+        try {
+            mActivity = context as AddDrinkActivity
+        } catch (e:Exception) {
+            // do nothing, ManageDB is using this class for the get suggested drinks
+            // method ass well as all base DB helper methods
+        }
+    }
+
 
     fun buildDrinkAndAddToList(
         name: String,
@@ -82,9 +93,12 @@ class AddDrinkDatabaseHelper (context: Context?, name: String?, factory: SQLiteD
     }
 
     fun updateDrinkFavoriteStatus(drink: Drink) {
-        val recent = if (drink.recent) 1 else 0
-        val name = "\"${drink.name}\""
-        val sql = "UPDATE drinks SET recent = $recent WHERE name = $name"
-        db.execSQL(sql)
+        val favoritedInDB = isFavoritedInDB(drink.name)
+        if ( favoritedInDB && !drink.favorited){
+            deleteRowsInTable("favorites", "drink_id=\"${drink.id}\"")
+        } else {
+            insertRowInFavoritesTable(drink.name, drink.id)
+        }
+
     }
 }

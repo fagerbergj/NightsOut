@@ -26,6 +26,7 @@ import com.wit.jasonfagerberg.nightsout.addDrink.drinkSuggestion.DrinkSuggestion
 import com.wit.jasonfagerberg.nightsout.databaseHelper.AddDrinkDatabaseHelper
 import com.wit.jasonfagerberg.nightsout.main.Constants
 import com.wit.jasonfagerberg.nightsout.main.MainActivity
+import com.wit.jasonfagerberg.nightsout.manageDB.ManageDBActivity
 import kotlin.collections.ArrayList
 
 // private const val TAG = "AddDrinkActivity"
@@ -68,6 +69,7 @@ class AddDrinkActivity : AppCompatActivity() {
 
         if (savedInstanceState != null) {
             complexMode = savedInstanceState.getBoolean("complexMode")
+            mFavorited = savedInstanceState.getBoolean("mFavorited")
             mComplexDrinkHelper = ComplexDrinkHelper(this)
             val sourceAbv = savedInstanceState.getDoubleArray("sourceAbv")!!
             val sourceAmount = savedInstanceState.getDoubleArray("sourceAmount")!!
@@ -163,6 +165,7 @@ class AddDrinkActivity : AppCompatActivity() {
 
     override fun onSaveInstanceState(outState: Bundle) {
         outState.putBoolean("complexMode", complexMode)
+        outState.putBoolean("mFavorited", mFavorited)
         val sourceAbv = DoubleArray(mComplexDrinkHelper.listAlcoholSources.size)
         val sourceAmount = DoubleArray(mComplexDrinkHelper.listAlcoholSources.size)
         val sourceMeasure = ArrayList<String>()
@@ -197,8 +200,11 @@ class AddDrinkActivity : AppCompatActivity() {
             R.id.btn_toolbar_favorite -> { favoriteOptionSelected(item, btnAdd) }
             R.id.btn_clear_favorites_list -> { clearFavoritesOptionSelected() }
             R.id.btn_clear_recents_list -> { clearRecentsOptionSelected() }
-            // fixme this will be broken until Manage DB Fragment is made an activity
-            //R.id.btn_toolbar_manage_db -> { mMainActivity.setFragment(ManageDBActivity()); true }
+            R.id.btn_toolbar_manage_db -> {
+                val intent = Intent(this, ManageDBActivity::class.java)
+                startActivity(intent)
+                true
+            }
             else -> false
         }
     }
