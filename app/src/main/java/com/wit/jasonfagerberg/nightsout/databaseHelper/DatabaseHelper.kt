@@ -15,7 +15,6 @@ import kotlin.collections.HashMap
 
 // private const val TAG = "DatabaseHelper"
 
-// todo rework class to be more generic and not rely on MainActivity
 open class DatabaseHelper(
     val context: Context?,
     val name: String?,
@@ -83,7 +82,7 @@ open class DatabaseHelper(
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
         val mainActivity = context as MainActivity
 
-
+        pullAllDrinks()
         mapOldIdsToUUIDs()
         mainActivity.mDrinksList = pullCurrentSessionDrinks()
         mainActivity.mFavoritesList = pullFavoriteDrinks()
@@ -154,9 +153,6 @@ open class DatabaseHelper(
     }
 
     private fun dropAllTables() {
-        pullCurrentSessionDrinks()
-        pullLogHeaders()
-        pullAllDrinks()
         db.execSQL("DROP TABLE drinks")
         db.execSQL("DROP TABLE current_session_drinks")
         db.execSQL("DROP TABLE favorites")
@@ -330,7 +326,7 @@ open class DatabaseHelper(
         db.execSQL(sql)
     }
 
-    private fun insertRowInLogTable(date: Int, bac: Double, duration: Double) {
+    fun insertRowInLogTable(date: Int, bac: Double, duration: Double) {
         val sql = "INSERT INTO log VALUES ($date, $bac, $duration)"
         db.execSQL(sql)
     }

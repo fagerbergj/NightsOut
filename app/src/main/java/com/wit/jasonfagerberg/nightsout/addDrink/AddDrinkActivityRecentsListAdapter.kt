@@ -36,7 +36,7 @@ class AddDrinkActivityRecentsListAdapter(private val mActivity : AddDrinkActivit
                 mActivity.showToast("Drink Removed")
                 mActivity.showOrHideEmptyTextViews()
                 drink.recent = false
-                mActivity.mDatabaseHelper.updateDrinkFavoriteStatus(drink)
+                mActivity.mDatabaseHelper.updateRowInDrinksTable(drink)
             }
             lightSimpleDialog.setActions(posAction, {})
             lightSimpleDialog.show("Remove from recents?")

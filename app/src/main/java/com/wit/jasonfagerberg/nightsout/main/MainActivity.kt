@@ -20,10 +20,7 @@ import com.wit.jasonfagerberg.nightsout.home.HomeFragment
 import com.wit.jasonfagerberg.nightsout.log.LogFragment
 import com.wit.jasonfagerberg.nightsout.log.LogHeader
 import com.wit.jasonfagerberg.nightsout.profile.ProfileFragment
-import java.util.Locale
-import java.util.GregorianCalendar
-import java.util.Calendar
-import java.util.Date
+import java.util.*
 
 // private const val TAG = "MainActivity"
 
@@ -80,14 +77,23 @@ class MainActivity : AppCompatActivity() {
                 else -> false
             }
         }
+        mDatabaseHelper = DatabaseHelper(this, Constants.DB_NAME, null, Constants.DB_VERSION)
         super.onCreate(savedInstanceState)
     }
 
-    override fun onResume() {
-        mDatabaseHelper = DatabaseHelper(this, Constants.DB_NAME, null, Constants.DB_VERSION)
+    override fun onStart() {
         mDatabaseHelper.openDatabase()
         initData()
-        super.onResume()
+//        if (!profileInt) {
+//            for (i in 0..500) {
+//                val drink = Drink(UUID.randomUUID(), "Drink $i", i.toDouble(), i.toDouble(), "oz", true, true, Constants.getLongTimeNow())
+//                mDatabaseHelper.insertDrinkIntoDrinksTable(drink)
+//                mDrinksList.add(drink)
+//                mFavoritesList.add(drink)
+//                mRecentsList.add(drink)
+//            }
+//        }
+        super.onStart()
     }
 
     override fun onPause() {
@@ -101,13 +107,14 @@ class MainActivity : AppCompatActivity() {
         preferences = PreferenceManager.getDefaultSharedPreferences(this)
         getProfileAndTimeData()
 
-        val fragmentId = intent.getIntExtra("FRAGMENT_ID", 0)
+        val fragmentId = intent.getIntExtra("FRAGMENT_ID", -1)
 
         if (!profileInt || fragmentId == 2) {
             setFragment(profileFragment)
         } else if (supportFragmentManager.backStackEntryCount == 0 || fragmentId == 0) {
             setFragment(homeFragment)
         }
+        intent.putExtra("FRAGMENT_ID", -1)
 
         // init data
         mDrinksList = mDatabaseHelper.pullCurrentSessionDrinks()
@@ -117,16 +124,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun saveData() {
-        setProfileAndTimeData()
-        mDatabaseHelper.pushDrinks(mDrinksList, mFavoritesList)
-        mDatabaseHelper.pushLogHeaders(mLogHeaders)
-        mDrinksList.clear()
-        mRecentsList.clear()
-        mFavoritesList.clear()
-        mLogHeaders.clear()
-    }
-
-    private fun setProfileAndTimeData() {
         // profile not init
         if (weightMeasurement == "") return
 

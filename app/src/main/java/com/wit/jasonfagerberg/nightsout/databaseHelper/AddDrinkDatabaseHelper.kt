@@ -7,7 +7,6 @@ import com.wit.jasonfagerberg.nightsout.main.Constants
 import com.wit.jasonfagerberg.nightsout.main.Drink
 import java.util.UUID
 
-// todo remove dependency on mainActivity
 class AddDrinkDatabaseHelper (context: Context?, name: String?, factory: SQLiteDatabase.CursorFactory?, version: Int)
     : DatabaseHelper(context, name, factory, version) {
 
@@ -28,7 +27,6 @@ class AddDrinkDatabaseHelper (context: Context?, name: String?, factory: SQLiteD
         updateDrinkSuggestionStatus(drink.id, false)
         setDrinkFavorited(drink, favorited)
 
-        // todo add to database, not directly to structures
         if (canUnfavorite) {
             mActivity.addDrinkToCurrentSessionAndRecentsTables(drink)
         } else {

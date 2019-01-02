@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.appcompat.widget.Toolbar
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.FragmentActivity
 import com.wit.jasonfagerberg.nightsout.main.Drink
 import com.wit.jasonfagerberg.nightsout.R
 import com.wit.jasonfagerberg.nightsout.converter.Converter
@@ -61,10 +62,7 @@ class AddDrinkActivity : AppCompatActivity() {
         drinkNameEditTextSetup()
         setupSpinner()
         setupRecentsAndFavoritesRecycler()
-        setupAddButton()
-        setupComplexModeCheckbox()
-        
-        // todo pull mFavorited canUnfavorite from bundle
+
         canUnfavorite = intent.getBooleanExtra("CAN_UNFAVORITE", true)
         mFavorited = intent.getBooleanExtra("FAVORITED", false)
 
@@ -78,15 +76,18 @@ class AddDrinkActivity : AppCompatActivity() {
         } else if (!complexMode) {
             mComplexDrinkHelper = ComplexDrinkHelper(this)
         }
+
+        setupComplexModeCheckbox()
+        mDatabaseHelper = AddDrinkDatabaseHelper(this, Constants.DB_NAME, null, Constants.DB_VERSION)
         super.onCreate(savedInstanceState)
     }
 
-    override fun onResume() {
-        mDatabaseHelper = AddDrinkDatabaseHelper(this, Constants.DB_NAME, null, Constants.DB_VERSION)
+    override fun onStart() {
         mDatabaseHelper.openDatabase()
         initData()
         showOrHideEmptyTextViews()
-        super.onResume()
+        setupAddButton()
+        super.onStart()
     }
 
     override fun onPause() {
@@ -102,7 +103,7 @@ class AddDrinkActivity : AppCompatActivity() {
     }
 
     private fun saveData() {
-        mDatabaseHelper.pushDrinks(mDrinksList, mFavoritesList)
+        //mDatabaseHelper.pushDrinks(mDrinksList, mFavoritesList)
         mDrinksList.clear()
         mRecentsList.clear()
         mFavoritesList.clear()
@@ -126,6 +127,9 @@ class AddDrinkActivity : AppCompatActivity() {
             btnAdd.background.setColorFilter(ContextCompat.getColor(this,
                     R.color.colorLightRed), PorterDuff.Mode.MULTIPLY)
             btnAdd.text = resources.getText(R.string.add_favorite)
+        } else {
+            btnAdd.background.setColorFilter(ContextCompat.getColor(this,
+                    R.color.colorGreen), PorterDuff.Mode.MULTIPLY)
         }
         btnAdd.setOnClickListener { addDrink() }
     }
@@ -149,7 +153,6 @@ class AddDrinkActivity : AppCompatActivity() {
             mComplexDrinkHelper.findViews(this)
             findViewById<MaterialButton>(R.id.btn_add_drink_add_alc_source).visibility = View.VISIBLE
             findViewById<RecyclerView>(R.id.recycler_add_drink_alcohol_source_list).visibility = View.VISIBLE
-            //todo write the same show toast method
             showToast("You can now add multiple alcohol sources")
         } else {
             findViewById<MaterialButton>(R.id.btn_add_drink_add_alc_source).visibility = View.INVISIBLE
@@ -194,7 +197,7 @@ class AddDrinkActivity : AppCompatActivity() {
             R.id.btn_toolbar_favorite -> { favoriteOptionSelected(item, btnAdd) }
             R.id.btn_clear_favorites_list -> { clearFavoritesOptionSelected() }
             R.id.btn_clear_recents_list -> { clearRecentsOptionSelected() }
-            // todo this will be broken until Manage DB Fragment is made an activity
+            // fixme this will be broken until Manage DB Fragment is made an activity
             //R.id.btn_toolbar_manage_db -> { mMainActivity.setFragment(ManageDBFragment()); true }
             else -> false
         }
@@ -228,6 +231,7 @@ class AddDrinkActivity : AppCompatActivity() {
             }
             showOrHideEmptyTextViews()
             mFavoritesListAdapter.notifyDataSetChanged()
+            mDatabaseHelper.deleteRowsInTable("favorites", null)
         }
         val lightSimpleDialog = LightSimpleDialog(this)
         lightSimpleDialog.setActions(posAction, {})
@@ -242,6 +246,7 @@ class AddDrinkActivity : AppCompatActivity() {
             mRecentsList.clear()
             for (drink in mDrinksList) {
                 drink.recent = false
+                mDatabaseHelper.updateRowInDrinksTable(drink)
             }
             showOrHideEmptyTextViews()
             mRecentsListAdapter.notifyDataSetChanged()
@@ -260,7 +265,6 @@ class AddDrinkActivity : AppCompatActivity() {
 
         toolbar.setNavigationIcon(R.drawable.arrow_back_white_24dp)
 
-        // todo may need to make this send back to main activity
         toolbar.setNavigationOnClickListener {
             val intent = Intent(this, MainActivity::class.java)
             if (canUnfavorite) intent.putExtra("FRAGMENT_ID", 0)
@@ -402,7 +406,6 @@ class AddDrinkActivity : AppCompatActivity() {
         if (drink.favorited) {
             addToFavoritesTable(drink)
         }
-        // todo check to see if this causes crashes if the drink is not in the table
         mDatabaseHelper.updateRowInDrinksTable(drink)
     }
 

@@ -13,7 +13,6 @@ import android.widget.Spinner
 import android.widget.LinearLayout
 import com.wit.jasonfagerberg.nightsout.R
 import com.wit.jasonfagerberg.nightsout.dialogs.EditDrinkDialog
-import com.wit.jasonfagerberg.nightsout.dialogs.LightSimpleDialog
 import com.wit.jasonfagerberg.nightsout.main.Constants
 import com.wit.jasonfagerberg.nightsout.main.Drink
 import com.wit.jasonfagerberg.nightsout.main.MainActivity
@@ -111,6 +110,7 @@ class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: Ar
             removeItem(position)
             dismissDialog(dialog)
             mMainActivity.homeFragment.showOrHideEmptyListText(mMainActivity.homeFragment.view!!)
+            mMainActivity.mDatabaseHelper.deleteRowsInTable("current_session_drinks", "drink_id=\"${drink.id}\"")
         }
 
         dialogView.findViewById<ImageView>(R.id.imgBtn_drink_modify_close).setOnClickListener { dialog.dismiss() }
@@ -165,7 +165,7 @@ class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: Ar
         dialog.setTitle(titleString)
         dialog.fillViews(drink.name, drink.abv.toString(), drink.amount.toString(), drink.measurement)
         dialog.setEditOnClickAction {
-            onDialogEditClick(drink, dialog.editName, dialog.editAbv, dialog.editAmount, dialog.spinnerMeasurement)
+            onDialogEditClick(drink, dialog.editName, dialog.editAbv, dialog.editAmount, dialog.spinnerMeasurement, position)
             this.notifyItemChanged(position)
             drink.modifiedTime = Constants.getLongTimeNow()
             mMainActivity.homeFragment.updateBACText(mMainActivity.homeFragment.calculateBAC())
@@ -181,7 +181,8 @@ class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: Ar
         editName: EditText,
         editABV: EditText,
         editAmount: EditText,
-        dropdown: Spinner
+        dropdown: Spinner,
+        position: Int
     ) {
         val other = Drink(drink.id, drink.name, drink.abv, drink.amount, drink.measurement,
                 false, false, Constants.getLongTimeNow())
@@ -210,6 +211,7 @@ class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: Ar
 
         val id = mMainActivity.mDatabaseHelper.getDrinkIdFromFullDrinkInfo(drink)
         drink.id = id
+        mMainActivity.mDatabaseHelper.deleteRowsInTable("current_session_drinks", "position=$position")
 
         if (!drink.isExactDrink(other) && !mMainActivity.mDatabaseHelper.idInDb(id)) {
             if (drink.name != other.name) drink.favorited = false
@@ -217,6 +219,7 @@ class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: Ar
             drink.id = mMainActivity.mDatabaseHelper.getDrinkIdFromFullDrinkInfo(drink)
         }
         mMainActivity.mDatabaseHelper.updateDrinkModifiedTime(drink.id, drink.modifiedTime)
+        mMainActivity.mDatabaseHelper.insertRowInCurrentSessionTable(drink.id, position)
     }
 
     private fun dismissDialog(dialog: AlertDialog) {
