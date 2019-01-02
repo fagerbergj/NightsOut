@@ -1,5 +1,6 @@
 package com.wit.jasonfagerberg.nightsout.profile
 
+import android.content.Intent
 import android.graphics.PorterDuff
 import android.graphics.Typeface
 import android.os.Bundle
@@ -29,6 +30,7 @@ import java.util.Collections
 import android.widget.AdapterView
 import android.widget.AdapterView.OnItemSelectedListener
 import androidx.recyclerview.widget.ItemTouchHelper
+import com.wit.jasonfagerberg.nightsout.addDrink.AddDrinkActivity
 import com.wit.jasonfagerberg.nightsout.converter.Converter
 import com.wit.jasonfagerberg.nightsout.dialogs.LightSimpleDialog
 
@@ -97,9 +99,10 @@ class ProfileFragment : Fragment() {
         // add favorite button setup
         val btnAddFavorite = view.findViewById<MaterialButton>(R.id.btn_profile_add_favorite)
         btnAddFavorite.setOnClickListener {
-            // todo set mFavorited in bundle, create intent
-            mMainActivity.addDrinkFragment.mFavorited = true
-            mMainActivity.setFragment(mMainActivity.addDrinkFragment)
+            val intent = Intent(mMainActivity, AddDrinkActivity::class.java)
+            intent.putExtra("CAN_UNFAVORITE", false)
+            intent.putExtra("FAVORITED", true)
+            startActivity(intent)
         }
 
         return view

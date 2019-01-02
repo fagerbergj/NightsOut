@@ -26,7 +26,6 @@ open class DatabaseHelper(
     // private val path = context!!.getDatabasePath(name).toString()
     private val path = "data/data/com.wit.jasonfagerberg.nightsout/$name"
     lateinit var db: SQLiteDatabase
-    private lateinit var mMainActivity: MainActivity
     // temp array for maintaining db after upgrade
     private val mAllDrinks = ArrayList<Drink>()
     private val mIgnoredDrinks = ArrayList<UUID>()
@@ -39,7 +38,6 @@ open class DatabaseHelper(
     override fun onCreate(db: SQLiteDatabase?) {}
 
     fun openDatabase() {
-        mMainActivity = context as MainActivity
         if (!dbExists()) {
             createDatabase()
         }
@@ -83,11 +81,20 @@ open class DatabaseHelper(
     }
 
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
+        val mainActivity = context as MainActivity
+
+
         mapOldIdsToUUIDs()
-        pullDrinks()
-        pullLogHeaders()
+        mainActivity.mDrinksList = pullCurrentSessionDrinks()
+        mainActivity.mFavoritesList = pullFavoriteDrinks()
+        mainActivity.mLogHeaders = pullLogHeaders()
         dropAllTables()
         rebuildTables()
+
+        pushAllDrinks()
+        pushDrinks(mainActivity.mDrinksList, mainActivity.mFavoritesList)
+        pushLogHeaders(mainActivity.mLogHeaders)
+        for (id in mIgnoredDrinks) updateDrinkSuggestionStatus(id, true)
         db!!.version = newVersion
     }
 
@@ -147,7 +154,7 @@ open class DatabaseHelper(
     }
 
     private fun dropAllTables() {
-        pullDrinks()
+        pullCurrentSessionDrinks()
         pullLogHeaders()
         pullAllDrinks()
         db.execSQL("DROP TABLE drinks")
@@ -163,17 +170,10 @@ open class DatabaseHelper(
         db.execSQL("CREATE TABLE \"favorites\" ( `drink_name` TEXT, `origin_id` TEXT )")
         db.execSQL("CREATE TABLE \"log\" ( `date` INTEGER UNIQUE, `bac` NUMERIC, `duration` INTEGER, PRIMARY KEY(`date`) )")
         db.execSQL("CREATE TABLE \"log_drink\" ( `log_date` NUMERIC, `drink_id` TEXT )")
-        pushAllDrinks()
-        pushDrinks()
-        pushLogHeaders()
-        for (id in mIgnoredDrinks) updateDrinkSuggestionStatus(id, true)
     }
 
-    fun pullDrinks() {
-        mMainActivity.mDrinksList.clear()
-        mMainActivity.mFavoritesList.clear()
-        mMainActivity.mRecentsList.clear()
-
+    fun pullCurrentSessionDrinks() :  ArrayList<Drink> {
+        val drinks = ArrayList<Drink>()
         val table = "drinks, current_session_drinks"
         val where = "drinks.id=current_session_drinks.drink_id"
         val order = "current_session_drinks.position ASC"
@@ -193,27 +193,28 @@ open class DatabaseHelper(
 
             val drink = Drink(id, drinkName, abv, amount, measurement, false, recent, modifiedTime)
             drink.favorited = isFavoritedInDB(drinkName)
-            mMainActivity.mDrinksList.add(drink)
+            drinks.add(drink)
         }
         cursor.close()
-        pullFavoriteDrinks()
-        pullRecentDrinks()
+        return drinks
     }
 
-    fun pullLogHeaders() {
-        mMainActivity.mLogHeaders.clear()
+    fun pullLogHeaders() : ArrayList<LogHeader> {
+        val headers = ArrayList<LogHeader>()
 
         val cursor = db.query("log", null, null, null, null, null, null)
         while (cursor.moveToNext()) {
             val date = cursor.getInt(cursor.getColumnIndex("date"))
             val bac = cursor.getDouble(cursor.getColumnIndex("bac"))
             val duration = cursor.getDouble(cursor.getColumnIndex("duration"))
-            mMainActivity.mLogHeaders.add(LogHeader(date, bac, duration))
+            headers.add(LogHeader(date, bac, duration))
         }
         cursor.close()
+        return headers
     }
 
-    private fun pullFavoriteDrinks() {
+    fun pullFavoriteDrinks() : ArrayList<Drink> {
+        val favorites = ArrayList<Drink>()
         val table = "drinks, favorites"
         val where = "drinks.id=favorites.origin_id"
         val order = "modifiedTime ASC"
@@ -233,13 +234,14 @@ open class DatabaseHelper(
 
             val drink = Drink(id, drinkName, abv, amount, measurement, true, false, modifiedTime)
 
-            mMainActivity.mFavoritesList.add(0, drink)
+           favorites.add(0, drink)
         }
-
         cursor.close()
+        return favorites
     }
 
-    private fun pullRecentDrinks() {
+    fun pullRecentDrinks() : ArrayList<Drink> {
+        val recents = ArrayList<Drink>()
         val table = "drinks"
         val where = "drinks.recent=1"
         val order = "modifiedTime ASC"
@@ -259,15 +261,15 @@ open class DatabaseHelper(
 
             val drink = Drink(id, drinkName, abv, amount, measurement, false, true, modifiedTime)
 
-            if (mMainActivity.mRecentsList.contains(drink)) {
-                val i = mMainActivity.mRecentsList.indexOf(drink)
-                mMainActivity.mRecentsList[i].recent = false
-                mMainActivity.mRecentsList.remove(drink)
+            if (recents.contains(drink)) {
+                val i = recents.indexOf(drink)
+                recents[i].recent = false
+               recents.remove(drink)
             }
-            mMainActivity.mRecentsList.add(0, drink)
+            recents.add(0, drink)
         }
-
         cursor.close()
+        return recents
     }
 
     fun isFavoritedInDB(name: String): Boolean {
@@ -279,26 +281,26 @@ open class DatabaseHelper(
         return ret
     }
 
-    fun pushDrinks() {
+    fun pushDrinks(current : ArrayList<Drink>, favorites : ArrayList<Drink>) {
         deleteRowsInTable("current_session_drinks", null)
-        for (i in mMainActivity.mDrinksList.indices) {
-            val drink = mMainActivity.mDrinksList[i]
+        for (i in current.indices) {
+            val drink = current[i]
             insertRowInCurrentSessionTable(drink.id, i)
             updateRowInDrinksTable(drink)
             if (!drink.favorited && isFavoritedInDB(drink.name)) {
                 deleteRowsInTable("favorites", "drink_name = \"${drink.name}\"")
             }
         }
-        for (drink in mMainActivity.mFavoritesList) {
+        for (drink in favorites) {
             if (!isFavoritedInDB(drink.name)) {
                 insertRowInFavoritesTable(drink.name, drink.id)
             }
         }
     }
 
-    fun pushLogHeaders() {
+    fun pushLogHeaders(headers : ArrayList<LogHeader>) {
         deleteRowsInTable("log", null)
-        for (header in mMainActivity.mLogHeaders) {
+        for (header in headers) {
             insertRowInLogTable(header.date, header.bac, header.duration)
         }
     }
@@ -333,7 +335,7 @@ open class DatabaseHelper(
         db.execSQL(sql)
     }
 
-    private fun updateRowInDrinksTable(drink: Drink) {
+    fun updateRowInDrinksTable(drink: Drink) {
         var recent = 0
         if (drink.recent) recent = 1
         val sql = "UPDATE drinks SET name=\"${drink.name}\", abv=${drink.abv}, amount=${drink.amount}," +
@@ -382,7 +384,7 @@ open class DatabaseHelper(
         return res != 0
     }
 
-    fun getDrinksFromName(name: String): ArrayList<Drink> {
+    fun getDrinksFromName(name: String, favorites: ArrayList<Drink>): ArrayList<Drink> {
         val drinks = ArrayList<Drink>()
         val table = "drinks"
         val where = "name = ?"
@@ -399,7 +401,7 @@ open class DatabaseHelper(
             val modifiedTime = cursor.getLong(cursor.getColumnIndex("modifiedTime"))
 
             val drink = Drink(id, drinkName, abv, amount, measurement, false, recent, modifiedTime)
-            drink.favorited = mMainActivity.mFavoritesList.contains(drink)
+            drink.favorited = favorites.contains(drink)
             drinks.add(drink)
         }
         cursor.close()

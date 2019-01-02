@@ -2,6 +2,7 @@ package com.wit.jasonfagerberg.nightsout.home
 
 import android.app.TimePickerDialog
 import android.content.DialogInterface
+import android.content.Intent
 import android.os.Bundle
 import com.google.android.material.button.MaterialButton
 import androidx.fragment.app.Fragment
@@ -26,6 +27,7 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import android.widget.TextView
 import android.widget.ImageButton
 import android.widget.EditText
+import com.wit.jasonfagerberg.nightsout.addDrink.AddDrinkActivity
 import com.wit.jasonfagerberg.nightsout.dialogs.BacInfoDialog
 import com.wit.jasonfagerberg.nightsout.manageDB.ManageDBFragment
 import java.util.Calendar
@@ -66,8 +68,10 @@ class HomeFragment : Fragment() {
         btnAdd.setOnClickListener {
             val mainActivity: MainActivity = context as MainActivity
             // todo set mFavorited in bundle, create intent
-            mMainActivity.addDrinkFragment.mFavorited = false
-            mainActivity.setFragment(mainActivity.addDrinkFragment)
+            val intent = Intent(mainActivity, AddDrinkActivity::class.java)
+            intent.putExtra("CAN_UNFAVORITE", true)
+            intent.putExtra("FAVORITED", false)
+            startActivity(intent)
         }
 
         // setup bottom nav bar

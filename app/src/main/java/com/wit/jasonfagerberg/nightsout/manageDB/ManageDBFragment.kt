@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.wit.jasonfagerberg.nightsout.R
-import com.wit.jasonfagerberg.nightsout.databaseHelper.AddDrinkDatabaseHelper
 import com.wit.jasonfagerberg.nightsout.dialogs.LightSimpleDialog
 import com.wit.jasonfagerberg.nightsout.main.Drink
 import com.wit.jasonfagerberg.nightsout.main.MainActivity
@@ -58,7 +57,7 @@ class ManageDBFragment : Fragment() {
                 val dialog = LightSimpleDialog(context!!)
                 val posAction = {
                     mMainActivity.mDatabaseHelper.copyDatabase()
-                    mMainActivity.mDatabaseHelper.pullDrinks()
+                    mMainActivity.mDatabaseHelper.pullCurrentSessionDrinks()
                     mMainActivity.mDatabaseHelper.pullLogHeaders()
 
                     mDrinksList.clear()

@@ -152,7 +152,7 @@ class ManageDBDrinkListAdapter(private val mContext: Context, private val mDrink
             val f = mMainActivity.mFavoritesList[i]
             if (f.isExactDrink(drink)) {
                 mMainActivity.mFavoritesList.removeAt(i)
-                val drinks = mMainActivity.mDatabaseHelper.getDrinksFromName(drink.name)
+                val drinks = mMainActivity.mDatabaseHelper.getDrinksFromName(drink.name, mMainActivity.mFavoritesList)
                 if (!drinks.isEmpty()) {
                     mMainActivity.mFavoritesList.add(i, drinks[0])
                 }
@@ -166,7 +166,7 @@ class ManageDBDrinkListAdapter(private val mContext: Context, private val mDrink
             val r = mMainActivity.mRecentsList[i]
             if (r.isExactDrink(drink)) {
                 mMainActivity.mRecentsList.removeAt(i)
-                val drinks = mMainActivity.mDatabaseHelper.getDrinksFromName(drink.name)
+                val drinks = mMainActivity.mDatabaseHelper.getDrinksFromName(drink.name, mMainActivity.mFavoritesList)
                 if (!drinks.isEmpty()) {
                     mMainActivity.mRecentsList.add(i, drinks[0])
                 }

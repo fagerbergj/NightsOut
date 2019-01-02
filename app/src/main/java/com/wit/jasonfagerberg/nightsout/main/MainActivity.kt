@@ -13,7 +13,6 @@ import android.widget.FrameLayout
 import android.widget.RelativeLayout
 import android.widget.Toast
 import com.wit.jasonfagerberg.nightsout.R
-import com.wit.jasonfagerberg.nightsout.addDrink.AddDrinkActivity
 import com.wit.jasonfagerberg.nightsout.converter.Converter
 import com.wit.jasonfagerberg.nightsout.databaseHelper.DatabaseHelper
 import com.wit.jasonfagerberg.nightsout.dialogs.SimpleDialog
@@ -81,14 +80,12 @@ class MainActivity : AppCompatActivity() {
                 else -> false
             }
         }
-
-        // database
-        mDatabaseHelper = DatabaseHelper(this, Constants.DB_NAME, null, Constants.DB_VERSION)
-        mDatabaseHelper.openDatabase()
         super.onCreate(savedInstanceState)
     }
 
     override fun onResume() {
+        mDatabaseHelper = DatabaseHelper(this, Constants.DB_NAME, null, Constants.DB_VERSION)
+        mDatabaseHelper.openDatabase()
         initData()
         super.onResume()
     }
@@ -104,21 +101,29 @@ class MainActivity : AppCompatActivity() {
         preferences = PreferenceManager.getDefaultSharedPreferences(this)
         getProfileAndTimeData()
 
-        if (!profileInt) {
+        val fragmentId = intent.getIntExtra("FRAGMENT_ID", 0)
+
+        if (!profileInt || fragmentId == 2) {
             setFragment(profileFragment)
-        } else if (supportFragmentManager.backStackEntryCount == 0) {
+        } else if (supportFragmentManager.backStackEntryCount == 0 || fragmentId == 0) {
             setFragment(homeFragment)
         }
 
         // init data
-        mDatabaseHelper.pullDrinks()
-        mDatabaseHelper.pullLogHeaders()
+        mDrinksList = mDatabaseHelper.pullCurrentSessionDrinks()
+        mFavoritesList = mDatabaseHelper.pullFavoriteDrinks()
+        mRecentsList = mDatabaseHelper.pullRecentDrinks()
+        mLogHeaders = mDatabaseHelper.pullLogHeaders()
     }
 
     private fun saveData() {
         setProfileAndTimeData()
-        mDatabaseHelper.pushDrinks()
-        mDatabaseHelper.pushLogHeaders()
+        mDatabaseHelper.pushDrinks(mDrinksList, mFavoritesList)
+        mDatabaseHelper.pushLogHeaders(mLogHeaders)
+        mDrinksList.clear()
+        mRecentsList.clear()
+        mFavoritesList.clear()
+        mLogHeaders.clear()
     }
 
     private fun setProfileAndTimeData() {

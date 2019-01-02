@@ -1,5 +1,6 @@
 package com.wit.jasonfagerberg.nightsout.addDrink
 
+import android.content.Intent
 import android.graphics.PorterDuff
 import android.graphics.Typeface
 import android.os.Bundle
@@ -23,6 +24,7 @@ import com.wit.jasonfagerberg.nightsout.addDrink.drinkSuggestion.DrinkSuggestion
 import com.wit.jasonfagerberg.nightsout.addDrink.drinkSuggestion.DrinkSuggestionArrayAdapter
 import com.wit.jasonfagerberg.nightsout.databaseHelper.AddDrinkDatabaseHelper
 import com.wit.jasonfagerberg.nightsout.main.Constants
+import com.wit.jasonfagerberg.nightsout.main.MainActivity
 import kotlin.collections.ArrayList
 
 // private const val TAG = "AddDrinkActivity"
@@ -44,10 +46,9 @@ class AddDrinkActivity : AppCompatActivity() {
     private var canUnfavorite = true
     private var complexMode = false
 
-    // todo pull these values from database
-    var mRecentsList = ArrayList<Drink>()
-    var mFavoritesList = ArrayList<Drink>()
-    var mDrinksList = ArrayList<Drink>()
+    lateinit var mRecentsList : ArrayList<Drink>
+    lateinit var mFavoritesList : ArrayList<Drink>
+    lateinit var mDrinksList : ArrayList<Drink>
 
     lateinit var autoCompleteView: DrinkSuggestionAutoCompleteView
 
@@ -63,8 +64,10 @@ class AddDrinkActivity : AppCompatActivity() {
         setupAddButton()
         setupComplexModeCheckbox()
         
-        canUnfavorite = true
         // todo pull mFavorited canUnfavorite from bundle
+        canUnfavorite = intent.getBooleanExtra("CAN_UNFAVORITE", true)
+        mFavorited = intent.getBooleanExtra("FAVORITED", false)
+
         if (savedInstanceState != null) {
             complexMode = savedInstanceState.getBoolean("complexMode")
             mComplexDrinkHelper = ComplexDrinkHelper(this)
@@ -75,9 +78,34 @@ class AddDrinkActivity : AppCompatActivity() {
         } else if (!complexMode) {
             mComplexDrinkHelper = ComplexDrinkHelper(this)
         }
+        super.onCreate(savedInstanceState)
+    }
+
+    override fun onResume() {
         mDatabaseHelper = AddDrinkDatabaseHelper(this, Constants.DB_NAME, null, Constants.DB_VERSION)
         mDatabaseHelper.openDatabase()
-        super.onCreate(savedInstanceState)
+        initData()
+        showOrHideEmptyTextViews()
+        super.onResume()
+    }
+
+    override fun onPause() {
+        saveData()
+        mDatabaseHelper.closeDatabase()
+        super.onPause()
+    }
+
+    private fun initData() {
+        mDrinksList = mDatabaseHelper.pullCurrentSessionDrinks()
+        mFavoritesList = mDatabaseHelper.pullFavoriteDrinks()
+        mRecentsList = mDatabaseHelper.pullRecentDrinks()
+    }
+
+    private fun saveData() {
+        mDatabaseHelper.pushDrinks(mDrinksList, mFavoritesList)
+        mDrinksList.clear()
+        mRecentsList.clear()
+        mFavoritesList.clear()
     }
 
     private fun setupSpinner() {
@@ -145,12 +173,6 @@ class AddDrinkActivity : AppCompatActivity() {
         outState.putDoubleArray("sourceAmount", sourceAmount)
         outState.putStringArrayList("sourceMeasure", sourceMeasure)
         super.onSaveInstanceState(outState)
-    }
-
-    override fun onResume() {
-        super.onResume()
-        // set empty text views
-        showOrHideEmptyTextViews()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -239,7 +261,12 @@ class AddDrinkActivity : AppCompatActivity() {
         toolbar.setNavigationIcon(R.drawable.arrow_back_white_24dp)
 
         // todo may need to make this send back to main activity
-        toolbar.setNavigationOnClickListener { onBackPressed() }
+        toolbar.setNavigationOnClickListener {
+            val intent = Intent(this, MainActivity::class.java)
+            if (canUnfavorite) intent.putExtra("FRAGMENT_ID", 0)
+            else intent.putExtra("FRAGMENT_ID", 2)
+            startActivity(intent)
+        }
     }
 
     private fun setupRecentsAndFavoritesRecycler() {
@@ -351,8 +378,10 @@ class AddDrinkActivity : AppCompatActivity() {
         mEditAmount.text.clear()
         complexMode = false
         findViewById<CheckBox>(R.id.chkBox_complexDrink).isChecked = false
-        //todo pass result to main activity
-        //onBackPressed()
+        val intent = Intent(this, MainActivity::class.java)
+        if (canUnfavorite) intent.putExtra("FRAGMENT_ID", 0)
+        else intent.putExtra("FRAGMENT_ID", 2)
+        startActivity(intent)
     }
 
     fun addDrinkToCurrentSessionAndRecentsTables(drink: Drink) {
@@ -373,8 +402,8 @@ class AddDrinkActivity : AppCompatActivity() {
         if (drink.favorited) {
             addToFavoritesTable(drink)
         }
-        // todo check to see if this causes crashes on UUID collisions
-        mDatabaseHelper.insertDrinkIntoDrinksTable(drink)
+        // todo check to see if this causes crashes if the drink is not in the table
+        mDatabaseHelper.updateRowInDrinksTable(drink)
     }
 
     fun addToFavoritesTable(drink: Drink) {
