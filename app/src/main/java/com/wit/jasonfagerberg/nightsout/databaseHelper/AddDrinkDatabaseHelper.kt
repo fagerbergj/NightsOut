@@ -95,8 +95,11 @@ class AddDrinkDatabaseHelper (context: Context?, name: String?, factory: SQLiteD
     fun updateDrinkFavoriteStatus(drink: Drink) {
         val favoritedInDB = isFavoritedInDB(drink.name)
         if ( favoritedInDB && !drink.favorited){
-            deleteRowsInTable("favorites", "drink_id=\"${drink.id}\"")
-        } else {
+            deleteRowsInTable("favorites", "drink_name=\"${drink.name}\"")
+        } else if (!favoritedInDB) {
+            insertRowInFavoritesTable(drink.name, drink.id)
+        } else if (favoritedInDB) {
+            deleteRowsInTable("favorites", "drink_name=\"${drink.name}\"")
             insertRowInFavoritesTable(drink.name, drink.id)
         }
 

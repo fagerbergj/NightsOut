@@ -43,6 +43,7 @@ class HomeFragmentLogDatePicker(
                 dialog.show("Do you want to start a new drink list?")
                 mainActivity.mDatabaseHelper.insertRowInLogTable(logDate, homeFragment.bac, homeFragment.drinkingDuration)
             }
+            dp.dismiss()
         }
 
         dp.setTitle("Log Day")

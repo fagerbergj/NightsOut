@@ -64,7 +64,6 @@ class ProfileFragment : Fragment() {
         if (sexInt > 0) sex = sexInt == 1
         weight = preferences.getFloat("WEIGHT", weight.toFloat()).toDouble()
         weightMeasurement = preferences.getString("MEASUREMENT", weightMeasurement)!!
-
         super.onCreate(savedInstanceState)
     }
 
@@ -86,9 +85,6 @@ class ProfileFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_profile, container, false)
-
-        // toolbar setup
-        setupToolbar(view)
 
         // recycler v setup
         setupFavoritesRecyclerView(view)
@@ -122,17 +118,21 @@ class ProfileFragment : Fragment() {
             intent.putExtra("FAVORITED", true)
             startActivity(intent)
         }
+        setupToolbar(view)
         return view
     }
 
     override fun onResume() {
+        setupToolbar(view!!)
         if (mMainActivity.profileInt) {
             sex = mMainActivity.sex!!
             weight = mMainActivity.weight
             weightMeasurement = mMainActivity.weightMeasurement
             mWeightEditText.setText(weight.toString())
-            mMainActivity.showBottomNavBar(R.id.bottom_nav_profile)
+            mMainActivity.showBottomNavBar()
         } else {
+            // pop the 0th fragment off the top
+            mMainActivity.mFragmentStack.pop()
             mMainActivity.hideBottomNavBar()
         }
 
@@ -147,6 +147,7 @@ class ProfileFragment : Fragment() {
 
         if (sex == true) pressMaleButton() else if (sex == false) pressFemaleButton()
         if (weight > 0.0) view!!.findViewById<EditText>(R.id.edit_profile_weight).setText(weight.toString())
+        mMainActivity.invalidateOptionsMenu()
         super.onResume()
     }
 
@@ -176,7 +177,8 @@ class ProfileFragment : Fragment() {
         return true
     }
 
-    private fun setupToolbar(view: View) {
+    fun setupToolbar(view: View) {
+        if (!isVisible) return
         val toolbar: Toolbar = view.findViewById(R.id.toolbar_profile)
         toolbar.inflateMenu(R.menu.profile_menu)
         mMainActivity.setSupportActionBar(toolbar)
@@ -301,14 +303,11 @@ class ProfileFragment : Fragment() {
         mMainActivity.sex = sex
         mMainActivity.weight = weight
         mMainActivity.weightMeasurement = weightMeasurement
-
-        if (mMainActivity.profileInt) {
-            mMainActivity.showToast("Profile Saved!")
-            mMainActivity.setFragment(mMainActivity.homeFragment)
-        } else {
-            mMainActivity.profileInt = true
-            mMainActivity.setFragment(mMainActivity.homeFragment)
-        }
+        mMainActivity.showToast("Profile Saved!")
+        mMainActivity.showBottomNavBar()
+        mMainActivity.profileInt = true
+        mMainActivity.mFragmentStack.push(mMainActivity.pager.currentItem)
+        mMainActivity.pager.currentItem = 0
     }
 
     private fun showErrorText(textView: TextView) {

@@ -57,9 +57,6 @@ class HomeFragment : Fragment() {
         // set layout
         mRelativeLayout = view.findViewById(R.id.layout_home)
 
-        // toolbar setup
-        setupToolbar(view)
-
         // add a drink button setup
         val btnAdd = view.findViewById<MaterialButton>(R.id.btn_home_add_drink)
         btnAdd.setOnClickListener {
@@ -72,6 +69,7 @@ class HomeFragment : Fragment() {
 
         // set edit texts
         setupEditTexts(view)
+        setupToolbar(view)
 
         // return
         return view
@@ -81,7 +79,6 @@ class HomeFragment : Fragment() {
         super.onResume()
         // setup list
         setupRecycler(view!!)
-        mMainActivity.showBottomNavBar(R.id.bottom_nav_home)
         val bacInfoDialog = BacInfoDialog(context!!)
         view!!.findViewById<ImageButton>(R.id.btn_home_bac_info).setOnClickListener {
             bacInfoDialog.showBacInfoDialog()
@@ -92,9 +89,6 @@ class HomeFragment : Fragment() {
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
         inflater!!.inflate(R.menu.home_menu, menu)
-        menu?.findItem(R.id.btn_toolbar_toggle_time_display)?.title = if (mMainActivity.use24HourTime) {
-            "Use 12 Hour Time"
-        } else "Use 24 Hour Time"
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
@@ -126,9 +120,12 @@ class HomeFragment : Fragment() {
         return true
     }
 
-    private fun setupToolbar(view: View) {
+    fun setupToolbar(view: View) {
         val toolbar: Toolbar = view.findViewById(R.id.toolbar_home)
         toolbar.inflateMenu(R.menu.home_menu)
+        toolbar.menu.getItem(3).title = if (mMainActivity.use24HourTime) {
+            "Use 12 Hour Time"
+        } else "Use 24 Hour Time"
         mMainActivity.setSupportActionBar(toolbar)
         mMainActivity.supportActionBar!!.setDisplayShowTitleEnabled(true)
         setHasOptionsMenu(true)

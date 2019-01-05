@@ -114,7 +114,7 @@ class AddDrinkActivity : AppCompatActivity() {
     private fun setupSpinner() {
         mSpinnerAmount = findViewById(R.id.spinner_add_drink_amount)
         val country = Locale.getDefault().country
-        val items = arrayOf("ml", "oz", "beers", "shots", "wine glasses")
+        val items = arrayOf("ml", "oz", "beers", "shots", "wine glasses", "pints")
         if (country == "US" || country == "LR" || country == "MM") {
             items[0] = "oz"
             items[1] = "ml"
@@ -365,7 +365,7 @@ class AddDrinkActivity : AppCompatActivity() {
         mEditAbv.setText(abv.toString())
         mEditAmount.setText(amount.toString())
         val country = Locale.getDefault().country
-        val items = arrayOf("ml", "oz", "beers", "shots", "wine glasses")
+        val items = arrayOf("ml", "oz", "beers", "shots", "wine glasses", "pints")
         if (country == "US" || country == "LR" || country == "MM") {
             items[0] = "oz"
             items[1] = "ml"

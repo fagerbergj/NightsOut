@@ -16,6 +16,7 @@ class Converter {
         volumeConversionMap["beers"] = 12.0
         volumeConversionMap["wine glasses"] = 5.0
         volumeConversionMap["shots"] = 1.5
+        volumeConversionMap["pints"] = 16.0
     }
 
     fun weightToLbs(weight: Double, weightMeasurement: String): Double {

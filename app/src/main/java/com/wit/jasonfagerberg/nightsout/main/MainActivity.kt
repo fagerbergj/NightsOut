@@ -4,14 +4,17 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.view.Gravity
+import android.view.MenuItem
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.fragment.app.Fragment
 import androidx.appcompat.app.AppCompatActivity
 // import android.util.Log
 import android.view.View
-import android.widget.FrameLayout
 import android.widget.RelativeLayout
 import android.widget.Toast
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentPagerAdapter
+import androidx.viewpager.widget.ViewPager
 import com.wit.jasonfagerberg.nightsout.R
 import com.wit.jasonfagerberg.nightsout.converter.Converter
 import com.wit.jasonfagerberg.nightsout.databaseHelper.DatabaseHelper
@@ -20,17 +23,23 @@ import com.wit.jasonfagerberg.nightsout.home.HomeFragment
 import com.wit.jasonfagerberg.nightsout.log.LogFragment
 import com.wit.jasonfagerberg.nightsout.log.LogHeader
 import com.wit.jasonfagerberg.nightsout.profile.ProfileFragment
-import java.util.*
+import java.util.Stack
+import java.util.Locale
+import java.util.GregorianCalendar
+import java.util.Date
+import java.util.Calendar
 
 // private const val TAG = "MainActivity"
 
 class MainActivity : AppCompatActivity() {
+    val mFragmentStack = Stack<Int>()
 
     // init fragments
     var homeFragment = HomeFragment()
     var logFragment = LogFragment()
     var profileFragment = ProfileFragment()
     private lateinit var botNavBar: BottomNavigationView
+    private var prevMenuItem: MenuItem? = null
 
     // shared pref data
     private lateinit var preferences: SharedPreferences
@@ -46,11 +55,13 @@ class MainActivity : AppCompatActivity() {
 
     // global lists
     var mDrinksList: ArrayList<Drink> = ArrayList()
-    var mRecentsList: ArrayList<Drink> = ArrayList()
+    private var mRecentsList: ArrayList<Drink> = ArrayList()
     var mFavoritesList: ArrayList<Drink> = ArrayList()
     var mLogHeaders: ArrayList<LogHeader> = ArrayList()
 
     lateinit var mDatabaseHelper: DatabaseHelper
+    lateinit var pager: ViewPager
+    private lateinit var pagerAdapter: MyPagerAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setContentView(R.layout.activity_main)
@@ -59,19 +70,18 @@ class MainActivity : AppCompatActivity() {
         botNavBar = findViewById(R.id.bottom_navigation_view)
 
         botNavBar.setOnNavigationItemSelectedListener { listener ->
-            val curFrag: Fragment = supportFragmentManager.findFragmentById(R.id.main_frame)!!
             when (listener.itemId) {
                 R.id.bottom_nav_home -> {
-                    alertUserBeforeNavigation(curFrag, homeFragment)
+                    alertUserBeforeNavigation(homeFragment)
                     true
                 }
 
                 R.id.bottom_nav_log -> {
-                    alertUserBeforeNavigation(curFrag, logFragment)
+                    alertUserBeforeNavigation(logFragment)
                     true
                 }
                 R.id.bottom_nav_profile -> {
-                    if (curFrag !is ProfileFragment) setFragment(profileFragment)
+                    pager.currentItem = 2
                     true
                 }
                 else -> false
@@ -82,18 +92,46 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onStart() {
+        pager = findViewById(R.id.main_frame)
+        pagerAdapter = MyPagerAdapter(supportFragmentManager)
+        pager.adapter = pagerAdapter
+        pager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+            override fun onPageScrollStateChanged(state: Int) {}
+            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
+            override fun onPageSelected(position: Int) {
+                if (profileInt) invalidateFragmentMenus(position)
+                prevMenuItem?.isChecked = false
+                if (prevMenuItem == null)
+                    botNavBar.menu.getItem(0).isChecked = false
+                else {
+                    mFragmentStack.push(
+                            when (prevMenuItem?.itemId) {
+                                R.id.bottom_nav_log -> 1
+                                R.id.bottom_nav_profile -> 2
+                                else -> 0
+                    })
+                }
+                botNavBar.menu.getItem(position).isChecked = true
+                prevMenuItem = botNavBar.menu.getItem(position)
+            }
+        })
         mDatabaseHelper.openDatabase()
         initData()
-//        if (!profileInt) {
-//            for (i in 0..500) {
-//                val drink = Drink(UUID.randomUUID(), "Drink $i", i.toDouble(), i.toDouble(), "oz", true, true, Constants.getLongTimeNow())
-//                mDatabaseHelper.insertDrinkIntoDrinksTable(drink)
-//                mDrinksList.add(drink)
-//                mFavoritesList.add(drink)
-//                mRecentsList.add(drink)
-//            }
-//        }
         super.onStart()
+    }
+
+    private fun invalidateFragmentMenus(position: Int) {
+        if (mFragmentStack.size >= 1) {
+            when (position) {
+                0 -> homeFragment.setupToolbar(homeFragment.view!!)
+                1 -> logFragment.setupToolbar(logFragment.view!!)
+                2 -> profileFragment.setupToolbar(profileFragment.view!!)
+            }
+        }
+        for (i in 0 until pagerAdapter.count) {
+            pagerAdapter.getItem(i).setHasOptionsMenu(i == position)
+        }
+        invalidateOptionsMenu() //or respectively its support method.
     }
 
     override fun onPause() {
@@ -110,10 +148,11 @@ class MainActivity : AppCompatActivity() {
         val fragmentId = intent.getIntExtra("FRAGMENT_ID", -1)
 
         if (!profileInt || fragmentId == 2) {
-            setFragment(profileFragment)
-        } else if (supportFragmentManager.backStackEntryCount == 0 || fragmentId == 0) {
-            setFragment(homeFragment)
+            pager.currentItem = 2
+        } else if (mFragmentStack.isEmpty() || fragmentId == 0) {
+            pager.currentItem = 0
         }
+        mFragmentStack.push(pager.currentItem)
         intent.putExtra("FRAGMENT_ID", -1)
 
         // init data
@@ -159,46 +198,54 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-        val count = supportFragmentManager.backStackEntryCount
-        val curFrag: Fragment = supportFragmentManager.findFragmentById(R.id.main_frame)!!
-
-        if (count == 1) {
-            finish()
-        } else {
-            alertUserBeforeNavigation(curFrag, null)
+        if (mFragmentStack.isEmpty()) {
+            super.onBackPressed()
+        }else{
+            alertUserBeforeNavigation(null)
         }
     }
 
-    private fun alertUserBeforeNavigation(curFrag: Fragment, destination: Fragment?) {
-        if (curFrag == profileFragment && profileFragment.hasUnsavedData()) {
+    private fun alertUserBeforeNavigation(destination: Fragment?) {
+        val destinationInt = when (destination){
+            is HomeFragment -> 0
+            is LogFragment -> 1
+            is ProfileFragment -> 2
+            else -> -1
+        }
+        if (pager.currentItem == 2 && profileFragment.hasUnsavedData()) {
             val simpleDialog = SimpleDialog(this, layoutInflater)
             simpleDialog.setTitle(resources.getString(R.string.unsaved_profile_changes))
             simpleDialog.setBody(resources.getString(R.string.are_you_sure_you_want_to_abandon_changes))
 
             simpleDialog.setNegativeFunction {
-                simpleDialog.dismiss()
                 botNavBar.selectedItemId = R.id.bottom_nav_profile
+                simpleDialog.dismiss()
             }
 
             simpleDialog.setPositiveFunction {
                 simpleDialog.dismiss()
-                if (destination == null) supportFragmentManager.popBackStack()
-                else setFragment(destination)
+                if (destination == null) {
+                    pager.currentItem = mFragmentStack.pop()
+                    mFragmentStack.pop()
+                }
+                else pager.currentItem = destinationInt
             }
-        } else if (curFrag != destination) {
-            if (destination == null) supportFragmentManager.popBackStack()
-            else setFragment(destination)
+        } else if (pager.currentItem != destinationInt) {
+            if (destination == null) {
+                pager.currentItem = mFragmentStack.pop()
+                mFragmentStack.pop()
+            }
+            else pager.currentItem = destinationInt
         }
     }
 
-    fun showBottomNavBar(id: Int) {
+    fun showBottomNavBar() {
         botNavBar.visibility = View.VISIBLE
-        botNavBar.selectedItemId = id
 
         val params = RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,
                 RelativeLayout.LayoutParams.MATCH_PARENT)
         params.addRule(RelativeLayout.ABOVE, R.id.bottom_navigation_view)
-        findViewById<FrameLayout>(R.id.main_frame).layoutParams = params
+        pager.layoutParams = params
     }
 
     fun hideBottomNavBar() {
@@ -207,15 +254,7 @@ class MainActivity : AppCompatActivity() {
 
         val params = RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,
                 RelativeLayout.LayoutParams.MATCH_PARENT)
-        findViewById<FrameLayout>(R.id.main_frame).layoutParams = params
-    }
-
-    fun setFragment(fragment: Fragment) {
-        // transaction.replace(R.id.main_frame, fragment)
-        val transaction = supportFragmentManager.beginTransaction()
-        transaction.replace(R.id.main_frame, fragment)
-        transaction.addToBackStack(null)
-        transaction.commitAllowingStateLoss()
+        findViewById<ViewPager>(R.id.main_frame).layoutParams = params
     }
 
     fun getCurrentTimeInMinuets(): Int {
@@ -229,7 +268,7 @@ class MainActivity : AppCompatActivity() {
 
     fun showToast(message: String, isLongToast: Boolean = false) {
         val toast = if (isLongToast) Toast.makeText(this, message, Toast.LENGTH_LONG)
-            else Toast.makeText(this, message, Toast.LENGTH_SHORT)
+        else Toast.makeText(this, message, Toast.LENGTH_SHORT)
         toast.setGravity(Gravity.CENTER, 0, 450)
         toast.show()
     }
@@ -237,5 +276,22 @@ class MainActivity : AppCompatActivity() {
     fun resetTime() {
         startTimeMin = getCurrentTimeInMinuets()
         endTimeMin = getCurrentTimeInMinuets()
+    }
+
+    private inner class MyPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
+
+        override fun getItem(pos: Int): Fragment {
+            return when (pos) {
+                1 -> logFragment
+                2 -> profileFragment
+                else -> homeFragment
+            }
+        }
+
+        override fun getCount(): Int {
+            return 3
+        }
+
+
     }
 }

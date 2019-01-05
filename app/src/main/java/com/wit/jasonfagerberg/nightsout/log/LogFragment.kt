@@ -1,7 +1,6 @@
 package com.wit.jasonfagerberg.nightsout.log
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -15,6 +14,7 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.widget.TextView
+import androidx.fragment.app.Fragment
 import com.wit.jasonfagerberg.nightsout.R
 import com.wit.jasonfagerberg.nightsout.converter.Converter
 import com.wit.jasonfagerberg.nightsout.databaseHelper.LogDatabaseHelper
@@ -41,6 +41,8 @@ class LogFragment : Fragment() {
     private lateinit var mLogList: ArrayList<Any>
     private val converter: Converter = Converter()
     private lateinit var logDatabaseHelper: LogDatabaseHelper
+    private var isStarted: Boolean = false
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         mMainActivity = context as MainActivity
@@ -67,18 +69,12 @@ class LogFragment : Fragment() {
         val itemDecor = DividerItemDecoration(mLogListView.context, DividerItemDecoration.VERTICAL)
         mLogListView.addItemDecoration(itemDecor)
 
-        // toolbar setup
-        setupToolbar(view)
-
         // calender setup
         setupCalendar(view)
+        setupToolbar(view)
 
         // set adapter
         setAdapter()
-
-        // setup bottom nav bar
-        mMainActivity.showBottomNavBar(R.id.bottom_nav_log)
-
         return view
     }
 
@@ -86,6 +82,12 @@ class LogFragment : Fragment() {
         val myCalendar = Calendar.getInstance()
         calendarView.selectedDate = CalendarDay.from(Date(myCalendar.time.time))
         super.onResume()
+        isStarted = true
+    }
+
+    override fun onPause() {
+        super.onPause()
+        isStarted = false
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
@@ -140,7 +142,7 @@ class LogFragment : Fragment() {
         highlightDays()
     }
 
-    private fun setupToolbar(view: View) {
+    fun setupToolbar(view: View) {
         val toolbar: Toolbar = view.findViewById(R.id.toolbar_log)
         toolbar.inflateMenu(R.menu.log_menu)
         mMainActivity.setSupportActionBar(toolbar)

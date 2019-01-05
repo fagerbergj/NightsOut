@@ -58,7 +58,7 @@ class EditDrinkDialog(private val context: Context, layoutInflater: LayoutInflat
         editAmount.setText(amount)
 
         val country = Locale.getDefault().country
-        val items = arrayOf("ml", "oz", "beers", "shots", "wine glasses")
+        val items = arrayOf("ml", "oz", "beers", "shots", "wine glasses", "pints")
         if (country == "US" || country == "LR" || country == "MM") {
             items[0] = "oz"
             items[1] = "ml"
