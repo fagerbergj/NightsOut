@@ -168,7 +168,7 @@ open class DatabaseHelper(
         db.execSQL("CREATE TABLE \"log_drink\" ( `log_date` NUMERIC, `drink_id` TEXT )")
     }
 
-    fun pullCurrentSessionDrinks() :  ArrayList<Drink> {
+    fun pullCurrentSessionDrinks(): ArrayList<Drink> {
         val drinks = ArrayList<Drink>()
         val table = "drinks, current_session_drinks"
         val where = "drinks.id=current_session_drinks.drink_id"
@@ -195,7 +195,7 @@ open class DatabaseHelper(
         return drinks
     }
 
-    fun pullLogHeaders() : ArrayList<LogHeader> {
+    fun pullLogHeaders(): ArrayList<LogHeader> {
         val headers = ArrayList<LogHeader>()
 
         val cursor = db.query("log", null, null, null, null, null, null)
@@ -209,7 +209,7 @@ open class DatabaseHelper(
         return headers
     }
 
-    fun pullFavoriteDrinks() : ArrayList<Drink> {
+    fun pullFavoriteDrinks(): ArrayList<Drink> {
         val favorites = ArrayList<Drink>()
         val table = "drinks, favorites"
         val where = "drinks.id=favorites.origin_id"
@@ -229,14 +229,13 @@ open class DatabaseHelper(
             val modifiedTime = cursor.getLong(cursor.getColumnIndex("modifiedTime"))
 
             val drink = Drink(id, drinkName, abv, amount, measurement, true, false, modifiedTime)
-
-           favorites.add(0, drink)
+            favorites.add(0, drink)
         }
         cursor.close()
         return favorites
     }
 
-    fun pullRecentDrinks() : ArrayList<Drink> {
+    fun pullRecentDrinks(): ArrayList<Drink> {
         val recents = ArrayList<Drink>()
         val table = "drinks"
         val where = "drinks.recent=1"
@@ -260,7 +259,7 @@ open class DatabaseHelper(
             if (recents.contains(drink)) {
                 val i = recents.indexOf(drink)
                 recents[i].recent = false
-               recents.remove(drink)
+                recents.remove(drink)
             }
             recents.add(0, drink)
         }
@@ -277,7 +276,7 @@ open class DatabaseHelper(
         return ret
     }
 
-    private fun pushDrinks(current : ArrayList<Drink>, favorites : ArrayList<Drink>) {
+    private fun pushDrinks(current: ArrayList<Drink>, favorites: ArrayList<Drink>) {
         deleteRowsInTable("current_session_drinks", null)
         for (i in current.indices) {
             val drink = current[i]
@@ -294,7 +293,7 @@ open class DatabaseHelper(
         }
     }
 
-    private fun pushLogHeaders(headers : ArrayList<LogHeader>) {
+    private fun pushLogHeaders(headers: ArrayList<LogHeader>) {
         deleteRowsInTable("log", null)
         for (header in headers) {
             insertRowInLogTable(header.date, header.bac, header.duration)
@@ -379,30 +378,30 @@ open class DatabaseHelper(
         cursor.close()
         return res != 0
     }
-
-    fun getDrinksFromName(name: String, favorites: ArrayList<Drink>): ArrayList<Drink> {
-        val drinks = ArrayList<Drink>()
-        val table = "drinks"
-        val where = "name = ?"
-        val whereArgs = arrayOf(name)
-        val order = "modifiedTime"
-        val cursor = db.query(table, null, where, whereArgs, null, null, order, null)
-        while (cursor.moveToNext()) {
-            val id = UUID.fromString(cursor.getString(cursor.getColumnIndex("id")))
-            val drinkName = cursor.getString(cursor.getColumnIndex("name"))
-            val abv = cursor.getDouble(cursor.getColumnIndex("abv"))
-            val amount = cursor.getDouble(cursor.getColumnIndex("amount"))
-            val measurement = cursor.getString(cursor.getColumnIndex("measurement"))
-            val recent = cursor.getInt(cursor.getColumnIndex("recent")) == 1
-            val modifiedTime = cursor.getLong(cursor.getColumnIndex("modifiedTime"))
-
-            val drink = Drink(id, drinkName, abv, amount, measurement, false, recent, modifiedTime)
-            drink.favorited = favorites.contains(drink)
-            drinks.add(drink)
-        }
-        cursor.close()
-        return drinks
-    }
+// will need this method when I add filter to manage DB activity
+//    fun getDrinksFromName(name: String, favorites: ArrayList<Drink>): ArrayList<Drink> {
+//        val drinks = ArrayList<Drink>()
+//        val table = "drinks"
+//        val where = "name = ?"
+//        val whereArgs = arrayOf(name)
+//        val order = "modifiedTime"
+//        val cursor = db.query(table, null, where, whereArgs, null, null, order, null)
+//        while (cursor.moveToNext()) {
+//            val id = UUID.fromString(cursor.getString(cursor.getColumnIndex("id")))
+//            val drinkName = cursor.getString(cursor.getColumnIndex("name"))
+//            val abv = cursor.getDouble(cursor.getColumnIndex("abv"))
+//            val amount = cursor.getDouble(cursor.getColumnIndex("amount"))
+//            val measurement = cursor.getString(cursor.getColumnIndex("measurement"))
+//            val recent = cursor.getInt(cursor.getColumnIndex("recent")) == 1
+//            val modifiedTime = cursor.getLong(cursor.getColumnIndex("modifiedTime"))
+//
+//            val drink = Drink(id, drinkName, abv, amount, measurement, false, recent, modifiedTime)
+//            drink.favorited = favorites.contains(drink)
+//            drinks.add(drink)
+//        }
+//        cursor.close()
+//        return drinks
+//    }
 
     fun idInDb(id: UUID): Boolean {
         val cursor = db.query("drinks", null, "id = ?", arrayOf(id.toString()), null, null, null, null)

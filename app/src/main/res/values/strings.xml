@@ -3,7 +3,6 @@
     <string name="fragment_home_name">Home</string>
     <string name="fragment_log_name">Log</string>
     <string name="fragment_profile_name">Profile</string>
-    <string name="fragment_add_drink_name">Add Drink</string>
     <string name="add_a_drink">Add A Drink</string>
     <string name="save_profile">Save Profile</string>
     <string name="start_drinking">Start Drinking</string>

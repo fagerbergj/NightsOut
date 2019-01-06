@@ -8,20 +8,19 @@ import com.wit.jasonfagerberg.nightsout.main.Drink
 import java.lang.Exception
 import java.util.UUID
 
-class AddDrinkDatabaseHelper (context: Context?, name: String?, factory: SQLiteDatabase.CursorFactory?, version: Int)
+class AddDrinkDatabaseHelper(context: Context?, name: String?, factory: SQLiteDatabase.CursorFactory?, version: Int)
     : DatabaseHelper(context, name, factory, version) {
 
-    private lateinit var mActivity : AddDrinkActivity
+    private lateinit var mActivity: AddDrinkActivity
 
     init {
         try {
             mActivity = context as AddDrinkActivity
-        } catch (e:Exception) {
+        } catch (e: Exception) {
             // do nothing, ManageDB is using this class for the get suggested drinks
             // method ass well as all base DB helper methods
         }
     }
-
 
     fun buildDrinkAndAddToList(
         name: String,
@@ -94,7 +93,7 @@ class AddDrinkDatabaseHelper (context: Context?, name: String?, factory: SQLiteD
 
     fun updateDrinkFavoriteStatus(drink: Drink) {
         val favoritedInDB = isFavoritedInDB(drink.name)
-        if ( favoritedInDB && !drink.favorited){
+        if (favoritedInDB && !drink.favorited) {
             deleteRowsInTable("favorites", "drink_name=\"${drink.name}\"")
         } else if (!favoritedInDB) {
             insertRowInFavoritesTable(drink.name, drink.id)
@@ -102,6 +101,5 @@ class AddDrinkDatabaseHelper (context: Context?, name: String?, factory: SQLiteD
             deleteRowsInTable("favorites", "drink_name=\"${drink.name}\"")
             insertRowInFavoritesTable(drink.name, drink.id)
         }
-
     }
 }

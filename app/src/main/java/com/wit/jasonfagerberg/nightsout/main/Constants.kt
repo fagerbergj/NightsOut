@@ -1,6 +1,6 @@
 package com.wit.jasonfagerberg.nightsout.main
 
-import java.util.*
+import java.util.Calendar
 
 class Constants {
     companion object {

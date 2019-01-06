@@ -6,13 +6,17 @@ import android.graphics.Typeface
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.view.*
 // import android.util.Log
 import com.google.android.material.button.MaterialButton
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import android.widget.*
+import android.widget.EditText
+import android.widget.Spinner
+import android.widget.ArrayAdapter
+import android.widget.TextView
+import android.widget.CheckBox
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.wit.jasonfagerberg.nightsout.main.Drink
 import com.wit.jasonfagerberg.nightsout.R
@@ -26,6 +30,10 @@ import com.wit.jasonfagerberg.nightsout.main.Constants
 import com.wit.jasonfagerberg.nightsout.main.MainActivity
 import com.wit.jasonfagerberg.nightsout.manageDB.ManageDBActivity
 import kotlin.collections.ArrayList
+import android.view.Menu
+import android.view.View
+import android.view.MenuItem
+import android.view.Gravity
 
 // private const val TAG = "AddDrinkActivity"
 
@@ -46,9 +54,9 @@ class AddDrinkActivity : AppCompatActivity() {
     private var canUnfavorite = true
     private var complexMode = false
 
-    lateinit var mRecentsList : ArrayList<Drink>
-    lateinit var mFavoritesList : ArrayList<Drink>
-    lateinit var mDrinksList : ArrayList<Drink>
+    lateinit var mRecentsList: ArrayList<Drink>
+    lateinit var mFavoritesList: ArrayList<Drink>
+    lateinit var mDrinksList: ArrayList<Drink>
 
     lateinit var autoCompleteView: DrinkSuggestionAutoCompleteView
 
@@ -105,7 +113,7 @@ class AddDrinkActivity : AppCompatActivity() {
     }
 
     private fun saveData() {
-        //mDatabaseHelper.pushDrinks(mDrinksList, mFavoritesList)
+        // mDatabaseHelper.pushDrinks(mDrinksList, mFavoritesList)
         mDrinksList.clear()
         mRecentsList.clear()
         mFavoritesList.clear()

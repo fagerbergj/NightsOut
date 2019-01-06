@@ -24,7 +24,6 @@ import com.wit.jasonfagerberg.nightsout.dialogs.SimpleDialog
 import com.wit.jasonfagerberg.nightsout.home.HomeFragment
 import com.wit.jasonfagerberg.nightsout.log.LogFragment
 import com.wit.jasonfagerberg.nightsout.log.LogHeader
-import com.wit.jasonfagerberg.nightsout.manageDB.ManageDBActivity
 import com.wit.jasonfagerberg.nightsout.profile.ProfileFragment
 import java.util.Stack
 import java.util.Locale
@@ -121,7 +120,7 @@ class MainActivity : AppCompatActivity() {
         for (i in 0 until pagerAdapter.count) {
             pagerAdapter.getItem(i).setHasOptionsMenu(i == position)
         }
-        invalidateOptionsMenu() //or respectively its support method.
+        invalidateOptionsMenu() // or respectively its support method.
     }
 
     override fun onPause() {
@@ -137,7 +136,7 @@ class MainActivity : AppCompatActivity() {
 
         val fragmentId = intent.getIntExtra("FRAGMENT_ID", -1)
         val fragmentArray = intent.getIntArrayExtra("BACK_STACK")
-        if (fragmentArray !=null) {
+        if (fragmentArray != null) {
             for (frag in fragmentArray) {
                 mBackStack.push(frag)
             }
@@ -208,7 +207,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun alertUserBeforeNavigation(destination: Fragment?) {
-        val destinationInt = when (destination){
+        val destinationInt = when (destination) {
             is HomeFragment -> 0
             is LogFragment -> 1
             is ProfileFragment -> 2
@@ -229,15 +228,13 @@ class MainActivity : AppCompatActivity() {
                 if (destination == null) {
                     pager.currentItem = mBackStack.pop()
                     mBackStack.pop()
-                }
-                else pager.currentItem = destinationInt
+                } else pager.currentItem = destinationInt
             }
         } else if (pager.currentItem != destinationInt) {
             if (destination == null) {
                 pager.currentItem = mBackStack.pop()
                 mBackStack.pop()
-            }
-            else pager.currentItem = destinationInt
+            } else pager.currentItem = destinationInt
         }
     }
 
@@ -294,13 +291,12 @@ class MainActivity : AppCompatActivity() {
             return 3
         }
 
-        fun getTitle(position: Int) : String {
+        fun getTitle(position: Int): String {
             return when (position) {
                 1 -> "Log"
                 2 -> "Profile"
                 else -> "Home"
             }
         }
-
     }
 }

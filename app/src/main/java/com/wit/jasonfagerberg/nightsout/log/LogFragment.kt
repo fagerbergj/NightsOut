@@ -4,7 +4,6 @@ import android.os.Bundle
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.RecyclerView
 // import android.util.Log
 import android.view.View
@@ -42,7 +41,6 @@ class LogFragment : Fragment() {
     private val converter: Converter = Converter()
     private lateinit var logDatabaseHelper: LogDatabaseHelper
     private var isStarted: Boolean = false
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         mMainActivity = context as MainActivity

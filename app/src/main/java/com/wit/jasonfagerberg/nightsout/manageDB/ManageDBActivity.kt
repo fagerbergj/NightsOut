@@ -81,10 +81,10 @@ class ManageDBActivity : AppCompatActivity() {
     private fun deleteDrinksWithNoReference() {
         var size = mDrinksList.size
         var offset = 0
-        for (position in 0 until size){
+        for (position in 0 until size) {
             val drink = mDrinksList[position - offset]
             val loss = mDrinkListAdapter.getLostReferenceString(drink)
-            if (loss.isEmpty()){
+            if (loss.isEmpty()) {
                 dbh.deleteRowsInTable("drinks", "id = \"${drink.id}\"")
                 mDrinksList.removeAt(position - offset)
                 mDrinkListAdapter.notifyItemRemoved(position - offset)

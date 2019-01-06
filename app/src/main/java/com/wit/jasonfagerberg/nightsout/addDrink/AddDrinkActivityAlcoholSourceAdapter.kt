@@ -10,13 +10,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.wit.jasonfagerberg.nightsout.R
 import com.wit.jasonfagerberg.nightsout.addDrink.ComplexDrinkHelper.AlcoholSource
 import com.wit.jasonfagerberg.nightsout.dialogs.LightSimpleDialog
-import com.wit.jasonfagerberg.nightsout.main.MainActivity
 
 class AddDrinkActivityAlcoholSourceAdapter(private val mContext: Context, alcoholSource: ArrayList<AlcoholSource>) :
         RecyclerView.Adapter<AddDrinkActivityAlcoholSourceAdapter.ViewHolder>() {
     // vars
     private val mAlcoholSourceList: MutableList<AlcoholSource> = alcoholSource
-    private lateinit var mMainActivity: MainActivity
     private lateinit var view: View
 
     // set layout inflater & inflate layout

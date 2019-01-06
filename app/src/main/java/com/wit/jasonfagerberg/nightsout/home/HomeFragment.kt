@@ -253,7 +253,7 @@ class HomeFragment : Fragment() {
         dialog.findViewById<Button>(R.id.btn_disclaimer_dismiss).setOnClickListener { dialog.dismiss() }
     }
 
-    fun calculateBAC() : Double {
+    fun calculateBAC(): Double {
         var a = 0.0
         for (drink in mMainActivity.mDrinksList) {
             val volume = mConverter.drinkVolumeToFluidOz(drink.amount, drink.measurement)
@@ -284,7 +284,7 @@ class HomeFragment : Fragment() {
         return res
     }
 
-    fun updateBACText(update : Double) {
+    fun updateBACText(update: Double) {
         bac = update
         val bacValueView = view!!.findViewById<TextView>(R.id.text_home_bac_value)
         val bacResultView = view!!.findViewById<TextView>(R.id.text_home_bac_result)

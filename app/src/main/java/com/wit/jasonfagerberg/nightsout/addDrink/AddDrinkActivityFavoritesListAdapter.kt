@@ -9,7 +9,7 @@ import android.widget.TextView
 import com.wit.jasonfagerberg.nightsout.R
 import com.wit.jasonfagerberg.nightsout.dialogs.LightSimpleDialog
 
-class AddDrinkActivityFavoritesListAdapter(private val mActivity : AddDrinkActivity) :
+class AddDrinkActivityFavoritesListAdapter(private val mActivity: AddDrinkActivity) :
         RecyclerView.Adapter<AddDrinkActivityFavoritesListAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {

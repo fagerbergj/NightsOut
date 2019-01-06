@@ -9,7 +9,7 @@ import android.widget.TextView
 import com.wit.jasonfagerberg.nightsout.R
 import com.wit.jasonfagerberg.nightsout.dialogs.LightSimpleDialog
 
-class AddDrinkActivityRecentsListAdapter(private val mActivity : AddDrinkActivity) :
+class AddDrinkActivityRecentsListAdapter(private val mActivity: AddDrinkActivity) :
         RecyclerView.Adapter<AddDrinkActivityRecentsListAdapter.ViewHolder>() {
 
     // set layout inflater & inflate layout

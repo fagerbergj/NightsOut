@@ -57,5 +57,6 @@
         android:src="@drawable/more_vert_gray_24dp"
         android:textAppearance="?android:textAppearanceLarge"
         android:textColor="@color/colorDarkGray"
-        tools:ignore="HardcodedText" />
+        tools:ignore="HardcodedText"
+        android:contentDescription="TODO" />
 </RelativeLayout>

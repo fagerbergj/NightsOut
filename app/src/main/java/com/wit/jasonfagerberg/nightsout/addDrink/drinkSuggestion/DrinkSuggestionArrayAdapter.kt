@@ -10,9 +10,9 @@ import com.wit.jasonfagerberg.nightsout.addDrink.AddDrinkActivity
 import com.wit.jasonfagerberg.nightsout.main.Drink
 
 class DrinkSuggestionArrayAdapter(
-        private var Activity: AddDrinkActivity,
-        private var layoutResourceId: Int,
-        var data: ArrayList<Drink>
+    private var Activity: AddDrinkActivity,
+    private var layoutResourceId: Int,
+    var data: ArrayList<Drink>
 ) : ArrayAdapter<Drink>(Activity, layoutResourceId, data) {
 
     override fun getCount(): Int {
