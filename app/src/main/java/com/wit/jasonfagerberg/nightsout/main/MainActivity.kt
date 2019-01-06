@@ -1,5 +1,6 @@
 package com.wit.jasonfagerberg.nightsout.main
 
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.preference.PreferenceManager
@@ -16,12 +17,14 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import androidx.viewpager.widget.ViewPager
 import com.wit.jasonfagerberg.nightsout.R
+import com.wit.jasonfagerberg.nightsout.addDrink.AddDrinkActivity
 import com.wit.jasonfagerberg.nightsout.converter.Converter
 import com.wit.jasonfagerberg.nightsout.databaseHelper.DatabaseHelper
 import com.wit.jasonfagerberg.nightsout.dialogs.SimpleDialog
 import com.wit.jasonfagerberg.nightsout.home.HomeFragment
 import com.wit.jasonfagerberg.nightsout.log.LogFragment
 import com.wit.jasonfagerberg.nightsout.log.LogHeader
+import com.wit.jasonfagerberg.nightsout.manageDB.ManageDBActivity
 import com.wit.jasonfagerberg.nightsout.profile.ProfileFragment
 import java.util.Stack
 import java.util.Locale
@@ -32,7 +35,7 @@ import java.util.Calendar
 // private const val TAG = "MainActivity"
 
 class MainActivity : AppCompatActivity() {
-    val mFragmentStack = Stack<Int>()
+    val mBackStack = Stack<Int>()
 
     // init fragments
     var homeFragment = HomeFragment()
@@ -99,20 +102,14 @@ class MainActivity : AppCompatActivity() {
             override fun onPageScrollStateChanged(state: Int) {}
             override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
             override fun onPageSelected(position: Int) {
-                if (profileInt) invalidateFragmentMenus(position)
+                supportActionBar?.title = pagerAdapter.getTitle(position)
+                invalidateFragmentMenus(position)
                 prevMenuItem?.isChecked = false
                 if (prevMenuItem == null)
                     botNavBar.menu.getItem(0).isChecked = false
-                else {
-                    mFragmentStack.push(
-                            when (prevMenuItem?.itemId) {
-                                R.id.bottom_nav_log -> 1
-                                R.id.bottom_nav_profile -> 2
-                                else -> 0
-                    })
-                }
                 botNavBar.menu.getItem(position).isChecked = true
                 prevMenuItem = botNavBar.menu.getItem(position)
+                mBackStack.push(position)
             }
         })
         mDatabaseHelper.openDatabase()
@@ -121,13 +118,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun invalidateFragmentMenus(position: Int) {
-        if (mFragmentStack.size >= 1) {
-            when (position) {
-                0 -> homeFragment.setupToolbar(homeFragment.view!!)
-                1 -> logFragment.setupToolbar(logFragment.view!!)
-                2 -> profileFragment.setupToolbar(profileFragment.view!!)
-            }
-        }
         for (i in 0 until pagerAdapter.count) {
             pagerAdapter.getItem(i).setHasOptionsMenu(i == position)
         }
@@ -146,14 +136,19 @@ class MainActivity : AppCompatActivity() {
         getProfileAndTimeData()
 
         val fragmentId = intent.getIntExtra("FRAGMENT_ID", -1)
+        val fragmentArray = intent.getIntArrayExtra("BACK_STACK")
+        if (fragmentArray !=null) {
+            for (frag in fragmentArray) {
+                mBackStack.push(frag)
+            }
+        }
 
         if (!profileInt || fragmentId == 2) {
             pager.currentItem = 2
-        } else if (mFragmentStack.isEmpty() || fragmentId == 0) {
+        } else if (mBackStack.isEmpty() || fragmentId == 0) {
             pager.currentItem = 0
         }
-        mFragmentStack.push(pager.currentItem)
-        intent.putExtra("FRAGMENT_ID", -1)
+        if (mBackStack.isEmpty()) mBackStack.push(pager.currentItem)
 
         // init data
         mDrinksList = mDatabaseHelper.pullCurrentSessionDrinks()
@@ -198,10 +193,17 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-        if (mFragmentStack.isEmpty()) {
-            super.onBackPressed()
-        }else{
-            alertUserBeforeNavigation(null)
+        while (mBackStack.isNotEmpty() && mBackStack.peek() == pager.currentItem) mBackStack.pop()
+        when {
+            mBackStack.isEmpty() -> super.finishAffinity()
+            mBackStack.peek() == 4 -> {
+                mBackStack.pop()
+                val intent = Intent(this, AddDrinkActivity::class.java)
+                intent.putExtra("FRAGMENT_ID", pager.currentItem)
+                intent.putExtra("BACK_STACK", mBackStack.toIntArray())
+                startActivity(intent)
+            }
+            else -> alertUserBeforeNavigation(null)
         }
     }
 
@@ -225,15 +227,15 @@ class MainActivity : AppCompatActivity() {
             simpleDialog.setPositiveFunction {
                 simpleDialog.dismiss()
                 if (destination == null) {
-                    pager.currentItem = mFragmentStack.pop()
-                    mFragmentStack.pop()
+                    pager.currentItem = mBackStack.pop()
+                    mBackStack.pop()
                 }
                 else pager.currentItem = destinationInt
             }
         } else if (pager.currentItem != destinationInt) {
             if (destination == null) {
-                pager.currentItem = mFragmentStack.pop()
-                mFragmentStack.pop()
+                pager.currentItem = mBackStack.pop()
+                mBackStack.pop()
             }
             else pager.currentItem = destinationInt
         }
@@ -292,6 +294,13 @@ class MainActivity : AppCompatActivity() {
             return 3
         }
 
+        fun getTitle(position: Int) : String {
+            return when (position) {
+                1 -> "Log"
+                2 -> "Profile"
+                else -> "Home"
+            }
+        }
 
     }
 }

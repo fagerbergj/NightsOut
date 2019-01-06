@@ -8,21 +8,10 @@
     android:layout_height="match_parent"
     tools:context=".home.HomeFragment">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar_home"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/colorPrimary"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        app:title="@string/fragment_home_name"
-        app:titleTextColor="@color/colorWhite" />
-
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_home_add_drink"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/toolbar_home"
         android:layout_centerHorizontal="true"
         android:layout_marginLeft="16dp"
         android:layout_marginTop="8dp"

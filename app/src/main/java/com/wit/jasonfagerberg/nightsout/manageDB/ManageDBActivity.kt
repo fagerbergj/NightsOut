@@ -6,7 +6,6 @@ import android.view.MenuItem
 import android.view.Menu
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -37,13 +36,11 @@ class ManageDBActivity : AppCompatActivity() {
     }
 
     private fun setupToolbar() {
-        val toolbar: Toolbar = findViewById(R.id.toolbar_manage_db)
-        toolbar.inflateMenu(R.menu.manage_db_menu)
-        setSupportActionBar(toolbar)
-        supportActionBar!!.setDisplayShowTitleEnabled(true)
-        //setHasOptionsMenu(true)
-        toolbar.setNavigationIcon(R.drawable.arrow_back_white_24dp)
-        toolbar.setNavigationOnClickListener { onBackPressed() }
+        supportActionBar?.title = "Manage Database"
+        // adds back button to action bar
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayShowHomeEnabled(true)
+        supportActionBar?.setHomeAsUpIndicator(R.drawable.arrow_back_white_24dp)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -73,6 +70,9 @@ class ManageDBActivity : AppCompatActivity() {
                 dialog.setActions({ deleteDrinksWithNoReference() }, {})
                 dialog.show("Are you sure you want to clean your database? This will permanently delete all drinks:" +
                         "\n    Not Currently in Use\n    Not in Favorited\n    Not Recently Used\n    Not Logged")
+            }
+            android.R.id.home -> {
+                onBackPressed()
             }
         }
         return true

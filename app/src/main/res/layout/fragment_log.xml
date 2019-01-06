@@ -6,21 +6,10 @@
     android:layout_height="match_parent"
     tools:context=".log.LogFragment">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar_log"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/colorPrimary"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        app:title="@string/fragment_log_name"
-        app:titleTextColor="@color/colorWhite" />
-
     <com.prolificinteractive.materialcalendarview.MaterialCalendarView
         android:id="@+id/calender_log"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/toolbar_log"
         app:mcv_dateTextAppearance="@android:style/TextAppearance.Medium"
         app:mcv_selectionColor="@color/colorLightBlueGray"
         app:mcv_tileHeight="40dp" />

@@ -10,7 +10,6 @@ import androidx.fragment.app.Fragment
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.appcompat.widget.Toolbar
 import android.text.Editable
 import android.text.TextWatcher
 // import android.util.Log
@@ -116,14 +115,14 @@ class ProfileFragment : Fragment() {
             val intent = Intent(mMainActivity, AddDrinkActivity::class.java)
             intent.putExtra("CAN_UNFAVORITE", false)
             intent.putExtra("FAVORITED", true)
+            mMainActivity.mBackStack.push(4)
             startActivity(intent)
         }
-        setupToolbar(view)
+        setHasOptionsMenu(true)
         return view
     }
 
     override fun onResume() {
-        setupToolbar(view!!)
         if (mMainActivity.profileInt) {
             sex = mMainActivity.sex!!
             weight = mMainActivity.weight
@@ -132,7 +131,7 @@ class ProfileFragment : Fragment() {
             mMainActivity.showBottomNavBar()
         } else {
             // pop the 0th fragment off the top
-            mMainActivity.mFragmentStack.pop()
+            mMainActivity.mBackStack.pop()
             mMainActivity.hideBottomNavBar()
         }
 
@@ -152,6 +151,7 @@ class ProfileFragment : Fragment() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+        mMainActivity.supportActionBar?.title = "Profile"
         inflater!!.inflate(R.menu.profile_menu, menu)
     }
 
@@ -175,15 +175,6 @@ class ProfileFragment : Fragment() {
             }
         }
         return true
-    }
-
-    fun setupToolbar(view: View) {
-        if (!isVisible) return
-        val toolbar: Toolbar = view.findViewById(R.id.toolbar_profile)
-        toolbar.inflateMenu(R.menu.profile_menu)
-        mMainActivity.setSupportActionBar(toolbar)
-        mMainActivity.supportActionBar!!.setDisplayShowTitleEnabled(true)
-        setHasOptionsMenu(true)
     }
 
     private fun setupFavoritesRecyclerView(view: View) {
@@ -306,7 +297,7 @@ class ProfileFragment : Fragment() {
         mMainActivity.showToast("Profile Saved!")
         mMainActivity.showBottomNavBar()
         mMainActivity.profileInt = true
-        mMainActivity.mFragmentStack.push(mMainActivity.pager.currentItem)
+        mMainActivity.mBackStack.push(mMainActivity.pager.currentItem)
         mMainActivity.pager.currentItem = 0
     }
 

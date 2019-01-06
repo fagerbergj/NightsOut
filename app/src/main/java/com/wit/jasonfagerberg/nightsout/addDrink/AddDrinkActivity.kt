@@ -12,10 +12,8 @@ import com.google.android.material.button.MaterialButton
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.appcompat.widget.Toolbar
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.FragmentActivity
 import com.wit.jasonfagerberg.nightsout.main.Drink
 import com.wit.jasonfagerberg.nightsout.R
 import com.wit.jasonfagerberg.nightsout.converter.Converter
@@ -55,6 +53,7 @@ class AddDrinkActivity : AppCompatActivity() {
     lateinit var autoCompleteView: DrinkSuggestionAutoCompleteView
 
     lateinit var mDatabaseHelper: AddDrinkDatabaseHelper
+    private lateinit var mBackStackIntArray: IntArray
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setContentView(R.layout.activity_add_drink)
@@ -66,6 +65,7 @@ class AddDrinkActivity : AppCompatActivity() {
 
         canUnfavorite = intent.getBooleanExtra("CAN_UNFAVORITE", true)
         mFavorited = intent.getBooleanExtra("FAVORITED", false)
+        mBackStackIntArray = intent.getIntArrayExtra("BACK_STACK")
 
         if (savedInstanceState != null) {
             complexMode = savedInstanceState.getBoolean("complexMode")
@@ -205,8 +205,20 @@ class AddDrinkActivity : AppCompatActivity() {
                 startActivity(intent)
                 true
             }
+            android.R.id.home -> {
+                onBackPressed()
+                true
+            }
             else -> false
         }
+    }
+
+    override fun onBackPressed() {
+        val intent = Intent(this, MainActivity::class.java)
+        if (canUnfavorite) intent.putExtra("FRAGMENT_ID", 0)
+        else intent.putExtra("FRAGMENT_ID", 2)
+        intent.putExtra("BACK_STACK", mBackStackIntArray)
+        startActivity(intent)
     }
 
     private fun favoriteOptionSelected(item: MenuItem, btnAdd: MaterialButton): Boolean {
@@ -264,20 +276,11 @@ class AddDrinkActivity : AppCompatActivity() {
     }
 
     private fun toolbarSetup() {
-        val toolbar: Toolbar = findViewById(R.id.toolbar_add_drink)
-        toolbar.inflateMenu(R.menu.add_drink_menu)
-        setSupportActionBar(toolbar)
-        supportActionBar!!.setDisplayShowTitleEnabled(true)
-
-        toolbar.overflowIcon = ContextCompat.getDrawable(this, R.drawable.overflow_white)
-        toolbar.setNavigationIcon(R.drawable.arrow_back_white_24dp)
-
-        toolbar.setNavigationOnClickListener {
-            val intent = Intent(this, MainActivity::class.java)
-            if (canUnfavorite) intent.putExtra("FRAGMENT_ID", 0)
-            else intent.putExtra("FRAGMENT_ID", 2)
-            startActivity(intent)
-        }
+        supportActionBar?.title = "Add Drink"
+        // adds back button to action bar
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayShowHomeEnabled(true)
+        supportActionBar?.setHomeAsUpIndicator(R.drawable.arrow_back_white_24dp)
     }
 
     private fun setupRecentsAndFavoritesRecycler() {
@@ -392,6 +395,7 @@ class AddDrinkActivity : AppCompatActivity() {
         val intent = Intent(this, MainActivity::class.java)
         if (canUnfavorite) intent.putExtra("FRAGMENT_ID", 0)
         else intent.putExtra("FRAGMENT_ID", 2)
+        intent.putExtra("BACK_STACK", mBackStackIntArray)
         startActivity(intent)
     }
 

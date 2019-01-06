@@ -71,7 +71,7 @@ class LogFragment : Fragment() {
 
         // calender setup
         setupCalendar(view)
-        setupToolbar(view)
+        setHasOptionsMenu(true)
 
         // set adapter
         setAdapter()
@@ -91,6 +91,7 @@ class LogFragment : Fragment() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+        mMainActivity.supportActionBar?.title = "Log"
         inflater!!.inflate(R.menu.log_menu, menu)
     }
 
@@ -140,14 +141,6 @@ class LogFragment : Fragment() {
         setAdapter()
         mLogFragmentAdapter.notifyDataSetChanged()
         highlightDays()
-    }
-
-    fun setupToolbar(view: View) {
-        val toolbar: Toolbar = view.findViewById(R.id.toolbar_log)
-        toolbar.inflateMenu(R.menu.log_menu)
-        mMainActivity.setSupportActionBar(toolbar)
-        mMainActivity.supportActionBar!!.setDisplayShowTitleEnabled(true)
-        setHasOptionsMenu(true)
     }
 
     private fun setAdapter() {

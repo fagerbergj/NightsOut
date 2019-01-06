@@ -10,7 +10,6 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.appcompat.widget.Toolbar
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.view.View
@@ -64,12 +63,14 @@ class HomeFragment : Fragment() {
             val intent = Intent(mainActivity, AddDrinkActivity::class.java)
             intent.putExtra("CAN_UNFAVORITE", true)
             intent.putExtra("FAVORITED", false)
+            mMainActivity.mBackStack.push(4)
+            intent.putExtra("BACK_STACK", mMainActivity.mBackStack.toIntArray())
             startActivity(intent)
         }
 
         // set edit texts
         setupEditTexts(view)
-        setupToolbar(view)
+        setHasOptionsMenu(true)
 
         // return
         return view
@@ -88,7 +89,11 @@ class HomeFragment : Fragment() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+        mMainActivity.supportActionBar?.title = "Home"
         inflater!!.inflate(R.menu.home_menu, menu)
+        menu?.getItem(3)?.title = if (mMainActivity.use24HourTime) {
+            "Use 12 Hour Time"
+        } else "Use 24 Hour Time"
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
@@ -113,22 +118,10 @@ class HomeFragment : Fragment() {
             }
             R.id.btn_toolbar_manage_db -> {
                 val intent = Intent(mMainActivity, ManageDBActivity::class.java)
-                intent.putExtra("FRAGMENT_ID", 0)
                 startActivity(intent)
             }
         }
         return true
-    }
-
-    fun setupToolbar(view: View) {
-        val toolbar: Toolbar = view.findViewById(R.id.toolbar_home)
-        toolbar.inflateMenu(R.menu.home_menu)
-        toolbar.menu.getItem(3).title = if (mMainActivity.use24HourTime) {
-            "Use 12 Hour Time"
-        } else "Use 24 Hour Time"
-        mMainActivity.setSupportActionBar(toolbar)
-        mMainActivity.supportActionBar!!.setDisplayShowTitleEnabled(true)
-        setHasOptionsMenu(true)
     }
 
     private fun setupRecycler(view: View) {
