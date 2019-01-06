@@ -10,8 +10,8 @@ android {
         applicationId "com.wit.jasonfagerberg.nightsout"
         minSdkVersion 19
         targetSdkVersion 28
-        versionCode 1204
-        versionName "butterfree"
+        versionCode 1301
+        versionName "weedle"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         setProperty("archivesBaseName", "nightsout-$versionName")
     }
