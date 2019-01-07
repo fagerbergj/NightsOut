@@ -121,14 +121,16 @@ class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: Ar
         val copy = Drink(d.id, d.name, d.abv, d.amount, d.measurement, d.favorited, d.recent, d.modifiedTime)
 
         if (position <= mDrinksList.size / 2) {
-            mDrinksList.add(position + 1, copy)
-            notifyItemInserted(position + 1)
-            notifyItemRangeChanged(position + 1, mDrinksList.size)
+            position ++
+            mDrinksList.add(position, copy)
+            notifyItemInserted(position)
+            notifyItemRangeChanged(position, mDrinksList.size)
         } else {
             mDrinksList.add(position, copy)
             notifyItemInserted(position)
             notifyItemRangeChanged(position, mDrinksList.size)
         }
+        mMainActivity.mDatabaseHelper.insertRowInCurrentSessionTable(copy.id, position)
     }
 
     private fun onFavoriteClicked(drink: Drink) {
