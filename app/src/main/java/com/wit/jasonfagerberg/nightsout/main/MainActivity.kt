@@ -147,7 +147,7 @@ class MainActivity : AppCompatActivity() {
         } else if (mBackStack.isEmpty() || fragmentId == 0) {
             pager.currentItem = 0
         }
-        if (mBackStack.isEmpty()) mBackStack.push(pager.currentItem)
+        mBackStack.push(pager.currentItem)
 
         // init data
         mDrinksList = mDatabaseHelper.pullCurrentSessionDrinks()
