@@ -40,7 +40,6 @@ class LogFragment : Fragment() {
     private lateinit var mLogList: ArrayList<Any>
     private val converter: Converter = Converter()
     private lateinit var logDatabaseHelper: LogDatabaseHelper
-    private var isStarted: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         mMainActivity = context as MainActivity
@@ -67,8 +66,6 @@ class LogFragment : Fragment() {
         val itemDecor = DividerItemDecoration(mLogListView.context, DividerItemDecoration.VERTICAL)
         mLogListView.addItemDecoration(itemDecor)
 
-        // calender setup
-        setupCalendar(view)
         setHasOptionsMenu(true)
 
         // set adapter
@@ -78,14 +75,10 @@ class LogFragment : Fragment() {
 
     override fun onResume() {
         val myCalendar = Calendar.getInstance()
+        setupCalendar(view!!)
         calendarView.selectedDate = CalendarDay.from(Date(myCalendar.time.time))
+        // calender setup
         super.onResume()
-        isStarted = true
-    }
-
-    override fun onPause() {
-        super.onPause()
-        isStarted = false
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
@@ -170,6 +163,11 @@ class LogFragment : Fragment() {
             val date = Integer.parseInt(converter.yearMonthDayTo8DigitString(day.year, day.month, day.day))
             setLogListBasedOnDay(date)
         }
+    }
+
+    override fun setUserVisibleHint(isVisibleToUser: Boolean) {
+        if (isVisibleToUser) setupCalendar(view!!)
+        super.setUserVisibleHint(isVisibleToUser)
     }
 
     private fun highlightDays() {
