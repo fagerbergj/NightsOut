@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.view.View
 import android.widget.RelativeLayout
 import android.widget.Toast
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import androidx.viewpager.widget.ViewPager
@@ -246,7 +247,7 @@ class MainActivity : AppCompatActivity() {
         val params = RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,
                 RelativeLayout.LayoutParams.MATCH_PARENT)
         params.addRule(RelativeLayout.ABOVE, R.id.bottom_navigation_view)
-        pager.layoutParams = params
+        findViewById<CoordinatorLayout>(R.id.placeSnackBar).layoutParams = params
     }
 
     fun hideBottomNavBar() {
@@ -255,7 +256,7 @@ class MainActivity : AppCompatActivity() {
 
         val params = RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,
                 RelativeLayout.LayoutParams.MATCH_PARENT)
-        findViewById<ViewPager>(R.id.main_frame).layoutParams = params
+        findViewById<CoordinatorLayout>(R.id.placeSnackBar).layoutParams = params
     }
 
     fun getCurrentTimeInMinuets(): Int {
