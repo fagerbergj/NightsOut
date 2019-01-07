@@ -26,6 +26,7 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import android.widget.TextView
 import android.widget.ImageButton
 import android.widget.EditText
+import com.google.android.material.snackbar.Snackbar
 import com.wit.jasonfagerberg.nightsout.addDrink.AddDrinkActivity
 import com.wit.jasonfagerberg.nightsout.dialogs.BacInfoDialog
 import com.wit.jasonfagerberg.nightsout.manageDB.ManageDBActivity
@@ -150,13 +151,24 @@ class HomeFragment : Fragment() {
             }
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, swipeDir: Int) {
-                mMainActivity.showToast("${mMainActivity.mDrinksList[viewHolder.adapterPosition].name} removed", true)
-                //todo remove at position and reorder drinks
+                val deletedDrink = mMainActivity.mDrinksList[viewHolder.adapterPosition]
+                val deletedPosition = viewHolder.adapterPosition
+                val snackbar = Snackbar.make(mMainActivity.findViewById(R.id.placeSnackBar), "${mMainActivity.mDrinksList[viewHolder.adapterPosition].name} removed", Snackbar.LENGTH_LONG)
+                val undoAction: (v: View) -> Unit = {
+                    mMainActivity.mDrinksList.add(deletedPosition, deletedDrink)
+                    mDrinkListAdapter.notifyItemInserted(deletedPosition)
+                    mDrinkListAdapter.notifyItemRangeChanged(deletedPosition, mMainActivity.mDrinksList.size)
+                    showOrHideEmptyListText(view!!)
+                    updateBACText(calculateBAC())
+                }
+                snackbar.setAction("Undo", undoAction)
+                snackbar.setActionTextColor(ContextCompat.getColor(context!!, R.color.colorWhite))
                 mMainActivity.mDrinksList.removeAt(viewHolder.adapterPosition)
                 mDrinkListAdapter.notifyItemRemoved(viewHolder.adapterPosition)
                 mDrinkListAdapter.notifyItemRangeChanged(0, mMainActivity.mDrinksList.size)
                 showOrHideEmptyListText(view!!)
                 updateBACText(calculateBAC())
+                snackbar.show()
             }
         }
 

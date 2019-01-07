@@ -15,6 +15,12 @@
         android:background="@color/colorWhite"
         app:menu="@menu/bottom_nav" />
 
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/placeSnackBar"
+        android:layout_above="@id/bottom_navigation_view">
+
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/main_frame"
         android:layout_width="match_parent"
@@ -22,7 +28,7 @@
         android:layout_above="@id/bottom_navigation_view"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:background="@color/colorWhite">
+        android:background="@color/colorWhite"/>
 
-    </androidx.viewpager.widget.ViewPager>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </RelativeLayout>

@@ -11,6 +11,8 @@ import android.widget.ImageView
 import android.widget.EditText
 import android.widget.Spinner
 import android.widget.LinearLayout
+import androidx.core.content.ContextCompat
+import com.google.android.material.snackbar.Snackbar
 import com.wit.jasonfagerberg.nightsout.R
 import com.wit.jasonfagerberg.nightsout.dialogs.EditDrinkDialog
 import com.wit.jasonfagerberg.nightsout.main.Constants
@@ -154,9 +156,21 @@ class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: Ar
 
     private fun removeItem(position: Int) {
         if (position >= mMainActivity.mDrinksList.size) return
+        val deletedDrink = mMainActivity.mDrinksList[position]
+        val snackbar = Snackbar.make(mMainActivity.findViewById(R.id.placeSnackBar), "${mMainActivity.mDrinksList[position].name} removed", Snackbar.LENGTH_LONG)
+        val undoAction: (v: View) -> Unit = {
+            mMainActivity.mDrinksList.add(position, deletedDrink)
+            notifyItemInserted(position)
+            notifyItemRangeChanged(position, mMainActivity.mDrinksList.size)
+            mMainActivity.homeFragment.showOrHideEmptyListText(mMainActivity.homeFragment.view!!)
+            mMainActivity.homeFragment.updateBACText(mMainActivity.homeFragment.calculateBAC())
+        }
+        snackbar.setAction("Undo", undoAction)
+        snackbar.setActionTextColor(ContextCompat.getColor(mMainActivity.homeFragment.context!!, R.color.colorWhite))
         mDrinksList.removeAt(position)
         notifyItemRemoved(position)
         notifyItemRangeChanged(position, mDrinksList.size)
+        snackbar.show()
     }
 
     private fun showEditDialog(position: Int) {
