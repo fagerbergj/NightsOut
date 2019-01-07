@@ -3,6 +3,7 @@ package com.wit.jasonfagerberg.nightsout.main
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.os.PersistableBundle
 import android.preference.PreferenceManager
 import android.view.Gravity
 import android.view.MenuItem
@@ -73,27 +74,14 @@ class MainActivity : AppCompatActivity() {
 
         botNavBar.setOnNavigationItemSelectedListener { listener ->
             when (listener.itemId) {
-                R.id.bottom_nav_home -> {
-                    alertUserBeforeNavigation(homeFragment)
-                    true
-                }
-
-                R.id.bottom_nav_log -> {
-                    alertUserBeforeNavigation(logFragment)
-                    true
-                }
-                R.id.bottom_nav_profile -> {
-                    pager.currentItem = 2
-                    true
-                }
+                R.id.bottom_nav_home -> { alertUserBeforeNavigation(homeFragment); true }
+                R.id.bottom_nav_log -> { alertUserBeforeNavigation(logFragment);true }
+                R.id.bottom_nav_profile -> { pager.currentItem = 2; true }
                 else -> false
             }
         }
         mDatabaseHelper = DatabaseHelper(this, Constants.DB_NAME, null, Constants.DB_VERSION)
-        super.onCreate(savedInstanceState)
-    }
 
-    override fun onStart() {
         pager = findViewById(R.id.main_frame)
         pagerAdapter = MyPagerAdapter(supportFragmentManager)
         pager.adapter = pagerAdapter
@@ -111,6 +99,18 @@ class MainActivity : AppCompatActivity() {
                 mBackStack.push(position)
             }
         })
+
+        val fragmentId = savedInstanceState?.getInt("FRAGMENT_ID")
+        if (fragmentId != null ) { pager.currentItem = fragmentId; mBackStack.push(fragmentId) }
+        super.onCreate(savedInstanceState)
+    }
+
+    override fun onSaveInstanceState(outState: Bundle?, outPersistentState: PersistableBundle?) {
+        outState?.putInt("FRAGMENT_ID", pager.currentItem)
+        super.onSaveInstanceState(outState, outPersistentState)
+    }
+
+    override fun onStart() {
         mDatabaseHelper.openDatabase()
         initData()
         super.onStart()
@@ -144,8 +144,8 @@ class MainActivity : AppCompatActivity() {
 
         if (!profileInt || fragmentId == 2) {
             pager.currentItem = 2
-        } else if (mBackStack.isEmpty() || fragmentId == 0) {
-            pager.currentItem = 0
+        } else if (fragmentId == 1) {
+            pager.currentItem = 1
         }
         mBackStack.push(pager.currentItem)
 
