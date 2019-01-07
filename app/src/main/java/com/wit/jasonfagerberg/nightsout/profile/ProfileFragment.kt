@@ -116,6 +116,7 @@ class ProfileFragment : Fragment() {
             intent.putExtra("CAN_UNFAVORITE", false)
             intent.putExtra("FAVORITED", true)
             mMainActivity.mBackStack.push(4)
+            intent.putExtra("BACK_STACK", mMainActivity.mBackStack.toIntArray())
             startActivity(intent)
         }
         setHasOptionsMenu(true)

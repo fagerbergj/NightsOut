@@ -157,6 +157,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun saveData() {
+        mDatabaseHelper.deleteRowsInTable("current_session_drinks", null)
+        mDatabaseHelper.pushDrinks(mDrinksList, mFavoritesList)
         // profile not init
         if (weightMeasurement == "") return
 

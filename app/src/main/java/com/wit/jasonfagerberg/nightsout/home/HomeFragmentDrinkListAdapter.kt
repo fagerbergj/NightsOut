@@ -107,8 +107,6 @@ class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: Ar
         // delete button clicked
         val delete = dialogView.findViewById<TextView>(R.id.text_drink_modify_remove_drink)
         delete.setOnClickListener {
-            mMainActivity.mDatabaseHelper.deleteRowsInTable("current_session_drinks", "position=$position")
-            mMainActivity.mDatabaseHelper.reorderCurrentSessionInDatabase()
             removeItem(position)
             dismissDialog(dialog)
             mMainActivity.homeFragment.showOrHideEmptyListText(mMainActivity.homeFragment.view!!)

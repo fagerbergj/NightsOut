@@ -8,6 +8,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.widget.PopupMenu
 import com.wit.jasonfagerberg.nightsout.R
+import com.wit.jasonfagerberg.nightsout.databaseHelper.DatabaseHelper
 import com.wit.jasonfagerberg.nightsout.dialogs.LightSimpleDialog
 import com.wit.jasonfagerberg.nightsout.main.Constants
 import com.wit.jasonfagerberg.nightsout.main.Drink
@@ -141,7 +142,6 @@ class ManageDBDrinkListAdapter(private val mContext: Context, private val mDrink
 
     private fun removeCurrentSessionReference(drink: Drink) {
         mActivity.dbh.deleteRowsInTable("current_session_drinks", "drink_id=\"${drink.id}\"")
-        mActivity.dbh.reorderCurrentSessionInDatabase()
     }
 
     inner class ViewHolder(itemView: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(itemView) {

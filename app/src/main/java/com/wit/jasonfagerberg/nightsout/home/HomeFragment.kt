@@ -152,8 +152,6 @@ class HomeFragment : Fragment() {
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, swipeDir: Int) {
                 mMainActivity.showToast("${mMainActivity.mDrinksList[viewHolder.adapterPosition].name} removed", true)
                 //todo remove at position and reorder drinks
-                mMainActivity.mDatabaseHelper.deleteRowsInTable("current_session_drinks", "position=${viewHolder.adapterPosition}")
-                mMainActivity.mDatabaseHelper.reorderCurrentSessionInDatabase()
                 mMainActivity.mDrinksList.removeAt(viewHolder.adapterPosition)
                 mDrinkListAdapter.notifyItemRemoved(viewHolder.adapterPosition)
                 mDrinkListAdapter.notifyItemRangeChanged(0, mMainActivity.mDrinksList.size)
