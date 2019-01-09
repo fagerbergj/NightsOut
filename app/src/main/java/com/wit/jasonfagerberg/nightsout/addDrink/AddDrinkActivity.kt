@@ -1,5 +1,7 @@
 package com.wit.jasonfagerberg.nightsout.addDrink
 
+import android.app.Activity
+import android.content.ContentValues
 import android.content.Intent
 import android.graphics.PorterDuff
 import android.graphics.Typeface
@@ -34,6 +36,7 @@ import android.view.Menu
 import android.view.View
 import android.view.MenuItem
 import android.view.Gravity
+import android.view.inputmethod.InputMethodManager
 
 // private const val TAG = "AddDrinkActivity"
 
@@ -56,7 +59,6 @@ class AddDrinkActivity : AppCompatActivity() {
 
     lateinit var mRecentsList: ArrayList<Drink>
     lateinit var mFavoritesList: ArrayList<Drink>
-    lateinit var mDrinksList: ArrayList<Drink>
 
     lateinit var autoCompleteView: DrinkSuggestionAutoCompleteView
 
@@ -73,6 +75,7 @@ class AddDrinkActivity : AppCompatActivity() {
 
         canUnfavorite = intent.getBooleanExtra("CAN_UNFAVORITE", true)
         mFavorited = intent.getBooleanExtra("FAVORITED", false)
+        // pull backstack to maintain it across activity switches
         mBackStackIntArray = intent.getIntArrayExtra("BACK_STACK")
 
         if (savedInstanceState != null) {
@@ -84,6 +87,8 @@ class AddDrinkActivity : AppCompatActivity() {
             val sourceMeasurement = savedInstanceState.getStringArrayList("sourceMeasure") !!
             mComplexDrinkHelper.rebuildAlcSourceList(sourceAbv, sourceAmount, sourceMeasurement)
         } else if (!complexMode) {
+            // if onCreate is being called for the first time, create a new complex drink helper
+            // in case that button is pressed
             mComplexDrinkHelper = ComplexDrinkHelper(this)
         }
 
@@ -101,28 +106,20 @@ class AddDrinkActivity : AppCompatActivity() {
     }
 
     override fun onPause() {
-        saveData()
         mDatabaseHelper.closeDatabase()
         super.onPause()
     }
 
     private fun initData() {
-        mDrinksList = mDatabaseHelper.pullCurrentSessionDrinks()
         mFavoritesList = mDatabaseHelper.pullFavoriteDrinks()
         mRecentsList = mDatabaseHelper.pullRecentDrinks()
     }
 
-    private fun saveData() {
-        // mDatabaseHelper.pushDrinks(mDrinksList, mFavoritesList)
-        mDrinksList.clear()
-        mRecentsList.clear()
-        mFavoritesList.clear()
-    }
-
     private fun setupSpinner() {
         mSpinnerAmount = findViewById(R.id.spinner_add_drink_amount)
+        mSpinnerAmount.setSelection(2)
         val country = Locale.getDefault().country
-        val items = arrayOf("ml", "oz", "beers", "shots", "wine glasses", "pints")
+        val items = Constants.VOLUME_MEASUREMENTS_METRIC_FIRST
         if (country == "US" || country == "LR" || country == "MM") {
             items[0] = "oz"
             items[1] = "ml"
@@ -133,6 +130,7 @@ class AddDrinkActivity : AppCompatActivity() {
 
     private fun setupAddButton() {
         val btnAdd = findViewById<MaterialButton>(R.id.btn_add_drink_add)
+        // change button color based off mFavorited
         if (mFavorited) {
             btnAdd.background.setColorFilter(ContextCompat.getColor(this,
                     R.color.colorLightRed), PorterDuff.Mode.MULTIPLY)
@@ -159,6 +157,7 @@ class AddDrinkActivity : AppCompatActivity() {
     }
 
     private fun setComplexDrinkViews() {
+        // if complex drinks can me added, make sure the appropriate views are visible
         if (complexMode) {
             mComplexDrinkHelper.findViews(this)
             findViewById<MaterialButton>(R.id.btn_add_drink_add_alc_source).visibility = View.VISIBLE
@@ -183,6 +182,7 @@ class AddDrinkActivity : AppCompatActivity() {
             sourceAmount[i] = source.amount
             sourceMeasure.add(source.measurement)
         }
+
         outState.putDoubleArray("sourceAbv", sourceAbv)
         outState.putDoubleArray("sourceAmount", sourceAmount)
         outState.putStringArrayList("sourceMeasure", sourceMeasure)
@@ -223,6 +223,9 @@ class AddDrinkActivity : AppCompatActivity() {
 
     override fun onBackPressed() {
         val intent = Intent(this, MainActivity::class.java)
+        // make sure source fragment is shown when going back to main activity
+        // if you can unfavorite, add drink ws brought up from the home fragment
+        // if not it was brought up by the profile fragment
         if (canUnfavorite) intent.putExtra("FRAGMENT_ID", 0)
         else intent.putExtra("FRAGMENT_ID", 2)
         intent.putExtra("BACK_STACK", mBackStackIntArray)
@@ -252,9 +255,6 @@ class AddDrinkActivity : AppCompatActivity() {
         val posAction = {
             mDatabaseHelper.deleteRowsInTable("favorites", null)
             mFavoritesList.clear()
-            for (drink in mDrinksList) {
-                drink.favorited = false
-            }
             showOrHideEmptyTextViews()
             mFavoritesListAdapter.notifyDataSetChanged()
             mDatabaseHelper.deleteRowsInTable("favorites", null)
@@ -270,10 +270,7 @@ class AddDrinkActivity : AppCompatActivity() {
         val posAction = {
             mDatabaseHelper.deleteRowsInTable("drinks", "recent = 1")
             mRecentsList.clear()
-            for (drink in mDrinksList) {
-                drink.recent = false
-                mDatabaseHelper.updateRowInDrinksTable(drink)
-            }
+            // todo write UPDATE drinks WHERE recent = 1 SET recent = 0
             showOrHideEmptyTextViews()
             mRecentsListAdapter.notifyDataSetChanged()
         }
@@ -316,10 +313,8 @@ class AddDrinkActivity : AppCompatActivity() {
     private fun drinkNameEditTextSetup() {
         autoCompleteView = findViewById(R.id.auto_drink_suggestion)
 
-        // ObjectItemData has no value at first
         var drinks = ArrayList<Drink>()
 
-        // set the custom ArrayAdapter
         var adapter = DrinkSuggestionArrayAdapter(this, R.layout.activity_add_drink_suggestion_list, drinks)
         autoCompleteView.setAdapter(adapter)
 
@@ -328,6 +323,7 @@ class AddDrinkActivity : AppCompatActivity() {
             override fun afterTextChanged(s: Editable?) {}
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                // get new list an apply it
                 val temp = mDatabaseHelper.getSuggestedDrinks(s.toString())
                 drinks = if (temp.isNotEmpty() || count < 50) temp else drinks
                 adapter = DrinkSuggestionArrayAdapter(this@AddDrinkActivity, R.layout.activity_add_drink_suggestion_list, drinks)
@@ -337,10 +333,20 @@ class AddDrinkActivity : AppCompatActivity() {
         })
 
         autoCompleteView.setOnItemClickListener { _, _, position, _ ->
+            hideKeyboard(this@AddDrinkActivity)
             val drink = adapter.data[position]
             fillViews(drink.name, drink.abv, drink.amount, drink.measurement)
             autoCompleteView.dismissDropDown()
         }
+    }
+
+    private fun hideKeyboard (activity: Activity) {
+        val imm: InputMethodManager = activity.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+        var view = activity.currentFocus
+        if (view == null) {
+            view = View(activity)
+        }
+        imm.hideSoftInputFromWindow(view.windowToken, 0)
     }
 
     fun showOrHideEmptyTextViews() {
@@ -360,7 +366,7 @@ class AddDrinkActivity : AppCompatActivity() {
         }
     }
 
-    private fun resetTextView(view: TextView, id: Int) {
+    private fun resetTextViewStyle(view: TextView, id: Int) {
         view.text = resources.getText(id)
         view.setTypeface(null, Typeface.NORMAL)
         view.setTextColor(ContextCompat.getColor(this, R.color.colorText))
@@ -376,7 +382,7 @@ class AddDrinkActivity : AppCompatActivity() {
         mEditAbv.setText(abv.toString())
         mEditAmount.setText(amount.toString())
         val country = Locale.getDefault().country
-        val items = arrayOf("ml", "oz", "beers", "shots", "wine glasses", "pints")
+        val items = Constants.VOLUME_MEASUREMENTS_METRIC_FIRST
         if (country == "US" || country == "LR" || country == "MM") {
             items[0] = "oz"
             items[1] = "ml"
@@ -408,29 +414,24 @@ class AddDrinkActivity : AppCompatActivity() {
     }
 
     fun addDrinkToCurrentSessionAndRecentsTables(drink: Drink) {
-        mDatabaseHelper.insertRowInCurrentSessionTable(drink.id, mDrinksList.size)
-        mDrinksList.add(drink)
+        mDatabaseHelper.insertRowInCurrentSessionTable(drink.id, mDatabaseHelper.getNumberOfRows("drinks").toInt())
 
-        if (mRecentsList.contains(drink)) {
-            mRecentsList[mRecentsList.indexOf(drink)].recent = false
-            mRecentsList.remove(drink)
-        }
-        mRecentsList.add(0, drink)
+        // UPDATE drinks WHERE name = drink.name SET recent = 0
+        val args = ContentValues()
+        args.put("recent", 0)
+        mDatabaseHelper.db.update("drinks", args, "name=?", arrayOf(drink.name))
 
-        if (mRecentsList.size > 25) {
-            mRecentsList[mRecentsList.size - 1].recent = false
-            mRecentsList.removeAt(mRecentsList.size - 1)
-        }
+        // UPDATE drinks WHERE id = drink.id SET recent = 1
+        args.clear()
+        args.put("recent", 1)
+        mDatabaseHelper.db.update("drinks", args, "id=?", arrayOf(drink.id.toString()))
 
         if (drink.favorited) {
             addToFavoritesTable(drink)
         }
-        mDatabaseHelper.updateRowInDrinksTable(drink)
     }
 
     fun addToFavoritesTable(drink: Drink) {
-        mFavoritesList.remove(drink)
-        mFavoritesList.add(0, drink)
         mDatabaseHelper.updateDrinkFavoriteStatus(drink)
     }
 
@@ -440,26 +441,30 @@ class AddDrinkActivity : AppCompatActivity() {
         val textAmount = findViewById<TextView>(R.id.text_add_drink_amount)
         val measurement = findViewById<Spinner>(R.id.spinner_add_drink_amount).selectedItem.toString()
 
-        resetTextView(textName, R.string.name)
-        resetTextView(textABV, R.string.abv)
-        resetTextView(textAmount, R.string.amount)
+        resetTextViewStyle(textName, R.string.name)
+        resetTextViewStyle(textABV, R.string.abv)
+        resetTextViewStyle(textAmount, R.string.amount)
 
         val abv = mConverter.stringToDouble(mEditAbv.text.toString())
         val amount = mConverter.stringToDouble(mEditAmount.text.toString())
 
+        // if valid number after rounding
         if (!abv.isNaN()) mEditAbv.setText(abv.toString())
         if (!amount.isNaN()) mEditAmount.setText(amount.toString())
 
         var inputError = false
         var message = " "
 
+        // build message to say what is invalid
         val foz = mConverter.drinkVolumeToFluidOz(amount, measurement)
+        // 560 fluid oz = 30 pack of beer + 17 beers, more than too much liquid to put in one drink
         if (amount.isNaN() || mConverter.fluidOzToGrams(foz) > 560) {
             message = ", amount$message"
             setTextViewToRedAndBold(textAmount)
             inputError = true
         }
 
+        // abvs cant physically be over 100%
         if (abv.isNaN() || (abv > 100.0)) {
             message = ", abv$message"
             setTextViewToRedAndBold(textABV)

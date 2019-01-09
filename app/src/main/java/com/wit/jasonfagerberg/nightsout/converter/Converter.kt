@@ -41,6 +41,7 @@ class Converter {
         return Pair(hour, min)
     }
 
+    // 12 hour time and minuets to xx:xx pm/am
     fun timeToString(selectedHour: Int, selectedMinute: Int, use24HourTime: Boolean): String {
         val timePeriod: String
         var displayHour = selectedHour
@@ -58,6 +59,7 @@ class Converter {
         return "$displayHour:$displayMinuet $timePeriod"
     }
 
+    // minuets to either 12 hour or 24 hour time
     fun timeToString(min: Int, use24HourTime: Boolean): String {
         var hour = min / 60
         val minutes = min % 60
@@ -76,11 +78,13 @@ class Converter {
         return "$hour:$displayMinuet $timePeriod"
     }
 
+    // takes minuets returns ("xx", "xx")
     fun decimalTimeToTwoDigitStrings(time: Double): Pair<String, String> {
         val hm = decimalTimeToHoursAndMinuets(time)
         return hoursAndMinuetsToTwoDigitStrings(hm)
     }
 
+    // just pads 0s to front of ints
     fun hoursAndMinuetsToTwoDigitStrings(hoursMin: Pair<Int, Int>): Pair<String, String> {
         val hours = if (hoursMin.first < 10) "0${hoursMin.first}"
         else hoursMin.first.toString()

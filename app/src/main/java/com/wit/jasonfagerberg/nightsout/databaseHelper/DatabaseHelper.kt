@@ -1,5 +1,6 @@
 package com.wit.jasonfagerberg.nightsout.databaseHelper
 
+import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
@@ -22,9 +23,9 @@ open class DatabaseHelper(
     val version: Int
 ) : SQLiteOpenHelper(context, name, factory, version) {
 
-    // private val path = context!!.getDatabasePath(name).toString()
     private val path = "data/data/com.wit.jasonfagerberg.nightsout/$name"
     lateinit var db: SQLiteDatabase
+
     // temp array for maintaining db after upgrade
     private val mAllDrinks = ArrayList<Drink>()
     private val mIgnoredDrinks = ArrayList<UUID>()
@@ -261,7 +262,13 @@ open class DatabaseHelper(
                 recents[i].recent = false
                 recents.remove(drink)
             }
-            recents.add(0, drink)
+            if (recents.size <= 25)
+                recents.add(0, drink)
+            else {
+                val args = ContentValues()
+                args.put("recent", "0")
+                db.update("drinks", args, "id", arrayOf(drink.id.toString()))
+            }
         }
         cursor.close()
         return recents
@@ -378,30 +385,6 @@ open class DatabaseHelper(
         cursor.close()
         return res != 0
     }
-// will need this method when I add filter to manage DB activity
-//    fun getDrinksFromName(name: String, favorites: ArrayList<Drink>): ArrayList<Drink> {
-//        val drinks = ArrayList<Drink>()
-//        val table = "drinks"
-//        val where = "name = ?"
-//        val whereArgs = arrayOf(name)
-//        val order = "modifiedTime"
-//        val cursor = db.query(table, null, where, whereArgs, null, null, order, null)
-//        while (cursor.moveToNext()) {
-//            val id = UUID.fromString(cursor.getString(cursor.getColumnIndex("id")))
-//            val drinkName = cursor.getString(cursor.getColumnIndex("name"))
-//            val abv = cursor.getDouble(cursor.getColumnIndex("abv"))
-//            val amount = cursor.getDouble(cursor.getColumnIndex("amount"))
-//            val measurement = cursor.getString(cursor.getColumnIndex("measurement"))
-//            val recent = cursor.getInt(cursor.getColumnIndex("recent")) == 1
-//            val modifiedTime = cursor.getLong(cursor.getColumnIndex("modifiedTime"))
-//
-//            val drink = Drink(id, drinkName, abv, amount, measurement, false, recent, modifiedTime)
-//            drink.favorited = favorites.contains(drink)
-//            drinks.add(drink)
-//        }
-//        cursor.close()
-//        return drinks
-//    }
 
     fun idInDb(id: UUID): Boolean {
         val cursor = db.query("drinks", null, "id = ?", arrayOf(id.toString()), null, null, null, null)
@@ -410,6 +393,7 @@ open class DatabaseHelper(
         return ret
     }
 
+    // needed for older db before I started using UUIDs
     private fun mapOldIdsToUUIDs() {
         val cursor = db.query("drinks", null, null, null, null, null, null, null)
         while (cursor.moveToNext()) {

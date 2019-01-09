@@ -12,6 +12,7 @@ class ComplexDrinkHelper(val parent: AddDrinkActivity) {
     var listAlcoholSources: ArrayList<AlcoholSource> = ArrayList()
     private lateinit var alcoholSourceAdapter: AddDrinkActivityAlcoholSourceAdapter
 
+    // find complex drink views that are hidden when complex mode is not active
     fun findViews(activity: AddDrinkActivity) {
         btnAddAnotherAlcoholSource = activity.findViewById(R.id.btn_add_drink_add_alc_source)
         recyclerAlcoholSource = activity.findViewById(R.id.recycler_add_drink_alcohol_source_list)
@@ -40,6 +41,7 @@ class ComplexDrinkHelper(val parent: AddDrinkActivity) {
         parent.mEditAmount.setText("")
     }
 
+    // create a single abv by creating a weighted average of all alcohol sources
     fun weightedAverageAbv(): Double {
         if (listAlcoholSources.isEmpty()) return Double.NaN
         var ave = 0.0

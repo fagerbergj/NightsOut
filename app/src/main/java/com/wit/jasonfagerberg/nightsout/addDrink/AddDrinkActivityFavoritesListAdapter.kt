@@ -36,9 +36,6 @@ class AddDrinkActivityFavoritesListAdapter(private val mActivity: AddDrinkActivi
                 notifyItemRemoved(position)
                 notifyItemRangeChanged(position, mActivity.mFavoritesList.size)
                 mActivity.showOrHideEmptyTextViews()
-                for (d in mActivity.mDrinksList) {
-                    if (d == drink) d.favorited = false
-                }
                 mActivity.mDatabaseHelper.deleteRowsInTable("favorites", "drink_name = \"${drink.name}\"")
             }
             lightSimpleDialog.setActions(posAction, {})

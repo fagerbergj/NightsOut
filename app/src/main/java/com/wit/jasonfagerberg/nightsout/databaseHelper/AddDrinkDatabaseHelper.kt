@@ -1,6 +1,7 @@
 package com.wit.jasonfagerberg.nightsout.databaseHelper
 
 import android.content.Context
+import android.database.DatabaseUtils
 import android.database.sqlite.SQLiteDatabase
 import com.wit.jasonfagerberg.nightsout.addDrink.AddDrinkActivity
 import com.wit.jasonfagerberg.nightsout.main.Constants
@@ -18,7 +19,7 @@ class AddDrinkDatabaseHelper(context: Context?, name: String?, factory: SQLiteDa
             mActivity = context as AddDrinkActivity
         } catch (e: Exception) {
             // do nothing, ManageDB is using this class for the get suggested drinks
-            // method ass well as all base DB helper methods
+            // method as well as all base DB helper methods
         }
     }
 
@@ -35,8 +36,9 @@ class AddDrinkDatabaseHelper(context: Context?, name: String?, factory: SQLiteDa
         setDrinkId(drink)
         updateDrinkModifiedTime(drink.id, drink.modifiedTime)
         updateDrinkSuggestionStatus(drink.id, false)
-        setDrinkFavorited(drink, favorited)
+        drink.favorited = isFavoritedInDB(drink.name) || drink.favorited
 
+        // depending on which fragment called add drink depends what method gets called
         if (canUnfavorite) {
             mActivity.addDrinkToCurrentSessionAndRecentsTables(drink)
         } else {
@@ -49,25 +51,6 @@ class AddDrinkDatabaseHelper(context: Context?, name: String?, factory: SQLiteDa
         val id = getDrinkIdFromFullDrinkInfo(drink)
         drink.id = id
         if (!idInDb(drink.id)) insertDrinkIntoDrinksTable(drink)
-    }
-
-    private fun setDrinkFavorited(drink: Drink, favorited: Boolean) {
-        drink.favorited = mActivity.mFavoritesList.contains(drink)
-
-        if (mActivity.mDrinksList.contains(drink)) {
-            val index = mActivity.mDrinksList.indexOf(drink)
-            val drinkInSession = mActivity.mDrinksList[index]
-            drink.favorited = drinkInSession.favorited
-        }
-
-        if (favorited) {
-            drink.favorited = true
-            for (d in mActivity.mDrinksList) {
-                if (d == drink) {
-                    d.favorited = true
-                }
-            }
-        }
     }
 
     fun getSuggestedDrinks(filter: String, ignoreDontShow: Boolean = false): ArrayList<Drink> {
@@ -94,12 +77,19 @@ class AddDrinkDatabaseHelper(context: Context?, name: String?, factory: SQLiteDa
     fun updateDrinkFavoriteStatus(drink: Drink) {
         val favoritedInDB = isFavoritedInDB(drink.name)
         if (favoritedInDB && !drink.favorited) {
+            // delete out of date db ref
             deleteRowsInTable("favorites", "drink_name=\"${drink.name}\"")
         } else if (!favoritedInDB) {
+            // insert new db ref since drink i favorited
             insertRowInFavoritesTable(drink.name, drink.id)
         } else if (favoritedInDB) {
+            // replace old drink reference with a new one
             deleteRowsInTable("favorites", "drink_name=\"${drink.name}\"")
             insertRowInFavoritesTable(drink.name, drink.id)
         }
+    }
+
+    fun getNumberOfRows(table: String, where: String = "") : Long {
+        return DatabaseUtils.queryNumEntries(db, table, where)
     }
 }

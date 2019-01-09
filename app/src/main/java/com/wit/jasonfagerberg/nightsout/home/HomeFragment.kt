@@ -151,6 +151,7 @@ class HomeFragment : Fragment() {
             }
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, swipeDir: Int) {
+                // undo remove action
                 val deletedDrink = mMainActivity.mDrinksList[viewHolder.adapterPosition]
                 val deletedPosition = viewHolder.adapterPosition
                 val snackbar = Snackbar.make(mMainActivity.findViewById(R.id.placeSnackBar), "${mMainActivity.mDrinksList[viewHolder.adapterPosition].name} removed", Snackbar.LENGTH_LONG)
@@ -163,6 +164,8 @@ class HomeFragment : Fragment() {
                 }
                 snackbar.setAction("Undo", undoAction)
                 snackbar.setActionTextColor(ContextCompat.getColor(context!!, R.color.colorWhite))
+
+                // remove action
                 mMainActivity.mDrinksList.removeAt(viewHolder.adapterPosition)
                 mDrinkListAdapter.notifyItemRemoved(viewHolder.adapterPosition)
                 mDrinkListAdapter.notifyItemRangeChanged(0, mMainActivity.mDrinksList.size)
@@ -192,6 +195,7 @@ class HomeFragment : Fragment() {
         }
     }
 
+    // bring up time picker on edit text click
     private fun startTimeEditTextOnCLickListener(startPicker: EditText) {
         val currentTime = Calendar.getInstance()
         var hour = currentTime.get(Calendar.HOUR_OF_DAY)
@@ -266,6 +270,7 @@ class HomeFragment : Fragment() {
         dialog.findViewById<Button>(R.id.btn_disclaimer_dismiss).setOnClickListener { dialog.dismiss() }
     }
 
+    // Widemark formula, imperial due to better floating point accuracy
     fun calculateBAC(): Double {
         var a = 0.0
         for (drink in mMainActivity.mDrinksList) {
@@ -342,6 +347,7 @@ class HomeFragment : Fragment() {
         textView.setTextColor(ContextCompat.getColor(context!!, color))
     }
 
+    // reset time to current time and clear drink list
     fun clearSession() {
         mMainActivity.mDrinksList.clear()
         mDrinkListAdapter.notifyDataSetChanged()

@@ -71,6 +71,7 @@ class BacInfoDialog(
             mainActivity.showToast("BAC after ${time.first} hours and ${time.second} minuets: $pointBac")
         }
 
+        // this can cause a crash if someone added a ton of drinks (tested < 500)
         val soberLine = ArrayList<DataPoint>()
         if (points.size > 0) {
             soberLine.add(DataPoint(0.0, 0.04))

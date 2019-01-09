@@ -27,10 +27,8 @@ class DrinkSuggestionArrayAdapter(
             view = inflater.inflate(layoutResourceId, parent, false)
         }
 
-        // object item based on the position
         val drink = data[position]
 
-        // get the TextView and then set the text (item name) and tag (item ID) values
         val nameTextView = view!!.findViewById<TextView>(R.id.text_add_drink_suggestion_name)
         val abvTextView = view.findViewById<TextView>(R.id.text_add_drink_suggestion_abv)
         val amountTextView = view.findViewById<TextView>(R.id.text_add_drink_suggestion_amount)
@@ -39,6 +37,7 @@ class DrinkSuggestionArrayAdapter(
             remove(drink)
         }
 
+        // round decimals to 2 decimals
         nameTextView.text = drink.name
         val abv = "${"%.2f".format(drink.abv)}%"
         abvTextView.text = abv
@@ -50,9 +49,11 @@ class DrinkSuggestionArrayAdapter(
 
     override fun remove(`object`: Drink?) {
         var i = data.indexOf(`object`)
+        // have to make sure to delete drink based on UUID since equals only compares names
         for (x in data.indices) {
             val d = data[x]
             if (d.isExactDrink(`object` as Drink)) {
+                // save index to avoid out of bounds exception
                 i = x
                 break
             }

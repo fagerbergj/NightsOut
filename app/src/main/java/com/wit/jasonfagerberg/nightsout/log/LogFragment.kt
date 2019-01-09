@@ -154,9 +154,9 @@ class LogFragment : Fragment() {
 
         // add blue dots to days you drank
         highlightDays()
-        val day = calendarView.selectedDate
-        val date = Integer.parseInt(converter.yearMonthDayTo8DigitString(day.year, day.month, day.day))
-        setLogListBasedOnDay(date)
+        val selectedDay = calendarView.selectedDate
+        val selectedDate = Integer.parseInt(converter.yearMonthDayTo8DigitString(selectedDay.year, selectedDay.month, selectedDay.day))
+        setLogListBasedOnDay(selectedDate)
 
         // when date is changed, change recycler list
         calendarView.setOnDateChangedListener { _, day, _ ->
