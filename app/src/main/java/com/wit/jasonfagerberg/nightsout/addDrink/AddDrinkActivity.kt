@@ -24,7 +24,6 @@ import com.wit.jasonfagerberg.nightsout.main.Drink
 import com.wit.jasonfagerberg.nightsout.R
 import com.wit.jasonfagerberg.nightsout.converter.Converter
 import com.wit.jasonfagerberg.nightsout.dialogs.LightSimpleDialog
-import java.util.Locale
 import com.wit.jasonfagerberg.nightsout.addDrink.drinkSuggestion.DrinkSuggestionAutoCompleteView
 import com.wit.jasonfagerberg.nightsout.addDrink.drinkSuggestion.DrinkSuggestionArrayAdapter
 import com.wit.jasonfagerberg.nightsout.databaseHelper.AddDrinkDatabaseHelper
@@ -37,6 +36,7 @@ import android.view.View
 import android.view.MenuItem
 import android.view.Gravity
 import android.view.inputmethod.InputMethodManager
+import java.util.*
 
 // private const val TAG = "AddDrinkActivity"
 
@@ -113,6 +113,9 @@ class AddDrinkActivity : AppCompatActivity() {
     private fun initData() {
         mFavoritesList = mDatabaseHelper.pullFavoriteDrinks()
         mRecentsList = mDatabaseHelper.pullRecentDrinks()
+//        for (i in 0..25) {
+//            mDatabaseHelper.buildDrinkAndAddToList(i.toString(), i.toDouble(), i.toDouble(), "oz", mFavorited, canUnfavorite)
+//        }
     }
 
     private fun setupSpinner() {

@@ -81,6 +81,9 @@ open class DatabaseHelper(
     }
 
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
+        db!!.version = newVersion
+        // dont need to do any data saving since there is no data
+        if (oldVersion == 0) return
         val mainActivity = context as MainActivity
 
         pullAllDrinks()
@@ -95,7 +98,6 @@ open class DatabaseHelper(
         pushDrinks(mainActivity.mDrinksList, mainActivity.mFavoritesList)
         pushLogHeaders(mainActivity.mLogHeaders)
         for (id in mIgnoredDrinks) updateDrinkSuggestionStatus(id, true)
-        db!!.version = newVersion
     }
 
     private fun pullAllDrinks() {
@@ -267,7 +269,8 @@ open class DatabaseHelper(
             else {
                 val args = ContentValues()
                 args.put("recent", "0")
-                db.update("drinks", args, "id", arrayOf(drink.id.toString()))
+                db.update("drinks", args, "id=?", arrayOf(recents[recents.size - 1].id.toString()))
+                recents.removeAt(recents.size - 1)
             }
         }
         cursor.close()
