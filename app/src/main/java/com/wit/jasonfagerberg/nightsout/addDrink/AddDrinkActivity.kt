@@ -467,7 +467,7 @@ class AddDrinkActivity : AppCompatActivity() {
             inputError = true
         }
 
-        // abvs cant physically be over 100%
+        // abv cant physically be over 100%
         if (abv.isNaN() || (abv > 100.0)) {
             message = ", abv$message"
             setTextViewToRedAndBold(textABV)

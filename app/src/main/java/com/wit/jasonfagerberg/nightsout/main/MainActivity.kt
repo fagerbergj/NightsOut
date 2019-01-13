@@ -47,7 +47,7 @@ class MainActivity : AppCompatActivity() {
 
     // shared pref data
     private lateinit var preferences: SharedPreferences
-    var profileInt = false
+    var profileInit = false
     var sex: Boolean? = null
     var weight: Double = 0.0
     var weightMeasurement = ""
@@ -143,7 +143,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        if (!profileInt || fragmentId == 2) {
+        if (!profileInit || fragmentId == 2) {
             pager.currentItem = 2
         } else if (fragmentId == 1) {
             pager.currentItem = 1
@@ -158,10 +158,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun saveData() {
+        // profile not init
+        if (!profileInit) return
+
         mDatabaseHelper.deleteRowsInTable("current_session_drinks", null)
         mDatabaseHelper.pushDrinks(mDrinksList, mFavoritesList)
-        // profile not init
-        if (weightMeasurement == "") return
 
         val editor = preferences.edit()
         editor.putBoolean("profileInit", true)
@@ -177,10 +178,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun getProfileAndTimeData() {
-        profileInt = preferences.getBoolean("profileInit", profileInt)
+        profileInit = preferences.getBoolean("profileInit", profileInit)
         startTimeMin = getCurrentTimeInMinuets()
         endTimeMin = getCurrentTimeInMinuets()
-        if (profileInt) {
+        if (profileInit) {
             sex = true
             preferences.getBoolean("profileSex", sex!!)
             var weightFloat: Float = 0.toFloat()

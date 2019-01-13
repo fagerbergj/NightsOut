@@ -124,7 +124,7 @@ class ProfileFragment : Fragment() {
     }
 
     override fun onResume() {
-        if (mMainActivity.profileInt) {
+        if (mMainActivity.profileInit) {
             sex = mMainActivity.sex!!
             weight = mMainActivity.weight
             weightMeasurement = mMainActivity.weightMeasurement
@@ -279,7 +279,7 @@ class ProfileFragment : Fragment() {
         val w = Converter().stringToDouble(mWeightEditText.text.toString())
         if (!w.isNaN()) mWeightEditText.setText(w.toString())
 
-        if (sex == null && !mMainActivity.profileInt) {
+        if (sex == null && !mMainActivity.profileInit) {
             mMainActivity.showToast("Please Select A Sex", true)
             showErrorText(sexText)
             return
@@ -297,7 +297,7 @@ class ProfileFragment : Fragment() {
         mMainActivity.weightMeasurement = weightMeasurement
         mMainActivity.showToast("Profile Saved!")
         mMainActivity.showBottomNavBar()
-        mMainActivity.profileInt = true
+        mMainActivity.profileInit = true
         mMainActivity.mBackStack.push(mMainActivity.pager.currentItem)
         mMainActivity.pager.currentItem = 0
     }
@@ -318,7 +318,7 @@ class ProfileFragment : Fragment() {
     }
 
     fun hasUnsavedData(): Boolean {
-        if (!mMainActivity.profileInt) return false
+        if (!mMainActivity.profileInit) return false
         return sex != mMainActivity.sex || weight != mMainActivity.weight ||
                 weightMeasurement != mMainActivity.weightMeasurement
     }
