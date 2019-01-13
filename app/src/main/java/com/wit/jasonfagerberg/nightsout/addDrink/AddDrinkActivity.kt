@@ -106,6 +106,8 @@ class AddDrinkActivity : AppCompatActivity() {
     }
 
     override fun onPause() {
+        mRecentsList.clear()
+        mFavoritesList.clear()
         mDatabaseHelper.closeDatabase()
         super.onPause()
     }
