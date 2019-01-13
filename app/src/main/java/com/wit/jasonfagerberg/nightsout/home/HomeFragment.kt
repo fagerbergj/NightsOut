@@ -68,9 +68,6 @@ class HomeFragment : Fragment() {
             intent.putExtra("BACK_STACK", mMainActivity.mBackStack.toIntArray())
             startActivity(intent)
         }
-
-        // set edit texts
-        setupEditTexts(view)
         setHasOptionsMenu(true)
 
         // return
@@ -81,6 +78,8 @@ class HomeFragment : Fragment() {
         super.onResume()
         // setup list
         setupRecycler(view!!)
+        // set edit texts
+        setupEditTexts(view!!)
         val bacInfoDialog = BacInfoDialog(context!!)
         view!!.findViewById<ImageButton>(R.id.btn_home_bac_info).setOnClickListener {
             bacInfoDialog.showBacInfoDialog()

@@ -59,7 +59,6 @@ class MainActivity : AppCompatActivity() {
 
     // global lists
     var mDrinksList: ArrayList<Drink> = ArrayList()
-    private var mRecentsList: ArrayList<Drink> = ArrayList()
     var mFavoritesList: ArrayList<Drink> = ArrayList()
     var mLogHeaders: ArrayList<LogHeader> = ArrayList()
 
@@ -126,6 +125,9 @@ class MainActivity : AppCompatActivity() {
 
     override fun onPause() {
         saveData()
+        mDrinksList.clear()
+        mFavoritesList.clear()
+        mLogHeaders.clear()
         mDatabaseHelper.closeDatabase()
         super.onPause()
     }
@@ -153,7 +155,6 @@ class MainActivity : AppCompatActivity() {
         // init data
         mDrinksList = mDatabaseHelper.pullCurrentSessionDrinks()
         mFavoritesList = mDatabaseHelper.pullFavoriteDrinks()
-        mRecentsList = mDatabaseHelper.pullRecentDrinks()
         mLogHeaders = mDatabaseHelper.pullLogHeaders()
     }
 
