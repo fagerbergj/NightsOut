@@ -115,9 +115,6 @@ class AddDrinkActivity : AppCompatActivity() {
     private fun initData() {
         mFavoritesList = mDatabaseHelper.pullFavoriteDrinks()
         mRecentsList = mDatabaseHelper.pullRecentDrinks()
-//        for (i in 0..25) {
-//            mDatabaseHelper.buildDrinkAndAddToList(i.toString(), i.toDouble(), i.toDouble(), "oz", mFavorited, canUnfavorite)
-//        }
     }
 
     private fun setupSpinner() {
