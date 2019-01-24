@@ -105,11 +105,11 @@ class AddDrinkActivity : AppCompatActivity() {
         super.onStart()
     }
 
-    override fun onPause() {
+    override fun onStop() {
         mRecentsList.clear()
         mFavoritesList.clear()
         mDatabaseHelper.closeDatabase()
-        super.onPause()
+        super.onStop()
     }
 
     private fun initData() {

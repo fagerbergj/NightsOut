@@ -123,13 +123,13 @@ class MainActivity : AppCompatActivity() {
         invalidateOptionsMenu() // or respectively its support method.
     }
 
-    override fun onPause() {
+    override fun onStop() {
         saveData()
         mDrinksList.clear()
         mFavoritesList.clear()
         mLogHeaders.clear()
         mDatabaseHelper.closeDatabase()
-        super.onPause()
+        super.onStop()
     }
 
     private fun initData() {
