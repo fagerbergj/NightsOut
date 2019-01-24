@@ -84,19 +84,18 @@ open class DatabaseHelper(
         db!!.version = newVersion
         // dont need to do any data saving since there is no data
         if (oldVersion == 0) return
-        val mainActivity = context as MainActivity
 
         pullAllDrinks()
         mapOldIdsToUUIDs()
-        mainActivity.mDrinksList = pullCurrentSessionDrinks()
-        mainActivity.mFavoritesList = pullFavoriteDrinks()
-        mainActivity.mLogHeaders = pullLogHeaders()
+        val mDrinksList = pullCurrentSessionDrinks()
+        val mFavoritesList = pullFavoriteDrinks()
+        val mLogHeaders = pullLogHeaders()
         dropAllTables()
         rebuildTables()
 
         pushAllDrinks()
-        pushDrinks(mainActivity.mDrinksList, mainActivity.mFavoritesList)
-        pushLogHeaders(mainActivity.mLogHeaders)
+        pushDrinks(mDrinksList, mFavoritesList)
+        pushLogHeaders(mLogHeaders)
         for (id in mIgnoredDrinks) updateDrinkSuggestionStatus(id, true)
     }
 
