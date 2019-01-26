@@ -6,7 +6,6 @@ import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import com.wit.jasonfagerberg.nightsout.log.LogHeader
 import com.wit.jasonfagerberg.nightsout.main.Drink
-import com.wit.jasonfagerberg.nightsout.main.MainActivity
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -97,6 +96,9 @@ open class DatabaseHelper(
         pushDrinks(mDrinksList, mFavoritesList)
         pushLogHeaders(mLogHeaders)
         for (id in mIgnoredDrinks) updateDrinkSuggestionStatus(id, true)
+        mDrinksList.clear()
+        mFavoritesList.clear()
+        mLogHeaders.clear()
     }
 
     private fun pullAllDrinks() {

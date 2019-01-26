@@ -184,7 +184,7 @@ class MainActivity : AppCompatActivity() {
         endTimeMin = getCurrentTimeInMinuets()
         if (profileInit) {
             sex = true
-            preferences.getBoolean("profileSex", sex!!)
+            sex = preferences.getBoolean("profileSex", sex!!)
             var weightFloat: Float = 0.toFloat()
             weightFloat = preferences.getFloat("profileWeight", weightFloat)
             weight = weightFloat.toDouble()
