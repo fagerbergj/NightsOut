@@ -80,6 +80,11 @@ class HomeFragment : Fragment() {
         setupRecycler(view!!)
         // set edit texts
         setupEditTexts(view!!)
+    }
+
+    override fun onStart() {
+        super.onStart()
+
         val bacInfoDialog = BacInfoDialog(context!!)
         view!!.findViewById<ImageButton>(R.id.btn_home_bac_info).setOnClickListener {
             bacInfoDialog.showBacInfoDialog()

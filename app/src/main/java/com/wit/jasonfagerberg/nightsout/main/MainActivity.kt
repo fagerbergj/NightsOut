@@ -97,6 +97,10 @@ class MainActivity : AppCompatActivity() {
                 botNavBar.menu.getItem(position).isChecked = true
                 prevMenuItem = botNavBar.menu.getItem(position)
                 mBackStack.push(position)
+                // keep back stack from getting too big
+                if (mBackStack.size > 25){
+                    mBackStack.remove(mBackStack.size - 1)
+                }
             }
         })
 

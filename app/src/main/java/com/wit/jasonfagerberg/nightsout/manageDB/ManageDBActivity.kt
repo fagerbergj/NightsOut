@@ -25,9 +25,13 @@ class ManageDBActivity : AppCompatActivity() {
         dbh = AddDrinkDatabaseHelper(this, Constants.DB_NAME, null, Constants.DB_VERSION)
         dbh.openDatabase()
         mDrinksList = dbh.getSuggestedDrinks("", true)
+        super.onCreate(savedInstanceState)
+    }
+
+    override fun onStart() {
         setupToolbar()
         setupRecycler()
-        super.onCreate(savedInstanceState)
+        super.onStart()
     }
 
     override fun onPause() {
