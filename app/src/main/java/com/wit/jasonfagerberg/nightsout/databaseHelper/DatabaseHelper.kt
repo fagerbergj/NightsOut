@@ -84,8 +84,8 @@ open class DatabaseHelper(
         // dont need to do any data saving since there is no data
         if (oldVersion == 0) return
 
+        mapOldIdsToUUIDs(oldVersion)
         pullAllDrinks()
-        mapOldIdsToUUIDs()
         val mDrinksList = pullCurrentSessionDrinks()
         val mFavoritesList = pullFavoriteDrinks()
         val mLogHeaders = pullLogHeaders()
@@ -398,7 +398,8 @@ open class DatabaseHelper(
     }
 
     // needed for older db before I started using UUIDs
-    private fun mapOldIdsToUUIDs() {
+    private fun mapOldIdsToUUIDs(oldVersion: Int) {
+        if (oldVersion >= 40) return
         val cursor = db.query("drinks", null, null, null, null, null, null, null)
         while (cursor.moveToNext()) {
             val id = cursor.getString(cursor.getColumnIndex("id"))
