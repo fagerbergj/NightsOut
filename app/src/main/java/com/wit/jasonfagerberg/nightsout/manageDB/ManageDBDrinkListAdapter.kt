@@ -116,7 +116,7 @@ class ManageDBDrinkListAdapter(private val mContext: Context, private val mDrink
     fun getLostReferenceString(drink: Drink): String {
         var loss = ""
 
-        for (d in mDrinksList) {
+        for (d in mActivity.dbh.pullCurrentSessionDrinks()) {
             if (d.isExactDrink(drink)) {
                 loss += "Drink in Current Drinks List\n"
                 break
