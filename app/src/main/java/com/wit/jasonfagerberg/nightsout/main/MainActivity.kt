@@ -99,7 +99,7 @@ class MainActivity : AppCompatActivity() {
                 mBackStack.push(position)
                 // keep back stack from getting too big
                 if (mBackStack.size > 25){
-                    mBackStack.remove(mBackStack.size - 1)
+                    mBackStack.removeAt(0)
                 }
             }
         })
