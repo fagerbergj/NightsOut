@@ -9,7 +9,7 @@ class Converter {
 
     init {
         weightConversionMap["lbs"] = 1.0
-        weightConversionMap["kg"] = 0.453592
+        weightConversionMap["kg"] = 2.205
 
         volumeConversionMap["oz"] = 1.0
         volumeConversionMap["ml"] = 0.033814

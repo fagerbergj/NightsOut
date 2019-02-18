@@ -286,9 +286,9 @@ class HomeFragment : Fragment() {
 
         val r = if (mMainActivity.sex!!) .73 else .66
 
-        val weightInOz = mConverter.weightToLbs(mMainActivity.weight, mMainActivity.weightMeasurement)
+        val weightInLbs = mConverter.weightToLbs(mMainActivity.weight, mMainActivity.weightMeasurement)
 
-        val sexModifiedWeight = weightInOz * r
+        val sexModifiedWeight = weightInLbs * r
 
         val instantBAC = (a * 5.14) / sexModifiedWeight
 
