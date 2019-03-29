@@ -64,7 +64,7 @@ class HomeFragment : Fragment() {
             val intent = Intent(mainActivity, AddDrinkActivity::class.java)
             intent.putExtra("CAN_UNFAVORITE", true)
             intent.putExtra("FAVORITED", false)
-            mMainActivity.mBackStack.push(4)
+            mMainActivity.pushToBackStack(4)
             intent.putExtra("BACK_STACK", mMainActivity.mBackStack.toIntArray())
             startActivity(intent)
         }

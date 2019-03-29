@@ -96,16 +96,12 @@ class MainActivity : AppCompatActivity() {
                     botNavBar.menu.getItem(0).isChecked = false
                 botNavBar.menu.getItem(position).isChecked = true
                 prevMenuItem = botNavBar.menu.getItem(position)
-                mBackStack.push(position)
-                // keep back stack from getting too big
-                if (mBackStack.size > 25){
-                    mBackStack.removeAt(0)
-                }
+                pushToBackStack(position)
             }
         })
 
         val fragmentId = savedInstanceState?.getInt("FRAGMENT_ID")
-        if (fragmentId != null ) { pager.currentItem = fragmentId; mBackStack.push(fragmentId) }
+        if (fragmentId != null ) { pager.currentItem = fragmentId; pushToBackStack(fragmentId) }
         super.onCreate(savedInstanceState)
     }
 
@@ -144,9 +140,7 @@ class MainActivity : AppCompatActivity() {
         val fragmentId = intent.getIntExtra("FRAGMENT_ID", -1)
         val fragmentArray = intent.getIntArrayExtra("BACK_STACK")
         if (fragmentArray != null) {
-            for (frag in fragmentArray) {
-                mBackStack.push(frag)
-            }
+            for (frag in fragmentArray) pushToBackStack(frag)
         }
 
         if (!profileInit || fragmentId == 2) {
@@ -154,7 +148,7 @@ class MainActivity : AppCompatActivity() {
         } else if (fragmentId == 1) {
             pager.currentItem = 1
         }
-        mBackStack.push(pager.currentItem)
+        pushToBackStack(pager.currentItem)
 
         // init data
         mDrinksList = mDatabaseHelper.pullCurrentSessionDrinks()
@@ -284,6 +278,13 @@ class MainActivity : AppCompatActivity() {
     fun resetTime() {
         startTimeMin = getCurrentTimeInMinuets()
         endTimeMin = getCurrentTimeInMinuets()
+    }
+
+    fun pushToBackStack(i: Int){
+        mBackStack.push(i)
+        if(mBackStack.size >= Constants.MAX_BACK_STACK_SIZE) {
+            mBackStack.removeAt(0)
+        }
     }
 
     private inner class MyPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {

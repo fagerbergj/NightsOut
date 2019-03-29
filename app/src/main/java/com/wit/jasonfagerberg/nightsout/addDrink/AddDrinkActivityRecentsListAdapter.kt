@@ -49,6 +49,5 @@ class AddDrinkActivityRecentsListAdapter(private val mActivity: AddDrinkActivity
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         internal var name: TextView = itemView.findViewById(R.id.text_recent_drink_name)
         internal val card: CardView = itemView.findViewById(R.id.card_recent_item)
-        internal var image: ImageView = itemView.findViewById(R.id.image_recent)
     }
 }

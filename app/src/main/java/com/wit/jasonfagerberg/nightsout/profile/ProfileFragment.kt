@@ -115,7 +115,7 @@ class ProfileFragment : Fragment() {
             val intent = Intent(mMainActivity, AddDrinkActivity::class.java)
             intent.putExtra("CAN_UNFAVORITE", false)
             intent.putExtra("FAVORITED", true)
-            mMainActivity.mBackStack.push(4)
+            mMainActivity.pushToBackStack(4)
             intent.putExtra("BACK_STACK", mMainActivity.mBackStack.toIntArray())
             startActivity(intent)
         }
@@ -298,7 +298,7 @@ class ProfileFragment : Fragment() {
         mMainActivity.showToast("Profile Saved!")
         mMainActivity.showBottomNavBar()
         mMainActivity.profileInit = true
-        mMainActivity.mBackStack.push(mMainActivity.pager.currentItem)
+        mMainActivity.pushToBackStack(mMainActivity.pager.currentItem)
         mMainActivity.pager.currentItem = 0
     }
 

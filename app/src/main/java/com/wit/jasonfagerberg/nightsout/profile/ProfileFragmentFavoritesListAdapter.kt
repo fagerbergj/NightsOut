@@ -56,7 +56,6 @@ class ProfileFragmentFavoritesListAdapter(private val mContext: Context, drinksL
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         internal var name: TextView = itemView.findViewById(R.id.text_profile_favorite_drink_name)
         internal val card: CardView = itemView.findViewById(R.id.card_profile_favorite_item)
-        internal var image: ImageView = itemView.findViewById(R.id.image_profile_favorite)
         internal var favorited: Boolean = true
     }
 }
