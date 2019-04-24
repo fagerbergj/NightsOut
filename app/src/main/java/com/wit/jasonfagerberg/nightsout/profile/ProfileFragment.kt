@@ -157,8 +157,7 @@ class ProfileFragment : Fragment() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        val resId = item?.itemId
-        when (resId) {
+        when (item?.itemId) {
             R.id.btn_clear_favorites_list -> {
                 if (mMainActivity.mFavoritesList.isEmpty()) return false
                 val posAction = {

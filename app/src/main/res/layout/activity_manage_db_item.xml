@@ -58,5 +58,5 @@
         android:textAppearance="?android:textAppearanceLarge"
         android:textColor="@color/colorDarkGray"
         tools:ignore="HardcodedText"
-        android:contentDescription="TODO" />
+        android:contentDescription="@string/empty" />
 </RelativeLayout>

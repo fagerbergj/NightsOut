@@ -53,8 +53,7 @@ class ManageDBActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        val resId = item?.itemId
-        when (resId) {
+        when (item?.itemId) {
             R.id.btn_reset_db -> {
                 val dialog = LightSimpleDialog(this)
                 val posAction = {
