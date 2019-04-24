@@ -412,6 +412,7 @@ class AddDrinkActivity : AppCompatActivity() {
         if (canUnfavorite) intent.putExtra("FRAGMENT_ID", 0)
         else intent.putExtra("FRAGMENT_ID", 2)
         intent.putExtra("BACK_STACK", mBackStackIntArray)
+        intent.putExtra("drinkAdded", true)
         startActivity(intent)
     }
 

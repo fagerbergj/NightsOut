@@ -37,9 +37,7 @@ class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: Ar
 
         when {
             drink.abv > 20 -> holder.image.setImageBitmap(BitmapFactory.decodeResource(mContext.resources, R.mipmap.cocktail))
-
             drink.abv > 9.5 -> holder.image.setImageBitmap(BitmapFactory.decodeResource(mContext.resources, R.mipmap.wine))
-
             else -> holder.image.setImageBitmap(BitmapFactory
                     .decodeResource(mContext.resources, R.mipmap.beer))
         }
@@ -56,6 +54,11 @@ class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: Ar
 
         holder.foreground.setOnClickListener { showEditRemoveDialog(position) }
         holder.foreground.setOnLongClickListener { showEditRemoveDialog(position); true }
+    }
+
+    override fun onViewRecycled(holder: ViewHolder) {
+        holder.image.setImageDrawable(null)
+        super.onViewRecycled(holder)
     }
 
     override fun getItemCount(): Int {
@@ -93,6 +96,8 @@ class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: Ar
         // add another button
         val another = dialogView.findViewById<TextView>(R.id.text_drink_modify_add_another)
         another.setOnClickListener {
+            mMainActivity.drinksAddedCount++
+            mMainActivity.showPleaseRateDialog()
             onAddAnotherClicked(position)
             dismissDialog(dialog)
         }
@@ -203,24 +208,24 @@ class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: Ar
         val other = Drink(drink.id, drink.name, drink.abv, drink.amount, drink.measurement,
                 false, false, Constants.getLongTimeNow())
         // pad 0s to end
-        if (!editABV.text.isEmpty() && "${editABV.text}"["${editABV.text}".length - 1] == '.') {
+        if (editABV.text.isNotEmpty() && "${editABV.text}"["${editABV.text}".length - 1] == '.') {
             val padded = "${editABV.text}0"
             editABV.setText(padded)
         }
 
-        if (!editAmount.text.isEmpty() && "${editAmount.text}"["${editAmount.text}".length - 1] == '.') {
+        if (editAmount.text.isNotEmpty() && "${editAmount.text}"["${editAmount.text}".length - 1] == '.') {
             val padded = "${editAmount.text}0"
             editAmount.setText(padded)
         }
 
         // set drink to new values
-        if (!editName.text.isEmpty()) {
+        if (editName.text.isNotEmpty()) {
             drink.name = editName.text.toString()
         }
-        if (!editABV.text.isEmpty()) {
+        if (editABV.text.isNotEmpty()) {
             drink.abv = "${editABV.text}".toDouble()
         }
-        if (!editAmount.text.isEmpty()) {
+        if (editAmount.text.isNotEmpty()) {
             drink.amount = "${editAmount.text}".toDouble()
         }
         drink.measurement = dropdown.selectedItem.toString()

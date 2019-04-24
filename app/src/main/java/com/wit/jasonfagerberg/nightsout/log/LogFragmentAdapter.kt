@@ -33,8 +33,7 @@ class LogFragmentAdapter(private val mContext: Context, logList: ArrayList<Any>)
 
     // When view is rendered set appropriate elements in the view holder
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val viewType = getItemViewType(position)
-        when (viewType) {
+        when (getItemViewType(position)) {
             DRINK -> {
                 val drink: Drink = mLogList[position] as Drink
 

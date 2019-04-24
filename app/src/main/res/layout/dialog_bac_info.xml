@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp">
+    android:background="@color/colorPrimary">
 
     <TextView
         android:id="@+id/text_bac_info_title"
@@ -12,26 +12,34 @@
         android:paddingBottom="8dp"
         android:layout_alignParentStart="true"
         android:text="@string/bac_level"
-        android:textColor="@color/colorBlack"
+        android:textColor="@color/colorWhite"
         android:textSize="24sp"
         android:textStyle="bold"
-        android:layout_toStartOf="@id/btn_bac_info_dismiss"/>
+        android:layout_toStartOf="@id/btn_bac_info_dismiss"
+        android:padding="16dp"/>
 
-    <View
-        android:id="@+id/line"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_below="@+id/text_bac_info_title"
-        android:layout_marginBottom="4dp"
-        android:background="@android:color/darker_gray" />
+    <ImageView
+        android:id="@+id/btn_bac_info_dismiss"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"
+        android:background="?attr/selectableItemBackground"
+        android:contentDescription="@string/empty"
+        android:padding="12dp"
+        android:src="@drawable/ic_close_white_24dp"
+        android:layout_above="@+id/info_container"/>
+
 
     <RelativeLayout
         android:id="@+id/info_container"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/line"
+        android:layout_below="@id/text_bac_info_title"
         android:orientation="horizontal"
-        android:paddingTop="16dp">
+        android:padding="16dp"
+        android:paddingTop="32dp"
+        android:background="@color/colorWhite">
 
         <TextView
             android:id="@+id/duration_label"
@@ -111,26 +119,12 @@
             android:textColor="@color/colorDarkGray"
             tools:ignore="HardcodedText" />
 
+        <com.jjoe64.graphview.GraphView
+            android:id="@+id/graph_bac_info_declining_bac"
+            android:layout_width="match_parent"
+            android:layout_height="255dp"
+            android:layout_below="@id/text_bac_info_time_to_sober" />
+
     </RelativeLayout>
-
-    <com.jjoe64.graphview.GraphView
-        android:id="@+id/graph_bac_info_declining_bac"
-        android:layout_width="match_parent"
-        android:layout_height="225dip"
-        android:layout_below="@id/info_container" />
-
-    <ImageView
-        android:id="@+id/btn_bac_info_dismiss"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/close_gray_18dp"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:padding="8dp"
-        android:scaleX="1.25"
-        android:scaleY="1.25"
-        android:background="?attr/selectableItemBackground"
-        android:contentDescription="@string/empty"
-        android:layout_alignTop="@+id/text_bac_info_title"/>
 
 </RelativeLayout>

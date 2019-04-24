@@ -87,8 +87,7 @@ class LogFragment : Fragment() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        val resId = item?.itemId
-        when (resId) {
+        when (item?.itemId) {
             R.id.btn_clear_all_logs -> {
                 if (mMainActivity.mLogHeaders.isEmpty()) return false
                 val lightSimpleDialog = LightSimpleDialog(context!!)

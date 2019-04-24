@@ -20,7 +20,7 @@ class BacInfoDialog(
     private val converter = homeFragment.mConverter
 
     fun showBacInfoDialog() {
-        val builder = android.app.AlertDialog.Builder(homeFragment.context)
+        val builder = AlertDialog.Builder(homeFragment.context)
         val parent: ViewGroup? = null
         val dialogView = mainActivity.layoutInflater
                 .inflate(R.layout.dialog_bac_info, parent, false)

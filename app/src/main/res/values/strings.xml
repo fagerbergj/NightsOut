@@ -68,4 +68,7 @@
     <string name="hide_auto_complete_suggestion">Hide In Suggestions List</string>
     <string name="delete_drink">Delete Drink</string>
     <string name="clean_db">Clean Database</string>
+    <string name="rate">Rate</string>
+    <string name="dont_show_again">Don\'t Show Again</string>
+    <string name="later">Later</string>
 </resources>

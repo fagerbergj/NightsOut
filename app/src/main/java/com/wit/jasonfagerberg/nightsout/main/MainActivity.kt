@@ -1,7 +1,9 @@
 package com.wit.jasonfagerberg.nightsout.main
 
+import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.content.SharedPreferences
+import android.net.Uri
 import android.os.Bundle
 import android.os.PersistableBundle
 import android.preference.PreferenceManager
@@ -56,6 +58,9 @@ class MainActivity : AppCompatActivity() {
     private val country = Locale.getDefault().country
     private val twelveHourCountries = arrayListOf("US", "UK", "PH", "CA", "AU", "NZ", "IN", "EG", "SA", "CO", "PK", "MY")
     var use24HourTime = !twelveHourCountries.contains(country)
+    private var dateInstalled: Long = 0
+    var drinksAddedCount: Int = 0
+    private var dontShowRateDialog: Boolean = false
 
     // global lists
     var mDrinksList: ArrayList<Drink> = ArrayList()
@@ -137,9 +142,16 @@ class MainActivity : AppCompatActivity() {
         preferences = PreferenceManager.getDefaultSharedPreferences(this)
         getProfileAndTimeData()
 
+        dateInstalled = preferences.getLong("dateInstalled", System.currentTimeMillis())
+        drinksAddedCount = preferences.getInt("drinksAddedCount", 0)
+        if (drinksAddedCount > 10000) drinksAddedCount = 10 // prevent the very unlikely number too large for int
+        dontShowRateDialog = preferences.getBoolean("dontShowRateDialog", false)
+
         val fragmentId = intent.getIntExtra("FRAGMENT_ID", -1)
         val fragmentArray = intent.getIntArrayExtra("BACK_STACK")
         if (fragmentArray != null) {
+            if (preferences.getBoolean("drinkAdded", false)) drinksAddedCount++
+            showPleaseRateDialog()
             for (frag in fragmentArray) pushToBackStack(frag)
         }
 
@@ -154,6 +166,37 @@ class MainActivity : AppCompatActivity() {
         mDrinksList = mDatabaseHelper.pullCurrentSessionDrinks()
         mFavoritesList = mDatabaseHelper.pullFavoriteDrinks()
         mLogHeaders = mDatabaseHelper.pullLogHeaders()
+    }
+
+    fun showPleaseRateDialog(){
+        // at least 3 days since install, at least 5 drinks added total, don't show = false
+        val lessThanThreeDaysSinceInstall = System.currentTimeMillis() < (dateInstalled + (Constants.DAYS_UNTIL_ASK_FOR_RATING * 24 * 60 * 60 * 1000))
+        if (lessThanThreeDaysSinceInstall || dontShowRateDialog || drinksAddedCount < Constants.DRINK_COUNT_TO_ASK_FOR_RATING) return
+
+        val dialog = SimpleDialog(this, layoutInflater)
+        dialog.setTitle("Please Rate " + getString(R.string.app_name))
+        dialog.setBody("If you are enjoying " + getString(R.string.app_name) + ", please take a moment to rate it. Thank you for your support!")
+        dialog.setPositiveButtonText(getString(R.string.rate))
+        dialog.setNegativeButtonText(getString(R.string.later))
+        dialog.setNeutralButtonText(getString(R.string.dont_show_again))
+
+        dialog.setPositiveFunction {
+            try{
+                startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=$packageName")))
+            } catch (notFound: ActivityNotFoundException) {
+                startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=$packageName")))
+            }
+            dialog.dismiss()
+        }
+        dialog.setNegativeFunction {
+            // set drinks added count to 0 so the user doesnt get spammed
+            drinksAddedCount = 0
+            dialog.dismiss()
+        }
+        dialog.setNuetralFunction {
+            dontShowRateDialog = true
+            dialog.dismiss()
+        }
     }
 
     private fun saveData() {
@@ -172,6 +215,10 @@ class MainActivity : AppCompatActivity() {
         editor.putInt("homeStartTimeMin", startTimeMin)
         editor.putInt("homeEndTimeMin", endTimeMin)
         editor.putBoolean("homeUse24HourTime", use24HourTime)
+
+        editor.putLong("dateInstalled", dateInstalled)
+        editor.putInt("drinksAddedCount", drinksAddedCount)
+        editor.putBoolean("dontShowRateDialog", dontShowRateDialog)
 
         editor.apply()
     }

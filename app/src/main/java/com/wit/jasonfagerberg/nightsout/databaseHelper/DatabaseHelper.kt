@@ -4,6 +4,7 @@ import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+import android.util.SparseArray
 import com.wit.jasonfagerberg.nightsout.log.LogHeader
 import com.wit.jasonfagerberg.nightsout.main.Drink
 import java.io.File
@@ -11,7 +12,6 @@ import java.io.FileOutputStream
 import java.io.IOException
 import java.lang.Exception
 import java.util.UUID
-import kotlin.collections.HashMap
 
 // private const val TAG = "DatabaseHelper"
 
@@ -31,7 +31,7 @@ open class DatabaseHelper(
     private val mAllLoggedDrinks = ArrayList<Pair<Int, UUID>>()
 
     // delete after everyone is using UUIDs
-    private val mOldIdUUIDMap = HashMap<Int, UUID>()
+    private val mOldIdUUIDMap = SparseArray<UUID>()
 
     // general db
     override fun onCreate(db: SQLiteDatabase?) {}
@@ -406,7 +406,7 @@ open class DatabaseHelper(
             try {
                 UUID.fromString(id)
             } catch (e: Exception) {
-                mOldIdUUIDMap[id.toInt()] = UUID.randomUUID()
+                mOldIdUUIDMap.put(id.toInt(), UUID.randomUUID())
             }
         }
         cursor.close()
