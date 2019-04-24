@@ -38,10 +38,12 @@ class SimpleDialog(context: Context, layoutInflater: LayoutInflater) {
     }
 
     fun setPositiveFunction(listener: (View) -> Unit) {
+        posButton.visibility = View.VISIBLE
         posButton.setOnClickListener(listener)
     }
 
     fun setNegativeFunction(listener: (View) -> Unit) {
+        negButton.visibility = View.VISIBLE
         negButton.setOnClickListener(listener)
     }
 

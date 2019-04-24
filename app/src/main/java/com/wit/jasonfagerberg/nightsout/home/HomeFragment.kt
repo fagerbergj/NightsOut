@@ -29,6 +29,7 @@ import android.widget.EditText
 import com.google.android.material.snackbar.Snackbar
 import com.wit.jasonfagerberg.nightsout.addDrink.AddDrinkActivity
 import com.wit.jasonfagerberg.nightsout.dialogs.BacInfoDialog
+import com.wit.jasonfagerberg.nightsout.dialogs.SimpleDialog
 import com.wit.jasonfagerberg.nightsout.manageDB.ManageDBActivity
 import java.util.Calendar
 
@@ -264,14 +265,10 @@ class HomeFragment : Fragment() {
     }
 
     private fun showDisclaimerDialog() {
-        val builder = android.app.AlertDialog.Builder(view!!.context)
-        val parent: ViewGroup? = null
-        val dialogView = mMainActivity.layoutInflater
-                .inflate(R.layout.fragment_home_dialog_disclaimer, parent, false)
-        builder.setView(dialogView)
-        val dialog = builder.create()
-        dialog.show()
-        dialog.findViewById<Button>(R.id.btn_disclaimer_dismiss).setOnClickListener { dialog.dismiss() }
+        val dialog = SimpleDialog(context!!, layoutInflater)
+        dialog.setTitle(getString(R.string.disclaimer))
+        dialog.setBody(getString(R.string.disclaimer_body))
+        dialog.setNuetralFunction { dialog.dismiss() }
     }
 
     // Widemark formula, imperial due to better floating point accuracy

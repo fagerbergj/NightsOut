@@ -37,9 +37,7 @@ class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: Ar
 
         when {
             drink.abv > 20 -> holder.image.setImageBitmap(BitmapFactory.decodeResource(mContext.resources, R.mipmap.cocktail))
-
             drink.abv > 9.5 -> holder.image.setImageBitmap(BitmapFactory.decodeResource(mContext.resources, R.mipmap.wine))
-
             else -> holder.image.setImageBitmap(BitmapFactory
                     .decodeResource(mContext.resources, R.mipmap.beer))
         }
@@ -56,6 +54,11 @@ class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: Ar
 
         holder.foreground.setOnClickListener { showEditRemoveDialog(position) }
         holder.foreground.setOnLongClickListener { showEditRemoveDialog(position); true }
+    }
+
+    override fun onViewRecycled(holder: ViewHolder) {
+        holder.image.setImageDrawable(null)
+        super.onViewRecycled(holder)
     }
 
     override fun getItemCount(): Int {
