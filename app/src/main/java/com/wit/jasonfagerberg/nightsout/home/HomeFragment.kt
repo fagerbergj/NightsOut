@@ -20,7 +20,6 @@ import com.wit.jasonfagerberg.nightsout.main.MainActivity
 import com.wit.jasonfagerberg.nightsout.R
 import com.wit.jasonfagerberg.nightsout.converter.Converter
 import android.widget.RelativeLayout
-import android.widget.Button
 import com.wit.jasonfagerberg.nightsout.dialogs.LightSimpleDialog
 import androidx.recyclerview.widget.ItemTouchHelper
 import android.widget.TextView
