@@ -112,6 +112,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onStart() {
         mDatabaseHelper.openDatabase()
+        showPleaseRateDialog(0, 100, false)
         initData()
         super.onStart()
     }
@@ -154,6 +155,23 @@ class MainActivity : AppCompatActivity() {
         mDrinksList = mDatabaseHelper.pullCurrentSessionDrinks()
         mFavoritesList = mDatabaseHelper.pullFavoriteDrinks()
         mLogHeaders = mDatabaseHelper.pullLogHeaders()
+    }
+
+    private fun showPleaseRateDialog(installDate: Long, launchCount: Int, dontShow: Boolean){
+        // at least 3 days since install, at least launched 5 times, dont show not set
+        val lessThanThreeDaysSinceInstall = System.currentTimeMillis() < (installDate + (Constants.DAYS_UNTIL_ASK_FOR_RATING * 24 * 60 * 60 * 1000))
+        if (lessThanThreeDaysSinceInstall || dontShow || launchCount < Constants.LAUNCH_COUNT_TO_ASK_FOR_RATING) return
+
+        val dialog = SimpleDialog(this, layoutInflater)
+        dialog.setTitle("Please Rate " + getString(R.string.app_name))
+        dialog.setBody("If you are enjoying " + getString(R.string.app_name) + ", please take a moment to rate it. Thank you for your support!")
+        dialog.setPositiveButtonText(getString(R.string.rate))
+        dialog.setNegativeButtonText(getString(R.string.dismiss))
+        dialog.setNeutralButtonText(getString(R.string.dont_show_again))
+
+        dialog.setPositiveFunction {  }
+        dialog.setNegativeFunction {  }
+        dialog.setNuetralFunction {  }
     }
 
     private fun saveData() {
