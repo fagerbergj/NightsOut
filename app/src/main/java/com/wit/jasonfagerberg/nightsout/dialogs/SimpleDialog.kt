@@ -13,6 +13,7 @@ class SimpleDialog(context: Context, layoutInflater: LayoutInflater) {
     private val dialog: AlertDialog
     private val posButton: Button
     private val negButton: Button
+    private val neuButton: Button
 
     init {
         val builder = AlertDialog.Builder(context)
@@ -25,6 +26,7 @@ class SimpleDialog(context: Context, layoutInflater: LayoutInflater) {
 
         posButton = dialog.findViewById(R.id.btn_simple_dialog_positive)
         negButton = dialog.findViewById(R.id.btn_simple_dialog_negative)
+        neuButton = dialog.findViewById(R.id.btn_simple_dialog_neutral)
     }
 
     fun setTitle(title: String) {
@@ -43,12 +45,21 @@ class SimpleDialog(context: Context, layoutInflater: LayoutInflater) {
         negButton.setOnClickListener(listener)
     }
 
+    fun setNuetralFunction(listener: (View) -> Unit) {
+        neuButton.visibility = View.VISIBLE
+        neuButton.setOnClickListener(listener)
+    }
+
     fun setPositiveButtonText(text: String) {
         posButton.text = text
     }
 
     fun setNegativeButtonText(text: String) {
         negButton.text = text
+    }
+
+    fun setNeutralButtonText(text: String) {
+        neuButton.text = text
     }
 
     fun dismiss() {

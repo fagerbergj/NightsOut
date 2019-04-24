@@ -31,14 +31,25 @@
         android:textColor="@color/colorDarkGray"
         android:textSize="16sp" />
 
-    <LinearLayout
+    <RelativeLayout
         style="?android:attr/buttonBarStyle"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/text_simple_dialog_body"
         android:layout_alignParentEnd="true"
         android:orientation="horizontal"
         android:paddingTop="8dp">
+
+        <Button
+            android:id="@+id/btn_simple_dialog_neutral"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/other"
+            android:textColor="@color/colorDarkGray"
+            app:backgroundTint="@color/colorWhite"
+            android:layout_alignParentStart="true"
+            android:visibility="gone"/>
 
         <Button
             android:id="@+id/btn_simple_dialog_negative"
@@ -47,7 +58,8 @@
             android:layout_height="wrap_content"
             android:text="@string/no"
             android:textColor="@color/colorDarkGray"
-            app:backgroundTint="@color/colorWhite" />
+            app:backgroundTint="@color/colorWhite"
+            android:layout_toStartOf="@id/btn_simple_dialog_positive"/>
 
         <Button
             android:id="@+id/btn_simple_dialog_positive"
@@ -56,8 +68,9 @@
             android:layout_height="wrap_content"
             android:text="@string/yes"
             android:textColor="@color/colorDarkGray"
-            app:backgroundTint="@color/colorWhite" />
+            app:backgroundTint="@color/colorWhite"
+            android:layout_alignParentEnd="true"/>
 
-    </LinearLayout>
+    </RelativeLayout>
 
 </RelativeLayout>
