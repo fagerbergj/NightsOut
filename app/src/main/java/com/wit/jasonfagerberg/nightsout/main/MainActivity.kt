@@ -150,8 +150,8 @@ class MainActivity : AppCompatActivity() {
         val fragmentId = intent.getIntExtra("FRAGMENT_ID", -1)
         val fragmentArray = intent.getIntArrayExtra("BACK_STACK")
         if (fragmentArray != null) {
+            if (preferences.getBoolean("drinkAdded", false)) drinksAddedCount++
             showPleaseRateDialog()
-            drinksAddedCount++
             for (frag in fragmentArray) pushToBackStack(frag)
         }
 
