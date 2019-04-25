@@ -186,11 +186,13 @@ class MainActivity : AppCompatActivity() {
             } catch (notFound: ActivityNotFoundException) {
                 startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=$packageName")))
             }
+            dontShowRateDialog = true
             dialog.dismiss()
         }
         dialog.setNegativeFunction {
             // set drinks added count to 0 so the user doesnt get spammed
             drinksAddedCount = 0
+            dateInstalled = System.currentTimeMillis() - 86400000 * 2
             dialog.dismiss()
         }
         dialog.setNuetralFunction {
