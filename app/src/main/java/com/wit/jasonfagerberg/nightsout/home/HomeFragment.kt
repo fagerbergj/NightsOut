@@ -29,6 +29,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.wit.jasonfagerberg.nightsout.addDrink.AddDrinkActivity
 import com.wit.jasonfagerberg.nightsout.dialogs.BacInfoDialog
 import com.wit.jasonfagerberg.nightsout.dialogs.SimpleDialog
+import com.wit.jasonfagerberg.nightsout.main.Constants
 import com.wit.jasonfagerberg.nightsout.manageDB.ManageDBActivity
 import java.util.Calendar
 
@@ -183,7 +184,7 @@ class HomeFragment : Fragment() {
         itemTouchHelper.attachToRecyclerView(drinksListView)
     }
 
-    private fun setupEditTexts(view: View) {
+    fun setupEditTexts(view: View) {
         val startPicker: EditText = view.findViewById(R.id.edit_start_time)
         val endPicker: EditText = view.findViewById(R.id.edit_end_time)
 
@@ -221,6 +222,7 @@ class HomeFragment : Fragment() {
             mMainActivity.startTimeMin = mMainActivity.getCurrentTimeInMinuets()
             startPicker.setText(mConverter.timeToString(mMainActivity.startTimeMin, mMainActivity.use24HourTime))
             updateBACText(calculateBAC())
+            mMainActivity.showBacNotification(Constants.NOTIFICATION_BAC_CHANNEL.hashCode())
         }
 
         mTimePicker.setTitle("Start Time")
@@ -248,6 +250,7 @@ class HomeFragment : Fragment() {
             mMainActivity.endTimeMin = mMainActivity.getCurrentTimeInMinuets()
             endPicker.setText(mConverter.timeToString(mMainActivity.endTimeMin, mMainActivity.use24HourTime))
             updateBACText(calculateBAC())
+            mMainActivity.showBacNotification(Constants.NOTIFICATION_BAC_CHANNEL.hashCode())
         }
 
         mTimePicker.setTitle("End Time")

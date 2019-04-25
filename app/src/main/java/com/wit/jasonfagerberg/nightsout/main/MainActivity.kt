@@ -1,12 +1,15 @@
 package com.wit.jasonfagerberg.nightsout.main
 
+import android.app.NotificationManager
 import android.content.ActivityNotFoundException
+import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Bundle
 import android.os.PersistableBundle
 import android.preference.PreferenceManager
+import android.util.Log
 import android.view.Gravity
 import android.view.MenuItem
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -28,14 +31,17 @@ import com.wit.jasonfagerberg.nightsout.dialogs.SimpleDialog
 import com.wit.jasonfagerberg.nightsout.home.HomeFragment
 import com.wit.jasonfagerberg.nightsout.log.LogFragment
 import com.wit.jasonfagerberg.nightsout.log.LogHeader
+import com.wit.jasonfagerberg.nightsout.notification.NotificationHelper
+import com.wit.jasonfagerberg.nightsout.notification.RefreshBACReceiver
 import com.wit.jasonfagerberg.nightsout.profile.ProfileFragment
+import java.lang.Exception
 import java.util.Stack
 import java.util.Locale
 import java.util.GregorianCalendar
 import java.util.Date
 import java.util.Calendar
 
-// private const val TAG = "MainActivity"
+private const val TAG = "MainActivity"
 
 class MainActivity : AppCompatActivity() {
     val mBackStack = Stack<Int>()
@@ -66,6 +72,9 @@ class MainActivity : AppCompatActivity() {
     var mDrinksList: ArrayList<Drink> = ArrayList()
     var mFavoritesList: ArrayList<Drink> = ArrayList()
     var mLogHeaders: ArrayList<LogHeader> = ArrayList()
+
+    // receivers
+    private val refreshBACReceiver: RefreshBACReceiver = RefreshBACReceiver()
 
     lateinit var mDatabaseHelper: DatabaseHelper
     lateinit var pager: ViewPager
@@ -121,6 +130,16 @@ class MainActivity : AppCompatActivity() {
         super.onStart()
     }
 
+    fun showBacNotification(oldId: Int? = null){
+        Log.v(TAG, "oldId = $oldId")
+        if (oldId != null) {
+            (getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).cancel(oldId)
+        }
+        val notificationHelper = NotificationHelper(this, Constants.NOTIFICATION_BAC_CHANNEL)
+        notificationHelper.addAction(Constants.ACTION_REFRESH_BAC, R.drawable.image_border, "Refresh", refreshBACReceiver)
+        notificationHelper.showNotification("Current BAC",  "%.3f".format(homeFragment.calculateBAC()))
+    }
+
     private fun invalidateFragmentMenus(position: Int) {
         for (i in 0 until pagerAdapter.count) {
             pagerAdapter.getItem(i).setHasOptionsMenu(i == position)
@@ -130,11 +149,20 @@ class MainActivity : AppCompatActivity() {
 
     override fun onStop() {
         saveData()
-        mDrinksList.clear()
+//        mDrinksList.clear()
         mFavoritesList.clear()
         mLogHeaders.clear()
         mDatabaseHelper.closeDatabase()
         super.onStop()
+    }
+
+    override fun onDestroy() {
+        try {
+            unregisterReceiver(refreshBACReceiver)
+        } catch (e: Exception) {
+            Log.e(TAG, "refreshBACReciever not registered")
+        }
+        super.onDestroy()
     }
 
     private fun initData() {

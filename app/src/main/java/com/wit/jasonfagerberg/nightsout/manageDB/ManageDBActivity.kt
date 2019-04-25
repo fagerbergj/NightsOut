@@ -1,5 +1,7 @@
 package com.wit.jasonfagerberg.nightsout.manageDB
 
+import android.app.NotificationManager
+import android.content.Context
 import android.os.Bundle
 import android.view.Gravity
 import android.view.MenuItem
@@ -64,6 +66,8 @@ class ManageDBActivity : AppCompatActivity() {
                     mDrinksList.clear()
                     mDrinksList.addAll(dbh.getSuggestedDrinks("", true))
                     mDrinkListAdapter.notifyDataSetChanged()
+                    (getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).cancelAll()
+
                 }
                 dialog.setActions(posAction, {})
                 dialog.show("Are you sure? You will lose everything.")

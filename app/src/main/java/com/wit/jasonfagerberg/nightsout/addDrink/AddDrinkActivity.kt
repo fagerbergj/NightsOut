@@ -8,6 +8,7 @@ import android.graphics.Typeface
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 // import android.util.Log
 import com.google.android.material.button.MaterialButton
 import androidx.core.content.ContextCompat
