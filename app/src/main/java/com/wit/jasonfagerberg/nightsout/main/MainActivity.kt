@@ -1,10 +1,7 @@
 package com.wit.jasonfagerberg.nightsout.main
 
 import android.app.NotificationManager
-import android.content.ActivityNotFoundException
-import android.content.Context
-import android.content.Intent
-import android.content.SharedPreferences
+import android.content.*
 import android.net.Uri
 import android.os.Bundle
 import android.os.PersistableBundle
@@ -31,6 +28,7 @@ import com.wit.jasonfagerberg.nightsout.dialogs.SimpleDialog
 import com.wit.jasonfagerberg.nightsout.home.HomeFragment
 import com.wit.jasonfagerberg.nightsout.log.LogFragment
 import com.wit.jasonfagerberg.nightsout.log.LogHeader
+import com.wit.jasonfagerberg.nightsout.notification.AddDrinkReceiver
 import com.wit.jasonfagerberg.nightsout.notification.NotificationHelper
 import com.wit.jasonfagerberg.nightsout.notification.RefreshBACReceiver
 import com.wit.jasonfagerberg.nightsout.profile.ProfileFragment
@@ -75,6 +73,7 @@ class MainActivity : AppCompatActivity() {
 
     // receivers
     private val refreshBACReceiver: RefreshBACReceiver = RefreshBACReceiver()
+    private val addDrinkReceiver: AddDrinkReceiver = AddDrinkReceiver()
 
     lateinit var mDatabaseHelper: DatabaseHelper
     lateinit var pager: ViewPager
@@ -89,7 +88,7 @@ class MainActivity : AppCompatActivity() {
         botNavBar.setOnNavigationItemSelectedListener { listener ->
             when (listener.itemId) {
                 R.id.bottom_nav_home -> { alertUserBeforeNavigation(homeFragment); true }
-                R.id.bottom_nav_log -> { alertUserBeforeNavigation(logFragment);true }
+                R.id.bottom_nav_log -> { alertUserBeforeNavigation(logFragment); true }
                 R.id.bottom_nav_profile -> { pager.currentItem = 2; true }
                 else -> false
             }
@@ -137,6 +136,7 @@ class MainActivity : AppCompatActivity() {
         }
         val notificationHelper = NotificationHelper(this, Constants.NOTIFICATION_BAC_CHANNEL)
         notificationHelper.addAction(Constants.ACTION_REFRESH_BAC, R.drawable.image_border, "Refresh", refreshBACReceiver)
+        notificationHelper.addAction(Constants.ACTION_ADD_DRINK, R.drawable.image_border, "Add Drink", addDrinkReceiver)
         notificationHelper.showNotification("Current BAC",  "%.3f".format(homeFragment.calculateBAC()))
     }
 
@@ -157,12 +157,17 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
-        try {
-            unregisterReceiver(refreshBACReceiver)
-        } catch (e: Exception) {
-            Log.e(TAG, "refreshBACReciever not registered")
-        }
+        tryToUnregisterReceiver(refreshBACReceiver)
+        tryToUnregisterReceiver(addDrinkReceiver)
         super.onDestroy()
+    }
+
+    private fun tryToUnregisterReceiver(receiver: BroadcastReceiver) {
+        try {
+            unregisterReceiver(receiver)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     private fun initData() {
