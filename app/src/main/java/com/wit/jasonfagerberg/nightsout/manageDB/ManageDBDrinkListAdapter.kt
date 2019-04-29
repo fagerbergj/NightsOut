@@ -77,16 +77,16 @@ class ManageDBDrinkListAdapter(private val mContext: Context, private val mDrink
         for (d in mDrinksList) {
             if (d == drink) d.favorited = drink.favorited
         }
-        if (drink.favorited) Constants.showToast(mActivity,"${drink.name} favorited")
-        else Constants.showToast(mActivity,"${drink.name} unfavorited")
+        if (drink.favorited) mActivity.showToast("${drink.name} favorited")
+        else mActivity.showToast("${drink.name} unfavorited")
         mActivity.dbh.updateDrinkFavoriteStatus(drink)
         return true
     }
 
     private fun suggestItemOptionSelected(drink: Drink, dontSuggest: Boolean): Boolean {
         mActivity.dbh.updateDrinkSuggestionStatus(drink.id, !dontSuggest)
-        if (!dontSuggest) Constants.showToast(mActivity,"This drink will not be suggested")
-        else Constants.showToast(mActivity,"This drink will be suggested")
+        if (!dontSuggest) mActivity.showToast("This drink will not be suggested")
+        else mActivity.showToast("This drink will be suggested")
         return true
     }
 

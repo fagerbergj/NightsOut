@@ -22,7 +22,7 @@ class AddDrinkActivityRecentsListAdapter(private val mActivity: AddDrinkActivity
         val drink = mActivity.mRecentsList[position]
         holder.name.text = drink.name
         holder.card.setOnClickListener {
-            Constants.showToast(mActivity, "${holder.name.text} information filled in")
+            mActivity.showToast("${holder.name.text} information filled in")
             mActivity.fillViews(drink.name, drink.abv, drink.amount, drink.measurement)
         }
 
@@ -31,7 +31,7 @@ class AddDrinkActivityRecentsListAdapter(private val mActivity: AddDrinkActivity
             val posAction = {
                 mActivity.mRecentsList.remove(drink)
                 this.notifyItemRemoved(position)
-                Constants.showToast(mActivity, "Drink Removed")
+                mActivity.showToast("Drink Removed")
                 mActivity.showOrHideEmptyTextViews()
                 drink.recent = false
                 mActivity.mDatabaseHelper.updateRowInDrinksTable(drink)

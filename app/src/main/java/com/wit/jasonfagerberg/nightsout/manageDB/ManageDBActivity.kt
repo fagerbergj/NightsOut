@@ -14,8 +14,9 @@ import com.wit.jasonfagerberg.nightsout.databaseHelper.AddDrinkDatabaseHelper
 import com.wit.jasonfagerberg.nightsout.dialogs.LightSimpleDialog
 import com.wit.jasonfagerberg.nightsout.main.Constants
 import com.wit.jasonfagerberg.nightsout.main.Drink
+import com.wit.jasonfagerberg.nightsout.main.NightsOutActivity
 
-class ManageDBActivity : AppCompatActivity() {
+class ManageDBActivity : NightsOutActivity() {
     private lateinit var mDrinkListAdapter: ManageDBDrinkListAdapter
     lateinit var mDrinksList: ArrayList<Drink>
     lateinit var dbh: AddDrinkDatabaseHelper
@@ -98,7 +99,7 @@ class ManageDBActivity : AppCompatActivity() {
                 offset ++
             }
         }
-        Constants.showToast(this, "$offset drinks deleted from database")
+        showToast("$offset drinks deleted from database")
     }
 
     private fun setupRecycler() {

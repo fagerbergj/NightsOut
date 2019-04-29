@@ -11,6 +11,8 @@ import com.wit.jasonfagerberg.nightsout.converter.Converter
 import com.wit.jasonfagerberg.nightsout.databaseHelper.DatabaseHelper
 import com.wit.jasonfagerberg.nightsout.main.Constants
 import com.wit.jasonfagerberg.nightsout.main.MainActivity
+import com.wit.jasonfagerberg.nightsout.main.NightsOutApplication
+
 
 class BacNotificationService : Service() {
     private var startTime : Int = 0
@@ -74,10 +76,12 @@ class BacNotificationService : Service() {
                     Triple(title, body, false)
                 }
 
-                if (applicationContext is MainActivity && (applicationContext as MainActivity).homeFragment.isResumed) {
-                    Constants.showToast(this, "End time updated by notification")
-                    (applicationContext as MainActivity).homeFragment.updateBACText(bac)
-                    (applicationContext as MainActivity).homeFragment.setupEditTexts((applicationContext as MainActivity).homeFragment.view!!)
+                val currentActivity = (applicationContext as NightsOutApplication).mCurrentActivity
+
+                if (currentActivity is MainActivity && currentActivity.homeFragment.isResumed) {
+                    currentActivity.showToast("End time updated by notification")
+                    currentActivity.homeFragment.updateBACText(bac)
+                    currentActivity.homeFragment.setupEditTexts(currentActivity.homeFragment.view!!)
                 }
             }
 

@@ -28,13 +28,6 @@ class Constants {
             val curMin = calendar.get(Calendar.MINUTE)
             return Converter().militaryHoursAndMinutesToMinutes(curHour, curMin)
         }
-
-        fun showToast(context: Context, message: String, isLongToast: Boolean = false) {
-            val toast = if (isLongToast) Toast.makeText(context, message, Toast.LENGTH_LONG)
-            else Toast.makeText(context, message, Toast.LENGTH_SHORT)
-            toast.setGravity(Gravity.CENTER, 0, 450)
-            toast.show()
-        }
     }
 
     interface ACTION {

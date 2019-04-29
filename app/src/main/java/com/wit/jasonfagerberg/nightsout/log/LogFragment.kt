@@ -115,7 +115,7 @@ class LogFragment : Fragment() {
                         calendarView.selectedDate.month, calendarView.selectedDate.day).toInt()
                 val index = mMainActivity.mLogHeaders.indexOf(LogHeader(date))
                 if (index == -1) {
-                    Constants.showToast(mMainActivity, "Cannot move empty log")
+                    mMainActivity.showToast("Cannot move empty log")
                     return false
                 }
                 val header = mMainActivity.mLogHeaders[index]

@@ -11,7 +11,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:windowSoftInputMode="adjustResize|stateHidden"
-        tools:ignore="GoogleAppIndexingWarning">
+        tools:ignore="GoogleAppIndexingWarning"
+        android:name=".main.NightsOutApplication">
         <activity android:name=".notification.NotificationsSettingActivity" />
         <activity
             android:name=".main.MainActivity"

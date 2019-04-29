@@ -38,7 +38,7 @@ class LogFragmentDatePicker(
                 mainActivity.mLogHeaders.remove(header)
                 val message = "Log moved to ${testHeader.monthName} ${testHeader.day}, ${testHeader.year}"
                 logFragment.resetCalendar()
-                Constants.showToast(mainActivity, message)
+                mainActivity.showToast(message)
             }
         }
 
@@ -69,7 +69,7 @@ class LogFragmentDatePicker(
             logDatabaseHelper.changeLogDate(header.date, logDate)
             mainActivity.mLogHeaders.remove(header)
             message = "Log on ${header.monthName} ${header.day}, ${header.year} was updated"
-            Constants.showToast(mainActivity, message)
+            mainActivity.showToast(message)
             logFragment.resetCalendar()
             simpleDialog.dismiss()
         }

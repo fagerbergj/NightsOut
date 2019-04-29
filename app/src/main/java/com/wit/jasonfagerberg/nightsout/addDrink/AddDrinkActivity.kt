@@ -34,13 +34,12 @@ import android.view.View
 import android.view.MenuItem
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
+import com.wit.jasonfagerberg.nightsout.main.NightsOutActivity
 import java.util.*
 
 // private const val TAG = "AddDrinkActivity"
 
-class AddDrinkActivity : AppCompatActivity() {
-    private val mBackStack = Stack<Int>()
-
+class AddDrinkActivity : NightsOutActivity() {
     val mConverter = Converter()
     private lateinit var mFavoritesListAdapter: AddDrinkActivityFavoritesListAdapter
     private lateinit var mRecentsListAdapter: AddDrinkActivityRecentsListAdapter
@@ -160,7 +159,7 @@ class AddDrinkActivity : AppCompatActivity() {
             mComplexDrinkHelper.findViews(this)
             findViewById<MaterialButton>(R.id.btn_add_drink_add_alc_source).visibility = View.VISIBLE
             findViewById<RecyclerView>(R.id.recycler_add_drink_alcohol_source_list).visibility = View.VISIBLE
-            Constants.showToast(this,"You can now add multiple alcohol sources")
+            showToast("You can now add multiple alcohol sources")
         } else {
             findViewById<MaterialButton>(R.id.btn_add_drink_add_alc_source).visibility = View.INVISIBLE
             findViewById<RecyclerView>(R.id.recycler_add_drink_alcohol_source_list).visibility = View.INVISIBLE
@@ -235,13 +234,13 @@ class AddDrinkActivity : AppCompatActivity() {
         if (mFavorited) {
             item.icon = ContextCompat.getDrawable(this, R.drawable.favorite_white_24dp)
             if (canUnfavorite) btnAdd.setText(R.string.add_and_favorite)
-            Constants.showToast(this, "Drink Will Be Favorited After Adding", true)
+            showToast("Drink Will Be Favorited After Adding", true)
             btnAdd.background.setColorFilter(ContextCompat.getColor(this,
                     R.color.colorLightRed), PorterDuff.Mode.MULTIPLY)
         } else {
             item.icon = ContextCompat.getDrawable(this, R.drawable.favorite_border_white_24dp)
             btnAdd.setText(R.string.add)
-            Constants.showToast(this, "Drink Will Not Be Favorited", true)
+            showToast("Drink Will Not Be Favorited", true)
             btnAdd.background.setColorFilter(ContextCompat.getColor(this,
                     R.color.colorGreen), PorterDuff.Mode.MULTIPLY)
         }
@@ -476,7 +475,7 @@ class AddDrinkActivity : AppCompatActivity() {
             inputError = true
         }
         if (inputError && (!complexMode || mComplexDrinkHelper.listIsEmpty())) {
-            Constants.showToast(this, "Please enter a valid ${message.substring(2, message.length)}", false)
+            showToast("Please enter a valid ${message.substring(2, message.length)}", false)
         }
         return inputError
     }

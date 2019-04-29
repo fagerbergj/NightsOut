@@ -33,7 +33,6 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import com.wit.jasonfagerberg.nightsout.addDrink.AddDrinkActivity
 import com.wit.jasonfagerberg.nightsout.converter.Converter
 import com.wit.jasonfagerberg.nightsout.dialogs.LightSimpleDialog
-import com.wit.jasonfagerberg.nightsout.main.Constants
 
 // private const val TAG = "ProfileFragment"
 
@@ -280,12 +279,12 @@ class ProfileFragment : Fragment() {
         if (!w.isNaN()) mWeightEditText.setText(w.toString())
 
         if (sex == null && !mMainActivity.profileInit) {
-            Constants.showToast(mMainActivity,"Please Select A Sex", true)
+            mMainActivity.showToast("Please Select A Sex", true)
             showErrorText(sexText)
             return
         } else if (w.isNaN() || w < 20) {
             showErrorText(weightText)
-            Constants.showToast(mMainActivity,"Please Enter a Valid Weight", true)
+            mMainActivity.showToast("Please Enter a Valid Weight", true)
             return
         }
 
@@ -293,7 +292,7 @@ class ProfileFragment : Fragment() {
         val weightMeasurement = mSpinner.selectedItem.toString()
 
         mMainActivity.setPreference(sex = sex, weight = weight, weightMeasurement = weightMeasurement, profileInit = true)
-        Constants.showToast(mMainActivity,"Profile Saved!")
+        mMainActivity.showToast("Profile Saved!")
         mMainActivity.showBottomNavBar()
         mMainActivity.pushToBackStack(mMainActivity.pager.currentItem)
         mMainActivity.pager.currentItem = 0

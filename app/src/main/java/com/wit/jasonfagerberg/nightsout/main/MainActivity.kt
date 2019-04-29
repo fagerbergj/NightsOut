@@ -32,9 +32,7 @@ import kotlin.collections.ArrayList
 
 //private const val TAG = "MainActivity"
 
-class MainActivity : AppCompatActivity() {
-
-    val mBackStack = Stack<Int>()
+class MainActivity : NightsOutActivity() {
 
     // fragments and navigation
     var homeFragment = HomeFragment()
