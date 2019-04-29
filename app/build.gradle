@@ -10,8 +10,8 @@ android {
         applicationId "com.wit.jasonfagerberg.nightsout"
         minSdkVersion 19
         targetSdkVersion 28
-        versionCode 1601
-        versionName "pidgey"
+        versionCode 1700
+        versionName "pidgeot"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         setProperty("archivesBaseName", "nightsout-$versionName")
     }
