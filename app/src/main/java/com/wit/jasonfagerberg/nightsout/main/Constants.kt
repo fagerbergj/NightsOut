@@ -1,8 +1,5 @@
 package com.wit.jasonfagerberg.nightsout.main
 
-import android.content.Context
-import android.view.Gravity
-import android.widget.Toast
 import com.wit.jasonfagerberg.nightsout.converter.Converter
 import java.util.*
 

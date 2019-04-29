@@ -4,34 +4,28 @@ import android.app.TimePickerDialog
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.view.*
+import android.widget.EditText
+import android.widget.ImageButton
+import android.widget.RelativeLayout
+import android.widget.TextView
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import android.view.LayoutInflater
-import android.view.ViewGroup
-import android.view.View
-import android.view.MenuItem
-import android.view.MenuInflater
-import android.view.Menu
-import com.wit.jasonfagerberg.nightsout.main.MainActivity
-import com.wit.jasonfagerberg.nightsout.R
-import com.wit.jasonfagerberg.nightsout.converter.Converter
-import android.widget.RelativeLayout
-import com.wit.jasonfagerberg.nightsout.dialogs.LightSimpleDialog
-import androidx.recyclerview.widget.ItemTouchHelper
-import android.widget.TextView
-import android.widget.ImageButton
-import android.widget.EditText
 import com.google.android.material.button.MaterialButton
-import com.google.android.material.snackbar.Snackbar
+import com.wit.jasonfagerberg.nightsout.R
 import com.wit.jasonfagerberg.nightsout.addDrink.AddDrinkActivity
+import com.wit.jasonfagerberg.nightsout.converter.Converter
 import com.wit.jasonfagerberg.nightsout.dialogs.BacInfoDialog
+import com.wit.jasonfagerberg.nightsout.dialogs.LightSimpleDialog
 import com.wit.jasonfagerberg.nightsout.dialogs.SimpleDialog
 import com.wit.jasonfagerberg.nightsout.main.Constants
+import com.wit.jasonfagerberg.nightsout.main.MainActivity
 import com.wit.jasonfagerberg.nightsout.manageDB.ManageDBActivity
-import java.util.Calendar
+import java.util.*
 
 // private const val TAG = "HomeFragment"
 

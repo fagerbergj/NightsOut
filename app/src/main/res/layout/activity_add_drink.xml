@@ -7,7 +7,6 @@
     tools:context=".addDrink.AddDrinkActivity">
 
     <ScrollView
-        android:id="@+id/scroll"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/btn_add_drink_add"

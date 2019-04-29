@@ -8,7 +8,7 @@ import com.wit.jasonfagerberg.nightsout.main.Constants
 class Converter {
     private val weightConversionMap = HashMap<String, Double>()
     private val volumeConversionMap = HashMap<String, Double>()
-    public val showBacNotificationMap = HashMap<String, Constants.ShowBacNotificationEnum>()
+    val showBacNotificationMap = HashMap<String, Constants.ShowBacNotificationEnum>()
 
     init {
         weightConversionMap["lbs"] = 1.0

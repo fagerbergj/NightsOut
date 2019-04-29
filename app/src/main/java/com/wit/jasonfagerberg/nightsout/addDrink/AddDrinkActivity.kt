@@ -1,5 +1,6 @@
 package com.wit.jasonfagerberg.nightsout.addDrink
 
+// import android.util.Log
 import android.app.Activity
 import android.content.ContentValues
 import android.content.Intent
@@ -8,34 +9,28 @@ import android.graphics.Typeface
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-// import android.util.Log
-import com.google.android.material.button.MaterialButton
+import android.view.Menu
+import android.view.MenuItem
+import android.view.View
+import android.view.inputmethod.InputMethodManager
+import android.widget.*
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import android.widget.EditText
-import android.widget.Spinner
-import android.widget.ArrayAdapter
-import android.widget.TextView
-import android.widget.CheckBox
-import com.wit.jasonfagerberg.nightsout.main.Drink
+import com.google.android.material.button.MaterialButton
 import com.wit.jasonfagerberg.nightsout.R
-import com.wit.jasonfagerberg.nightsout.converter.Converter
-import com.wit.jasonfagerberg.nightsout.dialogs.LightSimpleDialog
-import com.wit.jasonfagerberg.nightsout.addDrink.drinkSuggestion.DrinkSuggestionAutoCompleteView
 import com.wit.jasonfagerberg.nightsout.addDrink.drinkSuggestion.DrinkSuggestionArrayAdapter
+import com.wit.jasonfagerberg.nightsout.addDrink.drinkSuggestion.DrinkSuggestionAutoCompleteView
+import com.wit.jasonfagerberg.nightsout.converter.Converter
 import com.wit.jasonfagerberg.nightsout.databaseHelper.AddDrinkDatabaseHelper
+import com.wit.jasonfagerberg.nightsout.dialogs.LightSimpleDialog
 import com.wit.jasonfagerberg.nightsout.main.Constants
+import com.wit.jasonfagerberg.nightsout.main.Drink
 import com.wit.jasonfagerberg.nightsout.main.MainActivity
-import com.wit.jasonfagerberg.nightsout.manageDB.ManageDBActivity
-import kotlin.collections.ArrayList
-import android.view.Menu
-import android.view.View
-import android.view.MenuItem
-import android.view.inputmethod.InputMethodManager
-import androidx.appcompat.app.AppCompatActivity
 import com.wit.jasonfagerberg.nightsout.main.NightsOutActivity
+import com.wit.jasonfagerberg.nightsout.manageDB.ManageDBActivity
 import java.util.*
+import kotlin.collections.ArrayList
 
 // private const val TAG = "AddDrinkActivity"
 

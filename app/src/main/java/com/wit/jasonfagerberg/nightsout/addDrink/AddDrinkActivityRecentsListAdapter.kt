@@ -1,13 +1,12 @@
 package com.wit.jasonfagerberg.nightsout.addDrink
 
-import androidx.cardview.widget.CardView
-import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.cardview.widget.CardView
+import androidx.recyclerview.widget.RecyclerView
 import com.wit.jasonfagerberg.nightsout.R
 import com.wit.jasonfagerberg.nightsout.dialogs.LightSimpleDialog
-import com.wit.jasonfagerberg.nightsout.main.Constants
 
 class AddDrinkActivityRecentsListAdapter(private val mActivity: AddDrinkActivity) :
         RecyclerView.Adapter<AddDrinkActivityRecentsListAdapter.ViewHolder>() {

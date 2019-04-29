@@ -10,16 +10,16 @@ import java.util.*
 abstract class NightsOutActivity : AppCompatActivity() {
     val mBackStack = Stack<Int>()
 
-    protected var mMyApp: NightsOutApplication? = null
+    private var mApp: NightsOutApplication? = null
 
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mMyApp = this.applicationContext as NightsOutApplication
+        mApp = this.applicationContext as NightsOutApplication
     }
 
     override fun onResume() {
         super.onResume()
-        mMyApp!!.mCurrentActivity = this
+        mApp!!.mCurrentActivity = this
     }
 
     override fun onPause() {
@@ -33,9 +33,9 @@ abstract class NightsOutActivity : AppCompatActivity() {
     }
 
     private fun clearReferences() {
-        val currActivity = mMyApp!!.mCurrentActivity
+        val currActivity = mApp!!.mCurrentActivity
         if (this == currActivity)
-            mMyApp!!.mCurrentActivity = null
+            mApp!!.mCurrentActivity = null
     }
 
     fun showToast(message: String, isLongToast: Boolean = false) {

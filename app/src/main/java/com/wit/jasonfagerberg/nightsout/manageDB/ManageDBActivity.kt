@@ -3,9 +3,8 @@ package com.wit.jasonfagerberg.nightsout.manageDB
 import android.app.NotificationManager
 import android.content.Context
 import android.os.Bundle
-import android.view.MenuItem
 import android.view.Menu
-import androidx.appcompat.app.AppCompatActivity
+import android.view.MenuItem
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
