@@ -34,7 +34,7 @@ class BacInfoDialog(
             dialog.dismiss()
         }
 
-        val bacInfoTitleString = "BAC Level: " + String.format("%.3f", homeFragment.bac)
+        val bacInfoTitleString = "BAC Level: " + String.format("%.3f", mainActivity.homeFragment.bac)
         dialog.findViewById<TextView>(R.id.text_bac_info_title).text = bacInfoTitleString
 
         var hoursMin = converter.decimalTimeToHoursAndMinuets(homeFragment.drinkingDuration)
@@ -45,7 +45,7 @@ class BacInfoDialog(
         val standardDrinksString = String.format("%.2f", homeFragment.standardDrinksConsumed) + " drinks"
         dialog.findViewById<TextView>(R.id.text_bac_info_standard_drinks).text = standardDrinksString
 
-        val hoursToSober = if ((homeFragment.bac - 0.04) / 0.015 < 0) 0.0 else (homeFragment.bac - 0.04) / 0.015
+        val hoursToSober = if ((mainActivity.homeFragment.bac - 0.04) / 0.015 < 0) 0.0 else (mainActivity.homeFragment.bac - 0.04) / 0.015
         hoursMin = converter.decimalTimeToHoursAndMinuets(hoursToSober)
         hoursMinStrings = converter.hoursAndMinuetsToTwoDigitStrings(hoursMin)
         val hoursToSoberString = "${hoursMinStrings.first} hours  ${hoursMinStrings.second} min"
@@ -56,7 +56,7 @@ class BacInfoDialog(
         val graph = dialog.findViewById<GraphView>(R.id.graph_bac_info_declining_bac)
         graph.title = "BAC Decline Over Time"
         val points = ArrayList<DataPoint>()
-        var projectedBac = homeFragment.bac
+        var projectedBac = mainActivity.homeFragment.bac
         var elapsedTime = 0.0
 
         while (projectedBac > 0.0075) {
@@ -89,7 +89,7 @@ class BacInfoDialog(
 
         graph.viewport.isXAxisBoundsManual = true
         graph.viewport.isYAxisBoundsManual = true
-        graph.viewport.setMaxY(homeFragment.bac + .0008)
+        graph.viewport.setMaxY(mainActivity.homeFragment.bac + .0008)
         graph.viewport.setMaxX(elapsedTime + .5)
     }
 }

@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".profile.ProfileFragment">
     <ScrollView
-        android:id="@+id/scroll"
         android:layout_alignParentTop="true"
         android:layout_above="@+id/btn_profile_save"
         android:layout_width="match_parent"

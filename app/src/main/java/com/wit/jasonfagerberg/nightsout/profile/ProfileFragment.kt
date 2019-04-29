@@ -291,12 +291,9 @@ class ProfileFragment : Fragment() {
         val weight = mWeightEditText.text.toString().toDouble()
         val weightMeasurement = mSpinner.selectedItem.toString()
 
-        mMainActivity.sex = sex
-        mMainActivity.weight = weight
-        mMainActivity.weightMeasurement = weightMeasurement
+        mMainActivity.setPreference(sex = sex, weight = weight, weightMeasurement = weightMeasurement, profileInit = true)
         mMainActivity.showToast("Profile Saved!")
         mMainActivity.showBottomNavBar()
-        mMainActivity.profileInit = true
         mMainActivity.pushToBackStack(mMainActivity.pager.currentItem)
         mMainActivity.pager.currentItem = 0
     }

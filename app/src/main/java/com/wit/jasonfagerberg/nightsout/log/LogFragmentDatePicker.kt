@@ -6,7 +6,7 @@ import com.wit.jasonfagerberg.nightsout.converter.Converter
 import com.wit.jasonfagerberg.nightsout.databaseHelper.LogDatabaseHelper
 import com.wit.jasonfagerberg.nightsout.dialogs.SimpleDialog
 import com.wit.jasonfagerberg.nightsout.main.MainActivity
-import java.util.Calendar
+import java.util.*
 
 class LogFragmentDatePicker(
     private val logFragment: LogFragment,

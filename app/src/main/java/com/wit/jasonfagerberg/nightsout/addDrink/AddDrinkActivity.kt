@@ -1,5 +1,6 @@
 package com.wit.jasonfagerberg.nightsout.addDrink
 
+// import android.util.Log
 import android.app.Activity
 import android.content.ContentValues
 import android.content.Intent
@@ -8,40 +9,32 @@ import android.graphics.Typeface
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-// import android.util.Log
-import com.google.android.material.button.MaterialButton
+import android.view.Menu
+import android.view.MenuItem
+import android.view.View
+import android.view.inputmethod.InputMethodManager
+import android.widget.*
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import android.widget.EditText
-import android.widget.Spinner
-import android.widget.ArrayAdapter
-import android.widget.TextView
-import android.widget.CheckBox
-import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
-import com.wit.jasonfagerberg.nightsout.main.Drink
+import com.google.android.material.button.MaterialButton
 import com.wit.jasonfagerberg.nightsout.R
-import com.wit.jasonfagerberg.nightsout.converter.Converter
-import com.wit.jasonfagerberg.nightsout.dialogs.LightSimpleDialog
-import com.wit.jasonfagerberg.nightsout.addDrink.drinkSuggestion.DrinkSuggestionAutoCompleteView
 import com.wit.jasonfagerberg.nightsout.addDrink.drinkSuggestion.DrinkSuggestionArrayAdapter
+import com.wit.jasonfagerberg.nightsout.addDrink.drinkSuggestion.DrinkSuggestionAutoCompleteView
+import com.wit.jasonfagerberg.nightsout.converter.Converter
 import com.wit.jasonfagerberg.nightsout.databaseHelper.AddDrinkDatabaseHelper
+import com.wit.jasonfagerberg.nightsout.dialogs.LightSimpleDialog
 import com.wit.jasonfagerberg.nightsout.main.Constants
+import com.wit.jasonfagerberg.nightsout.main.Drink
 import com.wit.jasonfagerberg.nightsout.main.MainActivity
+import com.wit.jasonfagerberg.nightsout.main.NightsOutActivity
 import com.wit.jasonfagerberg.nightsout.manageDB.ManageDBActivity
-import kotlin.collections.ArrayList
-import android.view.Menu
-import android.view.View
-import android.view.MenuItem
-import android.view.Gravity
-import android.view.inputmethod.InputMethodManager
 import java.util.*
+import kotlin.collections.ArrayList
 
 // private const val TAG = "AddDrinkActivity"
 
-class AddDrinkActivity : AppCompatActivity() {
-
+class AddDrinkActivity : NightsOutActivity() {
     val mConverter = Converter()
     private lateinit var mFavoritesListAdapter: AddDrinkActivityFavoritesListAdapter
     private lateinit var mRecentsListAdapter: AddDrinkActivityRecentsListAdapter
@@ -63,7 +56,6 @@ class AddDrinkActivity : AppCompatActivity() {
     lateinit var autoCompleteView: DrinkSuggestionAutoCompleteView
 
     lateinit var mDatabaseHelper: AddDrinkDatabaseHelper
-    private lateinit var mBackStackIntArray: IntArray
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setContentView(R.layout.activity_add_drink)
@@ -75,8 +67,6 @@ class AddDrinkActivity : AppCompatActivity() {
 
         canUnfavorite = intent.getBooleanExtra("CAN_UNFAVORITE", true)
         mFavorited = intent.getBooleanExtra("FAVORITED", false)
-        // pull backstack to maintain it across activity switches
-        mBackStackIntArray = intent.getIntArrayExtra("BACK_STACK")
 
         if (savedInstanceState != null) {
             complexMode = savedInstanceState.getBoolean("complexMode")
@@ -98,11 +88,11 @@ class AddDrinkActivity : AppCompatActivity() {
     }
 
     override fun onStart() {
+        super.onStart()
         mDatabaseHelper.openDatabase()
         initData()
         showOrHideEmptyTextViews()
         setupAddButton()
-        super.onStart()
     }
 
     override fun onStop() {
@@ -230,7 +220,7 @@ class AddDrinkActivity : AppCompatActivity() {
         // if not it was brought up by the profile fragment
         if (canUnfavorite) intent.putExtra("FRAGMENT_ID", 0)
         else intent.putExtra("FRAGMENT_ID", 2)
-        intent.putExtra("BACK_STACK", mBackStackIntArray)
+        intent.putExtra("BACK_STACK", mBackStack.toIntArray())
         startActivity(intent)
     }
 
@@ -411,7 +401,7 @@ class AddDrinkActivity : AppCompatActivity() {
         val intent = Intent(this, MainActivity::class.java)
         if (canUnfavorite) intent.putExtra("FRAGMENT_ID", 0)
         else intent.putExtra("FRAGMENT_ID", 2)
-        intent.putExtra("BACK_STACK", mBackStackIntArray)
+        intent.putExtra("BACK_STACK", mBackStack.toIntArray())
         intent.putExtra("drinkAdded", true)
         startActivity(intent)
     }
@@ -490,10 +480,4 @@ class AddDrinkActivity : AppCompatActivity() {
         text.setTextColor(ContextCompat.getColor(this, R.color.colorRed))
     }
 
-    fun showToast(message: String, isLongToast: Boolean = false) {
-        val toast = if (isLongToast) Toast.makeText(this, message, Toast.LENGTH_LONG)
-        else Toast.makeText(this, message, Toast.LENGTH_SHORT)
-        toast.setGravity(Gravity.CENTER, 0, 450)
-        toast.show()
-    }
 }

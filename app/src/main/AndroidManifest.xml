@@ -2,32 +2,35 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.wit.jasonfagerberg.nightsout">
+
     <application
-        android:icon="@mipmap/ic_launcher_round"
+        android:allowBackup="true"
+        android:fullBackupContent="true"
+        android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:windowSoftInputMode="adjustResize|stateHidden"
-        android:allowBackup="true"
-        android:fullBackupContent="true"
-        tools:ignore="GoogleAppIndexingWarning">
+        tools:ignore="GoogleAppIndexingWarning"
+        android:name=".main.NightsOutApplication">
+        <activity android:name=".notification.NotificationsSettingActivity" />
         <activity
-            android:name="com.wit.jasonfagerberg.nightsout.main.MainActivity"
+            android:name=".main.MainActivity"
             android:configChanges="orientation|keyboardHidden"
             android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
-            android:name="com.wit.jasonfagerberg.nightsout.addDrink.AddDrinkActivity"
+            android:name=".addDrink.AddDrinkActivity"
             android:configChanges="orientation|keyboardHidden"
-            android:windowSoftInputMode="adjustPan">
-        </activity>
-        <activity
-            android:name="com.wit.jasonfagerberg.nightsout.manageDB.ManageDBActivity" >
-        </activity>
+            android:windowSoftInputMode="adjustPan" />
+        <activity android:name=".manageDB.ManageDBActivity" />
+
+        <service android:name=".notification.BacNotificationService" />
     </application>
+
 </manifest>

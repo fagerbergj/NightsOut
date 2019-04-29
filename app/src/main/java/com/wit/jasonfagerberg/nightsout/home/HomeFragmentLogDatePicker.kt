@@ -3,12 +3,12 @@ package com.wit.jasonfagerberg.nightsout.home
 import android.app.DatePickerDialog
 import android.content.Context
 import com.wit.jasonfagerberg.nightsout.R
-import com.wit.jasonfagerberg.nightsout.log.LogHeader
 import com.wit.jasonfagerberg.nightsout.databaseHelper.LogDatabaseHelper
 import com.wit.jasonfagerberg.nightsout.dialogs.LightSimpleDialog
 import com.wit.jasonfagerberg.nightsout.dialogs.SimpleDialog
+import com.wit.jasonfagerberg.nightsout.log.LogHeader
 import com.wit.jasonfagerberg.nightsout.main.MainActivity
-import java.util.Calendar
+import java.util.*
 
 class HomeFragmentLogDatePicker(
     private val context: Context

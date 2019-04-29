@@ -1,11 +1,10 @@
 package com.wit.jasonfagerberg.nightsout.manageDB
 
+import android.app.NotificationManager
+import android.content.Context
 import android.os.Bundle
-import android.view.Gravity
-import android.view.MenuItem
 import android.view.Menu
-import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
+import android.view.MenuItem
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -14,8 +13,9 @@ import com.wit.jasonfagerberg.nightsout.databaseHelper.AddDrinkDatabaseHelper
 import com.wit.jasonfagerberg.nightsout.dialogs.LightSimpleDialog
 import com.wit.jasonfagerberg.nightsout.main.Constants
 import com.wit.jasonfagerberg.nightsout.main.Drink
+import com.wit.jasonfagerberg.nightsout.main.NightsOutActivity
 
-class ManageDBActivity : AppCompatActivity() {
+class ManageDBActivity : NightsOutActivity() {
     private lateinit var mDrinkListAdapter: ManageDBDrinkListAdapter
     lateinit var mDrinksList: ArrayList<Drink>
     lateinit var dbh: AddDrinkDatabaseHelper
@@ -64,6 +64,8 @@ class ManageDBActivity : AppCompatActivity() {
                     mDrinksList.clear()
                     mDrinksList.addAll(dbh.getSuggestedDrinks("", true))
                     mDrinkListAdapter.notifyDataSetChanged()
+                    (getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).cancelAll()
+
                 }
                 dialog.setActions(posAction, {})
                 dialog.show("Are you sure? You will lose everything.")
@@ -114,12 +116,5 @@ class ManageDBActivity : AppCompatActivity() {
         // update list
         drinksListView.adapter = mDrinkListAdapter // Update display with new list
         drinksListView.layoutManager!!.scrollToPosition(mDrinksList.size - 1) // Nav to end of list
-    }
-
-    fun showToast(message: String, isLongToast: Boolean = false) {
-        val toast = if (isLongToast) Toast.makeText(this, message, Toast.LENGTH_LONG)
-        else Toast.makeText(this, message, Toast.LENGTH_SHORT)
-        toast.setGravity(Gravity.CENTER, 0, 450)
-        toast.show()
     }
 }

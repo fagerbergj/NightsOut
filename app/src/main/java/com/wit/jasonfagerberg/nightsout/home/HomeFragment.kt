@@ -4,33 +4,28 @@ import android.app.TimePickerDialog
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
-import com.google.android.material.button.MaterialButton
-import androidx.fragment.app.Fragment
+import android.view.*
+import android.widget.EditText
+import android.widget.ImageButton
+import android.widget.RelativeLayout
+import android.widget.TextView
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import android.view.LayoutInflater
-import android.view.ViewGroup
-import android.view.View
-import android.view.MenuItem
-import android.view.MenuInflater
-import android.view.Menu
-import com.wit.jasonfagerberg.nightsout.main.MainActivity
+import com.google.android.material.button.MaterialButton
 import com.wit.jasonfagerberg.nightsout.R
-import com.wit.jasonfagerberg.nightsout.converter.Converter
-import android.widget.RelativeLayout
-import com.wit.jasonfagerberg.nightsout.dialogs.LightSimpleDialog
-import androidx.recyclerview.widget.ItemTouchHelper
-import android.widget.TextView
-import android.widget.ImageButton
-import android.widget.EditText
-import com.google.android.material.snackbar.Snackbar
 import com.wit.jasonfagerberg.nightsout.addDrink.AddDrinkActivity
+import com.wit.jasonfagerberg.nightsout.converter.Converter
 import com.wit.jasonfagerberg.nightsout.dialogs.BacInfoDialog
+import com.wit.jasonfagerberg.nightsout.dialogs.LightSimpleDialog
 import com.wit.jasonfagerberg.nightsout.dialogs.SimpleDialog
+import com.wit.jasonfagerberg.nightsout.main.Constants
+import com.wit.jasonfagerberg.nightsout.main.MainActivity
 import com.wit.jasonfagerberg.nightsout.manageDB.ManageDBActivity
-import java.util.Calendar
+import java.util.*
 
 // private const val TAG = "HomeFragment"
 
@@ -39,10 +34,10 @@ class HomeFragment : Fragment() {
     private lateinit var mRelativeLayout: RelativeLayout
     private lateinit var mMainActivity: MainActivity
     val mConverter = Converter()
-    var bac = 0.000
 
     var drinkingDuration = 0.0
     var standardDrinksConsumed = 0.0
+    var bac: Double = 0.0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         mMainActivity = context as MainActivity
@@ -118,7 +113,7 @@ class HomeFragment : Fragment() {
             }
             R.id.btn_disclaimer -> showDisclaimerDialog()
             R.id.btn_toolbar_toggle_time_display -> {
-                mMainActivity.use24HourTime = !mMainActivity.use24HourTime
+                mMainActivity.setPreference(use24HourTime = !mMainActivity.use24HourTime)
                 setupEditTexts(view!!)
             }
             R.id.btn_toolbar_manage_db -> {
@@ -156,26 +151,7 @@ class HomeFragment : Fragment() {
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, swipeDir: Int) {
                 // undo remove action
-                val deletedDrink = mMainActivity.mDrinksList[viewHolder.adapterPosition]
-                val deletedPosition = viewHolder.adapterPosition
-                val snackbar = Snackbar.make(mMainActivity.findViewById(R.id.placeSnackBar), "${mMainActivity.mDrinksList[viewHolder.adapterPosition].name} removed", Snackbar.LENGTH_LONG)
-                val undoAction: (v: View) -> Unit = {
-                    mMainActivity.mDrinksList.add(deletedPosition, deletedDrink)
-                    mDrinkListAdapter.notifyItemInserted(deletedPosition)
-                    mDrinkListAdapter.notifyItemRangeChanged(deletedPosition, mMainActivity.mDrinksList.size)
-                    showOrHideEmptyListText(view!!)
-                    updateBACText(calculateBAC())
-                }
-                snackbar.setAction("Undo", undoAction)
-                snackbar.setActionTextColor(ContextCompat.getColor(context!!, R.color.colorWhite))
-
-                // remove action
-                mMainActivity.mDrinksList.removeAt(viewHolder.adapterPosition)
-                mDrinkListAdapter.notifyItemRemoved(viewHolder.adapterPosition)
-                mDrinkListAdapter.notifyItemRangeChanged(0, mMainActivity.mDrinksList.size)
-                showOrHideEmptyListText(view!!)
-                updateBACText(calculateBAC())
-                snackbar.show()
+                mDrinkListAdapter.removeItem(viewHolder.adapterPosition)
             }
         }
 
@@ -183,7 +159,7 @@ class HomeFragment : Fragment() {
         itemTouchHelper.attachToRecyclerView(drinksListView)
     }
 
-    private fun setupEditTexts(view: View) {
+    fun setupEditTexts(view: View) {
         val startPicker: EditText = view.findViewById(R.id.edit_start_time)
         val endPicker: EditText = view.findViewById(R.id.edit_end_time)
 
@@ -212,15 +188,21 @@ class HomeFragment : Fragment() {
         mTimePicker = TimePickerDialog(context!!,
                 TimePickerDialog.OnTimeSetListener { _, selectedHour, selectedMinute ->
                     startPicker.setText(mConverter.timeToString(selectedHour, selectedMinute, mMainActivity.use24HourTime))
-                    mMainActivity.startTimeMin = mConverter.militaryHoursAndMinutesToMinutes(selectedHour, selectedMinute)
-                    if (mMainActivity.endTimeMin == -1) mMainActivity.endTimeMin = mMainActivity.startTimeMin
+                    mMainActivity.setPreference(startTimeMin = mConverter.militaryHoursAndMinutesToMinutes(selectedHour, selectedMinute))
+                    if (mMainActivity.endTimeMin == -1) {
+                        mMainActivity.setPreference(endTimeMin = mMainActivity.startTimeMin)
+                    }
                     updateBACText(calculateBAC())
+                    if(isTimeWithinRange(hour * 60 + minute, 5)){
+                        mMainActivity.sendActionToBacNotificationService(Constants.ACTION.START_SERVICE)
+                    }
                 }, hour, minute, mMainActivity.use24HourTime)
 
         mTimePicker.setButton(DialogInterface.BUTTON_NEUTRAL, "Now") { _, _ ->
-            mMainActivity.startTimeMin = mMainActivity.getCurrentTimeInMinuets()
+            mMainActivity.setPreference(startTimeMin = Constants.getCurrentTimeInMinuets())
             startPicker.setText(mConverter.timeToString(mMainActivity.startTimeMin, mMainActivity.use24HourTime))
             updateBACText(calculateBAC())
+            mMainActivity.sendActionToBacNotificationService(Constants.ACTION.START_SERVICE)
         }
 
         mTimePicker.setTitle("Start Time")
@@ -240,18 +222,27 @@ class HomeFragment : Fragment() {
         mTimePicker = TimePickerDialog(context!!,
                 TimePickerDialog.OnTimeSetListener { _, selectedHour, selectedMinute ->
                     endPicker.setText(mConverter.timeToString(selectedHour, selectedMinute, mMainActivity.use24HourTime))
-                    mMainActivity.endTimeMin = mConverter.militaryHoursAndMinutesToMinutes(selectedHour, selectedMinute)
+                    mMainActivity.setPreference(endTimeMin = mConverter.militaryHoursAndMinutesToMinutes(selectedHour, selectedMinute))
                     updateBACText(calculateBAC())
+                    if(isTimeWithinRange(hour * 60 + minute, 5)) {
+                        mMainActivity.sendActionToBacNotificationService(Constants.ACTION.START_SERVICE)
+                    }
                 }, hour, minute, mMainActivity.use24HourTime)
 
         mTimePicker.setButton(DialogInterface.BUTTON_NEUTRAL, "Now") { _, _ ->
-            mMainActivity.endTimeMin = mMainActivity.getCurrentTimeInMinuets()
+            mMainActivity.setPreference(endTimeMin = Constants.getCurrentTimeInMinuets())
             endPicker.setText(mConverter.timeToString(mMainActivity.endTimeMin, mMainActivity.use24HourTime))
             updateBACText(calculateBAC())
+            mMainActivity.sendActionToBacNotificationService(Constants.ACTION.START_SERVICE)
         }
 
         mTimePicker.setTitle("End Time")
         mTimePicker.show()
+    }
+
+    private fun isTimeWithinRange(time: Int, range: Int) : Boolean {
+        val currentTime = Calendar.getInstance().get(Calendar.HOUR_OF_DAY) * 60 + Calendar.getInstance().get(Calendar.MINUTE)
+        return time >= currentTime - range && time <= currentTime + range
     }
 
     fun showOrHideEmptyListText(view: View) {
@@ -299,6 +290,7 @@ class HomeFragment : Fragment() {
         val bacDecayPerHour = 0.015
         var res = instantBAC - (hoursElapsed * bacDecayPerHour)
         res = if (res < 0.0) 0.0 else res
+        mMainActivity.sendActionToBacNotificationService(Constants.ACTION.UPDATE_NOTIFICATION)
         return res
     }
 
