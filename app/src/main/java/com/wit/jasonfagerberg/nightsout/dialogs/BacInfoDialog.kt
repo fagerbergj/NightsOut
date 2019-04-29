@@ -11,6 +11,7 @@ import com.wit.jasonfagerberg.nightsout.main.MainActivity
 import com.jjoe64.graphview.GraphView
 import com.jjoe64.graphview.series.DataPoint
 import com.jjoe64.graphview.series.LineGraphSeries
+import com.wit.jasonfagerberg.nightsout.main.Constants
 
 class BacInfoDialog(
     context: Context
@@ -68,7 +69,7 @@ class BacInfoDialog(
         series.setOnDataPointTapListener { _, dataPoint ->
             val pointBac = dataPoint.y.toString().substring(0, 4)
             val time = converter.decimalTimeToTwoDigitStrings(dataPoint.x)
-            mainActivity.showToast("BAC after ${time.first} hours and ${time.second} minuets: $pointBac")
+            Constants.showToast(mainActivity,"BAC after ${time.first} hours and ${time.second} minuets: $pointBac")
         }
 
         // this can cause a crash if someone added a ton of drinks (tested < 500)

@@ -1,6 +1,8 @@
 package com.wit.jasonfagerberg.nightsout.main
 
-import android.content.*
+import android.content.Intent
+import android.content.ActivityNotFoundException
+import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Bundle
 import android.os.PersistableBundle
@@ -11,6 +13,7 @@ import androidx.fragment.app.Fragment
 // import android.util.Log
 import android.view.View
 import android.widget.RelativeLayout
+import androidx.appcompat.app.AppCompatActivity
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
@@ -29,7 +32,9 @@ import kotlin.collections.ArrayList
 
 //private const val TAG = "MainActivity"
 
-class MainActivity : NightsOutActivity() {
+class MainActivity : AppCompatActivity() {
+
+    val mBackStack = Stack<Int>()
 
     // fragments and navigation
     var homeFragment = HomeFragment()
@@ -47,8 +52,8 @@ class MainActivity : NightsOutActivity() {
     var sex: Boolean? = null
     var weight: Double = 0.0
     var weightMeasurement = ""
-    var startTimeMin: Int = -1
-    var endTimeMin: Int = -1
+    var startTimeMin: Int = Constants.getCurrentTimeInMinuets()
+    var endTimeMin: Int = Constants.getCurrentTimeInMinuets()
     private val country = Locale.getDefault().country
     private val twelveHourCountries = arrayListOf("US", "UK", "PH", "CA", "AU", "NZ", "IN", "EG", "SA", "CO", "PK", "MY")
     var use24HourTime = !twelveHourCountries.contains(country)
@@ -114,7 +119,7 @@ class MainActivity : NightsOutActivity() {
 
     private fun initData() {
         getDataFromStorage()
-        if (intent.getBooleanExtra("drinkAdded", false)) drinksAddedCount++
+        if (intent.getBooleanExtra("drinkAdded", false)) setPreference(drinksAddedCount = drinksAddedCount + 1)
         showPleaseRateDialog()
 
         val fragmentId = intent.getIntExtra("FRAGMENT_ID", -1)
@@ -134,12 +139,11 @@ class MainActivity : NightsOutActivity() {
 
     private fun getDataFromStorage() {
         preferences = PreferenceManager.getDefaultSharedPreferences(this)
+        profileInit = preferences.getBoolean("profileInit", false)
         dateInstalled = preferences.getLong("dateInstalled", System.currentTimeMillis())
         drinksAddedCount = preferences.getInt("drinksAddedCount", 0)
-        if (drinksAddedCount > 10000) drinksAddedCount = 10 // prevent the very unlikely number too large for int
         dontShowRateDialog = preferences.getBoolean("dontShowRateDialog", false)
 
-        profileInit = preferences.getBoolean("profileInit", profileInit)
         startTimeMin = Constants.getCurrentTimeInMinuets()
         endTimeMin = Constants.getCurrentTimeInMinuets()
         if (profileInit) {
@@ -159,6 +163,8 @@ class MainActivity : NightsOutActivity() {
         if (fragmentArray != null) {
             for (frag in fragmentArray) pushToBackStack(frag)
         }
+
+        if (drinksAddedCount > 10000) setPreference(drinksAddedCount = 10)
     }
 
     private fun invalidateFragmentMenus(position: Int) {
@@ -169,7 +175,6 @@ class MainActivity : NightsOutActivity() {
     }
 
     override fun onStop() {
-        saveDataToStorage()
         mDatabaseHelper.deleteRowsInTable("current_session_drinks", null)
         mDatabaseHelper.pushDrinks(mDrinksList, mFavoritesList)
 
@@ -179,13 +184,30 @@ class MainActivity : NightsOutActivity() {
         super.onStop()
     }
 
-    private fun saveDataToStorage() {
-        // profile not init
+    fun setPreference(profileInit : Boolean = this.profileInit, sex : Boolean? = this.sex,
+                      weight : Double = this.weight, weightMeasurement : String = this.weightMeasurement,
+                      endTimeMin: Int = this.endTimeMin, startTimeMin : Int = this.startTimeMin,
+                      use24HourTime : Boolean = this.use24HourTime, dateInstalled : Long = this.dateInstalled,
+                      drinksAddedCount : Int = this.drinksAddedCount, dontShowRateDialog : Boolean = this.dontShowRateDialog) {
         if (!profileInit) return
 
+        // set values
+        this.profileInit = profileInit
+        this.sex = sex
+        this.weight = weight
+        this.weightMeasurement = weightMeasurement
+        this.startTimeMin = startTimeMin
+        this.endTimeMin = endTimeMin
+        this.use24HourTime = use24HourTime
+        this.dateInstalled = dateInstalled
+        this.drinksAddedCount = drinksAddedCount
+        this.dontShowRateDialog = dontShowRateDialog
+
         val editor = preferences.edit()
+
         editor.putBoolean("profileInit", true)
-        if (sex != null) editor.putBoolean("profileSex", sex!!)
+        if (sex != null) editor.putBoolean("profileSex", sex)
+
         editor.putFloat("profileWeight", weight.toFloat())
         editor.putString("profileWeightMeasurement", weightMeasurement)
 
@@ -222,7 +244,7 @@ class MainActivity : NightsOutActivity() {
         }
         dialog.setNegativeFunction {
             // set drinks added count to 0 so the user doesn't get spammed
-            drinksAddedCount = 0
+            setPreference(drinksAddedCount = 0)
             dialog.dismiss()
         }
         dialog.setNuetralFunction {
@@ -232,8 +254,7 @@ class MainActivity : NightsOutActivity() {
     }
 
     fun resetTime() {
-        startTimeMin = Constants.getCurrentTimeInMinuets()
-        endTimeMin = Constants.getCurrentTimeInMinuets()
+        setPreference(startTimeMin = Constants.getCurrentTimeInMinuets(), endTimeMin = Constants.getCurrentTimeInMinuets())
     }
 
     fun sendActionToBacNotificationService(action : String){

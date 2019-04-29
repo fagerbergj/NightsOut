@@ -96,7 +96,7 @@ class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: Ar
         // add another button
         val another = dialogView.findViewById<TextView>(R.id.text_drink_modify_add_another)
         another.setOnClickListener {
-            mMainActivity.drinksAddedCount++
+            mMainActivity.setPreference(drinksAddedCount = mMainActivity.drinksAddedCount + 1)
             mMainActivity.showPleaseRateDialog()
             onAddAnotherClicked(position)
             dismissDialog(dialog)
@@ -116,7 +116,6 @@ class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: Ar
         delete.setOnClickListener {
             removeItem(position)
             dismissDialog(dialog)
-            mMainActivity.homeFragment.showOrHideEmptyListText(mMainActivity.homeFragment.view!!)
         }
 
         dialogView.findViewById<ImageView>(R.id.imgBtn_drink_modify_close).setOnClickListener { dialog.dismiss() }
@@ -159,12 +158,13 @@ class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: Ar
         }
     }
 
-    private fun removeItem(position: Int) {
+    fun removeItem(position: Int) {
         if (position >= mMainActivity.mDrinksList.size) return
         val deletedDrink = mMainActivity.mDrinksList[position]
         val snackbar = Snackbar.make(mMainActivity.findViewById(R.id.placeSnackBar), "${mMainActivity.mDrinksList[position].name} removed", Snackbar.LENGTH_LONG)
         val undoAction: (v: View) -> Unit = {
             mMainActivity.mDrinksList.add(position, deletedDrink)
+            mMainActivity.mDatabaseHelper.insertRowInCurrentSessionTable(deletedDrink.id, position)
             notifyItemInserted(position)
             notifyItemRangeChanged(position, mMainActivity.mDrinksList.size)
             mMainActivity.homeFragment.showOrHideEmptyListText(mMainActivity.homeFragment.view!!)
@@ -173,8 +173,10 @@ class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: Ar
         snackbar.setAction("Undo", undoAction)
         snackbar.setActionTextColor(ContextCompat.getColor(mMainActivity.homeFragment.context!!, R.color.colorWhite))
         mDrinksList.removeAt(position)
+        mMainActivity.mDatabaseHelper.deleteRowsInTable("current_session_drinks", "position=$position")
         notifyItemRemoved(position)
         notifyItemRangeChanged(position, mDrinksList.size)
+        mMainActivity.homeFragment.showOrHideEmptyListText(mMainActivity.homeFragment.view!!)
         snackbar.show()
     }
 

@@ -7,6 +7,7 @@ import com.wit.jasonfagerberg.nightsout.log.LogHeader
 import com.wit.jasonfagerberg.nightsout.databaseHelper.LogDatabaseHelper
 import com.wit.jasonfagerberg.nightsout.dialogs.LightSimpleDialog
 import com.wit.jasonfagerberg.nightsout.dialogs.SimpleDialog
+import com.wit.jasonfagerberg.nightsout.main.Constants
 import com.wit.jasonfagerberg.nightsout.main.MainActivity
 import java.util.Calendar
 
@@ -38,8 +39,8 @@ class HomeFragmentLogDatePicker(
                 val message = "Log created on ${testHeader.monthName} ${testHeader.day}, ${testHeader.year}"
 
                 val dialog = LightSimpleDialog(context)
-                val posAction = { mainActivity.homeFragment.clearSession(); mainActivity.showToast(message) }
-                dialog.setActions(posAction, { mainActivity.showToast(message) })
+                val posAction = { mainActivity.homeFragment.clearSession(); Constants.showToast(mainActivity, message) }
+                dialog.setActions(posAction, { Constants.showToast(mainActivity, message) })
                 dialog.show("Do you want to start a new drink list?")
                 mainActivity.mDatabaseHelper.insertRowInLogTable(logDate, homeFragment.bac, homeFragment.drinkingDuration)
             }
@@ -77,8 +78,8 @@ class HomeFragmentLogDatePicker(
             simpleDialog.dismiss()
 
             val dialog = LightSimpleDialog(context)
-            val posAction = { mainActivity.homeFragment.clearSession(); mainActivity.showToast(message) }
-            dialog.setActions(posAction, { mainActivity.showToast(message) })
+            val posAction = { mainActivity.homeFragment.clearSession(); Constants.showToast(mainActivity, message) }
+            dialog.setActions(posAction, { Constants.showToast(mainActivity, message) })
             dialog.show("Do you want to start a new drink list?")
             mainActivity.mDatabaseHelper.insertRowInLogTable(logDate, homeFragment.bac, homeFragment.drinkingDuration)
         }

@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import com.wit.jasonfagerberg.nightsout.R
 import com.wit.jasonfagerberg.nightsout.dialogs.LightSimpleDialog
+import com.wit.jasonfagerberg.nightsout.main.Constants
 
 class AddDrinkActivityRecentsListAdapter(private val mActivity: AddDrinkActivity) :
         RecyclerView.Adapter<AddDrinkActivityRecentsListAdapter.ViewHolder>() {
@@ -21,7 +22,7 @@ class AddDrinkActivityRecentsListAdapter(private val mActivity: AddDrinkActivity
         val drink = mActivity.mRecentsList[position]
         holder.name.text = drink.name
         holder.card.setOnClickListener {
-            mActivity.showToast("${holder.name.text} information filled in")
+            Constants.showToast(mActivity, "${holder.name.text} information filled in")
             mActivity.fillViews(drink.name, drink.abv, drink.amount, drink.measurement)
         }
 
@@ -30,7 +31,7 @@ class AddDrinkActivityRecentsListAdapter(private val mActivity: AddDrinkActivity
             val posAction = {
                 mActivity.mRecentsList.remove(drink)
                 this.notifyItemRemoved(position)
-                mActivity.showToast("Drink Removed")
+                Constants.showToast(mActivity, "Drink Removed")
                 mActivity.showOrHideEmptyTextViews()
                 drink.recent = false
                 mActivity.mDatabaseHelper.updateRowInDrinksTable(drink)

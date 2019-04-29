@@ -5,6 +5,7 @@ import com.wit.jasonfagerberg.nightsout.R
 import com.wit.jasonfagerberg.nightsout.converter.Converter
 import com.wit.jasonfagerberg.nightsout.databaseHelper.LogDatabaseHelper
 import com.wit.jasonfagerberg.nightsout.dialogs.SimpleDialog
+import com.wit.jasonfagerberg.nightsout.main.Constants
 import com.wit.jasonfagerberg.nightsout.main.MainActivity
 import java.util.Calendar
 
@@ -37,7 +38,7 @@ class LogFragmentDatePicker(
                 mainActivity.mLogHeaders.remove(header)
                 val message = "Log moved to ${testHeader.monthName} ${testHeader.day}, ${testHeader.year}"
                 logFragment.resetCalendar()
-                mainActivity.showToast(message)
+                Constants.showToast(mainActivity, message)
             }
         }
 
@@ -68,7 +69,7 @@ class LogFragmentDatePicker(
             logDatabaseHelper.changeLogDate(header.date, logDate)
             mainActivity.mLogHeaders.remove(header)
             message = "Log on ${header.monthName} ${header.day}, ${header.year} was updated"
-            mainActivity.showToast(message)
+            Constants.showToast(mainActivity, message)
             logFragment.resetCalendar()
             simpleDialog.dismiss()
         }

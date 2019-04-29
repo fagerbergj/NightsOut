@@ -1,5 +1,8 @@
 package com.wit.jasonfagerberg.nightsout.main
 
+import android.content.Context
+import android.view.Gravity
+import android.widget.Toast
 import com.wit.jasonfagerberg.nightsout.converter.Converter
 import java.util.*
 
@@ -24,6 +27,13 @@ class Constants {
             val curHour = calendar.get(Calendar.HOUR_OF_DAY)
             val curMin = calendar.get(Calendar.MINUTE)
             return Converter().militaryHoursAndMinutesToMinutes(curHour, curMin)
+        }
+
+        fun showToast(context: Context, message: String, isLongToast: Boolean = false) {
+            val toast = if (isLongToast) Toast.makeText(context, message, Toast.LENGTH_LONG)
+            else Toast.makeText(context, message, Toast.LENGTH_SHORT)
+            toast.setGravity(Gravity.CENTER, 0, 450)
+            toast.show()
         }
     }
 

@@ -8,6 +8,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.wit.jasonfagerberg.nightsout.R
 import com.wit.jasonfagerberg.nightsout.dialogs.LightSimpleDialog
+import com.wit.jasonfagerberg.nightsout.main.Constants
 
 class AddDrinkActivityFavoritesListAdapter(private val mActivity: AddDrinkActivity) :
         RecyclerView.Adapter<AddDrinkActivityFavoritesListAdapter.ViewHolder>() {
@@ -22,7 +23,7 @@ class AddDrinkActivityFavoritesListAdapter(private val mActivity: AddDrinkActivi
         val drink = mActivity.mFavoritesList[position]
         holder.name.text = drink.name
         holder.card.setOnClickListener {
-            mActivity.showToast("${holder.name.text} information filled in")
+            Constants.showToast(mActivity, "${holder.name.text} information filled in")
             holder.image.setImageResource(R.drawable.favorite_white_24dp)
             mActivity.fillViews(drink.name, drink.abv, drink.amount, drink.measurement)
         }
@@ -31,7 +32,7 @@ class AddDrinkActivityFavoritesListAdapter(private val mActivity: AddDrinkActivi
         holder.card.setOnLongClickListener { v: View ->
             val lightSimpleDialog = LightSimpleDialog(v.context!!)
             val posAction = {
-                mActivity.showToast("${mActivity.mFavoritesList[position].name} Removed From Favorites List")
+                Constants.showToast(mActivity,"${mActivity.mFavoritesList[position].name} Removed From Favorites List")
                 mActivity.mFavoritesList.remove(drink)
                 notifyItemRemoved(position)
                 notifyItemRangeChanged(position, mActivity.mFavoritesList.size)

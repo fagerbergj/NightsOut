@@ -10,6 +10,7 @@ import com.wit.jasonfagerberg.nightsout.addDrink.AddDrinkActivity
 import com.wit.jasonfagerberg.nightsout.converter.Converter
 import com.wit.jasonfagerberg.nightsout.databaseHelper.DatabaseHelper
 import com.wit.jasonfagerberg.nightsout.main.Constants
+import com.wit.jasonfagerberg.nightsout.main.MainActivity
 
 class BacNotificationService : Service() {
     private var startTime : Int = 0
@@ -64,12 +65,19 @@ class BacNotificationService : Service() {
                 if (!isStarted) return START_STICKY
                 endTime = Constants.getCurrentTimeInMinuets()
                 saveEndTime()
+                val bac = calculateBAC()
                 notificationHelper.loadAndUpdate {
                     Thread.sleep(500)
-                    val title = "BAC: ${"%.3f".format(calculateBAC())}"
+                    val title = "BAC: ${"%.3f".format(bac)}"
                     val body = "${mConverter.timeToString(startTime/60, startTime%60, use24HourTime)} - " +
                             mConverter.timeToString(endTime/60, endTime%60, use24HourTime)
                     Triple(title, body, false)
+                }
+
+                if (applicationContext is MainActivity && (applicationContext as MainActivity).homeFragment.isResumed) {
+                    Constants.showToast(this, "End time updated by notification")
+                    (applicationContext as MainActivity).homeFragment.updateBACText(bac)
+                    (applicationContext as MainActivity).homeFragment.setupEditTexts((applicationContext as MainActivity).homeFragment.view!!)
                 }
             }
 
@@ -134,8 +142,6 @@ class BacNotificationService : Service() {
         val bacDecayPerHour = 0.015
         var res = instantBAC - (hoursElapsed * bacDecayPerHour)
         res = if (res < 0.0) 0.0 else res
-        // todo update home fragment if visible
-
         dbh.closeDatabase()
         return res
     }

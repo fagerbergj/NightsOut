@@ -24,6 +24,7 @@ import com.prolificinteractive.materialcalendarview.DayViewDecorator
 import com.prolificinteractive.materialcalendarview.DayViewFacade
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView
 import com.prolificinteractive.materialcalendarview.spans.DotSpan
+import com.wit.jasonfagerberg.nightsout.main.Constants
 import java.util.Calendar
 import java.util.Date
 import kotlin.collections.ArrayList
@@ -114,7 +115,7 @@ class LogFragment : Fragment() {
                         calendarView.selectedDate.month, calendarView.selectedDate.day).toInt()
                 val index = mMainActivity.mLogHeaders.indexOf(LogHeader(date))
                 if (index == -1) {
-                    mMainActivity.showToast("Cannot move empty log")
+                    Constants.showToast(mMainActivity, "Cannot move empty log")
                     return false
                 }
                 val header = mMainActivity.mLogHeaders[index]
