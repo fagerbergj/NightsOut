@@ -1,54 +1,44 @@
 package com.wit.jasonfagerberg.nightsout.main
 
-import android.app.NotificationManager
 import android.content.*
 import android.net.Uri
 import android.os.Bundle
 import android.os.PersistableBundle
 import android.preference.PreferenceManager
-import android.util.Log
-import android.view.Gravity
 import android.view.MenuItem
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.fragment.app.Fragment
-import androidx.appcompat.app.AppCompatActivity
 // import android.util.Log
 import android.view.View
 import android.widget.RelativeLayout
-import android.widget.Toast
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import androidx.viewpager.widget.ViewPager
 import com.wit.jasonfagerberg.nightsout.R
 import com.wit.jasonfagerberg.nightsout.addDrink.AddDrinkActivity
-import com.wit.jasonfagerberg.nightsout.converter.Converter
 import com.wit.jasonfagerberg.nightsout.databaseHelper.DatabaseHelper
 import com.wit.jasonfagerberg.nightsout.dialogs.SimpleDialog
 import com.wit.jasonfagerberg.nightsout.home.HomeFragment
 import com.wit.jasonfagerberg.nightsout.log.LogFragment
 import com.wit.jasonfagerberg.nightsout.log.LogHeader
-import com.wit.jasonfagerberg.nightsout.notification.AddDrinkReceiver
-import com.wit.jasonfagerberg.nightsout.notification.NotificationHelper
-import com.wit.jasonfagerberg.nightsout.notification.RefreshBACReceiver
+import com.wit.jasonfagerberg.nightsout.notification.BacNotificationService
 import com.wit.jasonfagerberg.nightsout.profile.ProfileFragment
-import java.lang.Exception
-import java.util.Stack
-import java.util.Locale
-import java.util.GregorianCalendar
-import java.util.Date
-import java.util.Calendar
+import java.util.*
+import kotlin.collections.ArrayList
 
-private const val TAG = "MainActivity"
+//private const val TAG = "MainActivity"
 
-class MainActivity : AppCompatActivity() {
-    val mBackStack = Stack<Int>()
+class MainActivity : NightsOutActivity() {
 
-    // init fragments
+    // fragments and navigation
     var homeFragment = HomeFragment()
     var logFragment = LogFragment()
     var profileFragment = ProfileFragment()
+
     private lateinit var botNavBar: BottomNavigationView
+    lateinit var pager: ViewPager
+    private lateinit var pagerAdapter: MyPagerAdapter
     private var prevMenuItem: MenuItem? = null
 
     // shared pref data
@@ -66,22 +56,15 @@ class MainActivity : AppCompatActivity() {
     var drinksAddedCount: Int = 0
     private var dontShowRateDialog: Boolean = false
 
-    // global lists
+    // database entries as lists
+    lateinit var mDatabaseHelper: DatabaseHelper
+
     var mDrinksList: ArrayList<Drink> = ArrayList()
     var mFavoritesList: ArrayList<Drink> = ArrayList()
     var mLogHeaders: ArrayList<LogHeader> = ArrayList()
 
-    // receivers
-    private val refreshBACReceiver: RefreshBACReceiver = RefreshBACReceiver()
-    private val addDrinkReceiver: AddDrinkReceiver = AddDrinkReceiver()
-
-    lateinit var mDatabaseHelper: DatabaseHelper
-    lateinit var pager: ViewPager
-    private lateinit var pagerAdapter: MyPagerAdapter
-
     override fun onCreate(savedInstanceState: Bundle?) {
         setContentView(R.layout.activity_main)
-
         // bottom nav bar
         botNavBar = findViewById(R.id.bottom_navigation_view)
 
@@ -124,69 +107,17 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onStart() {
+        super.onStart()
         mDatabaseHelper.openDatabase()
         initData()
-        super.onStart()
-    }
-
-    fun showBacNotification(oldId: Int? = null){
-        Log.v(TAG, "oldId = $oldId")
-        if (oldId != null) {
-            (getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).cancel(oldId)
-        }
-        val notificationHelper = NotificationHelper(this, Constants.NOTIFICATION_BAC_CHANNEL)
-        notificationHelper.addAction(Constants.ACTION_REFRESH_BAC, R.drawable.image_border, "Refresh", refreshBACReceiver)
-        notificationHelper.addAction(Constants.ACTION_ADD_DRINK, R.drawable.image_border, "Add Drink", addDrinkReceiver)
-        notificationHelper.showNotification("Current BAC",  "%.3f".format(homeFragment.calculateBAC()))
-    }
-
-    private fun invalidateFragmentMenus(position: Int) {
-        for (i in 0 until pagerAdapter.count) {
-            pagerAdapter.getItem(i).setHasOptionsMenu(i == position)
-        }
-        invalidateOptionsMenu() // or respectively its support method.
-    }
-
-    override fun onStop() {
-        saveData()
-//        mDrinksList.clear()
-        mFavoritesList.clear()
-        mLogHeaders.clear()
-        mDatabaseHelper.closeDatabase()
-        super.onStop()
-    }
-
-    override fun onDestroy() {
-        tryToUnregisterReceiver(refreshBACReceiver)
-        tryToUnregisterReceiver(addDrinkReceiver)
-        super.onDestroy()
-    }
-
-    private fun tryToUnregisterReceiver(receiver: BroadcastReceiver) {
-        try {
-            unregisterReceiver(receiver)
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
     }
 
     private fun initData() {
-        // get data
-        preferences = PreferenceManager.getDefaultSharedPreferences(this)
-        getProfileAndTimeData()
-
-        dateInstalled = preferences.getLong("dateInstalled", System.currentTimeMillis())
-        drinksAddedCount = preferences.getInt("drinksAddedCount", 0)
-        if (drinksAddedCount > 10000) drinksAddedCount = 10 // prevent the very unlikely number too large for int
-        dontShowRateDialog = preferences.getBoolean("dontShowRateDialog", false)
+        getDataFromStorage()
+        if (intent.getBooleanExtra("drinkAdded", false)) drinksAddedCount++
+        showPleaseRateDialog()
 
         val fragmentId = intent.getIntExtra("FRAGMENT_ID", -1)
-        val fragmentArray = intent.getIntArrayExtra("BACK_STACK")
-        if (fragmentArray != null) {
-            if (preferences.getBoolean("drinkAdded", false)) drinksAddedCount++
-            showPleaseRateDialog()
-            for (frag in fragmentArray) pushToBackStack(frag)
-        }
 
         if (!profileInit || fragmentId == 2) {
             pager.currentItem = 2
@@ -199,6 +130,74 @@ class MainActivity : AppCompatActivity() {
         mDrinksList = mDatabaseHelper.pullCurrentSessionDrinks()
         mFavoritesList = mDatabaseHelper.pullFavoriteDrinks()
         mLogHeaders = mDatabaseHelper.pullLogHeaders()
+    }
+
+    private fun getDataFromStorage() {
+        preferences = PreferenceManager.getDefaultSharedPreferences(this)
+        dateInstalled = preferences.getLong("dateInstalled", System.currentTimeMillis())
+        drinksAddedCount = preferences.getInt("drinksAddedCount", 0)
+        if (drinksAddedCount > 10000) drinksAddedCount = 10 // prevent the very unlikely number too large for int
+        dontShowRateDialog = preferences.getBoolean("dontShowRateDialog", false)
+
+        profileInit = preferences.getBoolean("profileInit", profileInit)
+        startTimeMin = Constants.getCurrentTimeInMinuets()
+        endTimeMin = Constants.getCurrentTimeInMinuets()
+        if (profileInit) {
+            sex = true
+            sex = preferences.getBoolean("profileSex", sex!!)
+            var weightFloat: Float = 0.toFloat()
+            weightFloat = preferences.getFloat("profileWeight", weightFloat)
+            weight = weightFloat.toDouble()
+            weightMeasurement = preferences.getString("profileWeightMeasurement", weightMeasurement)!!
+
+            use24HourTime = preferences.getBoolean("homeUse24HourTime", use24HourTime)
+            startTimeMin = preferences.getInt("homeStartTimeMin", startTimeMin)
+            endTimeMin = preferences.getInt("homeEndTimeMin", endTimeMin)
+        }
+
+        val fragmentArray = intent.getIntArrayExtra("BACK_STACK")
+        if (fragmentArray != null) {
+            for (frag in fragmentArray) pushToBackStack(frag)
+        }
+    }
+
+    private fun invalidateFragmentMenus(position: Int) {
+        for (i in 0 until pagerAdapter.count) {
+            pagerAdapter.getItem(i).setHasOptionsMenu(i == position)
+        }
+        invalidateOptionsMenu()
+    }
+
+    override fun onStop() {
+        saveDataToStorage()
+        mDatabaseHelper.deleteRowsInTable("current_session_drinks", null)
+        mDatabaseHelper.pushDrinks(mDrinksList, mFavoritesList)
+
+        mFavoritesList.clear()
+        mLogHeaders.clear()
+        mDatabaseHelper.closeDatabase()
+        super.onStop()
+    }
+
+    private fun saveDataToStorage() {
+        // profile not init
+        if (!profileInit) return
+
+        val editor = preferences.edit()
+        editor.putBoolean("profileInit", true)
+        if (sex != null) editor.putBoolean("profileSex", sex!!)
+        editor.putFloat("profileWeight", weight.toFloat())
+        editor.putString("profileWeightMeasurement", weightMeasurement)
+
+        editor.putInt("homeStartTimeMin", startTimeMin)
+        editor.putInt("homeEndTimeMin", endTimeMin)
+        editor.putBoolean("homeUse24HourTime", use24HourTime)
+
+        editor.putLong("dateInstalled", dateInstalled)
+        editor.putInt("drinksAddedCount", drinksAddedCount)
+        editor.putBoolean("dontShowRateDialog", dontShowRateDialog)
+
+        editor.apply()
     }
 
     fun showPleaseRateDialog(){
@@ -222,7 +221,7 @@ class MainActivity : AppCompatActivity() {
             dialog.dismiss()
         }
         dialog.setNegativeFunction {
-            // set drinks added count to 0 so the user doesnt get spammed
+            // set drinks added count to 0 so the user doesn't get spammed
             drinksAddedCount = 0
             dialog.dismiss()
         }
@@ -232,45 +231,22 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun saveData() {
-        // profile not init
-        if (!profileInit) return
-
-        mDatabaseHelper.deleteRowsInTable("current_session_drinks", null)
-        mDatabaseHelper.pushDrinks(mDrinksList, mFavoritesList)
-
-        val editor = preferences.edit()
-        editor.putBoolean("profileInit", true)
-        if (sex != null) editor.putBoolean("profileSex", sex!!)
-        editor.putFloat("profileWeight", weight.toFloat())
-        editor.putString("profileWeightMeasurement", weightMeasurement)
-
-        editor.putInt("homeStartTimeMin", startTimeMin)
-        editor.putInt("homeEndTimeMin", endTimeMin)
-        editor.putBoolean("homeUse24HourTime", use24HourTime)
-
-        editor.putLong("dateInstalled", dateInstalled)
-        editor.putInt("drinksAddedCount", drinksAddedCount)
-        editor.putBoolean("dontShowRateDialog", dontShowRateDialog)
-
-        editor.apply()
+    fun resetTime() {
+        startTimeMin = Constants.getCurrentTimeInMinuets()
+        endTimeMin = Constants.getCurrentTimeInMinuets()
     }
 
-    private fun getProfileAndTimeData() {
-        profileInit = preferences.getBoolean("profileInit", profileInit)
-        startTimeMin = getCurrentTimeInMinuets()
-        endTimeMin = getCurrentTimeInMinuets()
-        if (profileInit) {
-            sex = true
-            sex = preferences.getBoolean("profileSex", sex!!)
-            var weightFloat: Float = 0.toFloat()
-            weightFloat = preferences.getFloat("profileWeight", weightFloat)
-            weight = weightFloat.toDouble()
-            weightMeasurement = preferences.getString("profileWeightMeasurement", weightMeasurement)!!
+    fun sendActionToBacNotificationService(action : String){
+        val startIntent = Intent(this, BacNotificationService::class.java)
+        startIntent.putExtra("NOTIFICATION_CHANNEL", Constants.CHANNEL.BAC)
+        startIntent.action = action
+        startService(startIntent)
+    }
 
-            use24HourTime = preferences.getBoolean("homeUse24HourTime", use24HourTime)
-            startTimeMin = preferences.getInt("homeStartTimeMin", startTimeMin)
-            endTimeMin = preferences.getInt("homeEndTimeMin", endTimeMin)
+    fun pushToBackStack(i: Int){
+        mBackStack.push(i)
+        if(mBackStack.size >= Constants.MAX_BACK_STACK_SIZE) {
+            mBackStack.removeAt(0)
         }
     }
 
@@ -337,34 +313,6 @@ class MainActivity : AppCompatActivity() {
         val params = RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,
                 RelativeLayout.LayoutParams.MATCH_PARENT)
         findViewById<CoordinatorLayout>(R.id.placeSnackBar).layoutParams = params
-    }
-
-    fun getCurrentTimeInMinuets(): Int {
-        val calendar = GregorianCalendar.getInstance()
-        val date = Date()
-        calendar.time = date
-        val curHour = calendar.get(Calendar.HOUR_OF_DAY)
-        val curMin = calendar.get(Calendar.MINUTE)
-        return Converter().militaryHoursAndMinutesToMinutes(curHour, curMin)
-    }
-
-    fun showToast(message: String, isLongToast: Boolean = false) {
-        val toast = if (isLongToast) Toast.makeText(this, message, Toast.LENGTH_LONG)
-        else Toast.makeText(this, message, Toast.LENGTH_SHORT)
-        toast.setGravity(Gravity.CENTER, 0, 450)
-        toast.show()
-    }
-
-    fun resetTime() {
-        startTimeMin = getCurrentTimeInMinuets()
-        endTimeMin = getCurrentTimeInMinuets()
-    }
-
-    fun pushToBackStack(i: Int){
-        mBackStack.push(i)
-        if(mBackStack.size >= Constants.MAX_BACK_STACK_SIZE) {
-            mBackStack.removeAt(0)
-        }
     }
 
     private inner class MyPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {

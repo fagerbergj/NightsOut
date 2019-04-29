@@ -1,11 +1,14 @@
 package com.wit.jasonfagerberg.nightsout.converter
 
+import com.wit.jasonfagerberg.nightsout.main.Constants
+
 // import android.util.Log
 //
 // private const val TAG = "Converter"
 class Converter {
     private val weightConversionMap = HashMap<String, Double>()
     private val volumeConversionMap = HashMap<String, Double>()
+    public val showBacNotificationMap = HashMap<String, Constants.ShowBacNotificationEnum>()
 
     init {
         weightConversionMap["lbs"] = 1.0
@@ -17,6 +20,13 @@ class Converter {
         volumeConversionMap["wine glasses"] = 5.0
         volumeConversionMap["shots"] = 1.5
         volumeConversionMap["pints"] = 16.0
+
+        showBacNotificationMap["Never"] = Constants.ShowBacNotificationEnum.NEVER
+        showBacNotificationMap["End time is changed to current time"] = Constants.ShowBacNotificationEnum.END_TIME_IS_NOW
+        showBacNotificationMap["Drinking duration is updated"] = Constants.ShowBacNotificationEnum.TIME_IS_CHANGED
+        showBacNotificationMap["Bac is updated"] = Constants.ShowBacNotificationEnum.BAC_IS_CALCULATED
+        showBacNotificationMap["App is launched"] = Constants.ShowBacNotificationEnum.APP_LAUNCHED
+
     }
 
     fun weightToLbs(weight: Double, weightMeasurement: String): Double {

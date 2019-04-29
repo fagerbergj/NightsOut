@@ -40,10 +40,10 @@ class HomeFragment : Fragment() {
     private lateinit var mRelativeLayout: RelativeLayout
     private lateinit var mMainActivity: MainActivity
     val mConverter = Converter()
-    var bac = 0.000
 
     var drinkingDuration = 0.0
     var standardDrinksConsumed = 0.0
+    var bac: Double = 0.0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         mMainActivity = context as MainActivity
@@ -216,13 +216,16 @@ class HomeFragment : Fragment() {
                     mMainActivity.startTimeMin = mConverter.militaryHoursAndMinutesToMinutes(selectedHour, selectedMinute)
                     if (mMainActivity.endTimeMin == -1) mMainActivity.endTimeMin = mMainActivity.startTimeMin
                     updateBACText(calculateBAC())
+                    if(isTimeWithinRange(hour * 60 + minute, 5)){
+                        mMainActivity.sendActionToBacNotificationService(Constants.ACTION.START_SERVICE)
+                    }
                 }, hour, minute, mMainActivity.use24HourTime)
 
         mTimePicker.setButton(DialogInterface.BUTTON_NEUTRAL, "Now") { _, _ ->
-            mMainActivity.startTimeMin = mMainActivity.getCurrentTimeInMinuets()
+            mMainActivity.startTimeMin = Constants.getCurrentTimeInMinuets()
             startPicker.setText(mConverter.timeToString(mMainActivity.startTimeMin, mMainActivity.use24HourTime))
             updateBACText(calculateBAC())
-            mMainActivity.showBacNotification(Constants.NOTIFICATION_BAC_CHANNEL.hashCode())
+            mMainActivity.sendActionToBacNotificationService(Constants.ACTION.START_SERVICE)
         }
 
         mTimePicker.setTitle("Start Time")
@@ -244,17 +247,25 @@ class HomeFragment : Fragment() {
                     endPicker.setText(mConverter.timeToString(selectedHour, selectedMinute, mMainActivity.use24HourTime))
                     mMainActivity.endTimeMin = mConverter.militaryHoursAndMinutesToMinutes(selectedHour, selectedMinute)
                     updateBACText(calculateBAC())
+                    if(isTimeWithinRange(hour * 60 + minute, 5)) {
+                        mMainActivity.sendActionToBacNotificationService(Constants.ACTION.START_SERVICE)
+                    }
                 }, hour, minute, mMainActivity.use24HourTime)
 
         mTimePicker.setButton(DialogInterface.BUTTON_NEUTRAL, "Now") { _, _ ->
-            mMainActivity.endTimeMin = mMainActivity.getCurrentTimeInMinuets()
+            mMainActivity.endTimeMin = Constants.getCurrentTimeInMinuets()
             endPicker.setText(mConverter.timeToString(mMainActivity.endTimeMin, mMainActivity.use24HourTime))
             updateBACText(calculateBAC())
-            mMainActivity.showBacNotification(Constants.NOTIFICATION_BAC_CHANNEL.hashCode())
+            mMainActivity.sendActionToBacNotificationService(Constants.ACTION.START_SERVICE)
         }
 
         mTimePicker.setTitle("End Time")
         mTimePicker.show()
+    }
+
+    private fun isTimeWithinRange(time: Int, range: Int) : Boolean {
+        val currentTime = Calendar.getInstance().get(Calendar.HOUR_OF_DAY) * 60 + Calendar.getInstance().get(Calendar.MINUTE)
+        return time >= currentTime - range && time <= currentTime + range
     }
 
     fun showOrHideEmptyListText(view: View) {
@@ -302,6 +313,7 @@ class HomeFragment : Fragment() {
         val bacDecayPerHour = 0.015
         var res = instantBAC - (hoursElapsed * bacDecayPerHour)
         res = if (res < 0.0) 0.0 else res
+        mMainActivity.sendActionToBacNotificationService(Constants.ACTION.UPDATE_NOTIFICATION)
         return res
     }
 

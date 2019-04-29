@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:context=".notification.NotificationsSettingActivity">
+
+    <RelativeLayout
+        android:padding="16dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/text_bac_notification"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="BAC Notification"
+            android:textStyle="bold"
+            android:textColor="@color/colorBlack"
+            android:textSize="24sp"/>
+
+        <View
+            android:id="@+id/line"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginBottom="4dp"
+            android:background="@android:color/darker_gray"
+            android:layout_below="@+id/text_bac_notification"/>
+
+        <TextView
+            android:id="@+id/text_show_bac_notification"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:labelFor="@+id/spinner_show_bac_notification"
+            android:layout_alignTop="@+id/spinner_show_bac_notification"
+            android:text="Show When: "
+            android:padding="8dp"
+            android:textSize="16sp"
+            android:textColor="@color/colorDarkGray"
+            android:paddingEnd="16dp"
+            android:paddingStart="16dp"
+            android:layout_alignParentStart="true"
+            android:layout_toStartOf="@+id/spinner_show_bac_notification"/>
+
+        <androidx.appcompat.widget.AppCompatSpinner
+            android:id="@+id/spinner_show_bac_notification"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/line"
+            android:layout_alignParentEnd="true"
+            android:padding="8dp"
+            android:paddingEnd="16dp"
+            android:paddingStart="16dp"/>
+
+
+    </RelativeLayout>
+
+
+</ScrollView>
