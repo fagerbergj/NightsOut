@@ -18,7 +18,7 @@ class BacNotificationService : Service() {
     private var startTime : Int = 0
     private var endTime : Int = 0
     private var weight : Double = 0.0
-    private var weightMeasurement : String = "oz"
+    private var weightMeasurement : String = "lbs"
     private var sex : Boolean = true
     private var use24HourTime : Boolean = false
 
@@ -26,6 +26,25 @@ class BacNotificationService : Service() {
 
     private lateinit var notificationHelper : NotificationHelper
     private val mConverter = Converter()
+
+    override fun onCreate() {
+        // when the service is created / rerun after app closes, build notification to keep intents fresh
+        // create intents for actions
+        val refreshIntent = Intent(this, BacNotificationService::class.java)
+        refreshIntent.action = Constants.ACTION.REFRESH_BAC
+        val pendingRefreshIntent = PendingIntent.getService(this, 0 , refreshIntent, 0)
+
+        val addDrinkIntent = Intent(this, AddDrinkActivity::class.java)
+        refreshIntent.action = Constants.ACTION.ADD_DRINK
+        val pendingAddDrinkIntent = PendingIntent.getActivity(this, 0, addDrinkIntent, 0)
+
+        // build notification
+        notificationHelper = NotificationHelper(this, Constants.CHANNEL.BAC)
+        notificationHelper.addAction(R.drawable.image_border, "Refresh", pendingRefreshIntent)
+        notificationHelper.addAction(R.drawable.image_border, "Add Drink", pendingAddDrinkIntent)
+        notificationHelper.build("","", false)
+        super.onCreate()
+    }
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
         when (intent.action) {
@@ -50,11 +69,9 @@ class BacNotificationService : Service() {
                 notificationHelper = NotificationHelper(this, Constants.CHANNEL.BAC)
                 notificationHelper.addAction(R.drawable.image_border, "Refresh", pendingRefreshIntent)
                 notificationHelper.addAction(R.drawable.image_border, "Add Drink", pendingAddDrinkIntent)
-                val notification = notificationHelper.buildNotification("BAC: ${"%.3f".format(calculateBAC())}",
+                notificationHelper.updateOrShow("BAC: ${"%.3f".format(calculateBAC())}",
                         "${mConverter.timeToString(startTime/60, startTime%60, use24HourTime)} - " +
                                 mConverter.timeToString(endTime/60, endTime%60, use24HourTime), false)
-                startForeground(notificationHelper.id, notification)
-                stopForeground(false)
                 isStarted = true
             }
 
@@ -64,7 +81,6 @@ class BacNotificationService : Service() {
             }
 
             Constants.ACTION.REFRESH_BAC -> {
-                if (!isStarted) return START_STICKY
                 endTime = Constants.getCurrentTimeInMinuets()
                 saveEndTime()
                 val bac = calculateBAC()
@@ -90,14 +106,14 @@ class BacNotificationService : Service() {
             }
 
             Constants.ACTION.STOP_SERVICE -> {
-                isStarted = false
+                stopSelf()
             }
         }
         return START_STICKY
     }
 
     private fun updateNotification() {
-        notificationHelper.updateNotification("BAC: ${"%.3f".format(calculateBAC())}",
+        notificationHelper.updateOrShow("BAC: ${"%.3f".format(calculateBAC())}",
                 "${mConverter.timeToString(startTime/60, startTime%60, use24HourTime)} - " +
                         mConverter.timeToString(endTime/60, endTime%60, use24HourTime), false)
     }

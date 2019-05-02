@@ -48,7 +48,7 @@ class NotificationHelper (private val mContext: Context, private val CHANNEL_ID:
 
         return NotificationCompat.Builder(mContext, CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_stat_name)
-                .setDefaults(Notification.DEFAULT_VIBRATE)
+                .setDefaults(Notification.DEFAULT_ALL)
                 // Set the intent that will fire when the user taps the notification
                 .setContentIntent(pendingIntent)
                 .setDeleteIntent(deletePendingIntent)
@@ -58,7 +58,7 @@ class NotificationHelper (private val mContext: Context, private val CHANNEL_ID:
         builder.addAction(drawable, message, pendingIntent)
     }
 
-    fun buildNotification(title: String, body: String, autoCancel: Boolean = true) : Notification{
+    fun build(title: String, body: String, autoCancel: Boolean = true) : Notification{
         return builder.setContentTitle(title)
                 .setContentText(body)
                 .setStyle(NotificationCompat.BigTextStyle()
@@ -67,7 +67,7 @@ class NotificationHelper (private val mContext: Context, private val CHANNEL_ID:
                 .build()
     }
 
-    fun updateNotification(title: String, body: String, autoCancel: Boolean = true) {
+    fun updateOrShow(title: String, body: String, autoCancel: Boolean = true) {
         builder.setContentTitle(title)
                 .setContentText(body)
                 .setStyle(NotificationCompat.BigTextStyle()
@@ -90,6 +90,6 @@ class NotificationHelper (private val mContext: Context, private val CHANNEL_ID:
 
         val result = function()
         builder.setProgress(0,0,false)
-        updateNotification(result.first, result.second, result.third)
+        updateOrShow(result.first, result.second, result.third)
     }
 }
