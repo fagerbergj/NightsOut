@@ -24,7 +24,7 @@ class NotificationHelper (private val mContext: Context, private val CHANNEL_ID:
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val name = "BAC"
             val descriptionText = "Tell the user their current BAC"
-            val importance = NotificationManager.IMPORTANCE_DEFAULT
+            val importance = NotificationManager.IMPORTANCE_LOW
             val channel = NotificationChannel(CHANNEL_ID, name, importance).apply {
                 description = descriptionText
             }
@@ -48,8 +48,6 @@ class NotificationHelper (private val mContext: Context, private val CHANNEL_ID:
 
         return NotificationCompat.Builder(mContext, CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_stat_name)
-                .setDefaults(Notification.DEFAULT_ALL)
-                .setVibrate(LongArray(1){0L})
                 // Set the intent that will fire when the user taps the notification
                 .setContentIntent(pendingIntent)
                 .setDeleteIntent(deletePendingIntent)

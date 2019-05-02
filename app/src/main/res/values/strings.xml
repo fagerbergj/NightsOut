@@ -3,7 +3,7 @@
     <string name="fragment_home_name">Home</string>
     <string name="fragment_log_name">Log</string>
     <string name="fragment_profile_name">Profile</string>
-    <string name="add_a_drink">Add A Drink</string>
+    <string name="add_drink">Add Drink</string>
     <string name="save_profile">Save Profile</string>
     <string name="start_drinking">Start Drinking</string>
     <string name="end_drinking">End Drinking</string>
@@ -71,4 +71,7 @@
     <string name="rate">Rate</string>
     <string name="dont_show_again">Don\'t Show Again</string>
     <string name="later">Later</string>
+    <string name="notification_settings">Notification Settings</string>
+    <string name="notifications">Notifications</string>
+    <string name="show_bac_notification">Show Current BAC Notification</string>
 </resources>

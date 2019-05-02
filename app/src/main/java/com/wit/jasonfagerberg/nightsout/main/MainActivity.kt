@@ -57,6 +57,8 @@ class MainActivity : NightsOutActivity() {
     private var dateInstalled: Long = 0
     var drinksAddedCount: Int = 0
     private var dontShowRateDialog: Boolean = false
+    private var dontShowCurrentBacNotification: Boolean = false
+    private var showBacNotification: Boolean = true
 
     // database entries as lists
     lateinit var mDatabaseHelper: DatabaseHelper
@@ -140,6 +142,8 @@ class MainActivity : NightsOutActivity() {
         dateInstalled = preferences.getLong("dateInstalled", System.currentTimeMillis())
         drinksAddedCount = preferences.getInt("drinksAddedCount", 0)
         dontShowRateDialog = preferences.getBoolean("dontShowRateDialog", false)
+        dontShowCurrentBacNotification = preferences.getBoolean("dontShowCurrentBacNotification", dontShowCurrentBacNotification)
+        showBacNotification = preferences.getBoolean("showCurrentBacNotification", true)
 
         startTimeMin = Constants.getCurrentTimeInMinuets()
         endTimeMin = Constants.getCurrentTimeInMinuets()
@@ -256,8 +260,8 @@ class MainActivity : NightsOutActivity() {
     }
 
     fun sendActionToBacNotificationService(action : String){
+        if (!showBacNotification) return
         val startIntent = Intent(this, BacNotificationService::class.java)
-        startIntent.putExtra("NOTIFICATION_CHANNEL", Constants.CHANNEL.BAC)
         startIntent.action = action
         startService(startIntent)
     }
