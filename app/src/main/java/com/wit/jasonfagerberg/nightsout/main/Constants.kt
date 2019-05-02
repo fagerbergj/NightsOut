@@ -4,7 +4,6 @@ import com.wit.jasonfagerberg.nightsout.converter.Converter
 import java.util.*
 
 class Constants {
-    enum class ShowBacNotificationEnum {NEVER, END_TIME_IS_NOW, TIME_IS_CHANGED, BAC_IS_CALCULATED, APP_LAUNCHED}
     companion object {
         const val DB_NAME = "nights_out_db.db"
         const val DB_VERSION = 40

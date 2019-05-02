@@ -40,8 +40,8 @@ class BacNotificationService : Service() {
 
         // build notification
         notificationHelper = NotificationHelper(this, Constants.CHANNEL.BAC)
-        notificationHelper.addAction(R.drawable.image_border, "Add Drink", pendingAddDrinkIntent)
-        notificationHelper.addAction(R.drawable.image_border, "Refresh", pendingRefreshIntent)
+        notificationHelper.addAction(R.drawable.image_border, getString(R.string.add_drink), pendingAddDrinkIntent)
+        notificationHelper.addAction(R.drawable.image_border, getString(R.string.update), pendingRefreshIntent)
         notificationHelper.build("","", false)
 
         isStarted = isNotificationActive()

@@ -25,6 +25,7 @@ import com.wit.jasonfagerberg.nightsout.dialogs.SimpleDialog
 import com.wit.jasonfagerberg.nightsout.main.Constants
 import com.wit.jasonfagerberg.nightsout.main.MainActivity
 import com.wit.jasonfagerberg.nightsout.manageDB.ManageDBActivity
+import com.wit.jasonfagerberg.nightsout.notification.NotificationsSettingActivity
 import java.util.*
 
 // private const val TAG = "HomeFragment"
@@ -118,6 +119,10 @@ class HomeFragment : Fragment() {
             }
             R.id.btn_toolbar_manage_db -> {
                 val intent = Intent(mMainActivity, ManageDBActivity::class.java)
+                startActivity(intent)
+            }
+            R.id.btn_toolbar_notification_settings -> {
+                val intent = Intent(mMainActivity, NotificationsSettingActivity::class.java)
                 startActivity(intent)
             }
         }
