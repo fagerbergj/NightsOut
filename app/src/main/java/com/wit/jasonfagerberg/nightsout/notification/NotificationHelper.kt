@@ -49,6 +49,7 @@ class NotificationHelper (private val mContext: Context, private val CHANNEL_ID:
         return NotificationCompat.Builder(mContext, CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_stat_name)
                 .setDefaults(Notification.DEFAULT_ALL)
+                .setVibrate(LongArray(1){0L})
                 // Set the intent that will fire when the user taps the notification
                 .setContentIntent(pendingIntent)
                 .setDeleteIntent(deletePendingIntent)

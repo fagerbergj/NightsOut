@@ -40,39 +40,24 @@ class BacNotificationService : Service() {
 
         // build notification
         notificationHelper = NotificationHelper(this, Constants.CHANNEL.BAC)
-        notificationHelper.addAction(R.drawable.image_border, "Refresh", pendingRefreshIntent)
         notificationHelper.addAction(R.drawable.image_border, "Add Drink", pendingAddDrinkIntent)
+        notificationHelper.addAction(R.drawable.image_border, "Refresh", pendingRefreshIntent)
         notificationHelper.build("","", false)
+
+        isStarted = isNotificationActive()
         super.onCreate()
+    }
+
+    private fun isNotificationActive() : Boolean {
+        return PreferenceManager.getDefaultSharedPreferences(this).getBoolean("isBacNotificationStarted", false)
     }
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
         when (intent.action) {
             Constants.ACTION.START_SERVICE -> {
-                getPreferencesData()
-                // if already started, update notification
-                if (isStarted){
-                    updateNotification()
-                    return START_STICKY
-                }
-
-                // create intents for actions
-                val refreshIntent = Intent(this, BacNotificationService::class.java)
-                refreshIntent.action = Constants.ACTION.REFRESH_BAC
-                val pendingRefreshIntent = PendingIntent.getService(this, 0 , refreshIntent, 0)
-
-                val addDrinkIntent = Intent(this, AddDrinkActivity::class.java)
-                refreshIntent.action = Constants.ACTION.ADD_DRINK
-                val pendingAddDrinkIntent = PendingIntent.getActivity(this, 0, addDrinkIntent, 0)
-
-                // build notification
-                notificationHelper = NotificationHelper(this, Constants.CHANNEL.BAC)
-                notificationHelper.addAction(R.drawable.image_border, "Refresh", pendingRefreshIntent)
-                notificationHelper.addAction(R.drawable.image_border, "Add Drink", pendingAddDrinkIntent)
-                notificationHelper.updateOrShow("BAC: ${"%.3f".format(calculateBAC())}",
-                        "${mConverter.timeToString(startTime/60, startTime%60, use24HourTime)} - " +
-                                mConverter.timeToString(endTime/60, endTime%60, use24HourTime), false)
+                updateNotification()
                 isStarted = true
+                saveNotificationState(true)
             }
 
             Constants.ACTION.UPDATE_NOTIFICATION -> {
@@ -106,6 +91,7 @@ class BacNotificationService : Service() {
             }
 
             Constants.ACTION.STOP_SERVICE -> {
+                saveNotificationState(false)
                 stopSelf()
             }
         }
@@ -137,6 +123,7 @@ class BacNotificationService : Service() {
     private fun calculateBAC() : Double{
         val dbh = DatabaseHelper(this, Constants.DB_NAME, null, Constants.DB_VERSION)
         dbh.openDatabase()
+        getPreferencesData()
 
         var a = 0.0
         for (drink in dbh.pullCurrentSessionDrinks()) {
@@ -169,5 +156,11 @@ class BacNotificationService : Service() {
     override fun onBind(intent: Intent): IBinder? {
         // Used only in case of bound services.
         return null
+    }
+
+    private fun saveNotificationState(started : Boolean) {
+        val editor = PreferenceManager.getDefaultSharedPreferences(this).edit()
+        editor.putBoolean("isBacNotificationStarted", started)
+        editor.apply()
     }
 }
