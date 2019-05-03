@@ -250,7 +250,7 @@ class MainActivity : NightsOutActivity() {
             dialog.dismiss()
         }
         dialog.setNuetralFunction {
-            dontShowRateDialog = true
+            setPreference(dontShowRateDialog = true)
             dialog.dismiss()
         }
     }

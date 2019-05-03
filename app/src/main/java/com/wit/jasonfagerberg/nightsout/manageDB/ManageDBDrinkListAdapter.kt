@@ -16,7 +16,6 @@ class ManageDBDrinkListAdapter(private val mContext: Context, private val mDrink
         androidx.recyclerview.widget.RecyclerView.Adapter<ManageDBDrinkListAdapter.ViewHolder>() {
 
     private lateinit var mActivity: ManageDBActivity
-    private lateinit var mDrinkList: ArrayList<Drink>
     private lateinit var mFavoritesList: ArrayList<Drink>
     private lateinit var mRecentsList: ArrayList<Drink>
 
@@ -24,7 +23,6 @@ class ManageDBDrinkListAdapter(private val mContext: Context, private val mDrink
         val inflater = LayoutInflater.from(mContext)
         val view = inflater.inflate(R.layout.activity_manage_db_item, parent, false)
         mActivity = mContext as ManageDBActivity
-        mDrinkList = mActivity.mDrinksList
         mFavoritesList = mActivity.dbh.pullFavoriteDrinks()
         mRecentsList = mActivity.dbh.pullRecentDrinks()
         return ViewHolder(view)

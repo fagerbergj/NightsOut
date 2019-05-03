@@ -14,6 +14,7 @@ import com.wit.jasonfagerberg.nightsout.dialogs.LightSimpleDialog
 import com.wit.jasonfagerberg.nightsout.main.Constants
 import com.wit.jasonfagerberg.nightsout.main.Drink
 import com.wit.jasonfagerberg.nightsout.main.NightsOutActivity
+import androidx.appcompat.widget.SearchView
 
 class ManageDBActivity : NightsOutActivity() {
     private lateinit var mDrinkListAdapter: ManageDBDrinkListAdapter
@@ -49,6 +50,21 @@ class ManageDBActivity : NightsOutActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.manage_db_menu, menu)
+        val searchItem = menu!!.findItem(R.id.btn_search)
+        val searchView = searchItem.actionView as SearchView
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextChange(newText: String): Boolean {
+                // your text view here
+                mDrinksList.clear()
+                mDrinksList.addAll(dbh.getSuggestedDrinks(newText, true))
+                mDrinkListAdapter.notifyDataSetChanged()
+                return true
+            }
+
+            override fun onQueryTextSubmit(query: String): Boolean {
+                return true
+            }
+        })
         return super.onCreateOptionsMenu(menu)
     }
 
