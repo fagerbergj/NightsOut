@@ -1,7 +1,9 @@
 package com.wit.jasonfagerberg.nightsout.notification
 
+import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.Service
+import android.content.Context
 import android.content.Intent
 import android.os.IBinder
 import android.preference.PreferenceManager
@@ -92,6 +94,7 @@ class BacNotificationService : Service() {
 
             Constants.ACTION.STOP_SERVICE -> {
                 saveNotificationState(false)
+                (getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).cancel(Constants.CHANNEL.BAC.hashCode())
                 stopSelf()
             }
         }
