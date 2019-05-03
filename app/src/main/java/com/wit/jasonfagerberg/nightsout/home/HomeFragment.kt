@@ -1,8 +1,6 @@
 package com.wit.jasonfagerberg.nightsout.home
 
-import android.app.NotificationManager
 import android.app.TimePickerDialog
-import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle

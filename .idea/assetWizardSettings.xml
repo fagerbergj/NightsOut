@@ -74,6 +74,7 @@
                                             <option name="values">
                                               <map>
                                                 <entry key="color" value="000000" />
+                                                <entry key="scalingPercent" value="55" />
                                               </map>
                                             </option>
                                           </PersistentState>
@@ -84,7 +85,8 @@
                                   <option name="values">
                                     <map>
                                       <entry key="backgroundAssetType" value="COLOR" />
-                                      <entry key="foregroundAssetType" value="CLIP_ART" />
+                                      <entry key="backgroundColor" value="40c4ff" />
+                                      <entry key="foregroundImage" value="$USER_HOME$/Downloads/ic_launcher/web_hi_res_512.png" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -143,11 +145,6 @@
                                 </PersistentState>
                               </value>
                             </entry>
-                          </map>
-                        </option>
-                        <option name="values">
-                          <map>
-                            <entry key="outputIconType" value="NOTIFICATION" />
                           </map>
                         </option>
                       </PersistentState>
