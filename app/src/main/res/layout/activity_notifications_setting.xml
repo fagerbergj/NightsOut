@@ -4,8 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".notification.NotificationsSettingActivity"
-    android:background="#f9f9f9">
+    tools:context=".notification.NotificationsSettingActivity" >
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -17,7 +16,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/notifications"
-            android:textColor="@color/colorPrimaryDark"
             android:textSize="24sp"
             android:textStyle="bold" />
 
@@ -26,7 +24,7 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_marginBottom="4dp"
-            android:background="@android:color/darker_gray" />
+            android:background="@color/colorLightGray"/>
 
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
@@ -59,12 +57,9 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
-                    android:paddingStart="8dp"
-                    android:paddingEnd="8dp"
-                    android:scaleX="1.15"
-                    android:scaleY="1.15"
+                    android:padding="8dp"
                     android:src="@drawable/ic_info_gray_24dp"
-                    android:background="@color/colorWhite"/>
+                    android:background="#0000"/>
 
             </RelativeLayout>
         </androidx.cardview.widget.CardView>

@@ -2,34 +2,34 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/colorPrimary">
+    android:layout_height="match_parent">
 
     <TextView
         android:id="@+id/text_simple_dialog_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingBottom="8dp"
-        android:textColor="@color/colorWhite"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:padding="12dp"/>
-
-    <RelativeLayout
-        android:background="@color/colorWhite"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:textSize="24sp"
+        android:textStyle="bold"
         android:padding="16dp"
-        android:layout_below="@+id/text_simple_dialog_title">
+        android:background="@color/colorPrimary"
+        android:textColor="@color/colorWhite"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/text_simple_dialog_title"
+        android:paddingStart="16dp"
+        android:paddingTop="16dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="4dp">
 
         <TextView
             android:id="@+id/text_simple_dialog_body"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@color/colorDarkGray"
-            android:textSize="16sp"
             android:paddingStart="8dp"
-            android:paddingEnd="8dp"/>
+            android:paddingEnd="8dp"
+            android:textSize="16sp" />
 
         <RelativeLayout
             style="?android:attr/buttonBarStyle"
@@ -52,9 +52,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/no"
-                    android:textColor="@color/colorDarkGray"
-                    app:backgroundTint="@color/colorWhite"
-                    android:visibility="gone"/>
+                    android:visibility="gone"
+                    app:backgroundTint="#0000" />
 
                 <Button
                     android:id="@+id/btn_simple_dialog_positive"
@@ -62,9 +61,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/yes"
-                    android:textColor="@color/colorDarkGray"
-                    app:backgroundTint="@color/colorWhite"
-                    android:visibility="gone"/>
+                    android:visibility="gone"
+                    app:backgroundTint="#0000" />
 
             </LinearLayout>
 
@@ -74,11 +72,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
-                android:text="@string/dismiss"
-                android:textColor="@color/colorDarkGray"
-                app:backgroundTint="@color/colorWhite"
                 android:layout_toStartOf="@id/pos_neg_layout"
-                android:visibility="gone"/>
+                android:text="@string/dismiss"
+                android:visibility="gone"
+                app:backgroundTint="#0000" />
 
         </RelativeLayout>
 

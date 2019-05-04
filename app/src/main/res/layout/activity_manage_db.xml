@@ -6,10 +6,9 @@
     android:layout_height="match_parent"
     android:padding="8dp">
 
-    <androidx.recyclerview.widget.RecyclerView
+    <com.wit.jasonfagerberg.nightsout.styleableViews.RecyclerViewStyleable
         android:id="@+id/recycler_manage_db_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/colorWhite"
         android:padding="8dp"/>
 </RelativeLayout>

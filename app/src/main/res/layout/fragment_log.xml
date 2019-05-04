@@ -11,7 +11,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:mcv_dateTextAppearance="@android:style/TextAppearance.Medium"
-        app:mcv_selectionColor="@color/colorLightBlueGray"
         app:mcv_tileHeight="40dp" />
 
     <RelativeLayout
@@ -26,11 +25,10 @@
         android:paddingTop="2dp"
         android:paddingBottom="2dp">
 
-        <androidx.recyclerview.widget.RecyclerView
+        <com.wit.jasonfagerberg.nightsout.styleableViews.RecyclerViewStyleable
             android:id="@+id/recycler_log"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/colorWhite"
             android:paddingStart="8dp"
             android:paddingTop="2dp"
             android:paddingEnd="8dp"

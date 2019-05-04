@@ -36,10 +36,10 @@ class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: Ar
         val drink = mDrinksList[position]
 
         when {
-            drink.abv > 20 -> holder.image.setImageBitmap(BitmapFactory.decodeResource(mContext.resources, R.mipmap.cocktail))
-            drink.abv > 9.5 -> holder.image.setImageBitmap(BitmapFactory.decodeResource(mContext.resources, R.mipmap.wine))
+            drink.abv > 20 -> holder.image.setImageBitmap(BitmapFactory.decodeResource(mContext.resources, R.drawable.cocktail))
+            drink.abv > 9.5 -> holder.image.setImageBitmap(BitmapFactory.decodeResource(mContext.resources, R.drawable.wine))
             else -> holder.image.setImageBitmap(BitmapFactory
-                    .decodeResource(mContext.resources, R.mipmap.beer))
+                    .decodeResource(mContext.resources, R.drawable.beer))
         }
 
         holder.name.text = drink.name

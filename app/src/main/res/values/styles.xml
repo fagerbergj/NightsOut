@@ -1,9 +1,25 @@
 <resources>
-
     <style name="AppTheme" parent="Theme.MaterialComponents.Light.DarkActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="recyclerViewStyle">@style/WhiteBackground</item>
+    </style>
+
+    <style name="DarkAppTheme" parent="Theme.MaterialComponents">
+        <item name="colorPrimary">@color/colorGray</item>
+        <item name="colorPrimaryDark">@color/colorDarkGray</item>
+        <item name="colorAccent">@color/colorPrimary</item>
+        <item name="android:textColor">@color/colorWhite</item>
+        <item name="recyclerViewStyle">@style/DarkGrayBackground</item>
+    </style>
+
+    <style name="WhiteBackground" parent="Theme.MaterialComponents.Light.DarkActionBar">
+        <item name="android:background">@color/colorWhite</item>
+    </style>
+
+    <style name="DarkGrayBackground" parent="Theme.MaterialComponents">
+        <item name="android:background">@color/colorDarkGray</item>
     </style>
 
     <style name="HomeButtonTheme" parent="Theme.MaterialComponents.Light">

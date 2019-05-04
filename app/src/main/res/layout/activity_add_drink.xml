@@ -37,13 +37,12 @@
                 android:background="#d1d1d1"
                 android:orientation="vertical">
 
-                <androidx.recyclerview.widget.RecyclerView
+                <com.wit.jasonfagerberg.nightsout.styleableViews.RecyclerViewStyleable
                     android:id="@+id/recycler_add_drink_recents_list"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginTop="2dp"
                     android:layout_marginBottom="2dp"
-                    android:background="@color/colorWhite"
                     android:orientation="horizontal"
                     android:paddingTop="8dp"
                     android:paddingBottom="8dp" />
@@ -79,13 +78,12 @@
                 android:background="#d1d1d1"
                 android:orientation="vertical">
 
-                <androidx.recyclerview.widget.RecyclerView
+                <com.wit.jasonfagerberg.nightsout.styleableViews.RecyclerViewStyleable
                     android:id="@+id/recycler_add_drink_favorites_list"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginTop="2dp"
                     android:layout_marginBottom="2dp"
-                    android:background="@color/colorWhite"
                     android:orientation="horizontal"
                     android:paddingTop="8dp"
                     android:paddingBottom="8dp" />
@@ -172,7 +170,6 @@
                     android:layout_alignParentEnd="true"
                     android:gravity="center"
                     android:text="@string/percent"
-                    android:textColor="@color/colorBlack"
                     android:textSize="24sp" />
 
             </RelativeLayout>
@@ -227,6 +224,7 @@
                 android:layout_below="@+id/layout_add_drink_amount"
                 android:layout_alignStart="@+id/text_add_drink_recents"
                 android:layout_marginTop="16dp"
+                android:textSize="16sp"
                 android:padding="8dp"
                 android:text="@string/multiple_alcohol_sources" />
 
@@ -240,7 +238,7 @@
                 android:theme="@style/ProfileSexButtonTheme"
                 android:visibility="invisible" />
 
-            <androidx.recyclerview.widget.RecyclerView
+            <com.wit.jasonfagerberg.nightsout.styleableViews.RecyclerViewStyleable
                 android:id="@+id/recycler_add_drink_alcohol_source_list"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="RecyclerViewStyleable">
+        <attr name="recyclerViewStyle"/>
+    </declare-styleable>
+
+    <declare-styleable name="LinearLayoutHeaderStyleable">
+        <attr name="headerStyle"/>
+    </declare-styleable>
+</resources>
