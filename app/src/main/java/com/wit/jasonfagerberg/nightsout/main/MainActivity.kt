@@ -111,9 +111,9 @@ class MainActivity : NightsOutActivity() {
     }
 
     override fun onStart() {
-        super.onStart()
         mDatabaseHelper.openDatabase()
         initData()
+        super.onStart()
     }
 
     private fun initData() {

@@ -32,6 +32,7 @@ class BacNotificationService : Service() {
     override fun onCreate() {
         // when the service is created / rerun after app closes, build notification to keep intents fresh
         // create intents for actions
+        super.onCreate()
         val refreshIntent = Intent(this, BacNotificationService::class.java)
         refreshIntent.action = Constants.ACTION.REFRESH_BAC
         val pendingRefreshIntent = PendingIntent.getService(this, 0 , refreshIntent, 0)
@@ -47,7 +48,6 @@ class BacNotificationService : Service() {
         notificationHelper.build("","", false)
 
         isStarted = isNotificationActive()
-        super.onCreate()
     }
 
     private fun isNotificationActive() : Boolean {
