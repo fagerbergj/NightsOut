@@ -76,6 +76,9 @@ class HomeFragment : Fragment() {
         setupRecycler(view!!)
         // set edit texts
         setupEditTexts(view!!)
+        // update BAC
+        updateBACText(calculateBAC())
+        showOrHideEmptyListText(view!!)
     }
 
     override fun onStart() {
@@ -85,8 +88,6 @@ class HomeFragment : Fragment() {
         view!!.findViewById<ImageButton>(R.id.btn_home_bac_info).setOnClickListener {
             bacInfoDialog.showBacInfoDialog()
         }
-        updateBACText(calculateBAC())
-        showOrHideEmptyListText(view!!)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
