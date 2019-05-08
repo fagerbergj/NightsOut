@@ -1,5 +1,6 @@
 package com.wit.jasonfagerberg.nightsout.converter
 
+import android.os.Build
 import android.util.SparseIntArray
 import com.wit.jasonfagerberg.nightsout.R
 
@@ -20,7 +21,12 @@ class Converter {
         volumeConversionMap["pints"] = 16.0
 
         appThemeToDialogTheme.put(R.style.AppTheme, R.style.AppTheme)
-        appThemeToDialogTheme.put(R.style.DarkAppTheme, android.R.style.Theme_Material_Dialog_Alert)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            appThemeToDialogTheme.put(R.style.DarkAppTheme, android.R.style.Theme_Material_Dialog_Alert)
+
+        } else {
+            appThemeToDialogTheme.put(R.style.DarkAppTheme, R.style.DarkDialog)
+        }
     }
 
     fun weightToLbs(weight: Double, weightMeasurement: String): Double {
