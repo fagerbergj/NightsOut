@@ -81,6 +81,8 @@ class NotificationHelper (private val mContext: Context, private val CHANNEL_ID:
     fun loadAndUpdate(title: String = "Calculating...", body: String = "", function: () -> Triple<String, String, Boolean>) {
         builder.setContentTitle(title)
                 .setContentText(body)
+                .setStyle(NotificationCompat.BigTextStyle()
+                        .bigText(body))
                 .setProgress(0,0, true)
 
         with(NotificationManagerCompat.from(mContext)) {
