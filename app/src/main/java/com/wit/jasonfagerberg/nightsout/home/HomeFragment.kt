@@ -126,6 +126,11 @@ class HomeFragment : Fragment() {
                 val intent = Intent(mMainActivity, NotificationsSettingActivity::class.java)
                 startActivity(intent)
             }
+            R.id.btn_toolbar_toggle_dark_mode -> {
+                mMainActivity.setPreference(activeTheme = R.style.DarkAppTheme)
+                mMainActivity.finish()
+                mMainActivity.startActivity(mMainActivity.intent)
+            }
         }
         return true
     }
@@ -191,7 +196,7 @@ class HomeFragment : Fragment() {
             minute = mMainActivity.startTimeMin % 60
         }
         val mTimePicker: TimePickerDialog
-        mTimePicker = TimePickerDialog(context!!,
+        mTimePicker = TimePickerDialog(ContextThemeWrapper(context!!, Converter().appThemeToDialogTheme[mMainActivity.activeTheme]),
                 TimePickerDialog.OnTimeSetListener { _, selectedHour, selectedMinute ->
                     startPicker.setText(mConverter.timeToString(selectedHour, selectedMinute, mMainActivity.use24HourTime))
                     mMainActivity.setPreference(startTimeMin = mConverter.militaryHoursAndMinutesToMinutes(selectedHour, selectedMinute))
@@ -225,7 +230,7 @@ class HomeFragment : Fragment() {
         }
 
         val mTimePicker: TimePickerDialog
-        mTimePicker = TimePickerDialog(context!!,
+        mTimePicker = TimePickerDialog(ContextThemeWrapper(context!!, Converter().appThemeToDialogTheme[mMainActivity.activeTheme]),
                 TimePickerDialog.OnTimeSetListener { _, selectedHour, selectedMinute ->
                     endPicker.setText(mConverter.timeToString(selectedHour, selectedMinute, mMainActivity.use24HourTime))
                     mMainActivity.setPreference(endTimeMin = mConverter.militaryHoursAndMinutesToMinutes(selectedHour, selectedMinute))

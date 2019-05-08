@@ -9,9 +9,12 @@
     <style name="DarkAppTheme" parent="Theme.MaterialComponents">
         <item name="colorPrimary">@color/colorGray</item>
         <item name="colorPrimaryDark">@color/colorDarkGray</item>
-        <item name="colorAccent">@color/colorPrimary</item>
         <item name="android:textColor">@color/colorWhite</item>
         <item name="recyclerViewStyle">@style/DarkGrayBackground</item>
+    </style>
+
+    <style name="DarkDialog" parent="Theme.MaterialComponents.Dialog">
+        <item name="colorAccent">@color/colorGray</item>
     </style>
 
     <style name="WhiteBackground" parent="Theme.MaterialComponents.Light.DarkActionBar">

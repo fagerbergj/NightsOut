@@ -59,6 +59,7 @@ class MainActivity : NightsOutActivity() {
     private var dontShowRateDialog: Boolean = false
     private var dontShowCurrentBacNotification: Boolean = false
     private var showBacNotification: Boolean = true
+    var activeTheme: Int = R.style.AppTheme
 
     // database entries as lists
     lateinit var mDatabaseHelper: DatabaseHelper
@@ -68,6 +69,7 @@ class MainActivity : NightsOutActivity() {
     var mLogHeaders: ArrayList<LogHeader> = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        setTheme(PreferenceManager.getDefaultSharedPreferences(this).getInt("activeTheme", activeTheme))
         setContentView(R.layout.activity_main)
         // bottom nav bar
         botNavBar = findViewById(R.id.bottom_navigation_view)
@@ -144,6 +146,7 @@ class MainActivity : NightsOutActivity() {
         dontShowRateDialog = preferences.getBoolean("dontShowRateDialog", false)
         dontShowCurrentBacNotification = preferences.getBoolean("dontShowCurrentBacNotification", dontShowCurrentBacNotification)
         showBacNotification = preferences.getBoolean("showCurrentBacNotification", true)
+        activeTheme = preferences.getInt("activeTheme", R.style.AppTheme)
 
         startTimeMin = Constants.getCurrentTimeInMinuets()
         endTimeMin = Constants.getCurrentTimeInMinuets()
@@ -189,7 +192,8 @@ class MainActivity : NightsOutActivity() {
                       weight : Double = this.weight, weightMeasurement : String = this.weightMeasurement,
                       endTimeMin: Int = this.endTimeMin, startTimeMin : Int = this.startTimeMin,
                       use24HourTime : Boolean = this.use24HourTime, dateInstalled : Long = this.dateInstalled,
-                      drinksAddedCount : Int = this.drinksAddedCount, dontShowRateDialog : Boolean = this.dontShowRateDialog) {
+                      drinksAddedCount : Int = this.drinksAddedCount, dontShowRateDialog : Boolean = this.dontShowRateDialog,
+                      activeTheme : Int = this.activeTheme) {
         if (!profileInit) return
 
         // set values
@@ -203,6 +207,7 @@ class MainActivity : NightsOutActivity() {
         this.dateInstalled = dateInstalled
         this.drinksAddedCount = drinksAddedCount
         this.dontShowRateDialog = dontShowRateDialog
+        this.activeTheme = activeTheme
 
         val editor = preferences.edit()
 
@@ -219,6 +224,7 @@ class MainActivity : NightsOutActivity() {
         editor.putLong("dateInstalled", dateInstalled)
         editor.putInt("drinksAddedCount", drinksAddedCount)
         editor.putBoolean("dontShowRateDialog", dontShowRateDialog)
+        editor.putInt("activeTheme", activeTheme)
 
         editor.apply()
     }

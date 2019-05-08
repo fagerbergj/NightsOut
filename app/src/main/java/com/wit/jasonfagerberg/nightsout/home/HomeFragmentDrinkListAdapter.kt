@@ -252,7 +252,7 @@ class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: Ar
         internal var name: TextView = itemView.findViewById(R.id.text_home_drink_name)
         internal var abv: TextView = itemView.findViewById(R.id.text_home_drink_abv)
         internal var amount: TextView = itemView.findViewById(R.id.text_home_drink_amount)
-        internal var foreground: RelativeLayout = itemView.findViewById(R.id.layout_foreground)
+        internal var foreground: LinearLayout = itemView.findViewById(R.id.layout_foreground)
         internal var favorited: ImageView = itemView.findViewById(R.id.image_home_drink_favored)
     }
 }

@@ -115,7 +115,7 @@ class LogFragment : Fragment() {
                     return false
                 }
                 val header = mMainActivity.mLogHeaders[index]
-                val datePicker = LogFragmentDatePicker(this, mMainActivity, Converter(), header)
+                val datePicker = LogFragmentDatePicker(this, mMainActivity, Converter(), header, mMainActivity.activeTheme)
                 datePicker.showDatePicker()
             }
         }
