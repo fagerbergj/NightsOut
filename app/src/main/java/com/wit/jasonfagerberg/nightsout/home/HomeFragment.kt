@@ -127,7 +127,11 @@ class HomeFragment : Fragment() {
                 startActivity(intent)
             }
             R.id.btn_toolbar_toggle_dark_mode -> {
-                mMainActivity.setPreference(activeTheme = R.style.DarkAppTheme)
+                if (mMainActivity.activeTheme == R.style.DarkAppTheme) {
+                    mMainActivity.setPreference(activeTheme = R.style.AppTheme)
+                } else {
+                    mMainActivity.setPreference(activeTheme = R.style.DarkAppTheme)
+                }
                 mMainActivity.finish()
                 mMainActivity.startActivity(mMainActivity.intent)
             }

@@ -87,7 +87,7 @@
 
     </RelativeLayout>
 
-    <RelativeLayout
+    <com.wit.jasonfagerberg.nightsout.styleableViews.RelativeLayoutStyleable
         android:id="@+id/layout_drink_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -96,7 +96,6 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="4dp"
         android:layout_marginEnd="8dp"
-        android:background="#d1d1d1"
         android:paddingTop="2dp"
         android:paddingBottom="2dp">
 
@@ -114,7 +113,7 @@
             android:layout_centerInParent="true"
             android:text="@string/no_drinks_yet" />
 
-    </RelativeLayout>
+    </com.wit.jasonfagerberg.nightsout.styleableViews.RelativeLayoutStyleable>
 
     <TextView
         android:id="@+id/text_home_bac_value"

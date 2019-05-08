@@ -22,11 +22,11 @@ class ManageDBActivity : NightsOutActivity() {
     lateinit var dbh: AddDrinkDatabaseHelper
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_manage_db)
         dbh = AddDrinkDatabaseHelper(this, Constants.DB_NAME, null, Constants.DB_VERSION)
         dbh.openDatabase()
         mDrinksList = dbh.getSuggestedDrinks("", true)
-        super.onCreate(savedInstanceState)
     }
 
     override fun onStart() {

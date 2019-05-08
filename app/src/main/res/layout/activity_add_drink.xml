@@ -26,7 +26,7 @@
                 android:text="@string/recents_quick_fill"
                 android:textSize="16sp" />
 
-            <RelativeLayout
+            <com.wit.jasonfagerberg.nightsout.styleableViews.RelativeLayoutStyleable
                 android:id="@+id/layout_recents_foreground"
                 android:layout_width="match_parent"
                 android:layout_height="70dp"
@@ -34,7 +34,6 @@
                 android:layout_marginLeft="16dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginRight="16dp"
-                android:background="#d1d1d1"
                 android:orientation="vertical">
 
                 <com.wit.jasonfagerberg.nightsout.styleableViews.RecyclerViewStyleable
@@ -54,7 +53,7 @@
                     android:layout_centerInParent="true"
                     android:text="@string/no_recent_drinks" />
 
-            </RelativeLayout>
+            </com.wit.jasonfagerberg.nightsout.styleableViews.RelativeLayoutStyleable>
 
             <TextView
                 android:id="@+id/text_add_drink_favorites"
@@ -67,7 +66,7 @@
                 android:text="@string/favorites_quick_fill"
                 android:textSize="16sp" />
 
-            <RelativeLayout
+            <com.wit.jasonfagerberg.nightsout.styleableViews.RelativeLayoutStyleable
                 android:id="@+id/layout_favorites_foreground"
                 android:layout_width="match_parent"
                 android:layout_height="70dp"
@@ -75,7 +74,6 @@
                 android:layout_marginLeft="16dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginRight="16dp"
-                android:background="#d1d1d1"
                 android:orientation="vertical">
 
                 <com.wit.jasonfagerberg.nightsout.styleableViews.RecyclerViewStyleable
@@ -95,7 +93,7 @@
                     android:layout_centerInParent="true"
                     android:text="@string/no_favorite_drinks" />
 
-            </RelativeLayout>
+            </com.wit.jasonfagerberg.nightsout.styleableViews.RelativeLayoutStyleable>
 
             <LinearLayout
                 android:id="@+id/layout_add_drink_name"

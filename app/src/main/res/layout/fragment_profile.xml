@@ -126,13 +126,12 @@
             app:icon="@drawable/add_white_18dp"
             app:iconGravity="start" />
 
-        <RelativeLayout
+        <com.wit.jasonfagerberg.nightsout.styleableViews.RelativeLayoutStyleable
             android:id="@+id/layout_foreground"
             android:layout_width="match_parent"
             android:layout_height="70dp"
             android:layout_below="@+id/text_profile_favorites"
             android:layout_margin="16dp"
-            android:background="#d1d1d1"
             android:orientation="vertical">
 
             <com.wit.jasonfagerberg.nightsout.styleableViews.RecyclerViewStyleable
@@ -152,7 +151,7 @@
                 android:layout_centerInParent="true"
                 android:text="@string/no_favorite_drinks" />
 
-        </RelativeLayout>
+        </com.wit.jasonfagerberg.nightsout.styleableViews.RelativeLayoutStyleable>
 
     </RelativeLayout>
     </ScrollView>

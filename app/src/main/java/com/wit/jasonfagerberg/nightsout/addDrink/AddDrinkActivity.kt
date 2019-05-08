@@ -58,6 +58,7 @@ class AddDrinkActivity : NightsOutActivity() {
     lateinit var mDatabaseHelper: AddDrinkDatabaseHelper
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_drink)
 
         toolbarSetup()
@@ -84,7 +85,6 @@ class AddDrinkActivity : NightsOutActivity() {
 
         setupComplexModeCheckbox()
         mDatabaseHelper = AddDrinkDatabaseHelper(this, Constants.DB_NAME, null, Constants.DB_VERSION)
-        super.onCreate(savedInstanceState)
     }
 
     override fun onStart() {

@@ -18,9 +18,9 @@ class NotificationsSettingActivity : NightsOutActivity() {
     private lateinit var showCurrentBacNotificationBox : CheckBox
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
         getNotificationStatus()
         setContentView(R.layout.activity_notifications_setting)
-        super.onCreate(savedInstanceState)
     }
 
     override fun onStart() {

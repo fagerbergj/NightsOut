@@ -59,7 +59,6 @@ class MainActivity : NightsOutActivity() {
     private var dontShowRateDialog: Boolean = false
     private var dontShowCurrentBacNotification: Boolean = false
     private var showBacNotification: Boolean = true
-    var activeTheme: Int = R.style.AppTheme
 
     // database entries as lists
     lateinit var mDatabaseHelper: DatabaseHelper
@@ -69,7 +68,7 @@ class MainActivity : NightsOutActivity() {
     var mLogHeaders: ArrayList<LogHeader> = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        setTheme(PreferenceManager.getDefaultSharedPreferences(this).getInt("activeTheme", activeTheme))
+        super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         // bottom nav bar
         botNavBar = findViewById(R.id.bottom_navigation_view)
@@ -104,7 +103,7 @@ class MainActivity : NightsOutActivity() {
 
         val fragmentId = savedInstanceState?.getInt("FRAGMENT_ID")
         if (fragmentId != null ) { pager.currentItem = fragmentId; pushToBackStack(fragmentId) }
-        super.onCreate(savedInstanceState)
+
     }
 
     override fun onSaveInstanceState(outState: Bundle?, outPersistentState: PersistableBundle?) {

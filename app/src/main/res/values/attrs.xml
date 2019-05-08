@@ -4,7 +4,7 @@
         <attr name="recyclerViewStyle"/>
     </declare-styleable>
 
-    <declare-styleable name="LinearLayoutHeaderStyleable">
-        <attr name="headerStyle"/>
+    <declare-styleable name="RelativeLayoutStyleable">
+        <attr name="relativeLayoutViewStyle"/>
     </declare-styleable>
 </resources>
