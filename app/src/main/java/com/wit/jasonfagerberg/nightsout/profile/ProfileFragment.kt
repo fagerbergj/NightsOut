@@ -173,7 +173,7 @@ class ProfileFragment : Fragment() {
                 lightSimpleDialog.show("Are you sure you want to clear all favorites?")
             }
         }
-        return true
+        return mMainActivity.onOptionsItemSelected(item)
     }
 
     private fun setupFavoritesRecyclerView(view: View) {

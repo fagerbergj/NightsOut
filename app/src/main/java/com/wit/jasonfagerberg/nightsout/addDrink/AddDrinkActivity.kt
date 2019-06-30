@@ -196,21 +196,19 @@ class AddDrinkActivity : NightsOutActivity() {
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         val resId = item!!.itemId
         val btnAdd = findViewById<MaterialButton>(R.id.btn_add_drink_add)
-        return when (resId) {
+        when (resId) {
             R.id.btn_toolbar_favorite -> { favoriteOptionSelected(item, btnAdd) }
             R.id.btn_clear_favorites_list -> { clearFavoritesOptionSelected() }
             R.id.btn_clear_recents_list -> { clearRecentsOptionSelected() }
             R.id.btn_toolbar_manage_db -> {
                 val intent = Intent(this, ManageDBActivity::class.java)
                 startActivity(intent)
-                true
             }
             android.R.id.home -> {
                 onBackPressed()
-                true
             }
-            else -> false
         }
+        return super.onOptionsItemSelected(item)
     }
 
     override fun onBackPressed() {

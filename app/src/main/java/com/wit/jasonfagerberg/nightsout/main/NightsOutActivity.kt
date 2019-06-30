@@ -1,21 +1,21 @@
 package com.wit.jasonfagerberg.nightsout.main
 
-import android.app.Activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.PersistableBundle
 import android.preference.PreferenceManager
 import android.view.Gravity
+import android.view.MenuItem
 import android.widget.Toast
 import com.wit.jasonfagerberg.nightsout.R
+import com.wit.jasonfagerberg.nightsout.notification.SettingActivity
 import java.util.*
 
 abstract class NightsOutActivity : AppCompatActivity() {
     val mBackStack = Stack<Int>()
-    var fragmentId = -1;
+    var fragmentId = -1
     var activeTheme: Int = R.style.AppTheme
-
 
     private var mApp: NightsOutApplication? = null
 
@@ -28,6 +28,7 @@ abstract class NightsOutActivity : AppCompatActivity() {
 
     override fun onSaveInstanceState(outState: Bundle?, outPersistentState: PersistableBundle?) {
         outState?.putInt(Constants.FRAGMENT_ID, fragmentId)
+        outState?.putIntArray(Constants.BACK_STACK, mBackStack.toIntArray())
         super.onSaveInstanceState(outState, outPersistentState)
     }
 
@@ -69,6 +70,14 @@ abstract class NightsOutActivity : AppCompatActivity() {
         newIntent.putExtra(Constants.BACK_STACK, mBackStack.toIntArray())
         newIntent.putExtra(Constants.FRAGMENT_ID, fragmentId)
         super.startActivity(newIntent)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        if (item?.itemId == R.id.btn_toolbar_settings) {
+            val intent = Intent(this, SettingActivity::class.java)
+            startActivity(intent)
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     fun showToast(message: String, isLongToast: Boolean = false) {

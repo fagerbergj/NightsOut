@@ -121,12 +121,8 @@ class HomeFragment : Fragment() {
                 val intent = Intent(mMainActivity, ManageDBActivity::class.java)
                 mMainActivity.startActivity(intent)
             }
-            R.id.btn_toolbar_settings -> {
-                val intent = Intent(mMainActivity, SettingActivity::class.java)
-                mMainActivity.startActivity(intent)
-            }
         }
-        return true
+        return mMainActivity.onOptionsItemSelected(item)
     }
 
     private fun setupRecycler(view: View) {

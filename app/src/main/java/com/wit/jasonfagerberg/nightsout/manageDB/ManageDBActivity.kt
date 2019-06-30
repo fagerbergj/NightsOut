@@ -96,7 +96,7 @@ class ManageDBActivity : NightsOutActivity() {
                 onBackPressed()
             }
         }
-        return true
+        return super.onOptionsItemSelected(item)
     }
 
     private fun deleteDrinksWithNoReference() {

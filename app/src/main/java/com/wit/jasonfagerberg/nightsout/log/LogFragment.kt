@@ -119,7 +119,7 @@ class LogFragment : Fragment() {
                 datePicker.showDatePicker()
             }
         }
-        return true
+        return mMainActivity.onOptionsItemSelected(item)
     }
 
     fun resetCalendar() {
@@ -165,7 +165,7 @@ class LogFragment : Fragment() {
     }
 
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
-        if (isVisibleToUser) setupCalendar(view!!)
+        if (isVisibleToUser && view != null) setupCalendar(view!!)
         super.setUserVisibleHint(isVisibleToUser)
     }
 

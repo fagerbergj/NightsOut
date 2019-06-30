@@ -100,6 +100,7 @@ class MainActivity : NightsOutActivity() {
                 botNavBar.menu.getItem(position).isChecked = true
                 prevMenuItem = botNavBar.menu.getItem(position)
                 pushToBackStack(position)
+                fragmentId = position
             }
         })
 

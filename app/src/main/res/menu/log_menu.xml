@@ -15,4 +15,9 @@
         android:title="@string/move_selected_log"
         app:showAsAction="never"/>
 
+    <item
+        android:id="@+id/btn_toolbar_settings"
+        android:title="@string/settings"
+        app:showAsAction="never"/>
+
 </menu>

@@ -7,6 +7,7 @@ import android.view.MenuItem
 import android.widget.CheckBox
 import android.widget.ImageButton
 import com.wit.jasonfagerberg.nightsout.R
+import com.wit.jasonfagerberg.nightsout.addDrink.AddDrinkActivity
 import com.wit.jasonfagerberg.nightsout.dialogs.SimpleDialog
 import com.wit.jasonfagerberg.nightsout.main.Constants
 import com.wit.jasonfagerberg.nightsout.main.MainActivity
@@ -93,8 +94,13 @@ class SettingActivity : NightsOutActivity() {
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when (item?.itemId) {
             android.R.id.home -> {
-                val mainActivityIntent = Intent(this,MainActivity::class.java)
-                this.startActivity(mainActivityIntent)
+                val intent = if (mBackStack.peek() == 4) {
+                    mBackStack.pop()
+                    Intent(this, AddDrinkActivity::class.java)
+                } else {
+                    Intent(this,MainActivity::class.java)
+                }
+                this.startActivity(intent)
             }
         }
         return true
