@@ -22,13 +22,8 @@
         app:showAsAction="never"/>
 
     <item
-        android:id="@+id/btn_toolbar_toggle_dark_mode"
-        android:title="Toggle Dark Mode"
-        app:showAsAction="never"/>
-
-    <item
-        android:id="@+id/btn_toolbar_notification_settings"
-        android:title="@string/notification_settings"
+        android:id="@+id/btn_toolbar_settings"
+        android:title="@string/settings"
         app:showAsAction="never"/>
 
     <item

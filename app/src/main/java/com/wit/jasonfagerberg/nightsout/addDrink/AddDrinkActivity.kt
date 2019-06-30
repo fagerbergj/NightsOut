@@ -218,9 +218,7 @@ class AddDrinkActivity : NightsOutActivity() {
         // make sure source fragment is shown when going back to main activity
         // if you can unfavorite, add drink ws brought up from the home fragment
         // if not it was brought up by the profile fragment
-        if (canUnfavorite) intent.putExtra("FRAGMENT_ID", 0)
-        else intent.putExtra("FRAGMENT_ID", 2)
-        intent.putExtra("BACK_STACK", mBackStack.toIntArray())
+        fragmentId = if (canUnfavorite) 0 else 2
         startActivity(intent)
     }
 
@@ -399,9 +397,7 @@ class AddDrinkActivity : NightsOutActivity() {
         complexMode = false
         findViewById<CheckBox>(R.id.chkBox_complexDrink).isChecked = false
         val intent = Intent(this, MainActivity::class.java)
-        if (canUnfavorite) intent.putExtra("FRAGMENT_ID", 0)
-        else intent.putExtra("FRAGMENT_ID", 2)
-        intent.putExtra("BACK_STACK", mBackStack.toIntArray())
+        fragmentId = if (canUnfavorite) 0 else 2
         intent.putExtra("drinkAdded", true)
         startActivity(intent)
     }

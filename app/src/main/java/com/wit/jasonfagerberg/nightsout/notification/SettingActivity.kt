@@ -9,18 +9,21 @@ import android.widget.ImageButton
 import com.wit.jasonfagerberg.nightsout.R
 import com.wit.jasonfagerberg.nightsout.dialogs.SimpleDialog
 import com.wit.jasonfagerberg.nightsout.main.Constants
+import com.wit.jasonfagerberg.nightsout.main.MainActivity
 import com.wit.jasonfagerberg.nightsout.main.NightsOutActivity
+import java.util.*
 
-class NotificationsSettingActivity : NightsOutActivity() {
+class SettingActivity : NightsOutActivity() {
 
     private var showCurrentBacNotification: Boolean = true
 
     private lateinit var showCurrentBacNotificationBox : CheckBox
+    private lateinit var darkThemeBox : CheckBox
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         getNotificationStatus()
-        setContentView(R.layout.activity_notifications_setting)
+        setContentView(R.layout.activity_setting)
     }
 
     override fun onStart() {
@@ -30,7 +33,7 @@ class NotificationsSettingActivity : NightsOutActivity() {
     }
 
     private fun setupToolbar() {
-        supportActionBar?.title = getString(R.string.notification_settings)
+        supportActionBar?.title = getString(R.string.settings)
         // adds back button to action bar
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
@@ -41,7 +44,7 @@ class NotificationsSettingActivity : NightsOutActivity() {
         showCurrentBacNotificationBox = findViewById(R.id.checkbox_show_current_bac_notification)
         showCurrentBacNotificationBox.isChecked = showCurrentBacNotification
         showCurrentBacNotificationBox.setOnClickListener {
-            setNotificationStatus(showCurrentBacNotification = showCurrentBacNotificationBox.isChecked)
+            setSetting(showCurrentBacNotification = showCurrentBacNotificationBox.isChecked)
         }
         findViewById<ImageButton>(R.id.btn_current_bac_notification_info).setOnClickListener {
             val dialog = SimpleDialog(this, layoutInflater)
@@ -60,6 +63,18 @@ class NotificationsSettingActivity : NightsOutActivity() {
             dialog.setNegativeButtonText(getString(R.string.dismiss))
             dialog.setNegativeFunction()
         }
+
+        darkThemeBox = findViewById(R.id.checkbox_dark_mode)
+        darkThemeBox.isChecked = this.activeTheme == R.style.DarkAppTheme
+        darkThemeBox.setOnClickListener {
+            if (this.activeTheme == R.style.DarkAppTheme) {
+                this.setSetting(activeTheme = R.style.AppTheme)
+            } else {
+                this.setSetting(activeTheme = R.style.DarkAppTheme)
+            }
+            this.finish()
+            this.startActivity(this.intent)
+        }
     }
 
     private fun getNotificationStatus() {
@@ -68,16 +83,18 @@ class NotificationsSettingActivity : NightsOutActivity() {
     }
 
 
-    private fun setNotificationStatus(showCurrentBacNotification : Boolean = true) {
+    private fun setSetting(showCurrentBacNotification : Boolean = true, activeTheme : Int = this.activeTheme) {
         val edit = PreferenceManager.getDefaultSharedPreferences(this).edit()
         edit.putBoolean("showCurrentBacNotification", showCurrentBacNotification)
+        edit.putInt("activeTheme", activeTheme)
         edit.apply()
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when (item?.itemId) {
             android.R.id.home -> {
-                onBackPressed()
+                val mainActivityIntent = Intent(this,MainActivity::class.java)
+                this.startActivity(mainActivityIntent)
             }
         }
         return true

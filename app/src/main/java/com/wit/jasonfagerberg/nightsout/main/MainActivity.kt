@@ -8,6 +8,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.PersistableBundle
 import android.preference.PreferenceManager
+import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.widget.RelativeLayout
@@ -26,6 +27,7 @@ import com.wit.jasonfagerberg.nightsout.log.LogFragment
 import com.wit.jasonfagerberg.nightsout.log.LogHeader
 import com.wit.jasonfagerberg.nightsout.notification.BacNotificationService
 import com.wit.jasonfagerberg.nightsout.profile.ProfileFragment
+import java.lang.Exception
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -107,7 +109,7 @@ class MainActivity : NightsOutActivity() {
     }
 
     override fun onSaveInstanceState(outState: Bundle?, outPersistentState: PersistableBundle?) {
-        outState?.putInt("FRAGMENT_ID", pager.currentItem)
+        fragmentId = pager.currentItem
         super.onSaveInstanceState(outState, outPersistentState)
     }
 
@@ -122,7 +124,7 @@ class MainActivity : NightsOutActivity() {
         if (intent.getBooleanExtra("drinkAdded", false)) setPreference(drinksAddedCount = drinksAddedCount + 1)
         showPleaseRateDialog()
 
-        val fragmentId = intent.getIntExtra("FRAGMENT_ID", -1)
+        val fragmentId = intent.getIntExtra(Constants.FRAGMENT_ID, -1)
 
         if (!profileInit || fragmentId == 2) {
             pager.currentItem = 2
@@ -160,11 +162,6 @@ class MainActivity : NightsOutActivity() {
             use24HourTime = preferences.getBoolean("homeUse24HourTime", use24HourTime)
             startTimeMin = preferences.getInt("homeStartTimeMin", startTimeMin)
             endTimeMin = preferences.getInt("homeEndTimeMin", endTimeMin)
-        }
-
-        val fragmentArray = intent.getIntArrayExtra("BACK_STACK")
-        if (fragmentArray != null) {
-            for (frag in fragmentArray) pushToBackStack(frag)
         }
 
         if (drinksAddedCount > 10000) setPreference(drinksAddedCount = 10)
@@ -268,13 +265,11 @@ class MainActivity : NightsOutActivity() {
         if (!showBacNotification) return
         val startIntent = Intent(this, BacNotificationService::class.java)
         startIntent.action = action
-        startService(startIntent)
-    }
-
-    fun pushToBackStack(i: Int){
-        mBackStack.push(i)
-        if(mBackStack.size >= Constants.MAX_BACK_STACK_SIZE) {
-            mBackStack.removeAt(0)
+        // todo figure out why this causes illegal state exceptions
+        try {
+            startService(startIntent)
+        } catch (e : Exception) {
+            Log.e("MainActivity", e.stackTrace.toString())
         }
     }
 
@@ -285,8 +280,6 @@ class MainActivity : NightsOutActivity() {
             mBackStack.peek() == 4 -> {
                 mBackStack.pop()
                 val intent = Intent(this, AddDrinkActivity::class.java)
-                intent.putExtra("FRAGMENT_ID", pager.currentItem)
-                intent.putExtra("BACK_STACK", mBackStack.toIntArray())
                 startActivity(intent)
             }
             else -> alertUserBeforeNavigation(null)

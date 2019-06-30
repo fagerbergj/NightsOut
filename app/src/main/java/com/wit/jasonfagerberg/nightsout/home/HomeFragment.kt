@@ -25,7 +25,7 @@ import com.wit.jasonfagerberg.nightsout.dialogs.SimpleDialog
 import com.wit.jasonfagerberg.nightsout.main.Constants
 import com.wit.jasonfagerberg.nightsout.main.MainActivity
 import com.wit.jasonfagerberg.nightsout.manageDB.ManageDBActivity
-import com.wit.jasonfagerberg.nightsout.notification.NotificationsSettingActivity
+import com.wit.jasonfagerberg.nightsout.notification.SettingActivity
 import java.util.*
 
 // private const val TAG = "HomeFragment"
@@ -61,8 +61,7 @@ class HomeFragment : Fragment() {
             intent.putExtra("CAN_UNFAVORITE", true)
             intent.putExtra("FAVORITED", false)
             mMainActivity.pushToBackStack(4)
-            intent.putExtra("BACK_STACK", mMainActivity.mBackStack.toIntArray())
-            startActivity(intent)
+            mMainActivity.startActivity(intent)
         }
         setHasOptionsMenu(true)
 
@@ -120,20 +119,11 @@ class HomeFragment : Fragment() {
             }
             R.id.btn_toolbar_manage_db -> {
                 val intent = Intent(mMainActivity, ManageDBActivity::class.java)
-                startActivity(intent)
+                mMainActivity.startActivity(intent)
             }
-            R.id.btn_toolbar_notification_settings -> {
-                val intent = Intent(mMainActivity, NotificationsSettingActivity::class.java)
-                startActivity(intent)
-            }
-            R.id.btn_toolbar_toggle_dark_mode -> {
-                if (mMainActivity.activeTheme == R.style.DarkAppTheme) {
-                    mMainActivity.setPreference(activeTheme = R.style.AppTheme)
-                } else {
-                    mMainActivity.setPreference(activeTheme = R.style.DarkAppTheme)
-                }
-                mMainActivity.finish()
-                mMainActivity.startActivity(mMainActivity.intent)
+            R.id.btn_toolbar_settings -> {
+                val intent = Intent(mMainActivity, SettingActivity::class.java)
+                mMainActivity.startActivity(intent)
             }
         }
         return true

@@ -5,6 +5,8 @@ import java.util.*
 
 class Constants {
     companion object {
+        const val BACK_STACK = "BACK_STACK"
+        const val FRAGMENT_ID = "FRAGMENT_ID"
         const val DB_NAME = "nights_out_db.db"
         const val DB_VERSION = 40
         const val MAX_BACK_STACK_SIZE = 10

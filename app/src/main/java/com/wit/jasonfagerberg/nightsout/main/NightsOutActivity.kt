@@ -1,16 +1,19 @@
 package com.wit.jasonfagerberg.nightsout.main
 
+import android.app.Activity
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.PersistableBundle
 import android.preference.PreferenceManager
 import android.view.Gravity
 import android.widget.Toast
 import com.wit.jasonfagerberg.nightsout.R
 import java.util.*
 
-
 abstract class NightsOutActivity : AppCompatActivity() {
     val mBackStack = Stack<Int>()
+    var fragmentId = -1;
     var activeTheme: Int = R.style.AppTheme
 
 
@@ -23,9 +26,27 @@ abstract class NightsOutActivity : AppCompatActivity() {
         mApp = this.applicationContext as NightsOutApplication
     }
 
+    override fun onSaveInstanceState(outState: Bundle?, outPersistentState: PersistableBundle?) {
+        outState?.putInt(Constants.FRAGMENT_ID, fragmentId)
+        super.onSaveInstanceState(outState, outPersistentState)
+    }
+
     override fun onResume() {
         super.onResume()
         mApp!!.mCurrentActivity = this
+        if (intent.getIntArrayExtra(Constants.BACK_STACK) != null) {
+            for (entry in intent.getIntArrayExtra(Constants.BACK_STACK)) {
+                pushToBackStack(entry)
+            }
+        }
+        fragmentId = intent.getIntExtra(Constants.FRAGMENT_ID, -1)
+    }
+
+    fun pushToBackStack(i: Int){
+        mBackStack.push(i)
+        if(mBackStack.size >= Constants.MAX_BACK_STACK_SIZE) {
+            mBackStack.removeAt(0)
+        }
     }
 
     override fun onPause() {
@@ -42,6 +63,12 @@ abstract class NightsOutActivity : AppCompatActivity() {
         val currActivity = mApp!!.mCurrentActivity
         if (this == currActivity)
             mApp!!.mCurrentActivity = null
+    }
+
+    override fun startActivity(newIntent: Intent) {
+        newIntent.putExtra(Constants.BACK_STACK, mBackStack.toIntArray())
+        newIntent.putExtra(Constants.FRAGMENT_ID, fragmentId)
+        super.startActivity(newIntent)
     }
 
     fun showToast(message: String, isLongToast: Boolean = false) {
