@@ -110,17 +110,17 @@ class BacNotificationService : Service() {
 
     private fun getPreferencesData() {
         val preferences = PreferenceManager.getDefaultSharedPreferences(this)
-        startTime = preferences.getInt("homeStartTimeMin", 0)
-        endTime = preferences.getInt("homeEndTimeMin", 0)
-        use24HourTime = preferences.getBoolean("homeUse24HourTime", false)
-        sex = preferences.getBoolean("profileSex", true)
-        weight = preferences.getFloat("profileWeight", 0.toFloat()).toDouble()
-        weightMeasurement = preferences.getString("profileWeightMeasurement", "oz")!!
+        startTime = preferences.getInt(Constants.SHARED_PREFERENCE.START_TIME, 0)
+        endTime = preferences.getInt(Constants.SHARED_PREFERENCE.END_TIME, 0)
+        use24HourTime = preferences.getBoolean(Constants.SHARED_PREFERENCE.USE_24_HOUR_TIME, false)
+        sex = preferences.getBoolean(Constants.SHARED_PREFERENCE.PROFILE_SEX, true)
+        weight = preferences.getFloat(Constants.SHARED_PREFERENCE.PROFILE_WEIGHT, 0.toFloat()).toDouble()
+        weightMeasurement = preferences.getString(Constants.SHARED_PREFERENCE.PROFILE_WEIGHT_MEASUREMENT, "oz")!!
     }
 
     private fun saveEndTime() {
         val editor = PreferenceManager.getDefaultSharedPreferences(this).edit()
-        editor.putInt("homeEndTimeMin", endTime)
+        editor.putInt(Constants.SHARED_PREFERENCE.END_TIME, endTime)
         editor.apply()
     }
 

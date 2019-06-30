@@ -45,4 +45,21 @@ class Constants {
             const val BAC = "com.wit.jasonfagerberg.nightsout.channel.BAC"
         }
     }
+
+    interface SHARED_PREFERENCE {
+        companion object {
+            const val PROFILE_INIT = "profileInit"
+            const val DATE_INSTALLED = "dateInstalled"
+            const val DRINKS_ADDED_COUNT = "drinksAddedCount"
+            const val DONT_SHOW_RATE_DIALOG = "dontShowRateDialog"
+            const val DONT_SHOW_BAC_NOTIFICATION = "dontShowCurrentBacNotification"
+            const val ACTIVE_THEME = "activeTheme"
+            const val PROFILE_SEX = "profileSex"
+            const val PROFILE_WEIGHT = "profileWeight"
+            const val PROFILE_WEIGHT_MEASUREMENT = "profileWeightMeasurement"
+            const val USE_24_HOUR_TIME = "homeUse24HourTime"
+            const val START_TIME = "homeStartTimeMin"
+            const val END_TIME = "homeEndTimeMin"
+        }
+    }
 }

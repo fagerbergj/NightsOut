@@ -142,27 +142,26 @@ class MainActivity : NightsOutActivity() {
 
     private fun getDataFromStorage() {
         preferences = PreferenceManager.getDefaultSharedPreferences(this)
-        profileInit = preferences.getBoolean("profileInit", false)
-        dateInstalled = preferences.getLong("dateInstalled", System.currentTimeMillis())
-        drinksAddedCount = preferences.getInt("drinksAddedCount", 0)
-        dontShowRateDialog = preferences.getBoolean("dontShowRateDialog", false)
-        dontShowCurrentBacNotification = preferences.getBoolean("dontShowCurrentBacNotification", dontShowCurrentBacNotification)
-        showBacNotification = preferences.getBoolean("showCurrentBacNotification", true)
-        activeTheme = preferences.getInt("activeTheme", R.style.AppTheme)
+        profileInit = preferences.getBoolean(Constants.SHARED_PREFERENCE.PROFILE_INIT, false)
+        dateInstalled = preferences.getLong(Constants.SHARED_PREFERENCE.DATE_INSTALLED, System.currentTimeMillis())
+        drinksAddedCount = preferences.getInt(Constants.SHARED_PREFERENCE.DRINKS_ADDED_COUNT, 0)
+        dontShowRateDialog = preferences.getBoolean(Constants.SHARED_PREFERENCE.DONT_SHOW_RATE_DIALOG, false)
+        dontShowCurrentBacNotification = preferences.getBoolean(Constants.SHARED_PREFERENCE.DONT_SHOW_BAC_NOTIFICATION, dontShowCurrentBacNotification)
+        activeTheme = preferences.getInt(Constants.SHARED_PREFERENCE.ACTIVE_THEME, R.style.AppTheme)
 
         startTimeMin = Constants.getCurrentTimeInMinuets()
         endTimeMin = Constants.getCurrentTimeInMinuets()
         if (profileInit) {
             sex = true
-            sex = preferences.getBoolean("profileSex", sex!!)
+            sex = preferences.getBoolean(Constants.SHARED_PREFERENCE.PROFILE_SEX, sex!!)
             var weightFloat: Float = 0.toFloat()
-            weightFloat = preferences.getFloat("profileWeight", weightFloat)
+            weightFloat = preferences.getFloat(Constants.SHARED_PREFERENCE.PROFILE_WEIGHT, weightFloat)
             weight = weightFloat.toDouble()
-            weightMeasurement = preferences.getString("profileWeightMeasurement", weightMeasurement)!!
+            weightMeasurement = preferences.getString(Constants.SHARED_PREFERENCE.PROFILE_WEIGHT_MEASUREMENT, weightMeasurement)!!
 
-            use24HourTime = preferences.getBoolean("homeUse24HourTime", use24HourTime)
-            startTimeMin = preferences.getInt("homeStartTimeMin", startTimeMin)
-            endTimeMin = preferences.getInt("homeEndTimeMin", endTimeMin)
+            use24HourTime = preferences.getBoolean(Constants.SHARED_PREFERENCE.USE_24_HOUR_TIME, use24HourTime)
+            startTimeMin = preferences.getInt(Constants.SHARED_PREFERENCE.START_TIME, startTimeMin)
+            endTimeMin = preferences.getInt(Constants.SHARED_PREFERENCE.END_TIME, endTimeMin)
         }
 
         if (drinksAddedCount > 10000) setPreference(drinksAddedCount = 10)
@@ -208,20 +207,20 @@ class MainActivity : NightsOutActivity() {
 
         val editor = preferences.edit()
 
-        editor.putBoolean("profileInit", true)
-        if (sex != null) editor.putBoolean("profileSex", sex)
+        editor.putBoolean(Constants.SHARED_PREFERENCE.PROFILE_INIT, true)
+        if (sex != null) editor.putBoolean(Constants.SHARED_PREFERENCE.PROFILE_SEX, sex)
 
-        editor.putFloat("profileWeight", weight.toFloat())
-        editor.putString("profileWeightMeasurement", weightMeasurement)
+        editor.putFloat(Constants.SHARED_PREFERENCE.PROFILE_WEIGHT, weight.toFloat())
+        editor.putString(Constants.SHARED_PREFERENCE.PROFILE_WEIGHT_MEASUREMENT, weightMeasurement)
 
-        editor.putInt("homeStartTimeMin", startTimeMin)
-        editor.putInt("homeEndTimeMin", endTimeMin)
-        editor.putBoolean("homeUse24HourTime", use24HourTime)
+        editor.putInt(Constants.SHARED_PREFERENCE.START_TIME, startTimeMin)
+        editor.putInt(Constants.SHARED_PREFERENCE.END_TIME, endTimeMin)
+        editor.putBoolean(Constants.SHARED_PREFERENCE.USE_24_HOUR_TIME, use24HourTime)
 
-        editor.putLong("dateInstalled", dateInstalled)
-        editor.putInt("drinksAddedCount", drinksAddedCount)
-        editor.putBoolean("dontShowRateDialog", dontShowRateDialog)
-        editor.putInt("activeTheme", activeTheme)
+        editor.putLong(Constants.SHARED_PREFERENCE.DATE_INSTALLED, dateInstalled)
+        editor.putInt(Constants.SHARED_PREFERENCE.DRINKS_ADDED_COUNT, drinksAddedCount)
+        editor.putBoolean(Constants.SHARED_PREFERENCE.DONT_SHOW_RATE_DIALOG, dontShowRateDialog)
+        editor.putInt(Constants.SHARED_PREFERENCE.ACTIVE_THEME, activeTheme)
 
         editor.apply()
     }
@@ -271,6 +270,7 @@ class MainActivity : NightsOutActivity() {
             startService(startIntent)
         } catch (e : Exception) {
             Log.e("MainActivity", e.stackTrace.toString())
+            throw e
         }
     }
 
