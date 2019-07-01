@@ -1,6 +1,6 @@
 package com.wit.jasonfagerberg.nightsout.databaseHelper
 
-import com.wit.jasonfagerberg.nightsout.main.Drink
+import com.wit.jasonfagerberg.nightsout.models.Drink
 import com.wit.jasonfagerberg.nightsout.main.MainActivity
 import java.util.UUID
 

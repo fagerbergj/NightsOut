@@ -3,8 +3,10 @@ package com.wit.jasonfagerberg.nightsout.dialogs
 import android.content.Context
 import android.content.DialogInterface
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
+import com.wit.jasonfagerberg.nightsout.R
 
-class LightSimpleDialog(context: Context) {
+class LightSimpleDialog(val context: Context) {
     private var dialogClickListener = DialogInterface.OnClickListener { _, _ -> }
     private var builder = AlertDialog.Builder(context)
     private var showNeutralButton = false
@@ -14,7 +16,10 @@ class LightSimpleDialog(context: Context) {
         builder.setPositiveButton(posText, dialogClickListener)
         builder.setNegativeButton(negText, dialogClickListener)
         if (showNeutralButton) builder.setNeutralButton(neuText, dialogClickListener)
-        builder.show()
+        val dialog = builder.show()
+        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(ContextCompat.getColor(context, R.color.colorPrimaryDark))
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(ContextCompat.getColor(context, R.color.colorPrimaryDark))
+        dialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(ContextCompat.getColor(context, R.color.colorPrimaryDark))
     }
 
     fun setActions(posAction: () -> Unit, negAction: () -> Unit, neuAction: () -> Unit = {}) {

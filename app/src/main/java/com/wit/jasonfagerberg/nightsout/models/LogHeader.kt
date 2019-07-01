@@ -1,4 +1,4 @@
-package com.wit.jasonfagerberg.nightsout.log
+package com.wit.jasonfagerberg.nightsout.models
 
 // import android.util.Log
 import com.wit.jasonfagerberg.nightsout.converter.Converter

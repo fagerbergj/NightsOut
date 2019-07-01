@@ -9,6 +9,7 @@ import android.view.Gravity
 import android.view.MenuItem
 import android.widget.Toast
 import com.wit.jasonfagerberg.nightsout.R
+import com.wit.jasonfagerberg.nightsout.constants.Constants
 import com.wit.jasonfagerberg.nightsout.settings.SettingActivity
 import java.util.*
 

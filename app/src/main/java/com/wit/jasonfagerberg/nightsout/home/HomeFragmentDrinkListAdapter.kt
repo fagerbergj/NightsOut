@@ -11,8 +11,8 @@ import androidx.core.content.ContextCompat
 import com.google.android.material.snackbar.Snackbar
 import com.wit.jasonfagerberg.nightsout.R
 import com.wit.jasonfagerberg.nightsout.dialogs.EditDrinkDialog
-import com.wit.jasonfagerberg.nightsout.main.Constants
-import com.wit.jasonfagerberg.nightsout.main.Drink
+import com.wit.jasonfagerberg.nightsout.constants.Constants
+import com.wit.jasonfagerberg.nightsout.models.Drink
 import com.wit.jasonfagerberg.nightsout.main.MainActivity
 
 class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: ArrayList<Drink>) :
@@ -196,12 +196,12 @@ class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: Ar
     }
 
     private fun onDialogEditClick(
-        drink: Drink,
-        editName: EditText,
-        editABV: EditText,
-        editAmount: EditText,
-        dropdown: Spinner,
-        position: Int
+            drink: Drink,
+            editName: EditText,
+            editABV: EditText,
+            editAmount: EditText,
+            dropdown: Spinner,
+            position: Int
     ) {
         val other = Drink(drink.id, drink.name, drink.abv, drink.amount, drink.measurement,
                 false, false, Constants.getLongTimeNow())

@@ -1,4 +1,4 @@
-package com.wit.jasonfagerberg.nightsout.main
+package com.wit.jasonfagerberg.nightsout.constants
 
 import com.wit.jasonfagerberg.nightsout.converter.Converter
 import java.util.*
