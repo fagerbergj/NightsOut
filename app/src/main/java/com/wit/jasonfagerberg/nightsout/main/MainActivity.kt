@@ -147,6 +147,7 @@ class MainActivity : NightsOutActivity() {
         drinksAddedCount = preferences.getInt(Constants.SHARED_PREFERENCE.DRINKS_ADDED_COUNT, 0)
         dontShowRateDialog = preferences.getBoolean(Constants.SHARED_PREFERENCE.DONT_SHOW_RATE_DIALOG, false)
         dontShowCurrentBacNotification = preferences.getBoolean(Constants.SHARED_PREFERENCE.DONT_SHOW_BAC_NOTIFICATION, dontShowCurrentBacNotification)
+        showBacNotification = preferences.getBoolean(Constants.SHARED_PREFERENCE.SHOW_BAC_NOTIFICATION, true)
         activeTheme = preferences.getInt(Constants.SHARED_PREFERENCE.ACTIVE_THEME, R.style.AppTheme)
 
         startTimeMin = Constants.getCurrentTimeInMinuets()
@@ -270,7 +271,6 @@ class MainActivity : NightsOutActivity() {
             startService(startIntent)
         } catch (e : Exception) {
             Log.e("MainActivity", e.stackTrace.toString())
-            throw e
         }
     }
 

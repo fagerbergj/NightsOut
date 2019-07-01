@@ -53,6 +53,7 @@ class Constants {
             const val DRINKS_ADDED_COUNT = "drinksAddedCount"
             const val DONT_SHOW_RATE_DIALOG = "dontShowRateDialog"
             const val DONT_SHOW_BAC_NOTIFICATION = "dontShowCurrentBacNotification"
+            const val SHOW_BAC_NOTIFICATION = "showCurrentBacNotification"
             const val ACTIVE_THEME = "activeTheme"
             const val PROFILE_SEX = "profileSex"
             const val PROFILE_WEIGHT = "profileWeight"

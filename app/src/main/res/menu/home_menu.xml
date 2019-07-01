@@ -17,11 +17,6 @@
         app:showAsAction="never" />
 
     <item
-        android:id="@+id/btn_toolbar_toggle_time_display"
-        android:title="@string/empty"
-        app:showAsAction="never"/>
-
-    <item
         android:id="@+id/btn_toolbar_settings"
         android:title="@string/settings"
         app:showAsAction="never"/>

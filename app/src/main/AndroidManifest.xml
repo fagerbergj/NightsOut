@@ -13,7 +13,7 @@
         android:windowSoftInputMode="adjustResize|stateHidden"
         tools:ignore="GoogleAppIndexingWarning"
         android:name=".main.NightsOutApplication">
-        <activity android:name=".notification.SettingActivity" />
+        <activity android:name=".settings.SettingActivity" />
         <activity
             android:name=".main.MainActivity"
             android:configChanges="orientation|keyboardHidden"

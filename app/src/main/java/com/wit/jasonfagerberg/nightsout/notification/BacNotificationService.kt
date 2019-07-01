@@ -103,6 +103,7 @@ class BacNotificationService : Service() {
     }
 
     private fun updateNotification() {
+        getPreferencesData()
         notificationHelper.updateOrShow("BAC: ${"%.3f".format(calculateBAC())}",
                 "${mConverter.timeToString(startTime/60, startTime%60, use24HourTime)} - " +
                         mConverter.timeToString(endTime/60, endTime%60, use24HourTime), false)

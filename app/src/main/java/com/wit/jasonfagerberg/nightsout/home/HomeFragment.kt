@@ -25,7 +25,6 @@ import com.wit.jasonfagerberg.nightsout.dialogs.SimpleDialog
 import com.wit.jasonfagerberg.nightsout.main.Constants
 import com.wit.jasonfagerberg.nightsout.main.MainActivity
 import com.wit.jasonfagerberg.nightsout.manageDB.ManageDBActivity
-import com.wit.jasonfagerberg.nightsout.notification.SettingActivity
 import java.util.*
 
 // private const val TAG = "HomeFragment"
@@ -92,9 +91,6 @@ class HomeFragment : Fragment() {
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
         mMainActivity.supportActionBar?.title = "Home"
         inflater!!.inflate(R.menu.home_menu, menu)
-        menu?.getItem(3)?.title = if (mMainActivity.use24HourTime) {
-            "Use 12 Hour Time"
-        } else "Use 24 Hour Time"
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
@@ -113,10 +109,6 @@ class HomeFragment : Fragment() {
                 lightSimpleDialog.show("Are you sure you want to clear all drinks?")
             }
             R.id.btn_disclaimer -> showDisclaimerDialog()
-            R.id.btn_toolbar_toggle_time_display -> {
-                mMainActivity.setPreference(use24HourTime = !mMainActivity.use24HourTime)
-                setupEditTexts(view!!)
-            }
             R.id.btn_toolbar_manage_db -> {
                 val intent = Intent(mMainActivity, ManageDBActivity::class.java)
                 mMainActivity.startActivity(intent)

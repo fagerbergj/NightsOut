@@ -1,4 +1,4 @@
-package com.wit.jasonfagerberg.nightsout.notification
+package com.wit.jasonfagerberg.nightsout.settings
 
 import android.content.Intent
 import android.os.Bundle
@@ -12,14 +12,16 @@ import com.wit.jasonfagerberg.nightsout.dialogs.SimpleDialog
 import com.wit.jasonfagerberg.nightsout.main.Constants
 import com.wit.jasonfagerberg.nightsout.main.MainActivity
 import com.wit.jasonfagerberg.nightsout.main.NightsOutActivity
-import java.util.*
+import com.wit.jasonfagerberg.nightsout.notification.BacNotificationService
 
 class SettingActivity : NightsOutActivity() {
 
     private var showCurrentBacNotification: Boolean = true
+    private var use24HourTime = false
 
     private lateinit var showCurrentBacNotificationBox : CheckBox
     private lateinit var darkThemeBox : CheckBox
+    private lateinit var use24HourBox : CheckBox
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -76,33 +78,49 @@ class SettingActivity : NightsOutActivity() {
             this.finish()
             this.startActivity(this.intent)
         }
+
+        use24HourBox = findViewById(R.id.checkbox_use_24_hour)
+        use24HourBox.isChecked = this.use24HourTime
+        use24HourBox.setOnClickListener {
+            use24HourTime = !use24HourTime
+            this.setSetting(use24HourTime = use24HourTime)
+            val startIntent = Intent(this, BacNotificationService::class.java)
+            startIntent.action = Constants.ACTION.UPDATE_NOTIFICATION
+            startService(startIntent)
+        }
     }
 
     private fun getNotificationStatus() {
         val pref = PreferenceManager.getDefaultSharedPreferences(this)
-        showCurrentBacNotification = pref.getBoolean("showCurrentBacNotification", true)
+        showCurrentBacNotification = pref.getBoolean(Constants.SHARED_PREFERENCE.SHOW_BAC_NOTIFICATION, true)
+        use24HourTime = pref.getBoolean(Constants.SHARED_PREFERENCE.USE_24_HOUR_TIME, false)
     }
 
 
-    private fun setSetting(showCurrentBacNotification : Boolean = true, activeTheme : Int = this.activeTheme) {
+    private fun setSetting(showCurrentBacNotification : Boolean = true, activeTheme : Int = this.activeTheme, use24HourTime : Boolean = false) {
         val edit = PreferenceManager.getDefaultSharedPreferences(this).edit()
-        edit.putBoolean("showCurrentBacNotification", showCurrentBacNotification)
-        edit.putInt("activeTheme", activeTheme)
+        edit.putBoolean(Constants.SHARED_PREFERENCE.SHOW_BAC_NOTIFICATION, showCurrentBacNotification)
+        edit.putInt(Constants.SHARED_PREFERENCE.ACTIVE_THEME, activeTheme)
+        edit.putBoolean(Constants.SHARED_PREFERENCE.USE_24_HOUR_TIME, use24HourTime)
         edit.apply()
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when (item?.itemId) {
             android.R.id.home -> {
-                val intent = if (mBackStack.peek() == 4) {
-                    mBackStack.pop()
-                    Intent(this, AddDrinkActivity::class.java)
-                } else {
-                    Intent(this,MainActivity::class.java)
-                }
-                this.startActivity(intent)
+                onBackPressed()
             }
         }
         return true
+    }
+
+    override fun onBackPressed() {
+        val intent = if (mBackStack.peek() == 4) {
+            mBackStack.pop()
+            Intent(this, AddDrinkActivity::class.java)
+        } else {
+            Intent(this,MainActivity::class.java)
+        }
+        this.startActivity(intent)
     }
 }

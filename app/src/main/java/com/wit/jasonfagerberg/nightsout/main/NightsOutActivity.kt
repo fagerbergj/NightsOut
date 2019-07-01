@@ -9,7 +9,7 @@ import android.view.Gravity
 import android.view.MenuItem
 import android.widget.Toast
 import com.wit.jasonfagerberg.nightsout.R
-import com.wit.jasonfagerberg.nightsout.notification.SettingActivity
+import com.wit.jasonfagerberg.nightsout.settings.SettingActivity
 import java.util.*
 
 abstract class NightsOutActivity : AppCompatActivity() {
@@ -66,9 +66,14 @@ abstract class NightsOutActivity : AppCompatActivity() {
             mApp!!.mCurrentActivity = null
     }
 
-    override fun startActivity(newIntent: Intent) {
-        newIntent.putExtra(Constants.BACK_STACK, mBackStack.toIntArray())
-        newIntent.putExtra(Constants.FRAGMENT_ID, fragmentId)
+    override fun startActivity(newIntent: Intent?) {
+        // this happens on notification intents, just pass it along
+        if (intent == null) {
+            super.startActivity(intent)
+            return
+        }
+        newIntent?.putExtra(Constants.BACK_STACK, mBackStack.toIntArray())
+        newIntent?.putExtra(Constants.FRAGMENT_ID, fragmentId)
         super.startActivity(newIntent)
     }
 
