@@ -10,7 +10,7 @@ import android.view.MenuItem
 import android.widget.Toast
 import com.wit.jasonfagerberg.nightsout.R
 import com.wit.jasonfagerberg.nightsout.constants.Constants
-import com.wit.jasonfagerberg.nightsout.settings.SettingActivity
+import com.wit.jasonfagerberg.nightsout.settings.SettingsActivity
 import java.util.*
 
 abstract class NightsOutActivity : AppCompatActivity() {
@@ -80,7 +80,7 @@ abstract class NightsOutActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         if (item?.itemId == R.id.btn_toolbar_settings) {
-            val intent = Intent(this, SettingActivity::class.java)
+            val intent = Intent(this, SettingsActivity::class.java)
             startActivity(intent)
         }
         return super.onOptionsItemSelected(item)

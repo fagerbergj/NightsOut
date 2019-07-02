@@ -11,6 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:mcv_dateTextAppearance="@android:style/TextAppearance.Medium"
+        app:mcv_selectionColor="@color/colorLightBlueGray"
         app:mcv_tileHeight="40dp" />
 
     <com.wit.jasonfagerberg.nightsout.styleableViews.RelativeLayoutStyleable

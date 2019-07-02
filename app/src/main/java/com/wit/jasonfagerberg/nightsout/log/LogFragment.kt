@@ -75,7 +75,11 @@ class LogFragment : Fragment() {
         val myCalendar = Calendar.getInstance()
         setupCalendar(view!!)
         calendarView.selectedDate = CalendarDay.from(Date(myCalendar.time.time))
-
+        calendarView.selectionColor = if (mMainActivity.activeTheme == R.style.AppTheme) {
+            ContextCompat.getColor(context!!, R.color.colorLightBlueGray)
+        } else {
+            ContextCompat.getColor(context!!, R.color.colorGray)
+        }
         super.onResume()
     }
 

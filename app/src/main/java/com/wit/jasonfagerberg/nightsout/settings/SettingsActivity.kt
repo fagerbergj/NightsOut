@@ -10,11 +10,13 @@ import com.wit.jasonfagerberg.nightsout.R
 import com.wit.jasonfagerberg.nightsout.addDrink.AddDrinkActivity
 import com.wit.jasonfagerberg.nightsout.dialogs.SimpleDialog
 import com.wit.jasonfagerberg.nightsout.constants.Constants
+import com.wit.jasonfagerberg.nightsout.dialogs.LightSimpleDialog
 import com.wit.jasonfagerberg.nightsout.main.MainActivity
 import com.wit.jasonfagerberg.nightsout.main.NightsOutActivity
 import com.wit.jasonfagerberg.nightsout.notification.BacNotificationService
+import com.wit.jasonfagerberg.nightsout.utils.Converter
 
-class SettingActivity : NightsOutActivity() {
+class SettingsActivity : NightsOutActivity() {
 
     private var showCurrentBacNotification: Boolean = true
     private var use24HourTime = false
@@ -87,6 +89,12 @@ class SettingActivity : NightsOutActivity() {
             val startIntent = Intent(this, BacNotificationService::class.java)
             startIntent.action = Constants.ACTION.UPDATE_NOTIFICATION
             startService(startIntent)
+        }
+        findViewById<ImageButton>(R.id.btn_use_24_hour_info).setOnClickListener {
+            val dialog = LightSimpleDialog(this)
+            dialog.setActions({}, {})
+            dialog.show("12 Hour Time:    ${Converter().timeToString(Constants.getCurrentTimeInMinuets(), false)}\n" +
+                    "24 Hour Time:     ${Converter().timeToString(Constants.getCurrentTimeInMinuets(), true)}")
         }
     }
 

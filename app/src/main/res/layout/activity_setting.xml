@@ -4,13 +4,13 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".settings.SettingActivity" >
+    tools:context=".settings.SettingsActivity" >
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:padding="8dp">
 
         <TextView
             android:layout_width="wrap_content"
@@ -29,8 +29,8 @@
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            app:cardCornerRadius="4dp">
+            app:cardElevation="4dp"
+            app:cardUseCompatPadding="true">
 
             <RelativeLayout
                 android:layout_width="wrap_content"
@@ -82,8 +82,9 @@
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            app:cardCornerRadius="4dp">
+            app:cardCornerRadius="4dp"
+            app:cardElevation="4dp"
+            app:cardUseCompatPadding="true">
 
             <RelativeLayout
                 android:layout_width="wrap_content"
@@ -124,8 +125,9 @@
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        app:cardCornerRadius="4dp">
+        app:cardCornerRadius="4dp"
+        app:cardElevation="4dp"
+        app:cardUseCompatPadding="true">
 
         <RelativeLayout
             android:layout_width="wrap_content"
@@ -135,7 +137,8 @@
 
             <CheckBox
                 android:id="@+id/checkbox_use_24_hour"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
+                android:layout_toStartOf="@+id/btn_use_24_hour_info"
                 android:layout_height="match_parent"
                 android:layout_alignParentStart="true"
                 android:paddingStart="8dp"
@@ -144,6 +147,16 @@
                 android:paddingBottom="20dp"
                 android:text="Use 24 Hour Time"
                 android:textSize="16sp" />
+
+            <androidx.appcompat.widget.AppCompatImageButton
+                android:id="@+id/btn_use_24_hour_info"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:padding="8dp"
+                android:src="@drawable/ic_info_gray_24dp"
+                android:background="#0000"/>
 
         </RelativeLayout>
     </androidx.cardview.widget.CardView>
