@@ -67,7 +67,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Theme"
+            android:text="@string/theme"
             android:textSize="24sp"
             android:textStyle="bold"
             android:paddingTop="8dp"/>
@@ -101,7 +101,7 @@
                     android:paddingTop="20dp"
                     android:paddingEnd="8dp"
                     android:paddingBottom="20dp"
-                    android:text="Dark Theme"
+                    android:text="@string/dark_theme"
                     android:textSize="16sp" />
 
             </RelativeLayout>
@@ -110,7 +110,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Time"
+        android:text="@string/time"
         android:textSize="24sp"
         android:textStyle="bold"
         android:paddingTop="8dp"/>
@@ -145,7 +145,7 @@
                 android:paddingTop="20dp"
                 android:paddingEnd="8dp"
                 android:paddingBottom="20dp"
-                android:text="Use 24 Hour Time"
+                android:text="@string/use_24_hour_time"
                 android:textSize="16sp" />
 
             <androidx.appcompat.widget.AppCompatImageButton

@@ -51,7 +51,7 @@ class LogDatabaseHelper(private val databaseHelper: DatabaseHelper, private val 
             val measurement = cursor.getString(cursor.getColumnIndex("measurement"))
             val modifiedTime = cursor.getLong(cursor.getColumnIndex("modifiedTime"))
 
-            val drink = Drink(id, drinkName, abv, amount, measurement, false, false, modifiedTime)
+            val drink = Drink(id, drinkName, abv, amount, measurement, favorited = false, recent = false, modifiedTime = modifiedTime)
             cursor.close()
             return drink
         }

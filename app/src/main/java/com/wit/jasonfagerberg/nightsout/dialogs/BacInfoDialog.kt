@@ -64,7 +64,7 @@ class BacInfoDialog(
             elapsedTime += .5
             projectedBac -= 0.0075
         }
-        val series = LineGraphSeries<DataPoint>(points.toTypedArray())
+        val series = LineGraphSeries(points.toTypedArray())
         series.setOnDataPointTapListener { _, dataPoint ->
             val pointBac = dataPoint.y.toString().substring(0, 4)
             val time = converter.decimalTimeToTwoDigitStrings(dataPoint.x)

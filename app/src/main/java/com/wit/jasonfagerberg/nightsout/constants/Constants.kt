@@ -46,7 +46,7 @@ class Constants {
         }
     }
 
-    interface SHARED_PREFERENCE {
+    interface PREFERENCE {
         companion object {
             const val PROFILE_INIT = "profileInit"
             const val DATE_INSTALLED = "dateInstalled"

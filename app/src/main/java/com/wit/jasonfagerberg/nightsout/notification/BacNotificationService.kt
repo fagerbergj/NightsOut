@@ -111,17 +111,17 @@ class BacNotificationService : Service() {
 
     private fun getPreferencesData() {
         val preferences = PreferenceManager.getDefaultSharedPreferences(this)
-        startTime = preferences.getInt(Constants.SHARED_PREFERENCE.START_TIME, 0)
-        endTime = preferences.getInt(Constants.SHARED_PREFERENCE.END_TIME, 0)
-        use24HourTime = preferences.getBoolean(Constants.SHARED_PREFERENCE.USE_24_HOUR_TIME, false)
-        sex = preferences.getBoolean(Constants.SHARED_PREFERENCE.PROFILE_SEX, true)
-        weight = preferences.getFloat(Constants.SHARED_PREFERENCE.PROFILE_WEIGHT, 0.toFloat()).toDouble()
-        weightMeasurement = preferences.getString(Constants.SHARED_PREFERENCE.PROFILE_WEIGHT_MEASUREMENT, "oz")!!
+        startTime = preferences.getInt(Constants.PREFERENCE.START_TIME, 0)
+        endTime = preferences.getInt(Constants.PREFERENCE.END_TIME, 0)
+        use24HourTime = preferences.getBoolean(Constants.PREFERENCE.USE_24_HOUR_TIME, false)
+        sex = preferences.getBoolean(Constants.PREFERENCE.PROFILE_SEX, true)
+        weight = preferences.getFloat(Constants.PREFERENCE.PROFILE_WEIGHT, 0.toFloat()).toDouble()
+        weightMeasurement = preferences.getString(Constants.PREFERENCE.PROFILE_WEIGHT_MEASUREMENT, "oz")!!
     }
 
     private fun saveEndTime() {
         val editor = PreferenceManager.getDefaultSharedPreferences(this).edit()
-        editor.putInt(Constants.SHARED_PREFERENCE.END_TIME, endTime)
+        editor.putInt(Constants.PREFERENCE.END_TIME, endTime)
         editor.apply()
     }
 

@@ -10,7 +10,6 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
-        android:text="NAME"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
         android:textSize="18sp" />
 
@@ -29,7 +28,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="12dp"
-            android:text="16%"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textSize="16sp" />
 
@@ -38,7 +36,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="2dp"
-            android:text="3.5 Shots"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textSize="16sp" />
 
