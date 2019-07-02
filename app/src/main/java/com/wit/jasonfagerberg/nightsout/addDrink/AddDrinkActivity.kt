@@ -320,7 +320,7 @@ class AddDrinkActivity : NightsOutActivity() {
             }
         })
 
-        autoCompleteView.onItemClickListener = { _, _, position, _ ->
+        autoCompleteView.setOnItemClickListener { _, _, position, _ ->
             hideKeyboard(this@AddDrinkActivity)
             val drink = adapter.data[position]
             fillViews(drink.name, drink.abv, drink.amount, drink.measurement)

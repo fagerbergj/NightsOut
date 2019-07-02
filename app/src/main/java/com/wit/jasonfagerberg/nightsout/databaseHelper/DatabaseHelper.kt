@@ -232,7 +232,7 @@ open class DatabaseHelper(
             val measurement = cursor.getString(cursor.getColumnIndex("measurement"))
             val modifiedTime = cursor.getLong(cursor.getColumnIndex("modifiedTime"))
 
-            val drink = Drink(id, drinkName, abv, amount, measurement, true, false, modifiedTime)
+            val drink = Drink(id, drinkName, abv, amount, measurement, favorited = true, recent = false, modifiedTime = modifiedTime)
             favorites.add(0, drink)
         }
         cursor.close()

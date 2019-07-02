@@ -77,7 +77,7 @@ class BacInfoDialog(
             soberLine.add(DataPoint(0.0, 0.04))
             soberLine.add(DataPoint(100.0, 0.04))
         }
-        val soberLineSeries = LineGraphSeries<DataPoint>(soberLine.toTypedArray())
+        val soberLineSeries = LineGraphSeries(soberLine.toTypedArray())
         soberLineSeries.color = ContextCompat.getColor(homeFragment.context!!, R.color.colorLightGreen)
         soberLineSeries.backgroundColor = ContextCompat.getColor(homeFragment.context!!, R.color.colorLightGreen)
         soberLineSeries.isDrawBackground = true

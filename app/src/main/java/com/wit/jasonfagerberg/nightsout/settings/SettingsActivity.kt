@@ -94,22 +94,22 @@ class SettingsActivity : NightsOutActivity() {
             val dialog = LightSimpleDialog(this)
             dialog.setActions({}, {})
             dialog.show("12 Hour Time:    ${Converter().timeToString(Constants.getCurrentTimeInMinuets(), false)}\n" +
-                    "24 Hour Time:     ${Converter().timeToString(Constants.getCurrentTimeInMinuets(), true)}")
+                    "24 Hour Time:     ${Converter().timeToString(Constants.getCurrentTimeInMinuets(), true)}", "Dismiss", "")
         }
     }
 
     private fun getNotificationStatus() {
         val pref = PreferenceManager.getDefaultSharedPreferences(this)
-        showCurrentBacNotification = pref.getBoolean(Constants.SHARED_PREFERENCE.SHOW_BAC_NOTIFICATION, true)
-        use24HourTime = pref.getBoolean(Constants.SHARED_PREFERENCE.USE_24_HOUR_TIME, false)
+        showCurrentBacNotification = pref.getBoolean(Constants.PREFERENCE.SHOW_BAC_NOTIFICATION, true)
+        use24HourTime = pref.getBoolean(Constants.PREFERENCE.USE_24_HOUR_TIME, false)
     }
 
 
-    private fun setSetting(showCurrentBacNotification : Boolean = true, activeTheme : Int = this.activeTheme, use24HourTime : Boolean = false) {
+    private fun setSetting(showCurrentBacNotification : Boolean = true, activeTheme : Int = this.activeTheme, use24HourTime : Boolean = this.use24HourTime) {
         val edit = PreferenceManager.getDefaultSharedPreferences(this).edit()
-        edit.putBoolean(Constants.SHARED_PREFERENCE.SHOW_BAC_NOTIFICATION, showCurrentBacNotification)
-        edit.putInt(Constants.SHARED_PREFERENCE.ACTIVE_THEME, activeTheme)
-        edit.putBoolean(Constants.SHARED_PREFERENCE.USE_24_HOUR_TIME, use24HourTime)
+        edit.putBoolean(Constants.PREFERENCE.SHOW_BAC_NOTIFICATION, showCurrentBacNotification)
+        edit.putInt(Constants.PREFERENCE.ACTIVE_THEME, activeTheme)
+        edit.putBoolean(Constants.PREFERENCE.USE_24_HOUR_TIME, use24HourTime)
         edit.apply()
     }
 

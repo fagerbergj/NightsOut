@@ -204,7 +204,7 @@ class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: Ar
             position: Int
     ) {
         val other = Drink(drink.id, drink.name, drink.abv, drink.amount, drink.measurement,
-                false, false, Constants.getLongTimeNow())
+                favorited = false, recent = false, modifiedTime = Constants.getLongTimeNow())
         // pad 0s to end
         if (editABV.text.isNotEmpty() && "${editABV.text}"["${editABV.text}".length - 1] == '.') {
             val padded = "${editABV.text}0"
