@@ -15,7 +15,7 @@ import com.prolificinteractive.materialcalendarview.DayViewFacade
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView
 import com.prolificinteractive.materialcalendarview.spans.DotSpan
 import com.wit.jasonfagerberg.nightsout.R
-import com.wit.jasonfagerberg.nightsout.converter.Converter
+import com.wit.jasonfagerberg.nightsout.utils.Converter
 import com.wit.jasonfagerberg.nightsout.databaseHelper.LogDatabaseHelper
 import com.wit.jasonfagerberg.nightsout.dialogs.LightSimpleDialog
 import com.wit.jasonfagerberg.nightsout.main.MainActivity
@@ -75,7 +75,7 @@ class LogFragment : Fragment() {
         val myCalendar = Calendar.getInstance()
         setupCalendar(view!!)
         calendarView.selectedDate = CalendarDay.from(Date(myCalendar.time.time))
-        // calender setup
+
         super.onResume()
     }
 
@@ -179,7 +179,7 @@ class LogFragment : Fragment() {
             dates.add(day)
         }
         calendarView.addDecorator(EventDecorator(ContextCompat.getColor(context!!,
-                R.color.colorPrimaryDark), dates))
+                R.color.colorPrimary), dates))
     }
 
     private fun setLogListBasedOnDay(date: Int) {

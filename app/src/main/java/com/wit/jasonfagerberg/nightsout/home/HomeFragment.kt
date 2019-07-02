@@ -18,7 +18,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.button.MaterialButton
 import com.wit.jasonfagerberg.nightsout.R
 import com.wit.jasonfagerberg.nightsout.addDrink.AddDrinkActivity
-import com.wit.jasonfagerberg.nightsout.converter.Converter
+import com.wit.jasonfagerberg.nightsout.utils.Converter
 import com.wit.jasonfagerberg.nightsout.dialogs.BacInfoDialog
 import com.wit.jasonfagerberg.nightsout.dialogs.LightSimpleDialog
 import com.wit.jasonfagerberg.nightsout.dialogs.SimpleDialog

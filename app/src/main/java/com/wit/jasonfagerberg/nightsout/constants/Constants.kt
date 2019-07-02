@@ -1,6 +1,6 @@
 package com.wit.jasonfagerberg.nightsout.constants
 
-import com.wit.jasonfagerberg.nightsout.converter.Converter
+import com.wit.jasonfagerberg.nightsout.utils.Converter
 import java.util.*
 
 class Constants {

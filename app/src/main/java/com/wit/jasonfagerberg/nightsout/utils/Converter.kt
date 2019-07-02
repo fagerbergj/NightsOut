@@ -1,4 +1,4 @@
-package com.wit.jasonfagerberg.nightsout.converter
+package com.wit.jasonfagerberg.nightsout.utils
 
 import android.os.Build
 import android.util.SparseIntArray

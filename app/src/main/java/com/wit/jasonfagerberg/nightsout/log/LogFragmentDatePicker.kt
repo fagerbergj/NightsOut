@@ -3,7 +3,7 @@ package com.wit.jasonfagerberg.nightsout.log
 import android.app.DatePickerDialog
 import android.view.ContextThemeWrapper
 import com.wit.jasonfagerberg.nightsout.R
-import com.wit.jasonfagerberg.nightsout.converter.Converter
+import com.wit.jasonfagerberg.nightsout.utils.Converter
 import com.wit.jasonfagerberg.nightsout.databaseHelper.LogDatabaseHelper
 import com.wit.jasonfagerberg.nightsout.dialogs.SimpleDialog
 import com.wit.jasonfagerberg.nightsout.main.MainActivity

@@ -9,7 +9,7 @@ import android.os.IBinder
 import android.preference.PreferenceManager
 import com.wit.jasonfagerberg.nightsout.R
 import com.wit.jasonfagerberg.nightsout.addDrink.AddDrinkActivity
-import com.wit.jasonfagerberg.nightsout.converter.Converter
+import com.wit.jasonfagerberg.nightsout.utils.Converter
 import com.wit.jasonfagerberg.nightsout.databaseHelper.DatabaseHelper
 import com.wit.jasonfagerberg.nightsout.constants.Constants
 import com.wit.jasonfagerberg.nightsout.main.MainActivity

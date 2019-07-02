@@ -31,7 +31,7 @@ import android.widget.AdapterView
 import android.widget.AdapterView.OnItemSelectedListener
 import androidx.recyclerview.widget.ItemTouchHelper
 import com.wit.jasonfagerberg.nightsout.addDrink.AddDrinkActivity
-import com.wit.jasonfagerberg.nightsout.converter.Converter
+import com.wit.jasonfagerberg.nightsout.utils.Converter
 import com.wit.jasonfagerberg.nightsout.dialogs.LightSimpleDialog
 
 // private const val TAG = "ProfileFragment"

@@ -1,7 +1,7 @@
 package com.wit.jasonfagerberg.nightsout.models
 
 // import android.util.Log
-import com.wit.jasonfagerberg.nightsout.converter.Converter
+import com.wit.jasonfagerberg.nightsout.utils.Converter
 import java.text.DateFormatSymbols
 import java.util.Locale
 
