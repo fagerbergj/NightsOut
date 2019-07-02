@@ -20,6 +20,7 @@ class SettingsActivity : NightsOutActivity() {
 
     private var showCurrentBacNotification: Boolean = true
     private var use24HourTime = false
+    private var profileInit = false
 
     private lateinit var showCurrentBacNotificationBox : CheckBox
     private lateinit var darkThemeBox : CheckBox
@@ -59,11 +60,15 @@ class SettingsActivity : NightsOutActivity() {
                     " current BAC without having to open Nights Out." )
             dialog.setPositiveButtonText("Show")
             dialog.setPositiveFunction {
-                val startIntent = Intent(this, BacNotificationService::class.java)
-                startIntent.action = Constants.ACTION.START_SERVICE
-                startService(startIntent)
-                dialog.dismiss()
-                showToast("Notification Created")
+                if (!profileInit){
+                    showToast("Must create a profile to show the BAC notification")
+                } else {
+                    val startIntent = Intent(this, BacNotificationService::class.java)
+                    startIntent.action = Constants.ACTION.START_SERVICE
+                    startService(startIntent)
+                    dialog.dismiss()
+                    showToast("Notification Created")
+                }
             }
             dialog.setNegativeButtonText(getString(R.string.dismiss))
             dialog.setNegativeFunction()
@@ -102,6 +107,7 @@ class SettingsActivity : NightsOutActivity() {
         val pref = PreferenceManager.getDefaultSharedPreferences(this)
         showCurrentBacNotification = pref.getBoolean(Constants.PREFERENCE.SHOW_BAC_NOTIFICATION, true)
         use24HourTime = pref.getBoolean(Constants.PREFERENCE.USE_24_HOUR_TIME, false)
+        profileInit = pref.getBoolean(Constants.PREFERENCE.PROFILE_INIT, false)
     }
 
 
