@@ -9,9 +9,9 @@ import android.os.IBinder
 import android.preference.PreferenceManager
 import com.wit.jasonfagerberg.nightsout.R
 import com.wit.jasonfagerberg.nightsout.addDrink.AddDrinkActivity
-import com.wit.jasonfagerberg.nightsout.converter.Converter
+import com.wit.jasonfagerberg.nightsout.utils.Converter
 import com.wit.jasonfagerberg.nightsout.databaseHelper.DatabaseHelper
-import com.wit.jasonfagerberg.nightsout.main.Constants
+import com.wit.jasonfagerberg.nightsout.constants.Constants
 import com.wit.jasonfagerberg.nightsout.main.MainActivity
 import com.wit.jasonfagerberg.nightsout.main.NightsOutApplication
 
@@ -103,6 +103,7 @@ class BacNotificationService : Service() {
     }
 
     private fun updateNotification() {
+        getPreferencesData()
         notificationHelper.updateOrShow("BAC: ${"%.3f".format(calculateBAC())}",
                 "${mConverter.timeToString(startTime/60, startTime%60, use24HourTime)} - " +
                         mConverter.timeToString(endTime/60, endTime%60, use24HourTime), false)
@@ -110,17 +111,17 @@ class BacNotificationService : Service() {
 
     private fun getPreferencesData() {
         val preferences = PreferenceManager.getDefaultSharedPreferences(this)
-        startTime = preferences.getInt("homeStartTimeMin", 0)
-        endTime = preferences.getInt("homeEndTimeMin", 0)
-        use24HourTime = preferences.getBoolean("homeUse24HourTime", false)
-        sex = preferences.getBoolean("profileSex", true)
-        weight = preferences.getFloat("profileWeight", 0.toFloat()).toDouble()
-        weightMeasurement = preferences.getString("profileWeightMeasurement", "oz")!!
+        startTime = preferences.getInt(Constants.PREFERENCE.START_TIME, 0)
+        endTime = preferences.getInt(Constants.PREFERENCE.END_TIME, 0)
+        use24HourTime = preferences.getBoolean(Constants.PREFERENCE.USE_24_HOUR_TIME, false)
+        sex = preferences.getBoolean(Constants.PREFERENCE.PROFILE_SEX, true)
+        weight = preferences.getFloat(Constants.PREFERENCE.PROFILE_WEIGHT, 0.toFloat()).toDouble()
+        weightMeasurement = preferences.getString(Constants.PREFERENCE.PROFILE_WEIGHT_MEASUREMENT, "oz")!!
     }
 
     private fun saveEndTime() {
         val editor = PreferenceManager.getDefaultSharedPreferences(this).edit()
-        editor.putInt("homeEndTimeMin", endTime)
+        editor.putInt(Constants.PREFERENCE.END_TIME, endTime)
         editor.apply()
     }
 

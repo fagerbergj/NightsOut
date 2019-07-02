@@ -12,7 +12,6 @@
         android:layout_height="60dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentBottom="true"
-        android:background="@color/colorWhite"
         app:menu="@menu/bottom_nav" />
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -27,8 +26,7 @@
         android:layout_height="match_parent"
         android:layout_above="@id/bottom_navigation_view"
         android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:background="@color/colorWhite"/>
+        android:layout_alignParentTop="true" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </RelativeLayout>

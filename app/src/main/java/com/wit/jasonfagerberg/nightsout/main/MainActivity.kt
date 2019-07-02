@@ -8,6 +8,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.PersistableBundle
 import android.preference.PreferenceManager
+import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.widget.RelativeLayout
@@ -19,13 +20,16 @@ import androidx.viewpager.widget.ViewPager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.wit.jasonfagerberg.nightsout.R
 import com.wit.jasonfagerberg.nightsout.addDrink.AddDrinkActivity
+import com.wit.jasonfagerberg.nightsout.constants.Constants
 import com.wit.jasonfagerberg.nightsout.databaseHelper.DatabaseHelper
 import com.wit.jasonfagerberg.nightsout.dialogs.SimpleDialog
 import com.wit.jasonfagerberg.nightsout.home.HomeFragment
 import com.wit.jasonfagerberg.nightsout.log.LogFragment
-import com.wit.jasonfagerberg.nightsout.log.LogHeader
+import com.wit.jasonfagerberg.nightsout.models.LogHeader
+import com.wit.jasonfagerberg.nightsout.models.Drink
 import com.wit.jasonfagerberg.nightsout.notification.BacNotificationService
 import com.wit.jasonfagerberg.nightsout.profile.ProfileFragment
+import java.lang.Exception
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -68,6 +72,7 @@ class MainActivity : NightsOutActivity() {
     var mLogHeaders: ArrayList<LogHeader> = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         // bottom nav bar
         botNavBar = findViewById(R.id.bottom_navigation_view)
@@ -97,16 +102,17 @@ class MainActivity : NightsOutActivity() {
                 botNavBar.menu.getItem(position).isChecked = true
                 prevMenuItem = botNavBar.menu.getItem(position)
                 pushToBackStack(position)
+                fragmentId = position
             }
         })
 
         val fragmentId = savedInstanceState?.getInt("FRAGMENT_ID")
         if (fragmentId != null ) { pager.currentItem = fragmentId; pushToBackStack(fragmentId) }
-        super.onCreate(savedInstanceState)
+
     }
 
     override fun onSaveInstanceState(outState: Bundle?, outPersistentState: PersistableBundle?) {
-        outState?.putInt("FRAGMENT_ID", pager.currentItem)
+        fragmentId = pager.currentItem
         super.onSaveInstanceState(outState, outPersistentState)
     }
 
@@ -121,7 +127,7 @@ class MainActivity : NightsOutActivity() {
         if (intent.getBooleanExtra("drinkAdded", false)) setPreference(drinksAddedCount = drinksAddedCount + 1)
         showPleaseRateDialog()
 
-        val fragmentId = intent.getIntExtra("FRAGMENT_ID", -1)
+        val fragmentId = intent.getIntExtra(Constants.FRAGMENT_ID, -1)
 
         if (!profileInit || fragmentId == 2) {
             pager.currentItem = 2
@@ -138,31 +144,27 @@ class MainActivity : NightsOutActivity() {
 
     private fun getDataFromStorage() {
         preferences = PreferenceManager.getDefaultSharedPreferences(this)
-        profileInit = preferences.getBoolean("profileInit", false)
-        dateInstalled = preferences.getLong("dateInstalled", System.currentTimeMillis())
-        drinksAddedCount = preferences.getInt("drinksAddedCount", 0)
-        dontShowRateDialog = preferences.getBoolean("dontShowRateDialog", false)
-        dontShowCurrentBacNotification = preferences.getBoolean("dontShowCurrentBacNotification", dontShowCurrentBacNotification)
-        showBacNotification = preferences.getBoolean("showCurrentBacNotification", true)
+        profileInit = preferences.getBoolean(Constants.PREFERENCE.PROFILE_INIT, false)
+        dateInstalled = preferences.getLong(Constants.PREFERENCE.DATE_INSTALLED, System.currentTimeMillis())
+        drinksAddedCount = preferences.getInt(Constants.PREFERENCE.DRINKS_ADDED_COUNT, 0)
+        dontShowRateDialog = preferences.getBoolean(Constants.PREFERENCE.DONT_SHOW_RATE_DIALOG, false)
+        dontShowCurrentBacNotification = preferences.getBoolean(Constants.PREFERENCE.DONT_SHOW_BAC_NOTIFICATION, dontShowCurrentBacNotification)
+        showBacNotification = preferences.getBoolean(Constants.PREFERENCE.SHOW_BAC_NOTIFICATION, true)
+        activeTheme = preferences.getInt(Constants.PREFERENCE.ACTIVE_THEME, R.style.AppTheme)
 
         startTimeMin = Constants.getCurrentTimeInMinuets()
         endTimeMin = Constants.getCurrentTimeInMinuets()
         if (profileInit) {
             sex = true
-            sex = preferences.getBoolean("profileSex", sex!!)
+            sex = preferences.getBoolean(Constants.PREFERENCE.PROFILE_SEX, sex!!)
             var weightFloat: Float = 0.toFloat()
-            weightFloat = preferences.getFloat("profileWeight", weightFloat)
+            weightFloat = preferences.getFloat(Constants.PREFERENCE.PROFILE_WEIGHT, weightFloat)
             weight = weightFloat.toDouble()
-            weightMeasurement = preferences.getString("profileWeightMeasurement", weightMeasurement)!!
+            weightMeasurement = preferences.getString(Constants.PREFERENCE.PROFILE_WEIGHT_MEASUREMENT, weightMeasurement)!!
 
-            use24HourTime = preferences.getBoolean("homeUse24HourTime", use24HourTime)
-            startTimeMin = preferences.getInt("homeStartTimeMin", startTimeMin)
-            endTimeMin = preferences.getInt("homeEndTimeMin", endTimeMin)
-        }
-
-        val fragmentArray = intent.getIntArrayExtra("BACK_STACK")
-        if (fragmentArray != null) {
-            for (frag in fragmentArray) pushToBackStack(frag)
+            use24HourTime = preferences.getBoolean(Constants.PREFERENCE.USE_24_HOUR_TIME, use24HourTime)
+            startTimeMin = preferences.getInt(Constants.PREFERENCE.START_TIME, startTimeMin)
+            endTimeMin = preferences.getInt(Constants.PREFERENCE.END_TIME, endTimeMin)
         }
 
         if (drinksAddedCount > 10000) setPreference(drinksAddedCount = 10)
@@ -189,7 +191,8 @@ class MainActivity : NightsOutActivity() {
                       weight : Double = this.weight, weightMeasurement : String = this.weightMeasurement,
                       endTimeMin: Int = this.endTimeMin, startTimeMin : Int = this.startTimeMin,
                       use24HourTime : Boolean = this.use24HourTime, dateInstalled : Long = this.dateInstalled,
-                      drinksAddedCount : Int = this.drinksAddedCount, dontShowRateDialog : Boolean = this.dontShowRateDialog) {
+                      drinksAddedCount : Int = this.drinksAddedCount, dontShowRateDialog : Boolean = this.dontShowRateDialog,
+                      activeTheme : Int = this.activeTheme) {
         if (!profileInit) return
 
         // set values
@@ -203,22 +206,24 @@ class MainActivity : NightsOutActivity() {
         this.dateInstalled = dateInstalled
         this.drinksAddedCount = drinksAddedCount
         this.dontShowRateDialog = dontShowRateDialog
+        this.activeTheme = activeTheme
 
         val editor = preferences.edit()
 
-        editor.putBoolean("profileInit", true)
-        if (sex != null) editor.putBoolean("profileSex", sex)
+        editor.putBoolean(Constants.PREFERENCE.PROFILE_INIT, true)
+        if (sex != null) editor.putBoolean(Constants.PREFERENCE.PROFILE_SEX, sex)
 
-        editor.putFloat("profileWeight", weight.toFloat())
-        editor.putString("profileWeightMeasurement", weightMeasurement)
+        editor.putFloat(Constants.PREFERENCE.PROFILE_WEIGHT, weight.toFloat())
+        editor.putString(Constants.PREFERENCE.PROFILE_WEIGHT_MEASUREMENT, weightMeasurement)
 
-        editor.putInt("homeStartTimeMin", startTimeMin)
-        editor.putInt("homeEndTimeMin", endTimeMin)
-        editor.putBoolean("homeUse24HourTime", use24HourTime)
+        editor.putInt(Constants.PREFERENCE.START_TIME, startTimeMin)
+        editor.putInt(Constants.PREFERENCE.END_TIME, endTimeMin)
+        editor.putBoolean(Constants.PREFERENCE.USE_24_HOUR_TIME, use24HourTime)
 
-        editor.putLong("dateInstalled", dateInstalled)
-        editor.putInt("drinksAddedCount", drinksAddedCount)
-        editor.putBoolean("dontShowRateDialog", dontShowRateDialog)
+        editor.putLong(Constants.PREFERENCE.DATE_INSTALLED, dateInstalled)
+        editor.putInt(Constants.PREFERENCE.DRINKS_ADDED_COUNT, drinksAddedCount)
+        editor.putBoolean(Constants.PREFERENCE.DONT_SHOW_RATE_DIALOG, dontShowRateDialog)
+        editor.putInt(Constants.PREFERENCE.ACTIVE_THEME, activeTheme)
 
         editor.apply()
     }
@@ -263,13 +268,11 @@ class MainActivity : NightsOutActivity() {
         if (!showBacNotification) return
         val startIntent = Intent(this, BacNotificationService::class.java)
         startIntent.action = action
-        startService(startIntent)
-    }
-
-    fun pushToBackStack(i: Int){
-        mBackStack.push(i)
-        if(mBackStack.size >= Constants.MAX_BACK_STACK_SIZE) {
-            mBackStack.removeAt(0)
+        // todo figure out why this causes illegal state exceptions
+        try {
+            startService(startIntent)
+        } catch (e : Exception) {
+            Log.e("MainActivity", e.stackTrace.toString())
         }
     }
 
@@ -280,8 +283,6 @@ class MainActivity : NightsOutActivity() {
             mBackStack.peek() == 4 -> {
                 mBackStack.pop()
                 val intent = Intent(this, AddDrinkActivity::class.java)
-                intent.putExtra("FRAGMENT_ID", pager.currentItem)
-                intent.putExtra("BACK_STACK", mBackStack.toIntArray())
                 startActivity(intent)
             }
             else -> alertUserBeforeNavigation(null)

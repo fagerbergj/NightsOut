@@ -21,11 +21,11 @@ import com.google.android.material.button.MaterialButton
 import com.wit.jasonfagerberg.nightsout.R
 import com.wit.jasonfagerberg.nightsout.addDrink.drinkSuggestion.DrinkSuggestionArrayAdapter
 import com.wit.jasonfagerberg.nightsout.addDrink.drinkSuggestion.DrinkSuggestionAutoCompleteView
-import com.wit.jasonfagerberg.nightsout.converter.Converter
+import com.wit.jasonfagerberg.nightsout.utils.Converter
 import com.wit.jasonfagerberg.nightsout.databaseHelper.AddDrinkDatabaseHelper
 import com.wit.jasonfagerberg.nightsout.dialogs.LightSimpleDialog
-import com.wit.jasonfagerberg.nightsout.main.Constants
-import com.wit.jasonfagerberg.nightsout.main.Drink
+import com.wit.jasonfagerberg.nightsout.constants.Constants
+import com.wit.jasonfagerberg.nightsout.models.Drink
 import com.wit.jasonfagerberg.nightsout.main.MainActivity
 import com.wit.jasonfagerberg.nightsout.main.NightsOutActivity
 import com.wit.jasonfagerberg.nightsout.manageDB.ManageDBActivity
@@ -58,6 +58,7 @@ class AddDrinkActivity : NightsOutActivity() {
     lateinit var mDatabaseHelper: AddDrinkDatabaseHelper
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_drink)
 
         toolbarSetup()
@@ -84,7 +85,6 @@ class AddDrinkActivity : NightsOutActivity() {
 
         setupComplexModeCheckbox()
         mDatabaseHelper = AddDrinkDatabaseHelper(this, Constants.DB_NAME, null, Constants.DB_VERSION)
-        super.onCreate(savedInstanceState)
     }
 
     override fun onStart() {
@@ -196,21 +196,19 @@ class AddDrinkActivity : NightsOutActivity() {
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         val resId = item!!.itemId
         val btnAdd = findViewById<MaterialButton>(R.id.btn_add_drink_add)
-        return when (resId) {
+        when (resId) {
             R.id.btn_toolbar_favorite -> { favoriteOptionSelected(item, btnAdd) }
             R.id.btn_clear_favorites_list -> { clearFavoritesOptionSelected() }
             R.id.btn_clear_recents_list -> { clearRecentsOptionSelected() }
             R.id.btn_toolbar_manage_db -> {
                 val intent = Intent(this, ManageDBActivity::class.java)
                 startActivity(intent)
-                true
             }
             android.R.id.home -> {
                 onBackPressed()
-                true
             }
-            else -> false
         }
+        return super.onOptionsItemSelected(item)
     }
 
     override fun onBackPressed() {
@@ -218,9 +216,7 @@ class AddDrinkActivity : NightsOutActivity() {
         // make sure source fragment is shown when going back to main activity
         // if you can unfavorite, add drink ws brought up from the home fragment
         // if not it was brought up by the profile fragment
-        if (canUnfavorite) intent.putExtra("FRAGMENT_ID", 0)
-        else intent.putExtra("FRAGMENT_ID", 2)
-        intent.putExtra("BACK_STACK", mBackStack.toIntArray())
+        fragmentId = if (canUnfavorite) 0 else 2
         startActivity(intent)
     }
 
@@ -399,9 +395,7 @@ class AddDrinkActivity : NightsOutActivity() {
         complexMode = false
         findViewById<CheckBox>(R.id.chkBox_complexDrink).isChecked = false
         val intent = Intent(this, MainActivity::class.java)
-        if (canUnfavorite) intent.putExtra("FRAGMENT_ID", 0)
-        else intent.putExtra("FRAGMENT_ID", 2)
-        intent.putExtra("BACK_STACK", mBackStack.toIntArray())
+        fragmentId = if (canUnfavorite) 0 else 2
         intent.putExtra("drinkAdded", true)
         startActivity(intent)
     }

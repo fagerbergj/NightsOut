@@ -18,14 +18,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.button.MaterialButton
 import com.wit.jasonfagerberg.nightsout.R
 import com.wit.jasonfagerberg.nightsout.addDrink.AddDrinkActivity
-import com.wit.jasonfagerberg.nightsout.converter.Converter
+import com.wit.jasonfagerberg.nightsout.utils.Converter
 import com.wit.jasonfagerberg.nightsout.dialogs.BacInfoDialog
 import com.wit.jasonfagerberg.nightsout.dialogs.LightSimpleDialog
 import com.wit.jasonfagerberg.nightsout.dialogs.SimpleDialog
-import com.wit.jasonfagerberg.nightsout.main.Constants
+import com.wit.jasonfagerberg.nightsout.constants.Constants
 import com.wit.jasonfagerberg.nightsout.main.MainActivity
 import com.wit.jasonfagerberg.nightsout.manageDB.ManageDBActivity
-import com.wit.jasonfagerberg.nightsout.notification.NotificationsSettingActivity
 import java.util.*
 
 // private const val TAG = "HomeFragment"
@@ -61,8 +60,7 @@ class HomeFragment : Fragment() {
             intent.putExtra("CAN_UNFAVORITE", true)
             intent.putExtra("FAVORITED", false)
             mMainActivity.pushToBackStack(4)
-            intent.putExtra("BACK_STACK", mMainActivity.mBackStack.toIntArray())
-            startActivity(intent)
+            mMainActivity.startActivity(intent)
         }
         setHasOptionsMenu(true)
 
@@ -93,9 +91,6 @@ class HomeFragment : Fragment() {
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
         mMainActivity.supportActionBar?.title = "Home"
         inflater!!.inflate(R.menu.home_menu, menu)
-        menu?.getItem(3)?.title = if (mMainActivity.use24HourTime) {
-            "Use 12 Hour Time"
-        } else "Use 24 Hour Time"
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
@@ -114,20 +109,12 @@ class HomeFragment : Fragment() {
                 lightSimpleDialog.show("Are you sure you want to clear all drinks?")
             }
             R.id.btn_disclaimer -> showDisclaimerDialog()
-            R.id.btn_toolbar_toggle_time_display -> {
-                mMainActivity.setPreference(use24HourTime = !mMainActivity.use24HourTime)
-                setupEditTexts(view!!)
-            }
             R.id.btn_toolbar_manage_db -> {
                 val intent = Intent(mMainActivity, ManageDBActivity::class.java)
-                startActivity(intent)
-            }
-            R.id.btn_toolbar_notification_settings -> {
-                val intent = Intent(mMainActivity, NotificationsSettingActivity::class.java)
-                startActivity(intent)
+                mMainActivity.startActivity(intent)
             }
         }
-        return true
+        return mMainActivity.onOptionsItemSelected(item)
     }
 
     private fun setupRecycler(view: View) {
@@ -191,7 +178,7 @@ class HomeFragment : Fragment() {
             minute = mMainActivity.startTimeMin % 60
         }
         val mTimePicker: TimePickerDialog
-        mTimePicker = TimePickerDialog(context!!,
+        mTimePicker = TimePickerDialog(ContextThemeWrapper(context!!, Converter().appThemeToDialogTheme[mMainActivity.activeTheme]),
                 TimePickerDialog.OnTimeSetListener { _, selectedHour, selectedMinute ->
                     startPicker.setText(mConverter.timeToString(selectedHour, selectedMinute, mMainActivity.use24HourTime))
                     mMainActivity.setPreference(startTimeMin = mConverter.militaryHoursAndMinutesToMinutes(selectedHour, selectedMinute))
@@ -225,7 +212,7 @@ class HomeFragment : Fragment() {
         }
 
         val mTimePicker: TimePickerDialog
-        mTimePicker = TimePickerDialog(context!!,
+        mTimePicker = TimePickerDialog(ContextThemeWrapper(context!!, Converter().appThemeToDialogTheme[mMainActivity.activeTheme]),
                 TimePickerDialog.OnTimeSetListener { _, selectedHour, selectedMinute ->
                     endPicker.setText(mConverter.timeToString(selectedHour, selectedMinute, mMainActivity.use24HourTime))
                     mMainActivity.setPreference(endTimeMin = mConverter.militaryHoursAndMinutesToMinutes(selectedHour, selectedMinute))

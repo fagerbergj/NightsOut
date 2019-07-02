@@ -31,7 +31,7 @@ import android.widget.AdapterView
 import android.widget.AdapterView.OnItemSelectedListener
 import androidx.recyclerview.widget.ItemTouchHelper
 import com.wit.jasonfagerberg.nightsout.addDrink.AddDrinkActivity
-import com.wit.jasonfagerberg.nightsout.converter.Converter
+import com.wit.jasonfagerberg.nightsout.utils.Converter
 import com.wit.jasonfagerberg.nightsout.dialogs.LightSimpleDialog
 
 // private const val TAG = "ProfileFragment"
@@ -116,8 +116,7 @@ class ProfileFragment : Fragment() {
             intent.putExtra("CAN_UNFAVORITE", false)
             intent.putExtra("FAVORITED", true)
             mMainActivity.pushToBackStack(4)
-            intent.putExtra("BACK_STACK", mMainActivity.mBackStack.toIntArray())
-            startActivity(intent)
+            mMainActivity.startActivity(intent)
         }
         setHasOptionsMenu(true)
         return view
@@ -174,7 +173,7 @@ class ProfileFragment : Fragment() {
                 lightSimpleDialog.show("Are you sure you want to clear all favorites?")
             }
         }
-        return true
+        return mMainActivity.onOptionsItemSelected(item)
     }
 
     private fun setupFavoritesRecyclerView(view: View) {

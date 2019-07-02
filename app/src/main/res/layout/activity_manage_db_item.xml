@@ -20,7 +20,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center_vertical|center_horizontal"
-            android:textColor="@color/colorBlack"
             android:textSize="20sp" />
 
         <LinearLayout
@@ -56,7 +55,6 @@
         android:padding="8dp"
         android:src="@drawable/more_vert_gray_24dp"
         android:textAppearance="?android:textAppearanceLarge"
-        android:textColor="@color/colorDarkGray"
         tools:ignore="HardcodedText"
         android:contentDescription="@string/empty" />
 </RelativeLayout>

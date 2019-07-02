@@ -64,7 +64,7 @@ class BacInfoDialog(
             elapsedTime += .5
             projectedBac -= 0.0075
         }
-        val series = LineGraphSeries<DataPoint>(points.toTypedArray())
+        val series = LineGraphSeries(points.toTypedArray())
         series.setOnDataPointTapListener { _, dataPoint ->
             val pointBac = dataPoint.y.toString().substring(0, 4)
             val time = converter.decimalTimeToTwoDigitStrings(dataPoint.x)
@@ -77,7 +77,7 @@ class BacInfoDialog(
             soberLine.add(DataPoint(0.0, 0.04))
             soberLine.add(DataPoint(100.0, 0.04))
         }
-        val soberLineSeries = LineGraphSeries<DataPoint>(soberLine.toTypedArray())
+        val soberLineSeries = LineGraphSeries(soberLine.toTypedArray())
         soberLineSeries.color = ContextCompat.getColor(homeFragment.context!!, R.color.colorLightGreen)
         soberLineSeries.backgroundColor = ContextCompat.getColor(homeFragment.context!!, R.color.colorLightGreen)
         soberLineSeries.isDrawBackground = true

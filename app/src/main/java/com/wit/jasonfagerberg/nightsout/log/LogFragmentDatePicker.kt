@@ -1,24 +1,28 @@
 package com.wit.jasonfagerberg.nightsout.log
 
 import android.app.DatePickerDialog
+import android.view.ContextThemeWrapper
 import com.wit.jasonfagerberg.nightsout.R
-import com.wit.jasonfagerberg.nightsout.converter.Converter
+import com.wit.jasonfagerberg.nightsout.utils.Converter
 import com.wit.jasonfagerberg.nightsout.databaseHelper.LogDatabaseHelper
 import com.wit.jasonfagerberg.nightsout.dialogs.SimpleDialog
 import com.wit.jasonfagerberg.nightsout.main.MainActivity
+import com.wit.jasonfagerberg.nightsout.models.LogHeader
 import java.util.*
 
 class LogFragmentDatePicker(
-    private val logFragment: LogFragment,
-    private val mainActivity: MainActivity,
-    private val converter: Converter,
-    private val header: LogHeader
+        private val logFragment: LogFragment,
+        private val mainActivity: MainActivity,
+        private val converter: Converter,
+        private val header: LogHeader,
+        private val activeTheme: Int
 ) {
     private val logDatabaseHelper = LogDatabaseHelper(mainActivity.mDatabaseHelper, mainActivity)
 
     fun showDatePicker() {
         val calendar = Calendar.getInstance()
-        val dp = DatePickerDialog(logFragment.context!!, null, calendar.get(Calendar.YEAR),
+        val dp = DatePickerDialog(ContextThemeWrapper(logFragment.context!!, Converter().appThemeToDialogTheme[activeTheme]),
+                null, calendar.get(Calendar.YEAR),
                 calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH))
 
         dp.setButton(DatePickerDialog.BUTTON_POSITIVE, "OK") { _, _ ->

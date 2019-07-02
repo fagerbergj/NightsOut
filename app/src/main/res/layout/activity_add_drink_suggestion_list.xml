@@ -15,7 +15,6 @@
         android:layout_toStartOf="@+id/imgBtn_add_drink_suggestion_cancel"
         android:padding="8dp"
         android:textAlignment="center"
-        android:textColor="@color/colorPrimaryDark"
         android:textSize="16sp"
         android:textStyle="bold" />
 

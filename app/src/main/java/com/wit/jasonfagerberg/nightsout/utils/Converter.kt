@@ -1,8 +1,13 @@
-package com.wit.jasonfagerberg.nightsout.converter
+package com.wit.jasonfagerberg.nightsout.utils
+
+import android.os.Build
+import android.util.SparseIntArray
+import com.wit.jasonfagerberg.nightsout.R
 
 class Converter {
     private val weightConversionMap = HashMap<String, Double>()
     private val volumeConversionMap = HashMap<String, Double>()
+    val appThemeToDialogTheme = SparseIntArray()
 
     init {
         weightConversionMap["lbs"] = 1.0
@@ -14,6 +19,14 @@ class Converter {
         volumeConversionMap["wine glasses"] = 5.0
         volumeConversionMap["shots"] = 1.5
         volumeConversionMap["pints"] = 16.0
+
+        appThemeToDialogTheme.put(R.style.AppTheme, R.style.AppTheme)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            appThemeToDialogTheme.put(R.style.DarkAppTheme, android.R.style.Theme_Material_Dialog_Alert)
+
+        } else {
+            appThemeToDialogTheme.put(R.style.DarkAppTheme, R.style.DarkDialog)
+        }
     }
 
     fun weightToLbs(weight: Double, weightMeasurement: String): Double {

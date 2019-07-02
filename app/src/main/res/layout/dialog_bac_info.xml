@@ -1,45 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/colorPrimary">
+    android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/text_bac_info_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingBottom="8dp"
-        android:layout_alignParentStart="true"
-        android:text="@string/bac_level"
-        android:textColor="@color/colorWhite"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:layout_toStartOf="@id/btn_bac_info_dismiss"
-        android:padding="16dp"/>
-
-    <ImageView
-        android:id="@+id/btn_bac_info_dismiss"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
+    <RelativeLayout
+        android:id="@+id/title_box"
         android:layout_alignParentTop="true"
-        android:background="?attr/selectableItemBackground"
-        android:contentDescription="@string/empty"
-        android:padding="12dp"
-        android:src="@drawable/ic_close_white_24dp"
-        android:layout_above="@+id/info_container"/>
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary">
+
+        <TextView
+            android:id="@+id/text_bac_info_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_toStartOf="@id/btn_bac_info_dismiss"
+            android:padding="16dp"
+            android:text="@string/bac_level"
+            android:textColor="@color/colorWhite"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/btn_bac_info_dismiss"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:background="?attr/selectableItemBackground"
+            android:contentDescription="@string/empty"
+            android:padding="12dp"
+            android:src="@drawable/ic_close_white_24dp"
+            android:layout_centerVertical="true"/>
+
+    </RelativeLayout>
 
 
     <RelativeLayout
-        android:id="@+id/info_container"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/text_bac_info_title"
+        android:layout_below="@id/title_box"
         android:orientation="horizontal"
         android:padding="16dp"
-        android:paddingTop="32dp"
-        android:background="@color/colorWhite">
+        android:paddingTop="32dp" >
 
         <TextView
             android:id="@+id/duration_label"
@@ -49,8 +52,7 @@
             android:layout_toStartOf="@+id/text_bac_info_duration"
             android:paddingBottom="16dp"
             android:text="@string/drinking_duration"
-            android:textAlignment="viewStart"
-            android:textColor="@color/colorDarkGray" />
+            android:textAlignment="viewStart" />
 
         <TextView
             android:id="@+id/text_bac_info_duration"
@@ -61,8 +63,7 @@
             android:paddingStart="8dp"
             android:paddingEnd="2dp"
             android:paddingBottom="16dp"
-            android:textAlignment="viewEnd"
-            android:textColor="@color/colorDarkGray" />
+            android:textAlignment="viewEnd" />
 
 
         <TextView
@@ -74,8 +75,7 @@
             android:layout_toStartOf="@+id/text_bac_info_standard_drinks"
             android:paddingBottom="16dp"
             android:text="@string/standard_drinks_consumed"
-            android:textAlignment="viewStart"
-            android:textColor="@color/colorDarkGray" />
+            android:textAlignment="viewStart"/>
 
         <TextView
             android:id="@+id/text_bac_info_standard_drinks"
@@ -88,8 +88,7 @@
             android:gravity="center_vertical"
             android:paddingStart="8dp"
             android:paddingEnd="0dp"
-            android:paddingBottom="16dp"
-            android:textColor="@color/colorDarkGray" />
+            android:paddingBottom="16dp" />
 
         <TextView
             android:id="@+id/sober_label"
@@ -100,8 +99,7 @@
             android:layout_toStartOf="@+id/text_bac_info_time_to_sober"
             android:paddingBottom="16dp"
             android:text="@string/time_to_sober"
-            android:textAlignment="viewStart"
-            android:textColor="@color/colorDarkGray" />
+            android:textAlignment="viewStart" />
 
         <TextView
             android:id="@+id/text_bac_info_time_to_sober"
@@ -115,9 +113,7 @@
             android:gravity="center_vertical"
             android:paddingStart="8dp"
             android:paddingEnd="2dp"
-            android:paddingBottom="16dp"
-            android:textColor="@color/colorDarkGray"
-            tools:ignore="HardcodedText" />
+            android:paddingBottom="16dp" />
 
         <com.jjoe64.graphview.GraphView
             android:id="@+id/graph_bac_info_declining_bac"

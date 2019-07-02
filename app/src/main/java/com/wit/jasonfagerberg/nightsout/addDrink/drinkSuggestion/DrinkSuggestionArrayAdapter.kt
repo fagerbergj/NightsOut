@@ -7,7 +7,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.wit.jasonfagerberg.nightsout.R
 import com.wit.jasonfagerberg.nightsout.addDrink.AddDrinkActivity
-import com.wit.jasonfagerberg.nightsout.main.Drink
+import com.wit.jasonfagerberg.nightsout.models.Drink
 
 class DrinkSuggestionArrayAdapter(
     private var Activity: AddDrinkActivity,

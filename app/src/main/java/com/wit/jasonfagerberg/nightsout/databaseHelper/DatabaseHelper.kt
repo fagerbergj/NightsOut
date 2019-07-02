@@ -5,8 +5,8 @@ import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.util.SparseArray
-import com.wit.jasonfagerberg.nightsout.log.LogHeader
-import com.wit.jasonfagerberg.nightsout.main.Drink
+import com.wit.jasonfagerberg.nightsout.models.LogHeader
+import com.wit.jasonfagerberg.nightsout.models.Drink
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -232,7 +232,7 @@ open class DatabaseHelper(
             val measurement = cursor.getString(cursor.getColumnIndex("measurement"))
             val modifiedTime = cursor.getLong(cursor.getColumnIndex("modifiedTime"))
 
-            val drink = Drink(id, drinkName, abv, amount, measurement, true, false, modifiedTime)
+            val drink = Drink(id, drinkName, abv, amount, measurement, favorited = true, recent = false, modifiedTime = modifiedTime)
             favorites.add(0, drink)
         }
         cursor.close()

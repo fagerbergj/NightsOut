@@ -1,4 +1,4 @@
-package com.wit.jasonfagerberg.nightsout.main
+package com.wit.jasonfagerberg.nightsout.models
 
 import java.util.UUID
 

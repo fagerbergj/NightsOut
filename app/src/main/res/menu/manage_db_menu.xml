@@ -15,4 +15,9 @@
         android:id="@+id/btn_clean_db"
         android:title="@string/clean_db"
         app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/btn_toolbar_settings"
+        android:title="@string/settings"
+        app:showAsAction="never"/>
 </menu>

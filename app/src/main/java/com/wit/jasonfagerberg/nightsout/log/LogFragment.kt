@@ -15,10 +15,11 @@ import com.prolificinteractive.materialcalendarview.DayViewFacade
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView
 import com.prolificinteractive.materialcalendarview.spans.DotSpan
 import com.wit.jasonfagerberg.nightsout.R
-import com.wit.jasonfagerberg.nightsout.converter.Converter
+import com.wit.jasonfagerberg.nightsout.utils.Converter
 import com.wit.jasonfagerberg.nightsout.databaseHelper.LogDatabaseHelper
 import com.wit.jasonfagerberg.nightsout.dialogs.LightSimpleDialog
 import com.wit.jasonfagerberg.nightsout.main.MainActivity
+import com.wit.jasonfagerberg.nightsout.models.LogHeader
 import java.util.Calendar
 import java.util.Date
 import kotlin.collections.ArrayList
@@ -74,7 +75,11 @@ class LogFragment : Fragment() {
         val myCalendar = Calendar.getInstance()
         setupCalendar(view!!)
         calendarView.selectedDate = CalendarDay.from(Date(myCalendar.time.time))
-        // calender setup
+        calendarView.selectionColor = if (mMainActivity.activeTheme == R.style.AppTheme) {
+            ContextCompat.getColor(context!!, R.color.colorLightBlueGray)
+        } else {
+            ContextCompat.getColor(context!!, R.color.colorGray)
+        }
         super.onResume()
     }
 
@@ -115,11 +120,11 @@ class LogFragment : Fragment() {
                     return false
                 }
                 val header = mMainActivity.mLogHeaders[index]
-                val datePicker = LogFragmentDatePicker(this, mMainActivity, Converter(), header)
+                val datePicker = LogFragmentDatePicker(this, mMainActivity, Converter(), header, mMainActivity.activeTheme)
                 datePicker.showDatePicker()
             }
         }
-        return true
+        return mMainActivity.onOptionsItemSelected(item)
     }
 
     fun resetCalendar() {
@@ -165,7 +170,7 @@ class LogFragment : Fragment() {
     }
 
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
-        if (isVisibleToUser) setupCalendar(view!!)
+        if (isVisibleToUser && view != null) setupCalendar(view!!)
         super.setUserVisibleHint(isVisibleToUser)
     }
 
@@ -178,7 +183,7 @@ class LogFragment : Fragment() {
             dates.add(day)
         }
         calendarView.addDecorator(EventDecorator(ContextCompat.getColor(context!!,
-                R.color.colorPrimaryDark), dates))
+                R.color.colorPrimary), dates))
     }
 
     private fun setLogListBasedOnDay(date: Int) {

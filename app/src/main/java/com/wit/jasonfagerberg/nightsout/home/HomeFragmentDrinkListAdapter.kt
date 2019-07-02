@@ -6,17 +6,13 @@ import android.graphics.BitmapFactory
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
-import android.widget.ImageView
-import android.widget.EditText
-import android.widget.Spinner
-import android.widget.LinearLayout
+import android.widget.*
 import androidx.core.content.ContextCompat
 import com.google.android.material.snackbar.Snackbar
 import com.wit.jasonfagerberg.nightsout.R
 import com.wit.jasonfagerberg.nightsout.dialogs.EditDrinkDialog
-import com.wit.jasonfagerberg.nightsout.main.Constants
-import com.wit.jasonfagerberg.nightsout.main.Drink
+import com.wit.jasonfagerberg.nightsout.constants.Constants
+import com.wit.jasonfagerberg.nightsout.models.Drink
 import com.wit.jasonfagerberg.nightsout.main.MainActivity
 
 class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: ArrayList<Drink>) :
@@ -36,10 +32,10 @@ class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: Ar
         val drink = mDrinksList[position]
 
         when {
-            drink.abv > 20 -> holder.image.setImageBitmap(BitmapFactory.decodeResource(mContext.resources, R.mipmap.cocktail))
-            drink.abv > 9.5 -> holder.image.setImageBitmap(BitmapFactory.decodeResource(mContext.resources, R.mipmap.wine))
+            drink.abv > 20 -> holder.image.setImageBitmap(BitmapFactory.decodeResource(mContext.resources, R.drawable.cocktail))
+            drink.abv > 9.5 -> holder.image.setImageBitmap(BitmapFactory.decodeResource(mContext.resources, R.drawable.wine))
             else -> holder.image.setImageBitmap(BitmapFactory
-                    .decodeResource(mContext.resources, R.mipmap.beer))
+                    .decodeResource(mContext.resources, R.drawable.beer))
         }
 
         holder.name.text = drink.name
@@ -200,15 +196,15 @@ class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: Ar
     }
 
     private fun onDialogEditClick(
-        drink: Drink,
-        editName: EditText,
-        editABV: EditText,
-        editAmount: EditText,
-        dropdown: Spinner,
-        position: Int
+            drink: Drink,
+            editName: EditText,
+            editABV: EditText,
+            editAmount: EditText,
+            dropdown: Spinner,
+            position: Int
     ) {
         val other = Drink(drink.id, drink.name, drink.abv, drink.amount, drink.measurement,
-                false, false, Constants.getLongTimeNow())
+                favorited = false, recent = false, modifiedTime = Constants.getLongTimeNow())
         // pad 0s to end
         if (editABV.text.isNotEmpty() && "${editABV.text}"["${editABV.text}".length - 1] == '.') {
             val padded = "${editABV.text}0"
