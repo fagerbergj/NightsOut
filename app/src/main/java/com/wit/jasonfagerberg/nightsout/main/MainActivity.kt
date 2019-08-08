@@ -265,14 +265,10 @@ class MainActivity : NightsOutActivity() {
     }
 
     fun sendActionToBacNotificationService(action : String){
-        if (!showBacNotification) return
-        // todo figure out why this causes illegal state exceptions
-        try {
+        if (showBacNotification) {
             val startIntent = Intent(this, BacNotificationService::class.java)
             startIntent.action = action
             startService(startIntent)
-        } catch (e : Exception) {
-            Log.e("MainActivity", e.stackTrace.toString())
         }
     }
 

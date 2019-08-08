@@ -63,7 +63,7 @@ class BacNotificationService : Service() {
             }
 
             Constants.ACTION.UPDATE_NOTIFICATION -> {
-                if (!isStarted) return START_STICKY
+                if (!isStarted) return START_REDELIVER_INTENT
                 updateNotification()
             }
 
@@ -99,7 +99,7 @@ class BacNotificationService : Service() {
                 stopSelf()
             }
         }
-        return START_STICKY
+        return START_REDELIVER_INTENT
     }
 
     private fun updateNotification() {

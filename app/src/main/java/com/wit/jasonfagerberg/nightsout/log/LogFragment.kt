@@ -43,7 +43,6 @@ class LogFragment : Fragment() {
         mMainActivity = context as MainActivity
         mMainActivity.logFragment = this
         calendar = Calendar.getInstance()
-        logDatabaseHelper = LogDatabaseHelper(mMainActivity.mDatabaseHelper, mMainActivity)
         // take date from calender, pull correct session, pass to adapter
         mLogList = ArrayList()
         super.onCreate(savedInstanceState)
@@ -66,13 +65,13 @@ class LogFragment : Fragment() {
 
         setHasOptionsMenu(true)
 
-        // set adapter
-        setAdapter()
         return view
     }
 
     override fun onResume() {
         val myCalendar = Calendar.getInstance()
+        logDatabaseHelper = LogDatabaseHelper(mMainActivity.mDatabaseHelper, mMainActivity)
+        setAdapter()
         setupCalendar(view!!)
         calendarView.selectedDate = CalendarDay.from(Date(myCalendar.time.time))
         calendarView.selectionColor = if (mMainActivity.activeTheme == R.style.AppTheme) {
@@ -80,6 +79,7 @@ class LogFragment : Fragment() {
         } else {
             ContextCompat.getColor(context!!, R.color.colorGray)
         }
+
         super.onResume()
     }
 
