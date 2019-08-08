@@ -4,7 +4,7 @@ import android.content.Intent
 import android.graphics.PorterDuff
 import android.graphics.Typeface
 import android.os.Bundle
-import android.preference.PreferenceManager
+import androidx.preference.PreferenceManager
 import com.google.android.material.button.MaterialButton
 import androidx.fragment.app.Fragment
 import androidx.core.content.ContextCompat
@@ -155,8 +155,8 @@ class ProfileFragment : Fragment() {
         inflater!!.inflate(R.menu.profile_menu, menu)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        when (item?.itemId) {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
             R.id.btn_clear_favorites_list -> {
                 if (mMainActivity.mFavoritesList.isEmpty()) return false
                 val posAction = {
@@ -254,18 +254,14 @@ class ProfileFragment : Fragment() {
 
     private fun pressMaleButton() {
         sex = true
-        btnMale.background.setColorFilter(ContextCompat.getColor(context!!,
-                R.color.colorLightRed), PorterDuff.Mode.MULTIPLY)
-        btnFemale.background.setColorFilter(ContextCompat.getColor(context!!,
-                R.color.colorLightGray), PorterDuff.Mode.MULTIPLY)
+        mMainActivity.setColorFilter(btnMale.background, ContextCompat.getColor(context!!, R.color.colorLightRed))
+        mMainActivity.setColorFilter(btnFemale.background, ContextCompat.getColor(context!!, R.color.colorGray))
     }
 
     private fun pressFemaleButton() {
         sex = false
-        btnFemale.background.setColorFilter(ContextCompat.getColor(context!!,
-                R.color.colorLightRed), PorterDuff.Mode.MULTIPLY)
-        btnMale.background.setColorFilter(ContextCompat.getColor(context!!,
-                R.color.colorLightGray), PorterDuff.Mode.MULTIPLY)
+        mMainActivity.setColorFilter(btnFemale.background, ContextCompat.getColor(context!!, R.color.colorLightRed))
+        mMainActivity.setColorFilter(btnMale.background, ContextCompat.getColor(context!!, R.color.colorGray))
     }
 
     private fun saveProfile(view: View) {

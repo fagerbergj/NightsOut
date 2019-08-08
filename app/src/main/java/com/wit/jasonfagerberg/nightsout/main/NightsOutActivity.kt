@@ -1,10 +1,15 @@
 package com.wit.jasonfagerberg.nightsout.main
 
 import android.content.Intent
+import android.graphics.BlendMode
+import android.graphics.BlendModeColorFilter
+import android.graphics.PorterDuff
+import android.graphics.drawable.Drawable
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.PersistableBundle
-import android.preference.PreferenceManager
+import androidx.preference.PreferenceManager
 import android.view.Gravity
 import android.view.MenuItem
 import android.widget.Toast
@@ -27,17 +32,18 @@ abstract class NightsOutActivity : AppCompatActivity() {
         mApp = this.applicationContext as NightsOutApplication
     }
 
-    override fun onSaveInstanceState(outState: Bundle?, outPersistentState: PersistableBundle?) {
-        outState?.putInt(Constants.FRAGMENT_ID, fragmentId)
-        outState?.putIntArray(Constants.BACK_STACK, mBackStack.toIntArray())
+    override fun onSaveInstanceState(outState: Bundle, outPersistentState: PersistableBundle) {
+        outState.putInt(Constants.FRAGMENT_ID, fragmentId)
+        outState.putIntArray(Constants.BACK_STACK, mBackStack.toIntArray())
         super.onSaveInstanceState(outState, outPersistentState)
     }
 
     override fun onResume() {
         super.onResume()
         mApp!!.mCurrentActivity = this
-        if (intent.getIntArrayExtra(Constants.BACK_STACK) != null) {
-            for (entry in intent.getIntArrayExtra(Constants.BACK_STACK)) {
+        val backStackArray = intent.getIntArrayExtra(Constants.BACK_STACK)
+        if (backStackArray != null) {
+            for (entry in backStackArray) {
                 pushToBackStack(entry)
             }
         }
@@ -78,12 +84,21 @@ abstract class NightsOutActivity : AppCompatActivity() {
         super.startActivity(newIntent)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        if (item?.itemId == R.id.btn_toolbar_settings) {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == R.id.btn_toolbar_settings) {
             val intent = Intent(this, SettingsActivity::class.java)
             startActivity(intent)
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    public fun setColorFilter(target: Drawable, color : Int) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            target.colorFilter = BlendModeColorFilter(color, BlendMode.MULTIPLY)
+        } else {
+            @Suppress("DEPRECATION")
+            target.setColorFilter(color, PorterDuff.Mode.MULTIPLY)
+        }
     }
 
     fun showToast(message: String, isLongToast: Boolean = false) {

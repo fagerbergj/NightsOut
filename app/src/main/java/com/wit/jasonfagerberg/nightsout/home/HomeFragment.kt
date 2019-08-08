@@ -93,8 +93,8 @@ class HomeFragment : Fragment() {
         inflater!!.inflate(R.menu.home_menu, menu)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        val resId = item?.itemId
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        val resId = item.itemId
         val datePicker = HomeFragmentLogDatePicker(context!!)
         when (resId) {
             R.id.btn_toolbar_home_done -> datePicker.showDatePicker()
@@ -251,7 +251,7 @@ class HomeFragment : Fragment() {
         val dialog = SimpleDialog(context!!, layoutInflater)
         dialog.setTitle(getString(R.string.disclaimer))
         dialog.setBody(getString(R.string.disclaimer_body))
-        dialog.setNuetralFunction { dialog.dismiss() }
+        dialog.setNeutralFunction { dialog.dismiss() }
     }
 
     // Widemark formula, imperial due to better floating point accuracy

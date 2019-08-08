@@ -7,7 +7,6 @@ import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Bundle
 import android.os.PersistableBundle
-import android.preference.PreferenceManager
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
@@ -16,6 +15,7 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
+import androidx.preference.PreferenceManager
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.wit.jasonfagerberg.nightsout.R
@@ -30,7 +30,7 @@ import com.wit.jasonfagerberg.nightsout.models.Drink
 import com.wit.jasonfagerberg.nightsout.notification.BacNotificationService
 import com.wit.jasonfagerberg.nightsout.profile.ProfileFragment
 import java.lang.Exception
-import java.util.*
+import java.util.Locale
 import kotlin.collections.ArrayList
 
 //private const val TAG = "MainActivity"
@@ -111,7 +111,7 @@ class MainActivity : NightsOutActivity() {
 
     }
 
-    override fun onSaveInstanceState(outState: Bundle?, outPersistentState: PersistableBundle?) {
+    override fun onSaveInstanceState(outState: Bundle, outPersistentState: PersistableBundle) {
         fragmentId = pager.currentItem
         super.onSaveInstanceState(outState, outPersistentState)
     }
@@ -254,7 +254,7 @@ class MainActivity : NightsOutActivity() {
             setPreference(drinksAddedCount = 0, dateInstalled = System.currentTimeMillis() - 86400000 * 2)
             dialog.dismiss()
         }
-        dialog.setNuetralFunction {
+        dialog.setNeutralFunction {
             setPreference(dontShowRateDialog = true)
             dialog.dismiss()
         }
@@ -266,10 +266,10 @@ class MainActivity : NightsOutActivity() {
 
     fun sendActionToBacNotificationService(action : String){
         if (!showBacNotification) return
-        val startIntent = Intent(this, BacNotificationService::class.java)
-        startIntent.action = action
         // todo figure out why this causes illegal state exceptions
         try {
+            val startIntent = Intent(this, BacNotificationService::class.java)
+            startIntent.action = action
             startService(startIntent)
         } catch (e : Exception) {
             Log.e("MainActivity", e.stackTrace.toString())

@@ -2,7 +2,7 @@ package com.wit.jasonfagerberg.nightsout.settings
 
 import android.content.Intent
 import android.os.Bundle
-import android.preference.PreferenceManager
+import androidx.preference.PreferenceManager
 import android.view.MenuItem
 import android.widget.CheckBox
 import android.widget.ImageButton
@@ -119,8 +119,8 @@ class SettingsActivity : NightsOutActivity() {
         edit.apply()
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        when (item?.itemId) {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
             android.R.id.home -> {
                 onBackPressed()
             }

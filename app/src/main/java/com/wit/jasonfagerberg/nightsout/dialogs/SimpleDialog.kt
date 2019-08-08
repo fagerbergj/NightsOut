@@ -47,7 +47,7 @@ class SimpleDialog(context: Context, layoutInflater: LayoutInflater) {
         negButton.setOnClickListener(listener)
     }
 
-    fun setNuetralFunction(listener: (View) -> Unit) {
+    fun setNeutralFunction(listener: (View) -> Unit) {
         neuButton.visibility = View.VISIBLE
         neuButton.setOnClickListener(listener)
     }

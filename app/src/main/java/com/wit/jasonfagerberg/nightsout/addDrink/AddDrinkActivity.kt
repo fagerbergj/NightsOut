@@ -4,8 +4,12 @@ package com.wit.jasonfagerberg.nightsout.addDrink
 import android.app.Activity
 import android.content.ContentValues
 import android.content.Intent
+import android.graphics.BlendMode
+import android.graphics.BlendModeColorFilter
 import android.graphics.PorterDuff
 import android.graphics.Typeface
+import android.graphics.drawable.Drawable
+import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -13,7 +17,11 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.InputMethodManager
-import android.widget.*
+import android.widget.ArrayAdapter
+import android.widget.CheckBox
+import android.widget.EditText
+import android.widget.Spinner
+import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -124,12 +132,10 @@ class AddDrinkActivity : NightsOutActivity() {
         val btnAdd = findViewById<MaterialButton>(R.id.btn_add_drink_add)
         // change button color based off mFavorited
         if (mFavorited) {
-            btnAdd.background.setColorFilter(ContextCompat.getColor(this,
-                    R.color.colorLightRed), PorterDuff.Mode.MULTIPLY)
+            setColorFilter(btnAdd.background, ContextCompat.getColor(this, R.color.colorLightRed))
             btnAdd.text = resources.getText(R.string.add_favorite)
         } else {
-            btnAdd.background.setColorFilter(ContextCompat.getColor(this,
-                    R.color.colorGreen), PorterDuff.Mode.MULTIPLY)
+            setColorFilter(btnAdd.background, ContextCompat.getColor(this, R.color.colorGreen))
         }
         btnAdd.setOnClickListener { addDrink() }
     }
@@ -193,8 +199,8 @@ class AddDrinkActivity : NightsOutActivity() {
         return super.onCreateOptionsMenu(menu)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        val resId = item!!.itemId
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        val resId = item.itemId
         val btnAdd = findViewById<MaterialButton>(R.id.btn_add_drink_add)
         when (resId) {
             R.id.btn_toolbar_favorite -> { favoriteOptionSelected(item, btnAdd) }
@@ -226,14 +232,12 @@ class AddDrinkActivity : NightsOutActivity() {
             item.icon = ContextCompat.getDrawable(this, R.drawable.favorite_white_24dp)
             if (canUnfavorite) btnAdd.setText(R.string.add_and_favorite)
             showToast("Drink Will Be Favorited After Adding", true)
-            btnAdd.background.setColorFilter(ContextCompat.getColor(this,
-                    R.color.colorLightRed), PorterDuff.Mode.MULTIPLY)
+            setColorFilter(btnAdd.background, ContextCompat.getColor(this, R.color.colorLightRed))
         } else {
             item.icon = ContextCompat.getDrawable(this, R.drawable.favorite_border_white_24dp)
             btnAdd.setText(R.string.add)
             showToast("Drink Will Not Be Favorited", true)
-            btnAdd.background.setColorFilter(ContextCompat.getColor(this,
-                    R.color.colorGreen), PorterDuff.Mode.MULTIPLY)
+            setColorFilter(btnAdd.background, ContextCompat.getColor(this, R.color.colorGreen))
         }
         return true
     }

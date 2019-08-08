@@ -88,8 +88,8 @@ class LogFragment : Fragment() {
         inflater!!.inflate(R.menu.log_menu, menu)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        when (item?.itemId) {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
             R.id.btn_clear_all_logs -> {
                 if (mMainActivity.mLogHeaders.isEmpty()) return false
                 val lightSimpleDialog = LightSimpleDialog(context!!)

@@ -258,7 +258,7 @@ open class DatabaseHelper(
             val measurement = cursor.getString(cursor.getColumnIndex("measurement"))
             val modifiedTime = cursor.getLong(cursor.getColumnIndex("modifiedTime"))
 
-            val drink = Drink(id, drinkName, abv, amount, measurement, false, true, modifiedTime)
+            val drink = Drink(id, drinkName, abv, amount, measurement, favorited = false, recent = true, modifiedTime = modifiedTime)
 
             if (recents.contains(drink)) {
                 val i = recents.indexOf(drink)

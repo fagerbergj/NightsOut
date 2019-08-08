@@ -68,8 +68,8 @@ class ManageDBActivity : NightsOutActivity() {
         return super.onCreateOptionsMenu(menu)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        when (item?.itemId) {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
             R.id.btn_reset_db -> {
                 val dialog = LightSimpleDialog(this)
                 val posAction = {
