@@ -10,7 +10,7 @@ android {
         applicationId "com.wit.jasonfagerberg.nightsout"
         minSdkVersion 19
         targetSdkVersion 29
-        versionCode 1903
+        versionCode 1904
         versionName "Rattata"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         setProperty("archivesBaseName", "nightsout-$versionName")

@@ -405,7 +405,7 @@ class AddDrinkActivity : NightsOutActivity() {
     }
 
     fun addDrinkToCurrentSessionAndRecentsTables(drink: Drink) {
-        mDatabaseHelper.insertRowInCurrentSessionTable(drink.id, mDatabaseHelper.getNumberOfRows("drinks").toInt())
+        mDatabaseHelper.insertRowInCurrentSessionTable(drink.id, mDatabaseHelper.getNumberOfRows("current_session_drinks").toInt())
 
         // UPDATE drinks WHERE name = drink.name SET recent = 0
         val args = ContentValues()

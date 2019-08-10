@@ -172,6 +172,7 @@ class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: Ar
         mMainActivity.mDatabaseHelper.deleteRowsInTable("current_session_drinks", "position=$position")
         notifyItemRemoved(position)
         notifyItemRangeChanged(position, mDrinksList.size)
+        mMainActivity.homeFragment.updateBACText(mMainActivity.homeFragment.calculateBAC())
         mMainActivity.homeFragment.showOrHideEmptyListText(mMainActivity.homeFragment.view!!)
         snackbar.show()
     }
