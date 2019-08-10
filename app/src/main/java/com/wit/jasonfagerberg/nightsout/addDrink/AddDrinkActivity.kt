@@ -449,7 +449,7 @@ class AddDrinkActivity : NightsOutActivity() {
         // build message to say what is invalid
         val foz = mConverter.drinkVolumeToFluidOz(amount, measurement)
         // 560 fluid oz = 30 pack of beer + 17 beers, more than too much liquid to put in one drink
-        if (amount.isNaN() || mConverter.fluidOzToGrams(foz) > 560) {
+        if (amount.isNaN() ||foz > 560) {
             message = ", amount$message"
             setTextViewToRedAndBold(textAmount)
             inputError = true
