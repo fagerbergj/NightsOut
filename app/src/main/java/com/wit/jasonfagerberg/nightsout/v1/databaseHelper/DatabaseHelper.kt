@@ -4,7 +4,6 @@ import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
-import android.util.SparseArray
 import com.wit.jasonfagerberg.nightsout.v1.models.LogHeader
 import com.wit.jasonfagerberg.nightsout.v1.models.Drink
 import java.io.File
@@ -29,9 +28,6 @@ open class DatabaseHelper(
     private val mAllDrinks = ArrayList<Drink>()
     private val mIgnoredDrinks = ArrayList<UUID>()
     private val mAllLoggedDrinks = ArrayList<Pair<Int, UUID>>()
-
-    // delete after everyone is using UUIDs
-    private val mOldIdUUIDMap = SparseArray<UUID>()
 
     // general db
     override fun onCreate(db: SQLiteDatabase?) {}
@@ -84,7 +80,6 @@ open class DatabaseHelper(
         // dont need to do any data saving since there is no data
         if (oldVersion == 0) return
 
-        mapOldIdsToUUIDs(oldVersion)
         pullAllDrinks()
         val mDrinksList = pullCurrentSessionDrinks()
         val mFavoritesList = pullFavoriteDrinks()
@@ -104,11 +99,7 @@ open class DatabaseHelper(
     private fun pullAllDrinks() {
         var cursor = db.query("drinks", null, null, null, null, null, null, null)
         while (cursor.moveToNext()) {
-            val id = try {
-                UUID.fromString(cursor.getString(cursor.getColumnIndex("id")))
-            } catch (e: Exception) {
-                mOldIdUUIDMap[cursor.getInt(cursor.getColumnIndex("id"))]!!
-            }
+            val id = UUID.fromString(cursor.getString(cursor.getColumnIndex("id")))
             val drinkName = cursor.getString(cursor.getColumnIndex("name"))
             val abv = cursor.getDouble(cursor.getColumnIndex("abv"))
             val amount = cursor.getDouble(cursor.getColumnIndex("amount"))
@@ -130,11 +121,7 @@ open class DatabaseHelper(
         cursor = db.query("log_drink", null, null, null, null, null, null)
         while (cursor.moveToNext()) {
             val logDate = cursor.getInt(cursor.getColumnIndex("log_date"))
-            val drinkId = try {
-                UUID.fromString(cursor.getString(cursor.getColumnIndex("drink_id")))
-            } catch (e: Exception) {
-                mOldIdUUIDMap[cursor.getInt(cursor.getColumnIndex("drink_id"))]
-            }
+            val drinkId = UUID.fromString(cursor.getString(cursor.getColumnIndex("drink_id")))
             if (drinkId != null) mAllLoggedDrinks.add(Pair(logDate, drinkId))
             else mAllLoggedDrinks.add(Pair(logDate, UUID.randomUUID()))
         }
@@ -179,11 +166,7 @@ open class DatabaseHelper(
         val order = "current_session_drinks.position ASC"
         val cursor = db.query(table, null, where, null, null, null, order, null)
         while (cursor.moveToNext()) {
-            val id = try {
-                UUID.fromString(cursor.getString(cursor.getColumnIndex("id")))
-            } catch (e: Exception) {
-                mOldIdUUIDMap[cursor.getInt(cursor.getColumnIndex("id"))]!!
-            }
+            val id = UUID.fromString(cursor.getString(cursor.getColumnIndex("id")))
             val drinkName = cursor.getString(cursor.getColumnIndex("name"))
             val abv = cursor.getDouble(cursor.getColumnIndex("abv"))
             val amount = cursor.getDouble(cursor.getColumnIndex("amount"))
@@ -221,11 +204,7 @@ open class DatabaseHelper(
         val cursor = db.query(table, null, where, null, null, null, order, null)
 
         while (cursor.moveToNext()) {
-            val id = try {
-                UUID.fromString(cursor.getString(cursor.getColumnIndex("id")))
-            } catch (e: Exception) {
-                mOldIdUUIDMap[cursor.getInt(cursor.getColumnIndex("id"))]!!
-            }
+            val id = UUID.fromString(cursor.getString(cursor.getColumnIndex("id")))
             val drinkName = cursor.getString(cursor.getColumnIndex("name"))
             val abv = cursor.getDouble(cursor.getColumnIndex("abv"))
             val amount = cursor.getDouble(cursor.getColumnIndex("amount"))
@@ -247,11 +226,7 @@ open class DatabaseHelper(
         val cursor = db.query(table, null, where, null, null, null, order, null)
 
         while (cursor.moveToNext()) {
-            val id = try {
-                UUID.fromString(cursor.getString(cursor.getColumnIndex("id")))
-            } catch (e: Exception) {
-                mOldIdUUIDMap[cursor.getInt(cursor.getColumnIndex("id"))]!!
-            }
+            val id = UUID.fromString(cursor.getString(cursor.getColumnIndex("id")))
             val drinkName = cursor.getString(cursor.getColumnIndex("name"))
             val abv = cursor.getDouble(cursor.getColumnIndex("abv"))
             val amount = cursor.getDouble(cursor.getColumnIndex("amount"))
@@ -395,20 +370,5 @@ open class DatabaseHelper(
         val ret = cursor.count > 0
         cursor.close()
         return ret
-    }
-
-    // needed for older db before I started using UUIDs
-    private fun mapOldIdsToUUIDs(oldVersion: Int) {
-        if (oldVersion >= 40) return
-        val cursor = db.query("drinks", null, null, null, null, null, null, null)
-        while (cursor.moveToNext()) {
-            val id = cursor.getString(cursor.getColumnIndex("id"))
-            try {
-                UUID.fromString(id)
-            } catch (e: Exception) {
-                mOldIdUUIDMap.put(id.toInt(), UUID.randomUUID())
-            }
-        }
-        cursor.close()
     }
 }
