@@ -68,12 +68,12 @@ class ManageDBDrinkListAdapter(private val mContext: Context, private val mDrink
         drink.favorited = !drink.favorited
         mActivity.dbh.updateDrinkModifiedTime(drink.id, Constants.getLongTimeNow())
         for (d in mDrinksList) {
-            if (d == drink) d.favorited = drink.favorited
+            if (d.name == drink.name) d.favorited = drink.favorited
         }
         notifyDataSetChanged()
 
         for (d in mDrinksList) {
-            if (d == drink) d.favorited = drink.favorited
+            if (d.name == drink.name) d.favorited = drink.favorited
         }
         if (drink.favorited) mActivity.showToast("${drink.name} favorited")
         else mActivity.showToast("${drink.name} unfavorited")
@@ -114,19 +114,19 @@ class ManageDBDrinkListAdapter(private val mContext: Context, private val mDrink
         var loss = ""
 
         for (d in mActivity.dbh.pullCurrentSessionDrinks()) {
-            if (d.isExactDrink(drink)) {
+            if (d.id == drink.id) {
                 loss += "Drink in Current Drinks List\n"
                 break
             }
         }
         for (f in mFavoritesList) {
-            if (f.isExactDrink(drink)) {
+            if (f.id == drink.id) {
                 loss += "Favorite Drink Reference\n"
                 break
             }
         }
         for (r in mRecentsList) {
-            if (r.isExactDrink(drink)) {
+            if (r.id == drink.id) {
                 loss += "Recent Drink Reference\n"
                 break
             }

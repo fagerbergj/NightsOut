@@ -148,7 +148,7 @@ class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: Ar
 
         for (i in mMainActivity.mDrinksList.indices) {
             val d = mMainActivity.mDrinksList[i]
-            if (d == drink) {
+            if (d.name == drink.name) {
                 d.favorited = drink.favorited
                 notifyItemChanged(i)
             }
@@ -234,7 +234,7 @@ class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: Ar
         drink.id = id
         mMainActivity.mDatabaseHelper.deleteRowsInTable("current_session_drinks", "position=$position")
 
-        if (!drink.isExactDrink(other) && !mMainActivity.mDatabaseHelper.idInDb(id)) {
+        if (drink.id != other.id && !mMainActivity.mDatabaseHelper.idInDb(id)) {
             if (drink.name != other.name) drink.favorited = false
             mMainActivity.mDatabaseHelper.insertDrinkIntoDrinksTable(drink)
             drink.id = mMainActivity.mDatabaseHelper.getDrinkIdFromFullDrinkInfo(drink)

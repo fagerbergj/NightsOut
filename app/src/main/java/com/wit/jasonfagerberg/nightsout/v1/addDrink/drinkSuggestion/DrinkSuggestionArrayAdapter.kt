@@ -48,11 +48,12 @@ class DrinkSuggestionArrayAdapter(
     }
 
     override fun remove(`object`: Drink?) {
+        requireNotNull(`object`)
         var i = data.indexOf(`object`)
         // have to make sure to delete drink based on UUID since equals only compares names
         for (x in data.indices) {
             val d = data[x]
-            if (d.isExactDrink(`object` as Drink)) {
+            if (d.id == `object`.id) {
                 // save index to avoid out of bounds exception
                 i = x
                 break
