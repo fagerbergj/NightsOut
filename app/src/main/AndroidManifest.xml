@@ -12,10 +12,10 @@
         android:theme="@style/AppTheme"
         android:windowSoftInputMode="adjustResize|stateHidden"
         tools:ignore="GoogleAppIndexingWarning"
-        android:name=".main.NightsOutApplication">
-        <activity android:name=".settings.SettingsActivity" />
+        android:name="com.wit.jasonfagerberg.nightsout.v1.main.NightsOutApplication">
+        <activity android:name="com.wit.jasonfagerberg.nightsout.v1.settings.SettingsActivity" />
         <activity
-            android:name=".main.MainActivity"
+            android:name="com.wit.jasonfagerberg.nightsout.v1.main.MainActivity"
             android:configChanges="orientation|keyboardHidden"
             android:windowSoftInputMode="adjustPan">
             <intent-filter>
@@ -25,12 +25,14 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".addDrink.AddDrinkActivity"
+            android:name="com.wit.jasonfagerberg.nightsout.v1.addDrink.AddDrinkActivity"
             android:configChanges="orientation|keyboardHidden"
             android:windowSoftInputMode="adjustPan" />
-        <activity android:name=".manageDB.ManageDBActivity" />
+        <activity android:name="com.wit.jasonfagerberg.nightsout.v1.manageDB.ManageDBActivity" />
 
-        <service android:name=".notification.BacNotificationService" />
+        <service android:name="com.wit.jasonfagerberg.nightsout.v1.notification.BacNotificationService" />
+
+        <activity android:name="com.wit.jasonfagerberg.nightsout.v2.addDrink.view.AddDrinkActivity" />
     </application>
 
 </manifest>

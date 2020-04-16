@@ -1,119 +1,91 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/layout_home"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".home.HomeFragment">
+    tools:context=".v1.home.HomeFragment">
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btn_home_add_drink"
-        android:layout_width="match_parent"
+    <EditText
+        android:id="@+id/edit_start_time"
+        android:layout_width="112dp"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginRight="16dp"
-        android:text="@string/add_drink"
-        android:textSize="18sp"
-        android:theme="@style/HomeButtonTheme" />
+        android:clickable="false"
+        android:focusable="false"
+        android:hint="@string/empty"
+        android:importantForAutofill="no"
+        android:inputType="time"
+        android:textAlignment="center"
+        app:layout_constraintEnd_toEndOf="@+id/title_start"
+        app:layout_constraintStart_toStartOf="@+id/title_start"
+        app:layout_constraintTop_toBottomOf="@+id/title_start"
+        app:layout_constraintWidth_percent="0.5"
+        tools:targetApi="o" />
 
-    <RelativeLayout
-        android:id="@+id/layout_drinking_time"
+    <EditText
+        android:id="@+id/edit_end_time"
+        android:layout_width="112dp"
+        android:layout_height="wrap_content"
+        android:autofillHints=""
+        android:clickable="false"
+        android:focusable="false"
+        android:hint="@string/empty"
+        android:inputType="time"
+        android:textAlignment="center"
+        app:layout_constraintEnd_toEndOf="@+id/title_end"
+        app:layout_constraintStart_toStartOf="@+id/title_end"
+        app:layout_constraintTop_toBottomOf="@+id/title_end"
+        tools:targetApi="o" />
+
+    <ImageButton
+        android:id="@+id/btn_home_bac_info"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_below="@id/btn_home_add_drink"
-        android:paddingTop="4dp"
-        android:paddingBottom="4dp">
+        android:background="#0000"
+        android:contentDescription="@string/info"
+        android:padding="8dp"
+        android:src="@drawable/ic_info_gray_24dp"
+        app:layout_constraintBottom_toBottomOf="@+id/text_home_bac_result"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/text_home_bac_result"
+        app:layout_constraintTop_toTopOf="@+id/text_home_bac_result" />
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:orientation="vertical"
-            android:layout_alignParentStart="true"
-            android:layout_toStartOf="@+id/strut">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/start_drinking" />
-
-            <EditText
-                android:id="@+id/edit_start_time"
-                android:layout_width="112dp"
-                android:layout_height="40dp"
-                android:clickable="false"
-                android:focusable="false"
-                android:hint="@string/empty"
-                android:importantForAutofill="no"
-                android:inputType="time"
-                android:textAlignment="center"
-                tools:targetApi="o" />
-        </LinearLayout>
-
-        <View android:id="@+id/strut"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_centerHorizontal="true"/>
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_toEndOf="@+id/strut"
-            android:gravity="center_horizontal"
-            android:orientation="vertical">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/end_drinking" />
-
-            <EditText
-                android:id="@+id/edit_end_time"
-                android:layout_width="112dp"
-                android:layout_height="40dp"
-                android:autofillHints=""
-                android:clickable="false"
-                android:focusable="false"
-                android:hint="@string/empty"
-                android:inputType="time"
-                android:textAlignment="center"
-                tools:targetApi="o" />
-        </LinearLayout>
-
-    </RelativeLayout>
-
-    <com.wit.jasonfagerberg.nightsout.styleableViews.RelativeLayoutStyleable
-        android:id="@+id/layout_drink_list"
-        android:layout_width="match_parent"
+    <TextView
+        android:id="@+id/title_start"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_above="@id/text_home_bac_value"
-        android:layout_below="@+id/layout_drinking_time"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="4dp"
-        android:layout_marginEnd="8dp"
-        android:paddingTop="2dp"
-        android:paddingBottom="2dp">
+        android:gravity="center"
+        android:padding="8dp"
+        android:text="@string/start_drinking"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_home_add_drink"
+        app:layout_constraintWidth_percent="0.5" />
 
-        <com.wit.jasonfagerberg.nightsout.styleableViews.RecyclerViewStyleable
-            android:id="@+id/recycler_drink_list"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp" />
+    <TextView
+        android:id="@+id/title_end"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:padding="8dp"
+        android:text="@string/end_drinking"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/title_start"
+        app:layout_constraintWidth_percent="0.5" />
 
-        <TextView
-            android:id="@+id/text_home_empty_list"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:text="@string/no_drinks_yet" />
-
-    </com.wit.jasonfagerberg.nightsout.styleableViews.RelativeLayoutStyleable>
+    <TextView
+        android:id="@+id/text_home_empty_list"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:text="@string/no_drinks_yet"
+        app:layout_constraintBottom_toTopOf="@+id/text_home_bac_value"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/recycler_drink_list"
+        app:layout_constraintTop_toTopOf="@+id/recycler_drink_list" />
 
     <TextView
         android:id="@+id/text_home_bac_value"
@@ -123,7 +95,11 @@
         android:layout_centerHorizontal="true"
         android:paddingBottom="4dp"
         android:textSize="60sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:text="0.050" />
 
     <TextView
         android:id="@+id/text_home_bac_result"
@@ -132,21 +108,58 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
         android:layout_toEndOf="@id/text_home_bac_value"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"
-        android:paddingBottom="16dp"
-        android:textSize="18sp" />
+        android:padding="16dp"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/text_home_bac_value"
+        app:layout_constraintTop_toTopOf="@+id/text_home_bac_value"
+        tools:text="Drunk" />
 
-    <ImageButton
-        android:id="@+id/btn_home_bac_info"
-        android:layout_width="wrap_content"
+    <View
+        android:id="@+id/topLine"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_margin="8dp"
+        android:background="@color/colorLightBlueGray"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/edit_start_time"
+        app:layout_constraintWidth_percent="0.9" />
+
+    <View
+        android:id="@+id/bottomLine"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_margin="8dp"
+        android:background="@color/colorLightBlueGray"
+        app:layout_constraintBottom_toTopOf="@+id/text_home_bac_result"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintWidth_percent="0.9" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_drink_list"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        app:layout_constraintBottom_toTopOf="@+id/bottomLine"
+        app:layout_constraintTop_toBottomOf="@+id/topLine"
+        tools:itemCount="10"
+        tools:listitem="@layout/fragment_home_list_item" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_home_add_drink"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/layout_drink_list"
-        android:layout_alignParentEnd="true"
-        android:padding="8dp"
-        android:layout_marginEnd="8dp"
-        android:contentDescription="@string/info"
-        android:src="@drawable/ic_info_gray_24dp"
-        android:background="#0000"/>
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:text="@string/add_drink"
+        android:textSize="18sp"
+        android:theme="@style/HomeButtonTheme"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-</RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

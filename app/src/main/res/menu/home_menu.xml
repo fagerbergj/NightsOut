@@ -2,7 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".main.MainActivity">
+    tools:context=".v1.main.MainActivity">
     <item
         android:id="@+id/btn_toolbar_home_done"
         android:title="@string/log_session"

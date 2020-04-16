@@ -1,117 +1,110 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <RelativeLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/title_box"
-        android:layout_alignParentTop="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorPrimary">
-
-        <TextView
-            android:id="@+id/text_drink_modify_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_toStartOf="@+id/imgBtn_drink_modify_close"
-            android:padding="16dp"
-            android:text="@string/drink"
-            android:textColor="@color/colorWhite"
-            android:textSize="24sp"
-            android:textStyle="bold" />
+        android:layout_alignParentTop="true"
+        android:background="@color/colorPrimary"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
             android:id="@+id/imgBtn_drink_modify_close"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
             android:background="?attr/selectableItemBackground"
             android:contentDescription="@string/empty"
             android:padding="8dp"
-            android:src="@drawable/ic_close_white_24dp" />
+            android:src="@drawable/ic_close_white_24dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    </RelativeLayout>
+        <TextView
+            android:id="@+id/text_drink_modify_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:text="@string/drink"
+            android:textColor="@color/colorWhite"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/imgBtn_drink_modify_close"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <RelativeLayout
-        android:layout_width="wrap_content"
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <TextView
+        android:id="@+id/text_drink_modify_add_another"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/title_box">
+        android:background="?attr/selectableItemBackground"
+        android:clickable="true"
+        android:drawableStart="@drawable/add_gray_24dp"
+        android:drawablePadding="16dp"
+        android:focusable="true"
+        android:padding="8dp"
+        android:text="@string/add_another"
+        android:textSize="18sp"
+        app:layout_constraintTop_toBottomOf="@+id/title_box" />
 
-        <View
-            android:id="@+id/line"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginBottom="4dp" />
+    <TextView
+        android:id="@+id/text_drink_modify_favorite_drink"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/text_drink_modify_add_another"
+        android:background="?attr/selectableItemBackground"
+        android:clickable="true"
+        android:drawableStart="@drawable/favorite_gray_18dp"
+        android:drawablePadding="16dp"
+        android:focusable="true"
+        android:padding="8dp"
+        android:paddingStart="12dp"
+        android:paddingEnd="8dp"
+        android:text="@string/favorite_drink"
+        android:textSize="18sp"
+        app:layout_constraintTop_toBottomOf="@+id/text_drink_modify_add_another" />
 
-        <TextView
-            android:id="@+id/text_drink_modify_add_another"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/line"
-            android:layout_marginStart="13dp"
-            android:layout_marginEnd="16dp"
-            android:background="?attr/selectableItemBackground"
-            android:clickable="true"
-            android:drawableStart="@drawable/add_gray_24dp"
-            android:drawablePadding="12dp"
-            android:focusable="true"
-            android:padding="8dp"
-            android:text="@string/add_another"
-            android:textSize="18sp" />
+    <TextView
+        android:id="@+id/text_drink_modify_edit_drink"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/text_drink_modify_favorite_drink"
+        android:background="?attr/selectableItemBackground"
+        android:clickable="true"
+        android:drawableStart="@drawable/edit_gray_18dp"
+        android:drawablePadding="16dp"
+        android:focusable="true"
+        android:padding="8dp"
+        android:paddingStart="12dp"
+        android:paddingEnd="8dp"
+        android:text="@string/edit"
+        android:textSize="18sp"
+        app:layout_constraintTop_toBottomOf="@+id/text_drink_modify_favorite_drink" />
 
-        <TextView
-            android:id="@+id/text_drink_modify_favorite_drink"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/text_drink_modify_add_another"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:background="?attr/selectableItemBackground"
-            android:clickable="true"
-            android:drawableStart="@drawable/favorite_gray_18dp"
-            android:drawablePadding="16dp"
-            android:focusable="true"
-            android:padding="8dp"
-            android:text="@string/favorite_drink"
-            android:textSize="18sp" />
+    <TextView
+        android:id="@+id/text_drink_modify_remove_drink"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/text_drink_modify_edit_drink"
+        android:background="?attr/selectableItemBackground"
+        android:clickable="true"
+        android:drawableStart="@drawable/delete_gray_18dp"
+        android:drawablePadding="16dp"
+        android:focusable="true"
+        android:padding="8dp"
+        android:paddingStart="12dp"
+        android:paddingEnd="8dp"
+        android:text="@string/remove"
+        android:textSize="18sp"
+        app:layout_constraintTop_toBottomOf="@+id/text_drink_modify_edit_drink" />
 
-        <TextView
-            android:id="@+id/text_drink_modify_edit_drink"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/text_drink_modify_favorite_drink"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:background="?attr/selectableItemBackground"
-            android:clickable="true"
-            android:drawableStart="@drawable/edit_gray_18dp"
-            android:drawablePadding="16dp"
-            android:focusable="true"
-            android:padding="8dp"
-            android:text="@string/edit"
-            android:textSize="18sp" />
-
-        <TextView
-            android:id="@+id/text_drink_modify_remove_drink"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/text_drink_modify_edit_drink"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginBottom="8dp"
-            android:background="?attr/selectableItemBackground"
-            android:clickable="true"
-            android:drawableStart="@drawable/delete_gray_18dp"
-            android:drawablePadding="16dp"
-            android:focusable="true"
-            android:padding="8dp"
-            android:text="@string/remove"
-            android:textSize="18sp" />
-
-    </RelativeLayout>
-
-</RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
