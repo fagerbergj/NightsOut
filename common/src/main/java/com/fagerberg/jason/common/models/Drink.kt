@@ -1,4 +1,4 @@
-package com.fagerberg.jason.models
+package com.fagerberg.jason.common.models
 
 import java.util.UUID
 

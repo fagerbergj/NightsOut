@@ -1,4 +1,4 @@
-package com.fagerberg.jason.constants
+package com.fagerberg.jason.common.constants
 
 const val DB_NAME = "nights_out_db.db"
 const val DB_VERSION = 40

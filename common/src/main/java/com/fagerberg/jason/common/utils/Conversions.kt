@@ -1,7 +1,7 @@
-package com.fagerberg.jason.utils
+package com.fagerberg.jason.common.utils
 
-import com.fagerberg.jason.models.VolumeMeasurement
-import com.fagerberg.jason.models.WeightMeasurement
+import com.fagerberg.jason.common.models.VolumeMeasurement
+import com.fagerberg.jason.common.models.WeightMeasurement
 
 val weightConversionMap = mapOf(
         Pair(WeightMeasurement.LBS, 1.0),
@@ -21,10 +21,10 @@ val volumeConversionMap = mapOf(
 fun weightToLbs(weight: Double, weightMeasurement: WeightMeasurement) =
         weight * (weightConversionMap[weightMeasurement] ?: error("Unknown Weight Measurement $weightMeasurement"))
 
-fun drinkVolumeToFluidOz(amount: Double, amountMeasurement: VolumeMeasurement) =
+fun volumeToFluidOz(amount: Double, amountMeasurement: VolumeMeasurement) =
         amount * (volumeConversionMap[amountMeasurement] ?: error("Unknown Volume Measurement $amountMeasurement"))
 
-fun fluidOzToGrams(foz: Double) = 23.3333333 * foz
+fun fluidOzToGramsOfAlcohol(foz: Double) = 23.3333333 * foz
 
 fun militaryHoursAndMinutesToMinutes(hour: Int, min: Int) = hour * 60 + min
 
