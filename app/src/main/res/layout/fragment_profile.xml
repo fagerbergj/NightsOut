@@ -148,7 +148,7 @@
         android:text="@string/male"
         android:textSize="18sp"
         android:theme="@style/ProfileSexButtonTheme"
-        app:layout_constraintEnd_toStartOf="@+id/centerStrut"
+        app:layout_constraintEnd_toStartOf="@id/centerStrut"
         app:layout_constraintTop_toBottomOf="@id/text_profile_sex" />
 
     <com.google.android.material.button.MaterialButton

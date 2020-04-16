@@ -1,6 +1,5 @@
 package com.wit.jasonfagerberg.nightsout.v1.main
 
-// import android.util.Log
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.content.SharedPreferences
@@ -30,8 +29,6 @@ import com.wit.jasonfagerberg.nightsout.v1.notification.BacNotificationService
 import com.wit.jasonfagerberg.nightsout.v1.profile.ProfileFragment
 import java.util.Locale
 import kotlin.collections.ArrayList
-
-//private const val TAG = "MainActivity"
 
 class MainActivity : NightsOutActivity() {
 
@@ -333,7 +330,7 @@ class MainActivity : NightsOutActivity() {
         findViewById<CoordinatorLayout>(R.id.placeSnackBar).layoutParams = params
     }
 
-    private inner class MyPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm, BEHAVIOR_SET_USER_VISIBLE_HINT) {
+    private inner class MyPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
 
         override fun getItem(pos: Int): Fragment {
             return when (pos) {

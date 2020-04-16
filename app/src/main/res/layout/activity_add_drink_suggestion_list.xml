@@ -20,6 +20,7 @@
         android:textStyle="bold"
         app:layout_constraintEnd_toStartOf="@+id/imgBtn_add_drink_suggestion_cancel"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         tools:text="Drink Name" />
 
     <TextView

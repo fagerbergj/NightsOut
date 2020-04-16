@@ -20,22 +20,6 @@
         <item name="colorAccent">@color/colorGray</item>
     </style>
 
-    <style name="WhiteBackground" parent="Theme.MaterialComponents.Light.DarkActionBar">
-        <item name="android:background">@color/colorWhite</item>
-    </style>
-
-    <style name="DarkGrayBackground" parent="Theme.MaterialComponents">
-        <item name="android:background">@color/colorDarkGray</item>
-    </style>
-
-    <style name="LightGrayBackground" parent="Theme.MaterialComponents">
-        <item name="android:background">@color/colorLightGray</item>
-    </style>
-
-    <style name="GrayBackground" parent="Theme.MaterialComponents">
-        <item name="android:background">#616161</item>
-    </style>
-
     <style name="HomeButtonTheme" parent="Theme.MaterialComponents.Light">
         <item name="colorPrimary">@color/colorGreen</item>
         <item name="android:padding">0dp</item>

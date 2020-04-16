@@ -10,8 +10,8 @@ const val TAG = "AddDrinkActivity"
 
 class AddDrinkActivity : NightsOutActivity() {
 
-    lateinit var presenter: AddDrinkPresenter
-    lateinit var viewManager: AddDrinkViewManager
+    private lateinit var presenter: AddDrinkPresenter
+    private lateinit var viewManager: AddDrinkViewManager
 
     private val subscriptions = CompositeDisposable()
 
@@ -25,9 +25,5 @@ class AddDrinkActivity : NightsOutActivity() {
                     Log.e(TAG, "Subscribing to behavior relay failed", it)
                 }
         )
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
     }
 }
