@@ -333,7 +333,7 @@ class MainActivity : NightsOutActivity() {
         findViewById<CoordinatorLayout>(R.id.placeSnackBar).layoutParams = params
     }
 
-    private inner class MyPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
+    private inner class MyPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
 
         override fun getItem(pos: Int): Fragment {
             return when (pos) {

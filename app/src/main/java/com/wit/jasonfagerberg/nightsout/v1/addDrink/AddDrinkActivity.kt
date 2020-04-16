@@ -127,10 +127,10 @@ class AddDrinkActivity : NightsOutActivity() {
         val btnAdd = findViewById<MaterialButton>(R.id.btn_add_drink_add)
         // change button color based off mFavorited
         if (mFavorited) {
-            setColorFilter(btnAdd.background, ContextCompat.getColor(this, R.color.colorLightRed))
+            setButtonColor(btnAdd, R.color.colorLightRed)
             btnAdd.text = resources.getText(R.string.add_favorite)
         } else {
-            setColorFilter(btnAdd.background, ContextCompat.getColor(this, R.color.colorGreen))
+            setButtonColor(btnAdd, R.color.colorGreen)
         }
         btnAdd.setOnClickListener { addDrink() }
     }
@@ -227,12 +227,12 @@ class AddDrinkActivity : NightsOutActivity() {
             item.icon = ContextCompat.getDrawable(this, R.drawable.favorite_white_24dp)
             if (canUnfavorite) btnAdd.setText(R.string.add_and_favorite)
             showToast("Drink Will Be Favorited After Adding", true)
-            setColorFilter(btnAdd.background, ContextCompat.getColor(this, R.color.colorLightRed))
+            setButtonColor(btnAdd, R.color.colorLightRed)
         } else {
             item.icon = ContextCompat.getDrawable(this, R.drawable.favorite_border_white_24dp)
             btnAdd.setText(R.string.add)
             showToast("Drink Will Not Be Favorited", true)
-            setColorFilter(btnAdd.background, ContextCompat.getColor(this, R.color.colorGreen))
+            setButtonColor(btnAdd, R.color.colorGreen)
         }
         return true
     }

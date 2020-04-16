@@ -251,14 +251,14 @@ class ProfileFragment : Fragment() {
 
     private fun pressMaleButton() {
         sex = true
-        mMainActivity.setColorFilter(btnMale.background, ContextCompat.getColor(context!!, R.color.colorLightRed))
-        mMainActivity.setColorFilter(btnFemale.background, ContextCompat.getColor(context!!, R.color.colorLightGray))
+        mMainActivity.setButtonColor(btnMale, R.color.colorLightRed)
+        mMainActivity.setButtonColor(btnFemale, R.color.colorLightGray)
     }
 
     private fun pressFemaleButton() {
         sex = false
-        mMainActivity.setColorFilter(btnFemale.background, ContextCompat.getColor(context!!, R.color.colorLightRed))
-        mMainActivity.setColorFilter(btnMale.background, ContextCompat.getColor(context!!, R.color.colorLightGray))
+        mMainActivity.setButtonColor(btnFemale, R.color.colorLightRed)
+        mMainActivity.setButtonColor(btnMale, R.color.colorLightGray)
     }
 
     private fun saveProfile(view: View) {

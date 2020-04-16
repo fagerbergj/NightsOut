@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".v1.addDrink.AddDrinkActivity">
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_add_drink_add"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

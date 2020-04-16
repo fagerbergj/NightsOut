@@ -13,6 +13,8 @@ import androidx.preference.PreferenceManager
 import android.view.Gravity
 import android.view.MenuItem
 import android.widget.Toast
+import androidx.core.content.ContextCompat
+import com.google.android.material.button.MaterialButton
 import com.wit.jasonfagerberg.nightsout.R
 import com.wit.jasonfagerberg.nightsout.v1.constants.Constants
 import com.wit.jasonfagerberg.nightsout.v1.settings.SettingsActivity
@@ -92,13 +94,8 @@ abstract class NightsOutActivity : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 
-    fun setColorFilter(target: Drawable, color : Int) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            target.colorFilter = BlendModeColorFilter(color, BlendMode.MULTIPLY)
-        } else {
-            @Suppress("DEPRECATION")
-            target.setColorFilter(color, PorterDuff.Mode.MULTIPLY)
-        }
+    fun setButtonColor(target: MaterialButton, color : Int) {
+        target.backgroundTintList = ContextCompat.getColorStateList(this, color)
     }
 
     fun showToast(message: String, isLongToast: Boolean = false) {
