@@ -7,8 +7,8 @@ import android.os.Bundle
 import android.view.*
 import android.widget.EditText
 import android.widget.ImageButton
-import android.widget.RelativeLayout
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -31,7 +31,7 @@ import java.util.*
 
 class HomeFragment : Fragment() {
     lateinit var mDrinkListAdapter: HomeFragmentDrinkListAdapter
-    private lateinit var mRelativeLayout: RelativeLayout
+    private lateinit var mLayout: ConstraintLayout
     private lateinit var mMainActivity: MainActivity
     val mConverter = Converter()
 
@@ -50,7 +50,7 @@ class HomeFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_home, container, false)
 
         // set layout
-        mRelativeLayout = view.findViewById(R.id.layout_home)
+        mLayout = view.findViewById(R.id.layout_home)
 
         // add a drink button setup
         val btnAdd = view.findViewById<MaterialButton>(R.id.btn_home_add_drink)
@@ -88,9 +88,9 @@ class HomeFragment : Fragment() {
         }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         mMainActivity.supportActionBar?.title = "Home"
-        inflater!!.inflate(R.menu.home_menu, menu)
+        inflater.inflate(R.menu.home_menu, menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

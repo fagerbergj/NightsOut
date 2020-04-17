@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.google.android.material.snackbar.Snackbar
 import com.wit.jasonfagerberg.nightsout.R
@@ -253,7 +254,7 @@ class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: Ar
         internal var name: TextView = itemView.findViewById(R.id.text_home_drink_name)
         internal var abv: TextView = itemView.findViewById(R.id.text_home_drink_abv)
         internal var amount: TextView = itemView.findViewById(R.id.text_home_drink_amount)
-        internal var foreground: LinearLayout = itemView.findViewById(R.id.layout_foreground)
+        internal var foreground: ConstraintLayout = itemView.findViewById(R.id.layout_foreground)
         internal var favorited: ImageView = itemView.findViewById(R.id.image_home_drink_favored)
     }
 }

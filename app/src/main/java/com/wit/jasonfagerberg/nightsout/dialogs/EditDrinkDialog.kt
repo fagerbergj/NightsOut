@@ -35,8 +35,8 @@ class EditDrinkDialog(private val context: Context, layoutInflater: LayoutInflat
         textTitle = dialogView.findViewById(R.id.text_edit_drink_title)
         editName = dialogView.findViewById(R.id.edit_edit_drink_name)
         editAbv = dialogView.findViewById(R.id.edit_edit_drink_abv)
-        editAmount = dialogView.findViewById(R.id.edit_edit_drink_amount)
-        spinnerMeasurement = dialogView.findViewById(R.id.spinner_edit_drink_amount)
+        editAmount = dialogView.findViewById(R.id.edit_add_drink_amount)
+        spinnerMeasurement = dialogView.findViewById(R.id.spinner_add_drink_amount)
         btnEdit = dialogView.findViewById(R.id.btn_edit_drink_edit)
         btnClose = dialogView.findViewById(R.id.imgBtn_edit_drink_close)
         btnClose.setOnClickListener {

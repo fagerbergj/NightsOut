@@ -83,9 +83,9 @@ class LogFragment : Fragment() {
         super.onResume()
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         mMainActivity.supportActionBar?.title = "Log"
-        inflater!!.inflate(R.menu.log_menu, menu)
+        inflater.inflate(R.menu.log_menu, menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -167,11 +167,6 @@ class LogFragment : Fragment() {
             val date = Integer.parseInt(converter.yearMonthDayTo8DigitString(day.year, day.month, day.day))
             setLogListBasedOnDay(date)
         }
-    }
-
-    override fun setUserVisibleHint(isVisibleToUser: Boolean) {
-        if (isVisibleToUser && view != null) setupCalendar(view!!)
-        super.setUserVisibleHint(isVisibleToUser)
     }
 
     private fun highlightDays() {
