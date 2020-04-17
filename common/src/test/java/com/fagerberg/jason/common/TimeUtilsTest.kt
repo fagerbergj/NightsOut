@@ -7,7 +7,7 @@ import org.assertj.core.data.Percentage.withPercentage
 import org.junit.Test
 import java.util.Calendar
 
-class UtilsTest {
+class TimeUtilsTest {
 
     @Test
     fun `get current time returns as long returns current time in milliseconds`() {
