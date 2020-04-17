@@ -1,46 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".log.LogFragment">
+    android:layout_height="match_parent" >
+
+    <TextView
+        android:id="@+id/text_log_empty_list"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:text="@string/you_did_no_drink_this_day"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/recycler_log"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/recycler_log" />
+
+    <View
+        android:id="@+id/div"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_margin="8dp"
+        android:background="@color/colorLightBlueGray"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/calender_log"
+        app:layout_constraintWidth_percent="0.9" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_log"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:paddingStart="8dp"
+        android:paddingTop="2dp"
+        android:paddingEnd="8dp"
+        android:paddingBottom="2dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/div"
+        tools:listitem="@layout/fragment_log_list_drink_item" />
 
     <com.prolificinteractive.materialcalendarview.MaterialCalendarView
         android:id="@+id/calender_log"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:mcv_dateTextAppearance="@android:style/TextAppearance.Medium"
         app:mcv_selectionColor="@color/colorLightBlueGray"
         app:mcv_tileHeight="40dp" />
 
-    <com.wit.jasonfagerberg.nightsout.styleableViews.RelativeLayoutStyleable
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/calender_log"
-        android:layout_alignParentBottom="true"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="4dp"
-        android:layout_marginEnd="8dp"
-        android:paddingTop="2dp"
-        android:paddingBottom="2dp">
-
-        <com.wit.jasonfagerberg.nightsout.styleableViews.RecyclerViewStyleable
-            android:id="@+id/recycler_log"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:paddingStart="8dp"
-            android:paddingTop="2dp"
-            android:paddingEnd="8dp"
-            android:paddingBottom="2dp" />
-
-        <TextView
-            android:id="@+id/text_log_empty_list"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:paddingTop="32dp"
-            android:text="@string/you_did_no_drink_this_day" />
-
-    </com.wit.jasonfagerberg.nightsout.styleableViews.RelativeLayoutStyleable>
-</RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

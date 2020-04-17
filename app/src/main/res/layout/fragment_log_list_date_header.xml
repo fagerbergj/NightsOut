@@ -1,51 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#d1d1d1"
-    android:orientation="vertical">
+    android:background="@color/colorPrimary">
 
-    <LinearLayout
-        android:id="@+id/layout_foreground"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+    <TextView
+        android:id="@+id/text_log_duration"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:gravity="center"
-        android:orientation="vertical"
-        android:background="@color/colorPrimary">
+        android:padding="4dp"
+        android:textColor="@color/colorWhite"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_log_day"
+        app:layout_constraintWidth_percent="0.5"
+        tools:text="Duration: 00:00" />
 
-        <TextView
-            android:id="@+id/text_log_day"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:paddingStart="16dp"
-            android:paddingTop="2dp"
-            android:paddingEnd="16dp"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:textColor="@color/colorWhite"/>
+    <TextView
+        android:id="@+id/text_log_BAC"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:padding="4dp"
+        android:textColor="@color/colorWhite"
+        android:textSize="18sp"
+        app:layout_constraintStart_toEndOf="@+id/text_log_duration"
+        app:layout_constraintTop_toBottomOf="@+id/text_log_day"
+        app:layout_constraintWidth_percent="0.5"
+        tools:text="BAC: 0.050" />
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:paddingBottom="2dp">
+    <TextView
+        android:id="@+id/text_log_day"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:padding="4dp"
+        android:textColor="@color/colorWhite"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Monday" />
 
-            <TextView
-                android:id="@+id/text_log_duration"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingStart="0dp"
-                android:paddingEnd="60dp"
-                android:textSize="18sp"
-                android:textColor="@color/colorWhite"/>
-
-            <TextView
-                android:id="@+id/text_log_BAC"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="18sp"
-                android:textColor="@color/colorWhite"/>
-
-        </LinearLayout>
-    </LinearLayout>
-</FrameLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

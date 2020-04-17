@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.RelativeLayout
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.wit.jasonfagerberg.nightsout.R
 import com.wit.jasonfagerberg.nightsout.addDrink.ComplexDrinkHelper.AlcoholSource
@@ -54,6 +55,6 @@ class AddDrinkActivityAlcoholSourceAdapter(private val mContext: Context, alcoho
         internal val textAbv = itemView.findViewById<TextView>(R.id.alc_source_abv)
         internal val textAmount = itemView.findViewById<TextView>(R.id.alc_source_amount)
         internal val textMeasurement = itemView.findViewById<TextView>(R.id.alc_source_measurement)
-        internal val layout = itemView.findViewById<RelativeLayout>(R.id.alc_source_layout)
+        internal val layout = itemView.findViewById<ConstraintLayout>(R.id.alc_source_layout)
     }
 }

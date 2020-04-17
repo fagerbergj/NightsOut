@@ -1,7 +1,6 @@
 package com.wit.jasonfagerberg.nightsout.profile
 
 import android.content.Intent
-import android.graphics.PorterDuff
 import android.graphics.Typeface
 import android.os.Bundle
 import androidx.preference.PreferenceManager
@@ -150,9 +149,9 @@ class ProfileFragment : Fragment() {
         super.onResume()
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         mMainActivity.supportActionBar?.title = "Profile"
-        inflater!!.inflate(R.menu.profile_menu, menu)
+        inflater.inflate(R.menu.profile_menu, menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -254,14 +253,14 @@ class ProfileFragment : Fragment() {
 
     private fun pressMaleButton() {
         sex = true
-        mMainActivity.setColorFilter(btnMale.background, ContextCompat.getColor(context!!, R.color.colorLightRed))
-        mMainActivity.setColorFilter(btnFemale.background, ContextCompat.getColor(context!!, R.color.colorLightGray))
+        mMainActivity.setButtonColor(btnMale, R.color.colorLightRed)
+        mMainActivity.setButtonColor(btnFemale, R.color.colorLightGray)
     }
 
     private fun pressFemaleButton() {
         sex = false
-        mMainActivity.setColorFilter(btnFemale.background, ContextCompat.getColor(context!!, R.color.colorLightRed))
-        mMainActivity.setColorFilter(btnMale.background, ContextCompat.getColor(context!!, R.color.colorLightGray))
+        mMainActivity.setButtonColor(btnFemale, R.color.colorLightRed)
+        mMainActivity.setButtonColor(btnMale, R.color.colorLightGray)
     }
 
     private fun saveProfile(view: View) {

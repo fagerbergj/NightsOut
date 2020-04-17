@@ -1,11 +1,8 @@
-<!--suppress ALL -->
 <resources xmlns:tools="http://schemas.android.com/tools">
     <style name="AppTheme" parent="Theme.MaterialComponents.Light.DarkActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
-        <item name="recyclerViewStyle">@style/WhiteBackground</item>
-        <item name="relativeLayoutViewStyle">@style/LightGrayBackground</item>
     </style>
 
     <style name="DarkAppTheme" parent="Theme.MaterialComponents">
@@ -13,8 +10,6 @@
         <item name="colorPrimaryDark">@color/colorDarkGray</item>
         <item name="android:textColor">@color/colorWhite</item>
         <item name="checkboxStyle">@style/DarkCheckBox</item>
-        <item name="recyclerViewStyle">@style/DarkGrayBackground</item>
-        <item name="relativeLayoutViewStyle">@style/GrayBackground</item>
     </style>
 
     <style name="DarkCheckBox" parent="Widget.AppCompat.CompoundButton.CheckBox">
@@ -23,22 +18,6 @@
 
     <style name="DarkDialog" parent="Theme.MaterialComponents.Dialog">
         <item name="colorAccent">@color/colorGray</item>
-    </style>
-
-    <style name="WhiteBackground" parent="Theme.MaterialComponents.Light.DarkActionBar">
-        <item name="android:background">@color/colorWhite</item>
-    </style>
-
-    <style name="DarkGrayBackground" parent="Theme.MaterialComponents">
-        <item name="android:background">@color/colorDarkGray</item>
-    </style>
-
-    <style name="LightGrayBackground" parent="Theme.MaterialComponents">
-        <item name="android:background">@color/colorLightGray</item>
-    </style>
-
-    <style name="GrayBackground" parent="Theme.MaterialComponents">
-        <item name="android:background">#616161</item>
     </style>
 
     <style name="HomeButtonTheme" parent="Theme.MaterialComponents.Light">

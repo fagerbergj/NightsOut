@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
     android:gravity="center_vertical|center_horizontal"
+    android:orientation="vertical"
     android:padding="8dp">
 
     <TextView
@@ -11,47 +13,51 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
-        android:layout_marginStart="26dp"
         android:layout_toStartOf="@+id/imgBtn_add_drink_suggestion_cancel"
         android:padding="8dp"
         android:textAlignment="center"
         android:textSize="16sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@+id/imgBtn_add_drink_suggestion_cancel"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Drink Name" />
 
-    <RelativeLayout
+    <TextView
+        android:id="@+id/text_add_drink_suggestion_abv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_below="@+id/text_add_drink_suggestion_name">
+        android:layout_alignParentStart="true"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:text="5.00%" />
 
-        <TextView
-            android:id="@+id/text_add_drink_suggestion_abv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="16sp"
-            android:paddingStart="8dp"
-            android:paddingEnd="8dp"
-            android:layout_alignParentStart="true"/>
-
-        <TextView
-            android:id="@+id/text_add_drink_suggestion_amount"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="16sp"
-            android:paddingStart="8dp"
-            android:paddingEnd="8dp"
-            android:layout_alignEnd="@+id/text_add_drink_suggestion_abv"
-            android:layout_alignParentEnd="true"/>
-
-    </RelativeLayout>
+    <TextView
+        android:id="@+id/text_add_drink_suggestion_amount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/text_add_drink_suggestion_abv"
+        android:layout_alignParentEnd="true"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imgBtn_add_drink_suggestion_cancel"
+        tools:text="12.0 oz" />
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/imgBtn_add_drink_suggestion_cancel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/close_gray_18dp"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
+        android:background="?attr/selectableItemBackground"
         android:padding="8dp"
-        android:background="?attr/selectableItemBackground"/>
-</RelativeLayout>
+        android:src="@drawable/close_gray_18dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

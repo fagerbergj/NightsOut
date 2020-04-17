@@ -1,48 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:orientation="horizontal"
     android:padding="8dp">
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:layout_alignParentStart="true"
-        android:layout_toStartOf="@+id/text_item_options">
-
-        <TextView
-            android:id="@+id/text_manage_db_drink_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical|center_horizontal"
-            android:textSize="20sp" />
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical|center_horizontal"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/text_manage_db_drink_abv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="32dp"
-                android:textSize="16sp" />
-
-            <TextView
-                android:id="@+id/text_manage_db_drink_amount"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="32dp"
-                android:textSize="16sp" />
-        </LinearLayout>
-    </LinearLayout>
 
     <ImageView
         android:id="@+id/text_item_options"
@@ -51,10 +14,58 @@
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
         android:background="?attr/selectableItemBackground"
+        android:contentDescription="@string/empty"
         android:gravity="center"
         android:padding="8dp"
         android:src="@drawable/more_vert_gray_24dp"
         android:textAppearance="?android:textAppearanceLarge"
-        tools:ignore="HardcodedText"
-        android:contentDescription="@string/empty" />
-</RelativeLayout>
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="HardcodedText" />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/text_item_options"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_manage_db_drink_name">
+
+        <TextView
+            android:id="@+id/text_manage_db_drink_abv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/text_manage_db_drink_name"
+            tools:text="5.00%" />
+
+        <TextView
+            android:id="@+id/text_manage_db_drink_amount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/text_item_options"
+            app:layout_constraintTop_toBottomOf="@+id/text_manage_db_drink_name"
+            tools:text="12.0 oz" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/text_manage_db_drink_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical|center_horizontal"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toStartOf="@+id/text_item_options"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Drink Name" />
+</androidx.constraintlayout.widget.ConstraintLayout>

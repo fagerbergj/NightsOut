@@ -4,7 +4,6 @@ import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.TextView
 import com.wit.jasonfagerberg.nightsout.R
 import com.wit.jasonfagerberg.nightsout.dialogs.LightSimpleDialog
@@ -23,7 +22,6 @@ class AddDrinkActivityFavoritesListAdapter(private val mActivity: AddDrinkActivi
         holder.name.text = drink.name
         holder.card.setOnClickListener {
             mActivity.showToast("${holder.name.text} information filled in")
-            holder.image.setImageResource(R.drawable.favorite_white_24dp)
             mActivity.fillViews(drink.name, drink.abv, drink.amount, drink.measurement)
         }
 
@@ -52,6 +50,5 @@ class AddDrinkActivityFavoritesListAdapter(private val mActivity: AddDrinkActivi
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         internal var name: TextView = itemView.findViewById(R.id.text_profile_favorite_drink_name)
         internal val card: CardView = itemView.findViewById(R.id.card_profile_favorite_item)
-        internal var image: ImageView = itemView.findViewById(R.id.image_profile_favorite)
     }
 }
