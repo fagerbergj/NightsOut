@@ -15,11 +15,8 @@
     <style name="DarkDialog" parent="Theme.MaterialComponents.Dialog">
         <item name="colorAccent">@color/colorGray</item>
     </style>
-<<<<<<< HEAD
 
     <style name="DarkCheckBox" parent="Widget.AppCompat.CompoundButton.CheckBox">
         <item name="android:buttonTint" tools:targetApi="lollipop">@color/colorPrimary</item>
     </style>
-=======
->>>>>>> c2164663bf4ca522472eb12d3d857c4dadc756c5
 </resources>
