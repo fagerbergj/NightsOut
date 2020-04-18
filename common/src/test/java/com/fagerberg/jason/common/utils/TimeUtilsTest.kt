@@ -1,7 +1,5 @@
 package com.fagerberg.jason.common.utils
 
-import com.fagerberg.jason.common.utils.getCurrentTimeInMinuets
-import com.fagerberg.jason.common.utils.getLongTimeNow
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.data.Percentage.withPercentage
 import org.junit.Test

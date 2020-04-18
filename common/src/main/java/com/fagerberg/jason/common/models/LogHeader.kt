@@ -24,12 +24,11 @@ data class LogHeader(
 
     val dateString: String
         get() {
-            val year = Integer.parseInt(date.toString().substring(0, 4))
             val month = Integer.parseInt(date.toString().substring(4, 6))
             val monthName = DateFormatSymbols().months[month]
             val day = Integer.parseInt(date.toString().substring(6, 8))
-            val suffix: String = if (day == 1) "st" else if (day == 2) "nd" else if (day == 3) "rd" else "th"
-            return if (getLocal() == Locale.US) {
+            val suffix: String = if (day == 1 || day == 31) "st" else if (day == 2) "nd" else if (day == 3) "rd" else "th"
+            return if (Locale.getDefault() == Locale.US) {
                 "$monthName $day$suffix"
             } else {
                 "$day$suffix of $monthName"

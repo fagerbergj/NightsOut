@@ -1,7 +1,6 @@
 package com.fagerberg.jason.common.utils
 
 import android.os.Build
-import android.util.SparseIntArray
 import com.fagerberg.jason.common.R
 import com.fagerberg.jason.common.models.VolumeMeasurement
 import com.fagerberg.jason.common.models.WeightMeasurement

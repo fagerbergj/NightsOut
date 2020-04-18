@@ -2,7 +2,6 @@ package com.fagerberg.jason.common.utils
 
 import com.fagerberg.jason.common.models.VolumeMeasurement
 import com.fagerberg.jason.common.models.WeightMeasurement
-import com.fagerberg.jason.common.utils.*
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 

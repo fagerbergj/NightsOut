@@ -11,5 +11,6 @@ data class Drink (
         val measurement: VolumeMeasurement,
         val favorited: Boolean,
         val recent: Boolean,
-        val modifiedTime: Long = Calendar.getInstance().timeInMillis
+        val modifiedTime: Long = Calendar.getInstance().timeInMillis,
+        val dontSuggest: Boolean = false
 )
