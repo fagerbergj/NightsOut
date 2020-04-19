@@ -13,7 +13,7 @@
         android:insetBottom="0dp"
         android:padding="16dp"
         android:text="@string/save_profile"
-        android:textSize="18sp"
+        android:textSize="@dimen/profile_text_size"
         android:theme="@style/HomeButtonTheme"
         app:layout_constraintBottom_toBottomOf="parent" />
 
@@ -29,8 +29,7 @@
         android:inputType="numberDecimal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/text_profile_weight"
-        tools:targetApi="o" />
+        app:layout_constraintTop_toBottomOf="@id/text_profile_weight" />
 
     <Spinner
         android:id="@+id/spinner_profile"
@@ -48,13 +47,9 @@
         android:id="@+id/text_profile_sex"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:paddingStart="16dp"
-        android:paddingTop="24dp"
-        android:paddingEnd="16dp"
-        android:paddingBottom="16dp"
         android:text="@string/sex"
-        android:textSize="18sp"
+        android:textSize="@dimen/profile_text_size"
+        style="@style/ProfileLabel"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -62,13 +57,10 @@
         android:id="@+id/text_profile_weight"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingStart="16dp"
-        android:paddingTop="24dp"
-        android:paddingEnd="16dp"
-        android:paddingBottom="16dp"
         android:text="@string/weight"
-        android:textSize="18sp"
-        app:layout_constraintStart_toStartOf="@+id/text_profile_sex"
+        android:textSize="@dimen/profile_text_size"
+        style="@style/ProfileLabel"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btn_profile_male" />
 
     <TextView
@@ -76,13 +68,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
-        android:paddingStart="16dp"
-        android:paddingTop="16dp"
-        android:paddingEnd="16dp"
-        android:paddingBottom="16dp"
         android:text="@string/favorites"
-        android:textSize="18sp"
-        app:layout_constraintStart_toStartOf="@+id/text_profile_weight"
+        android:textSize="@dimen/profile_text_size"
+        style="@style/ProfileLabel"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/edit_profile_weight" />
 
     <TextView
@@ -139,20 +128,18 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_profile_male"
-        android:layout_width="136dp"
-        android:layout_height="60dp"
+        android:layout_width="@dimen/profile_sex_button_width"
+        android:layout_height="@dimen/profile_sex_button_height"
         android:text="@string/male"
-        android:textSize="18sp"
         android:theme="@style/ProfileSexButtonTheme"
         app:layout_constraintEnd_toStartOf="@id/centerStrut"
         app:layout_constraintTop_toBottomOf="@id/text_profile_sex" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_profile_female"
-        android:layout_width="136dp"
-        android:layout_height="60dp"
+        android:layout_width="@dimen/profile_sex_button_width"
+        android:layout_height="@dimen/profile_sex_button_height"
         android:text="@string/female"
-        android:textSize="18sp"
         android:theme="@style/ProfileSexButtonTheme"
         app:layout_constraintStart_toEndOf="@id/centerStrut"
         app:layout_constraintTop_toTopOf="@+id/btn_profile_male" />
