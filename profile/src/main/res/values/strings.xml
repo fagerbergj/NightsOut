@@ -1,0 +1,11 @@
+<resources>
+
+    <string name="save_profile">Save Profile</string>
+    <string name="weight">Weight</string>
+    <string name="sex">Sex</string>
+    <string name="favorites">Favorites</string>
+    <string name="male">Male</string>
+    <string name="female">Female</string>
+    <string name="add_favorite">Add Favorite</string>
+
+</resources>

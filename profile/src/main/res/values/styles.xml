@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="ProfileSexButtonTheme" parent="Theme.MaterialComponents.Light">
+        <item name="colorPrimary">@color/colorLightRed</item>
+    </style>
+</resources>
