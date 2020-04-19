@@ -41,19 +41,19 @@ data class NightsOutSharedPreferences(
     private val logTag = this::class.java.name
 
     fun update(
-        profileInit: Boolean,
-        sex: Boolean?,
-        weight: Double,
-        weightMeasurement: WeightMeasurement?,
-        startTimeMin: Int,
-        endTimeMin: Int,
-        use24HourTime: Boolean,
-        dateInstalled: Long,
-        drinksAddedCount: Int,
-        dontShowRateDialog: Boolean,
-        dontShowCurrentBacNotification: Boolean,
-        showBacNotification: Boolean,
-        activeTheme: Int
+        profileInit: Boolean = this.profileInit,
+        sex: Boolean? = this.sex,
+        weight: Double = this.weight,
+        weightMeasurement: WeightMeasurement? = this.weightMeasurement,
+        startTimeMin: Int = this.startTimeMin,
+        endTimeMin: Int = this.endTimeMin,
+        use24HourTime: Boolean = this.use24HourTime,
+        dateInstalled: Long = this.dateInstalled,
+        drinksAddedCount: Int = this.drinksAddedCount,
+        dontShowRateDialog: Boolean = this.dontShowRateDialog,
+        dontShowCurrentBacNotification: Boolean = this.dontShowCurrentBacNotification,
+        showBacNotification: Boolean = this.showBacNotification,
+        activeTheme: Int = this.activeTheme
     ): NightsOutSharedPreferences {
         val editor = preferenceManager.edit()
 
@@ -96,7 +96,7 @@ data class NightsOutSharedPreferences(
     }
 }
 
-fun NightsOutActivity.getSharedPreferences() =
+fun NightsOutActivity.getNightsOutSharedPreferences() =
     with(PreferenceManager.getDefaultSharedPreferences(this)) {
         NightsOutSharedPreferences(
             preferenceManager = this,

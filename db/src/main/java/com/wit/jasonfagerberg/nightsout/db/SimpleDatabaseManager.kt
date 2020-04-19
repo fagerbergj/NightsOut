@@ -27,7 +27,7 @@ val ALL_TABLES = arrayOf(
 
 class SimpleDatabaseManager(
     private val context: Context,
-    factory: SQLiteDatabase.CursorFactory?,
+    factory: SQLiteDatabase.CursorFactory? = null,
     private val dbName: String = DB_NAME,
     private val dbPath: String = DB_PATH,
     private val dbVersion: Int = DB_VERSION
