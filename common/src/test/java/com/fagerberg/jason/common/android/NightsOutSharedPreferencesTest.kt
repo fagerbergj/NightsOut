@@ -63,6 +63,23 @@ class NightsOutSharedPreferencesTest {
             activeTheme = (Math.random() * 20000).toInt()
         )
 
+        // verify correct new object returned
+        assertThat(originalPrefs.update(
+            profileInit = newPrefs.profileInit,
+            sex = newPrefs.sex,
+            weight = newPrefs.weight,
+            weightMeasurement = newPrefs.weightMeasurement,
+            startTimeMin = newPrefs.startTimeMin,
+            endTimeMin = newPrefs.endTimeMin,
+            use24HourTime = newPrefs.use24HourTime,
+            dateInstalled = newPrefs.dateInstalled,
+            drinksAddedCount = newPrefs.drinksAddedCount,
+            dontShowRateDialog = newPrefs.dontShowRateDialog,
+            dontShowCurrentBacNotification = newPrefs.dontShowCurrentBacNotification,
+            showBacNotification = newPrefs.showBacNotification,
+            activeTheme = newPrefs.activeTheme
+        )).isEqualTo(newPrefs)
+
         // verify changes stored
         verify(exactly = 1) { mockPrefManager.edit() }
 
@@ -80,22 +97,5 @@ class NightsOutSharedPreferencesTest {
         verify(exactly = 1) { mockEdit.putInt(ACTIVE_THEME, newPrefs.activeTheme) }
 
         verify(exactly = 1) { mockEdit.apply() }
-
-        // verify correct new object returned
-        assertThat(originalPrefs.update(
-            profileInit = newPrefs.profileInit,
-            sex = newPrefs.sex,
-            weight = newPrefs.weight,
-            weightMeasurement = newPrefs.weightMeasurement,
-            startTimeMin = newPrefs.startTimeMin,
-            endTimeMin = newPrefs.endTimeMin,
-            use24HourTime = newPrefs.use24HourTime,
-            dateInstalled = newPrefs.dateInstalled,
-            drinksAddedCount = newPrefs.drinksAddedCount,
-            dontShowRateDialog = newPrefs.dontShowRateDialog,
-            dontShowCurrentBacNotification = newPrefs.dontShowCurrentBacNotification,
-            showBacNotification = newPrefs.showBacNotification,
-            activeTheme = newPrefs.activeTheme
-        )).isEqualTo(newPrefs)
     }
 }

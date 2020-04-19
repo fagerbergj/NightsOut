@@ -15,7 +15,17 @@ import java.io.FileOutputStream
 import java.io.IOException
 import java.util.UUID
 
-abstract class AbstractDatabaseManager(
+const val DRINKS_TABLE = "drinks"
+const val CURRENT_SESSION_TABLE = "current_session_drinks"
+const val FAVORITES_TABLE = "favorites"
+const val LOG_TABLE = "log"
+const val LOGGED_DRINKS_TABLE = "log_drink"
+
+val ALL_TABLES = arrayOf(
+    DRINKS_TABLE, CURRENT_SESSION_TABLE, FAVORITES_TABLE, LOG_TABLE, LOGGED_DRINKS_TABLE
+)
+
+class SimpleDatabaseManager(
     private val context: Context,
     factory: SQLiteDatabase.CursorFactory?,
     private val dbName: String = DB_NAME,
@@ -23,9 +33,11 @@ abstract class AbstractDatabaseManager(
     private val dbVersion: Int = DB_VERSION
 ) : SQLiteOpenHelper(context, dbName, factory, dbVersion) {
 
+    override fun onCreate(p0: SQLiteDatabase?) { /* no op */ }
+
     private val logTag = this::class.java.name
 
-    lateinit var db: SQLiteDatabase
+    private lateinit var db: SQLiteDatabase
 
     fun openDatabase() {
         if (!dbExists()) {
@@ -68,7 +80,7 @@ abstract class AbstractDatabaseManager(
         val allDrinks = readDrinks()
         val currentDrinks = readCurrentSessionDrinks()
         val favoritesList = readFavoriteDrinks()
-        val loggedDrinks = readLoggedDrinks()
+        val loggedDrinks = readLoggedDrinkReferences()
         val logHeaders = readLogHeaders()
 
         dropAllTables()
@@ -83,9 +95,26 @@ abstract class AbstractDatabaseManager(
         writeLogHeaders(logHeaders)
     }
 
-    private fun readDrinks() : List<Drink> {
+
+    private fun dropAllTables() {
+        db.execSQL("DROP TABLE $DRINKS_TABLE")
+        db.execSQL("DROP TABLE $CURRENT_SESSION_TABLE")
+        db.execSQL("DROP TABLE $FAVORITES_TABLE")
+        db.execSQL("DROP TABLE $LOG_TABLE")
+        db.execSQL("DROP TABLE $LOGGED_DRINKS_TABLE")
+    }
+
+    private fun buildTables() {
+        db.execSQL("CREATE TABLE \"$CURRENT_SESSION_TABLE\" ( `drink_id` TEXT, `position` INTEGER )")
+        db.execSQL("CREATE TABLE \"$DRINKS_TABLE\" ( `id` TEXT UNIQUE, `name` TEXT, `abv` NUMERIC, `amount` NUMERIC, `measurement` TEXT, `recent` INTEGER, `modifiedTime` INTEGER, `dontSuggest` INTEGER, PRIMARY KEY(`id`) )")
+        db.execSQL("CREATE TABLE \"$FAVORITES_TABLE\" ( `drink_name` TEXT, `origin_id` TEXT )")
+        db.execSQL("CREATE TABLE \"$LOG_TABLE\" ( `date` INTEGER UNIQUE, `bac` NUMERIC, `duration` INTEGER, PRIMARY KEY(`date`) )")
+        db.execSQL("CREATE TABLE \"$LOGGED_DRINKS_TABLE\" ( `log_date` NUMERIC, `drink_id` TEXT )")
+    }
+
+    fun readDrinks() : List<Drink> {
         val allDrinks = mutableListOf<Drink>()
-        val cursor = db.query("drinks", null, null, null, null, null, null, null)
+        val cursor = db.query(DRINKS_TABLE, null, null, null, null, null, null, null)
         while (cursor.moveToNext()) {
             val drinkName = cursor.getString(cursor.getColumnIndex("name"))
             allDrinks.add(
@@ -106,9 +135,33 @@ abstract class AbstractDatabaseManager(
         return allDrinks
     }
 
-    fun readLoggedDrinks(): List<Pair<Int,UUID>> {
+    fun readLoggedDrinks(date: Int): List<Drink> {
+        val drinks = mutableListOf<Drink>()
+        val table = "$DRINKS_TABLE, $LOGGED_DRINKS_TABLE"
+        val where = "$DRINKS_TABLE.id=$LOGGED_DRINKS_TABLE.drink_id AND $LOGGED_DRINKS_TABLE.log_date=$date"
+        val cursor = db.query(table, null, where, null, null, null, null, null)
+        while (cursor.moveToNext()) {
+            val drinkName = cursor.getString(cursor.getColumnIndex("name"))
+            drinks.add(
+                Drink(
+                    id = UUID.fromString(cursor.getString(cursor.getColumnIndex("id"))),
+                    name = drinkName,
+                    abv = cursor.getDouble(cursor.getColumnIndex("abv")),
+                    amount = cursor.getDouble(cursor.getColumnIndex("amount")),
+                    measurement = VolumeMeasurement.fromLowercaseString(cursor.getString(cursor.getColumnIndex("measurement"))),
+                    favorited = isFavoritedInDB(drinkName),
+                    recent = cursor.getInt(cursor.getColumnIndex("recent")) == 1,
+                    modifiedTime = cursor.getLong(cursor.getColumnIndex("modifiedTime"))
+                )
+            )
+        }
+        cursor.close()
+        return drinks
+    }
+
+    private fun readLoggedDrinkReferences(): List<Pair<Int,UUID>> {
         val loggedDrinks = mutableListOf<Pair<Int,UUID>>()
-        val cursor = db.query("log_drink", null, null, null, null, null, null)
+        val cursor = db.query(LOGGED_DRINKS_TABLE, null, null, null, null, null, null)
         while (cursor.moveToNext()) {
             val logDate = cursor.getInt(cursor.getColumnIndex("log_date"))
             val drinkId = UUID.fromString(cursor.getString(cursor.getColumnIndex("drink_id")))
@@ -119,7 +172,7 @@ abstract class AbstractDatabaseManager(
     }
 
     fun isFavoritedInDB(name: String): Boolean {
-        val cursor = db.query("favorites", null, "drink_name = ?", arrayOf(name), null, null, null)
+        val cursor = db.query(FAVORITES_TABLE, null, "drink_name = ?", arrayOf(name), null, null, null)
         val ret = cursor.count == 1
         cursor.close()
         return ret
@@ -127,9 +180,9 @@ abstract class AbstractDatabaseManager(
 
     fun readCurrentSessionDrinks(): List<Drink> {
         val drinks = mutableListOf<Drink>()
-        val table = "drinks, current_session_drinks"
-        val where = "drinks.id=current_session_drinks.drink_id"
-        val order = "current_session_drinks.position ASC"
+        val table = "$DRINKS_TABLE, $CURRENT_SESSION_TABLE"
+        val where = "$DRINKS_TABLE.id=$CURRENT_SESSION_TABLE.drink_id"
+        val order = "$CURRENT_SESSION_TABLE.position ASC"
         val cursor = db.query(table, null, where, null, null, null, order, null)
         while (cursor.moveToNext()) {
             val drinkName = cursor.getString(cursor.getColumnIndex("name"))
@@ -153,7 +206,7 @@ abstract class AbstractDatabaseManager(
     fun readLogHeaders(): List<LogHeader> {
         val headers = mutableListOf<LogHeader>()
 
-        val cursor = db.query("log", null, null, null, null, null, null)
+        val cursor = db.query(LOG_TABLE, null, null, null, null, null, null)
         while (cursor.moveToNext()) {
             headers.add(
                 LogHeader(
@@ -169,8 +222,8 @@ abstract class AbstractDatabaseManager(
 
     fun readFavoriteDrinks(): List<Drink> {
         val favorites = mutableListOf<Drink>()
-        val table = "drinks, favorites"
-        val where = "drinks.id=favorites.origin_id"
+        val table = "$DRINKS_TABLE, $FAVORITES_TABLE"
+        val where = "$DRINKS_TABLE.id=favorites.origin_id"
         val order = "modifiedTime ASC"
         val cursor = db.query(table, null, where, null, null, null, order, null)
 
@@ -192,93 +245,78 @@ abstract class AbstractDatabaseManager(
         return favorites
     }
 
-    private fun dropAllTables() {
-        db.execSQL("DROP TABLE drinks")
-        db.execSQL("DROP TABLE current_session_drinks")
-        db.execSQL("DROP TABLE favorites")
-        db.execSQL("DROP TABLE log")
-        db.execSQL("DROP TABLE log_drink")
-    }
-
-    private fun buildTables() {
-        db.execSQL("CREATE TABLE \"current_session_drinks\" ( `drink_id` TEXT, `position` INTEGER )")
-        db.execSQL("CREATE TABLE \"drinks\" ( `id` TEXT UNIQUE, `name` TEXT, `abv` NUMERIC, `amount` NUMERIC, `measurement` TEXT, `recent` INTEGER, `modifiedTime` INTEGER, `dontSuggest` INTEGER, PRIMARY KEY(`id`) )")
-        db.execSQL("CREATE TABLE \"favorites\" ( `drink_name` TEXT, `origin_id` TEXT )")
-        db.execSQL("CREATE TABLE \"log\" ( `date` INTEGER UNIQUE, `bac` NUMERIC, `duration` INTEGER, PRIMARY KEY(`date`) )")
-        db.execSQL("CREATE TABLE \"log_drink\" ( `log_date` NUMERIC, `drink_id` TEXT )")
-    }
-
-    fun insertDrinkIntoDrinksTable(drink: Drink) {
-        val sql = "INSERT INTO drinks (id, name, abv, amount, measurement, recent, modifiedTime, dontSuggest)" +
-            "VALUES (\"${drink.id}\", \"${drink.name}\", ${drink.abv}, ${drink.amount}, " +
-            "\"${drink.measurement.displayName}\", ${drink.recent.toInt()}, ${drink.modifiedTime}, ${drink.dontSuggest.toInt()})"
-        db.execSQL(sql)
-    }
-
-    private fun insertRowIntoLogDrinkTable(date: Int, id: UUID) {
-        val sql = "INSERT INTO log_drink VALUES ($date, \"$id\")"
-        db.execSQL(sql)
-    }
-
     fun writeDrinks(
         allDrinks: List<Drink> = listOf(),
         currentDrinks: List<Drink> = listOf(),
         favoriteDrinks: List<Drink> = listOf(),
         loggedDrinks: List<Pair<Int, UUID>> = listOf()
     ) {
-        deleteRowsInTable("current_session_drinks", null)
+        deleteRowsInTable(CURRENT_SESSION_TABLE, null)
 
         currentDrinks.forEachIndexed { i, drink ->
-            insertRowInCurrentSessionTable(drink.id, i)
+            writeCurrentDrink(drink.id, i)
             updateRowInDrinksTable(drink)
             if (!drink.favorited && isFavoritedInDB(drink.name)) {
-                deleteRowsInTable( tableName = "favorites", whereString =  "drink_name = \"${drink.name}\"")
+                deleteRowsInTable( tableName = FAVORITES_TABLE, whereString =  "drink_name = \"${drink.name}\"")
             }
         }
-        favoriteDrinks.forEach { insertRowInFavoritesTable(it.name, it.id) }
-        allDrinks.forEach { insertDrinkIntoDrinksTable(it)  }
-        loggedDrinks.forEach { insertRowIntoLogDrinkTable(it.first, it.second)  }
+        favoriteDrinks.forEach { writeFavoriteDrink(it.name, it.id) }
+        allDrinks.forEach { writeDrink(it)  }
+        loggedDrinks.forEach { writeLoggedDrink(it.first, it.second)  }
     }
 
-    fun deleteRowsInTable(tableName: String, whereString: String?) {
+    fun writeLogHeaders(headers: List<LogHeader>) {
+        deleteRowsInTable(LOG_TABLE, null)
+        for (header in headers) {
+            writeLogHeader(header)
+        }
+    }
+
+    fun writeDrink(drink: Drink) {
+        val sql = "INSERT INTO $DRINKS_TABLE (id, name, abv, amount, measurement, recent, modifiedTime, dontSuggest)" +
+            "VALUES (\"${drink.id}\", \"${drink.name}\", ${drink.abv}, ${drink.amount}, " +
+            "\"${drink.measurement.displayName}\", ${drink.recent.toInt()}, ${drink.modifiedTime}, ${drink.dontSuggest.toInt()})"
+        db.execSQL(sql)
+    }
+
+    fun writeCurrentDrink(id: UUID, position: Int) {
+        val sql = "INSERT INTO $CURRENT_SESSION_TABLE VALUES (\"$id\", $position)"
+        db.execSQL(sql)
+    }
+
+    fun writeFavoriteDrink(name: String, id: UUID) {
+        val sql = "INSERT INTO $FAVORITES_TABLE VALUES (\"$name\", \"$id\")"
+        db.execSQL(sql)
+    }
+
+    fun writeLoggedDrink(date: Int, id: UUID) {
+        val sql = "INSERT INTO $LOGGED_DRINKS_TABLE VALUES ($date, \"$id\")"
+        db.execSQL(sql)
+    }
+
+    fun writeLogHeader(logHeader: LogHeader) {
+        val sql = "INSERT INTO $LOG_TABLE VALUES (${logHeader.date}, ${logHeader.bac}, ${logHeader.duration})"
+        db.execSQL(sql)
+    }
+
+    fun deleteRowsInTable(tableName: String, whereString: String? = null) {
+        require(ALL_TABLES.contains(tableName)) { "$tableName is not a valid database table. Must be one of ${ALL_TABLES.contentToString()}" }
         val sql = if (whereString.isNullOrBlank()) "DELETE FROM $tableName"
         else "DELETE FROM $tableName WHERE $whereString"
         db.execSQL(sql)
     }
 
-    fun insertRowInCurrentSessionTable(id: UUID, position: Int) {
-        val sql = "INSERT INTO current_session_drinks VALUES (\"$id\", $position)"
-        db.execSQL(sql)
-    }
-
-    fun insertRowInFavoritesTable(name: String, id: UUID) {
-        val sql = "INSERT INTO favorites VALUES (\"$name\", \"$id\")"
-        db.execSQL(sql)
-    }
-
-    fun insertRowInLogTable(date: Int, bac: Double, duration: Double) {
-        val sql = "INSERT INTO log VALUES ($date, $bac, $duration)"
-        db.execSQL(sql)
-    }
-
-
     fun updateRowInDrinksTable(drink: Drink) {
-        val sql = "UPDATE drinks SET " +
+        val sql = "UPDATE $DRINKS_TABLE SET " +
             "name=\"${drink.name}\", " +
             "abv=${drink.abv}, " +
             "amount=${drink.amount}," +
             "measurement=\"${drink.measurement.displayName}\", " +
             "recent=${drink.recent.toInt()}, " +
-            "dontSuggest = ${drink.dontSuggest.toInt()}" +
-            " WHERE id=\"${drink.id}\""
+            "dontSuggest=${drink.dontSuggest.toInt()}, " +
+            "modifiedTime=${drink.modifiedTime} "
+            "WHERE id=\"${drink.id}\""
         db.execSQL(sql)
-    }
-
-    private fun writeLogHeaders(headers: List<LogHeader>) {
-        deleteRowsInTable("log", null)
-        for (header in headers) {
-            insertRowInLogTable(header.date, header.bac, header.duration)
-        }
     }
 
     fun closeDatabase() = db.close()

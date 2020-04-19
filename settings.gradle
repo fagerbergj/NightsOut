@@ -1,4 +1,3 @@
-include ':app', ':common'
+include ':app'
+include ':common'
 include ':db'
-include ':test-common'
-include ':test-common'

@@ -9,7 +9,6 @@ class ConversionUtilsTest {
 
     @Test
     fun `convert weights to lbs`() {
-        WeightMeasurement.LBS.toLbs(1.0)
         assertThat(WeightMeasurement.LBS.toLbs(1.0)).isEqualTo(1.0)
         assertThat(WeightMeasurement.KG.toLbs(5.0)).isEqualTo(11.025)
         assertThat(WeightMeasurement.KG.toLbs(20.0)).isEqualTo(44.1)

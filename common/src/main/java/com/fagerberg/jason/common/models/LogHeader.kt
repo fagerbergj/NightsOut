@@ -1,7 +1,6 @@
 package com.fagerberg.jason.common.models
 
 import com.fagerberg.jason.common.utils.decimalTimeToHoursAndMinuets
-import com.fagerberg.jason.common.utils.getLocal
 import java.text.DateFormatSymbols
 import java.util.Locale
 

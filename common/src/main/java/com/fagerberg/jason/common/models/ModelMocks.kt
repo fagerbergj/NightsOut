@@ -1,8 +1,5 @@
-package com.example.test_common
+package com.fagerberg.jason.common.models
 
-import com.fagerberg.jason.common.models.Drink
-import com.fagerberg.jason.common.models.LogHeader
-import com.fagerberg.jason.common.models.VolumeMeasurement
 import java.util.UUID
 
 fun createDrink(
@@ -15,7 +12,7 @@ fun createDrink(
     recent: Boolean = false,
     modifiedTime: Long = 0L,
     dontSuggest: Boolean = false
-) = Drink(
+) = com.fagerberg.jason.common.models.Drink(
     id = id,
     name = name,
     abv = abv,
