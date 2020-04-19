@@ -1,6 +1,7 @@
 package com.fagerberg.jason.common.android
 
 import android.content.SharedPreferences
+import android.util.Log
 import com.fagerberg.jason.common.constants.ACTIVE_THEME
 import com.fagerberg.jason.common.constants.DATE_INSTALLED
 import com.fagerberg.jason.common.constants.DONT_SHOW_BAC_NOTIFICATION
@@ -17,11 +18,19 @@ import com.fagerberg.jason.common.models.WeightMeasurement
 import com.fagerberg.jason.common.utils.getCurrentTimeInMinuets
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.mockkStatic
 import io.mockk.verify
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.Before
 import org.junit.Test
 
 class NightsOutSharedPreferencesTest {
+
+    @Before
+    fun setup() {
+        mockkStatic(Log::class)
+        every { Log.d(any(), any()) } returns 0
+    }
 
     @Test
     fun `write returns correct copy`() {

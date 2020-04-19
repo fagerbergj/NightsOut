@@ -4,10 +4,10 @@ import android.database.sqlite.SQLiteCantOpenDatabaseException
 import android.database.sqlite.SQLiteDatabase
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
-import com.fagerberg.jason.common.models.createDrink
 import com.fagerberg.jason.common.constants.DB_NAME
 import com.fagerberg.jason.common.constants.DB_PATH
 import com.fagerberg.jason.common.models.VolumeMeasurement
+import com.fagerberg.jason.common.models.test.createDrink
 import com.fagerberg.jason.common.models.test.createLogHeader
 import org.hamcrest.CoreMatchers.hasItem
 import org.hamcrest.CoreMatchers.`is` as isEqualTo
@@ -108,21 +108,24 @@ class SimpleDatabaseManagerTest {
                 name = "Beer",
                 abv = 5.0,
                 amount = 1.0,
-                measurement = VolumeMeasurement.BEERS
+                measurement = VolumeMeasurement.BEERS,
+                modifiedTime = allDrinks[0].modifiedTime
             ),
             createDrink(
                 id = allDrinks[1].id,
                 name = "Wine",
                 abv = 12.5,
                 amount = 1.0,
-                measurement = VolumeMeasurement.WINE_GLASSES
+                measurement = VolumeMeasurement.WINE_GLASSES,
+                modifiedTime = allDrinks[0].modifiedTime
             ),
             createDrink(
                 id = allDrinks[2].id,
                 name = "Liquor",
                 abv = 40.0,
                 amount = 1.0,
-                measurement = VolumeMeasurement.SHOTS
+                measurement = VolumeMeasurement.SHOTS,
+                modifiedTime = allDrinks[0].modifiedTime
             )
         )
         assertThat(allDrinks, contains(initDrinks[0], initDrinks[1], initDrinks[2]))

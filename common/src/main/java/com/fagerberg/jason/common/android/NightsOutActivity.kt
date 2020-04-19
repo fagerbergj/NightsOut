@@ -16,7 +16,7 @@ import android.util.Log
 
 abstract class NightsOutActivity : AppCompatActivity() {
 
-    val logTag = this::class.java.name
+    private val logTag = this::class.java.name
 
     val mBackStack = Stack<Int>()
     var fragmentId = -1

@@ -1,5 +1,6 @@
 package com.fagerberg.jason.common.android
 
+import android.util.Log
 import com.jakewharton.rxrelay2.BehaviorRelay
 import com.jakewharton.rxrelay2.PublishRelay
 import io.reactivex.Observable
@@ -12,6 +13,8 @@ abstract class AbstractPresenter <Intent, Action, Result, ViewModel>(
     initialViewModel: ViewModel
 ) : AndroidViewModel() {
 
+    private val logTag = this::class.java.name
+
     private val disposables = CompositeDisposable()
     private val uiEventHandler = PublishRelay.create<Intent>().toSerialized()
 
@@ -20,6 +23,7 @@ abstract class AbstractPresenter <Intent, Action, Result, ViewModel>(
         BehaviorRelay.createDefault(initialViewModel)
 
     init {
+        Log.i(logTag, "Initializing Presenter subscription")
         disposables.add(
             uiEventHandler.observeOn(Schedulers.io())
                 .map(::intentToAction)

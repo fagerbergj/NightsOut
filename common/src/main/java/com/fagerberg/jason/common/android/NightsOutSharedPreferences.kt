@@ -1,6 +1,7 @@
 package com.fagerberg.jason.common.android
 
 import android.content.SharedPreferences
+import android.util.Log
 import androidx.preference.PreferenceManager
 import com.fagerberg.jason.common.R
 import com.fagerberg.jason.common.constants.ACTIVE_THEME
@@ -36,6 +37,9 @@ data class NightsOutSharedPreferences(
     val showBacNotification: Boolean,
     val activeTheme: Int
 ) {
+
+    private val logTag = this::class.java.name
+
     fun update(
         profileInit: Boolean,
         sex: Boolean?,
@@ -72,7 +76,7 @@ data class NightsOutSharedPreferences(
 
         editor.apply()
 
-        return this.copy(
+        val newPrefs = this.copy(
             profileInit = profileInit,
             sex = sex,
             weight = weight,
@@ -87,6 +91,8 @@ data class NightsOutSharedPreferences(
             showBacNotification = showBacNotification,
             activeTheme = activeTheme
         )
+        Log.d(logTag, "Updated shared preferences to: $newPrefs")
+        return newPrefs
     }
 }
 
