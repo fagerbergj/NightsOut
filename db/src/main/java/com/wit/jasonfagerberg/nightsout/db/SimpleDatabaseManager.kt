@@ -40,6 +40,7 @@ class SimpleDatabaseManager(
     private lateinit var db: SQLiteDatabase
 
     fun openDatabase() {
+        Log.i(logTag, "Opening database connection")
         if (!dbExists()) {
             writeDatabaseFile()
         }
@@ -76,6 +77,7 @@ class SimpleDatabaseManager(
         // dont need to do any data saving since there is no data
         if (oldVersion == 0) return
 
+        Log.d(logTag, "Upgrading database from version $oldVersion to $newVersion")
         // Store database values in vars
         val allDrinks = readDrinks()
         val currentDrinks = readCurrentSessionDrinks()
@@ -132,92 +134,8 @@ class SimpleDatabaseManager(
             )
         }
         cursor.close()
+        Log.d(logTag,"Drinks Read From DB: ${allDrinks.joinToString()}")
         return allDrinks
-    }
-
-    fun readLoggedDrinks(date: Int): List<Drink> {
-        val drinks = mutableListOf<Drink>()
-        val table = "$DRINKS_TABLE, $LOGGED_DRINKS_TABLE"
-        val where = "$DRINKS_TABLE.id=$LOGGED_DRINKS_TABLE.drink_id AND $LOGGED_DRINKS_TABLE.log_date=$date"
-        val cursor = db.query(table, null, where, null, null, null, null, null)
-        while (cursor.moveToNext()) {
-            val drinkName = cursor.getString(cursor.getColumnIndex("name"))
-            drinks.add(
-                Drink(
-                    id = UUID.fromString(cursor.getString(cursor.getColumnIndex("id"))),
-                    name = drinkName,
-                    abv = cursor.getDouble(cursor.getColumnIndex("abv")),
-                    amount = cursor.getDouble(cursor.getColumnIndex("amount")),
-                    measurement = VolumeMeasurement.fromLowercaseString(cursor.getString(cursor.getColumnIndex("measurement"))),
-                    favorited = isFavoritedInDB(drinkName),
-                    recent = cursor.getInt(cursor.getColumnIndex("recent")) == 1,
-                    modifiedTime = cursor.getLong(cursor.getColumnIndex("modifiedTime"))
-                )
-            )
-        }
-        cursor.close()
-        return drinks
-    }
-
-    private fun readLoggedDrinkReferences(): List<Pair<Int,UUID>> {
-        val loggedDrinks = mutableListOf<Pair<Int,UUID>>()
-        val cursor = db.query(LOGGED_DRINKS_TABLE, null, null, null, null, null, null)
-        while (cursor.moveToNext()) {
-            val logDate = cursor.getInt(cursor.getColumnIndex("log_date"))
-            val drinkId = UUID.fromString(cursor.getString(cursor.getColumnIndex("drink_id")))
-            loggedDrinks.add(Pair(logDate, drinkId))
-        }
-        cursor.close()
-        return loggedDrinks
-    }
-
-    fun isFavoritedInDB(name: String): Boolean {
-        val cursor = db.query(FAVORITES_TABLE, null, "drink_name = ?", arrayOf(name), null, null, null)
-        val ret = cursor.count == 1
-        cursor.close()
-        return ret
-    }
-
-    fun readCurrentSessionDrinks(): List<Drink> {
-        val drinks = mutableListOf<Drink>()
-        val table = "$DRINKS_TABLE, $CURRENT_SESSION_TABLE"
-        val where = "$DRINKS_TABLE.id=$CURRENT_SESSION_TABLE.drink_id"
-        val order = "$CURRENT_SESSION_TABLE.position ASC"
-        val cursor = db.query(table, null, where, null, null, null, order, null)
-        while (cursor.moveToNext()) {
-            val drinkName = cursor.getString(cursor.getColumnIndex("name"))
-            drinks.add(
-                Drink(
-                    id = UUID.fromString(cursor.getString(cursor.getColumnIndex("id"))),
-                    name = drinkName,
-                    abv = cursor.getDouble(cursor.getColumnIndex("abv")),
-                    amount = cursor.getDouble(cursor.getColumnIndex("amount")),
-                    measurement = VolumeMeasurement.fromLowercaseString(cursor.getString(cursor.getColumnIndex("measurement"))),
-                    favorited = isFavoritedInDB(drinkName),
-                    recent = cursor.getInt(cursor.getColumnIndex("recent")) == 1,
-                    modifiedTime = cursor.getLong(cursor.getColumnIndex("modifiedTime"))
-                )
-            )
-        }
-        cursor.close()
-        return drinks
-    }
-
-    fun readLogHeaders(): List<LogHeader> {
-        val headers = mutableListOf<LogHeader>()
-
-        val cursor = db.query(LOG_TABLE, null, null, null, null, null, null)
-        while (cursor.moveToNext()) {
-            headers.add(
-                LogHeader(
-                    date = cursor.getInt(cursor.getColumnIndex("date")),
-                    bac = cursor.getDouble(cursor.getColumnIndex("bac")),
-                    duration = cursor.getDouble(cursor.getColumnIndex("duration"))
-                )
-            )
-        }
-        cursor.close()
-        return headers
     }
 
     fun readFavoriteDrinks(): List<Drink> {
@@ -242,7 +160,96 @@ class SimpleDatabaseManager(
             )
         }
         cursor.close()
+        Log.d(logTag,"Favorite Drinks Read From DB: ${favorites.joinToString()}")
         return favorites
+    }
+
+    fun isFavoritedInDB(name: String): Boolean {
+        val cursor = db.query(FAVORITES_TABLE, null, "drink_name = ?", arrayOf(name), null, null, null)
+        val ret = cursor.count == 1
+        cursor.close()
+        return ret
+    }
+
+    fun readLoggedDrinks(date: Int): List<Drink> {
+        val drinks = mutableListOf<Drink>()
+        val table = "$DRINKS_TABLE, $LOGGED_DRINKS_TABLE"
+        val where = "$DRINKS_TABLE.id=$LOGGED_DRINKS_TABLE.drink_id AND $LOGGED_DRINKS_TABLE.log_date=$date"
+        val cursor = db.query(table, null, where, null, null, null, null, null)
+        while (cursor.moveToNext()) {
+            val drinkName = cursor.getString(cursor.getColumnIndex("name"))
+            drinks.add(
+                Drink(
+                    id = UUID.fromString(cursor.getString(cursor.getColumnIndex("id"))),
+                    name = drinkName,
+                    abv = cursor.getDouble(cursor.getColumnIndex("abv")),
+                    amount = cursor.getDouble(cursor.getColumnIndex("amount")),
+                    measurement = VolumeMeasurement.fromLowercaseString(cursor.getString(cursor.getColumnIndex("measurement"))),
+                    favorited = isFavoritedInDB(drinkName),
+                    recent = cursor.getInt(cursor.getColumnIndex("recent")) == 1,
+                    modifiedTime = cursor.getLong(cursor.getColumnIndex("modifiedTime"))
+                )
+            )
+        }
+        cursor.close()
+        Log.d(logTag,"Logged Drinks Read From DB: ${drinks.joinToString()}")
+        return drinks
+    }
+
+    private fun readLoggedDrinkReferences(): List<Pair<Int,UUID>> {
+        val loggedDrinks = mutableListOf<Pair<Int,UUID>>()
+        val cursor = db.query(LOGGED_DRINKS_TABLE, null, null, null, null, null, null)
+        while (cursor.moveToNext()) {
+            val logDate = cursor.getInt(cursor.getColumnIndex("log_date"))
+            val drinkId = UUID.fromString(cursor.getString(cursor.getColumnIndex("drink_id")))
+            loggedDrinks.add(Pair(logDate, drinkId))
+        }
+        cursor.close()
+        return loggedDrinks
+    }
+
+    fun readCurrentSessionDrinks(): List<Drink> {
+        val drinks = mutableListOf<Drink>()
+        val table = "$DRINKS_TABLE, $CURRENT_SESSION_TABLE"
+        val where = "$DRINKS_TABLE.id=$CURRENT_SESSION_TABLE.drink_id"
+        val order = "$CURRENT_SESSION_TABLE.position ASC"
+        val cursor = db.query(table, null, where, null, null, null, order, null)
+        while (cursor.moveToNext()) {
+            val drinkName = cursor.getString(cursor.getColumnIndex("name"))
+            drinks.add(
+                Drink(
+                    id = UUID.fromString(cursor.getString(cursor.getColumnIndex("id"))),
+                    name = drinkName,
+                    abv = cursor.getDouble(cursor.getColumnIndex("abv")),
+                    amount = cursor.getDouble(cursor.getColumnIndex("amount")),
+                    measurement = VolumeMeasurement.fromLowercaseString(cursor.getString(cursor.getColumnIndex("measurement"))),
+                    favorited = isFavoritedInDB(drinkName),
+                    recent = cursor.getInt(cursor.getColumnIndex("recent")) == 1,
+                    modifiedTime = cursor.getLong(cursor.getColumnIndex("modifiedTime"))
+                )
+            )
+        }
+        cursor.close()
+        Log.d(logTag,"Current Session Drinks Read From DB: ${drinks.joinToString()}")
+        return drinks
+    }
+
+    fun readLogHeaders(): List<LogHeader> {
+        val headers = mutableListOf<LogHeader>()
+
+        val cursor = db.query(LOG_TABLE, null, null, null, null, null, null)
+        while (cursor.moveToNext()) {
+            headers.add(
+                LogHeader(
+                    date = cursor.getInt(cursor.getColumnIndex("date")),
+                    bac = cursor.getDouble(cursor.getColumnIndex("bac")),
+                    duration = cursor.getDouble(cursor.getColumnIndex("duration"))
+                )
+            )
+        }
+        cursor.close()
+        Log.d(logTag,"Log Headers Read From DB: ${headers.joinToString()}")
+        return headers
     }
 
     fun writeDrinks(
@@ -273,6 +280,7 @@ class SimpleDatabaseManager(
     }
 
     fun writeDrink(drink: Drink) {
+        Log.d(logTag,"Writing Drink to DB: $drink")
         val sql = "INSERT INTO $DRINKS_TABLE (id, name, abv, amount, measurement, recent, modifiedTime, dontSuggest)" +
             "VALUES (\"${drink.id}\", \"${drink.name}\", ${drink.abv}, ${drink.amount}, " +
             "\"${drink.measurement.displayName}\", ${drink.recent.toInt()}, ${drink.modifiedTime}, ${drink.dontSuggest.toInt()})"
@@ -280,33 +288,38 @@ class SimpleDatabaseManager(
     }
 
     fun writeCurrentDrink(id: UUID, position: Int) {
+        Log.d(logTag,"Writing Current Drink $id at position $position to DB")
         val sql = "INSERT INTO $CURRENT_SESSION_TABLE VALUES (\"$id\", $position)"
         db.execSQL(sql)
     }
 
     fun writeFavoriteDrink(name: String, id: UUID) {
+        Log.d(logTag,"Writing Favorite Drink $name, $id to DB")
         val sql = "INSERT INTO $FAVORITES_TABLE VALUES (\"$name\", \"$id\")"
         db.execSQL(sql)
     }
 
     fun writeLoggedDrink(date: Int, id: UUID) {
+        Log.d(logTag,"Writing Logged Drink $id at date $date to DB")
         val sql = "INSERT INTO $LOGGED_DRINKS_TABLE VALUES ($date, \"$id\")"
         db.execSQL(sql)
     }
 
     fun writeLogHeader(logHeader: LogHeader) {
+        Log.d(logTag,"Writing Log Header DB $logHeader")
         val sql = "INSERT INTO $LOG_TABLE VALUES (${logHeader.date}, ${logHeader.bac}, ${logHeader.duration})"
         db.execSQL(sql)
     }
 
     fun deleteRowsInTable(tableName: String, whereString: String? = null) {
         require(ALL_TABLES.contains(tableName)) { "$tableName is not a valid database table. Must be one of ${ALL_TABLES.contentToString()}" }
-        val sql = if (whereString.isNullOrBlank()) "DELETE FROM $tableName"
-        else "DELETE FROM $tableName WHERE $whereString"
+        val sql = if (whereString.isNullOrBlank()) "DELETE FROM $tableName" else "DELETE FROM $tableName WHERE $whereString"
+        Log.d(logTag,"Executing Delete Query: \"$sql\"")
         db.execSQL(sql)
     }
 
     fun updateRowInDrinksTable(drink: Drink) {
+        Log.d(logTag, "Updating drink ${drink.id} to be: $drink")
         val sql = "UPDATE $DRINKS_TABLE SET " +
             "name=\"${drink.name}\", " +
             "abv=${drink.abv}, " +
@@ -319,7 +332,10 @@ class SimpleDatabaseManager(
         db.execSQL(sql)
     }
 
-    fun closeDatabase() = db.close()
+    fun closeDatabase() {
+        Log.i(logTag, "Closing database connection")
+        db.close()
+    }
 }
 
 private fun Boolean.toInt() = if (this) 1 else 0
