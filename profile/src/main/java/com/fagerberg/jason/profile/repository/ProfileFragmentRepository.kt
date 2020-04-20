@@ -3,6 +3,7 @@ package com.fagerberg.jason.profile.repository
 import com.fagerberg.jason.common.android.NightsOutActivity
 import com.fagerberg.jason.common.android.NightsOutSharedPreferences
 import com.fagerberg.jason.common.android.getNightsOutSharedPreferences
+import com.fagerberg.jason.common.models.Drink
 import com.fagerberg.jason.common.models.WeightMeasurement
 import com.wit.jasonfagerberg.nightsout.db.FAVORITES_TABLE
 import com.wit.jasonfagerberg.nightsout.db.SimpleDatabaseManager
@@ -34,5 +35,9 @@ class ProfileFragmentRepository(private val activity: NightsOutActivity) {
                 weightMeasurement = weightMeasurement
             )
         ).doOnNext { sharedPreferences = it }
+
+    fun removeFavoriteDrink(drink: Drink) = Observable.just(
+        databaseManager.deleteRowsInTable(FAVORITES_TABLE, "drink_name=\"${drink.name}\"")
+    )
 
 }

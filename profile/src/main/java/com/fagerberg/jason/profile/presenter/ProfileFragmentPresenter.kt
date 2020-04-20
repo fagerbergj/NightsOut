@@ -28,6 +28,7 @@ class ProfileFragmentPresenter(
             )
             ProfileIntent.Settings -> ProfileAction.Settings
             ProfileIntent.ClearFavorites -> ProfileAction.ClearFavorites
+            is ProfileIntent.RemoveFavorite -> ProfileAction.RemoveFavorite(intent.drink)
         }
 
     override fun actionToResult(action: ProfileAction): Observable<ProfileResult> =
@@ -42,6 +43,9 @@ class ProfileFragmentPresenter(
             ).map<ProfileResult>(ProfileResult::Save)
             is ProfileAction.Settings -> Observable.just(ProfileResult.Settings)
             is ProfileAction.ClearFavorites -> repo.clearFavorites().map { ProfileResult.ClearFavorites }
+            is ProfileAction.RemoveFavorite -> repo.removeFavoriteDrink(action.drink).map {
+                ProfileResult.RemoveFavorite(action.drink)
+            }
         }
 
     override fun stateReducer(
@@ -55,15 +59,17 @@ class ProfileFragmentPresenter(
             is ProfileResult.Save -> ProfileViewModel.Save(result.sharedPreferences)
             is ProfileResult.Settings -> ProfileViewModel.Settings
             is ProfileResult.ClearFavorites -> ProfileViewModel.ClearFavorites
+            is ProfileResult.RemoveFavorite -> ProfileViewModel.RemoveFavorite(result.drink)
         }
 }
 
 sealed class ProfileIntent {
+    // initializing view
     data class Init(val activity: NightsOutActivity) : ProfileIntent()
     data class InitFavorites(val activity: NightsOutActivity) : ProfileIntent()
+
     // button presses
     data class SelectSex(val sex: Boolean) : ProfileIntent()
-
     data class Save(
         val activity: NightsOutActivity,
         val sex: Boolean,
@@ -72,16 +78,19 @@ sealed class ProfileIntent {
 
     // options selected
     object Settings : ProfileIntent()
-
     object ClearFavorites : ProfileIntent()
+
+    // Recycler View Options
+    data class RemoveFavorite(val drink: Drink) : ProfileIntent()
 }
 
 sealed class ProfileAction {
+    // initializing view
     data class Init(val activity: NightsOutActivity) : ProfileAction()
     data class InitFavorites(val activity: NightsOutActivity) : ProfileAction()
+
     // button presses
     data class SelectSex(val sex: Boolean) : ProfileAction()
-
     data class Save(
         val sex: Boolean,
         val weight: Double,
@@ -90,32 +99,43 @@ sealed class ProfileAction {
 
     // options selected
     object Settings : ProfileAction()
-
     object ClearFavorites : ProfileAction()
+
+    // Recycler View Options
+    data class RemoveFavorite(val drink: Drink) : ProfileAction()
 }
 
 sealed class ProfileResult {
+    // initializing view
     data class Init(val sharedPreferences: NightsOutSharedPreferences) : ProfileResult()
     data class InitFavorites(val favorites: List<Drink>) : ProfileResult()
+
     // button presses
     data class SelectSex(val sex: Boolean) : ProfileResult()
-
     data class Save(val sharedPreferences: NightsOutSharedPreferences) : ProfileResult()
+
     // options selected
     object Settings : ProfileResult()
-
     object ClearFavorites : ProfileResult()
+
+    // Recycler View Options
+    data class RemoveFavorite(val drink: Drink) : ProfileResult()
 }
 
 sealed class ProfileViewModel {
+    // initializing view
     object Empty : ProfileViewModel()
     data class Init(val sharedPreferences: NightsOutSharedPreferences) : ProfileViewModel()
     data class InitFavorites(val favorites: List<Drink>) : ProfileViewModel()
+
     // button presses
     data class SelectSex(val sex: Boolean) : ProfileViewModel()
     data class Save(val sharedPreferences: NightsOutSharedPreferences) : ProfileViewModel()
+
     // options selected
     object Settings : ProfileViewModel()
-
     object ClearFavorites : ProfileViewModel()
+
+    // Recycler View Options
+    data class RemoveFavorite(val drink: Drink) : ProfileViewModel()
 }

@@ -40,7 +40,7 @@ class ProfileFragmentFavoritesListAdapter(private val mContext: Context, drinksL
                 notifyItemRemoved(i)
                 notifyItemRangeChanged(0, mFavoriteDrinksList.size)
                 mContext.mDatabaseHelper.deleteRowsInTable("favorites", "drink_name=\"${drink.name}\"")
-                mContext.profileFragment.showOrHideEmptyTextViews(mContext.profileFragment.view!!)
+                mContext.profileFragment.showOrHideEmptyTextViews(mContext.profileFragment.requireView())
             }
             dialog.setActions(posAction, {})
             dialog.show("Remove ${drink.name} from favorites list?")
