@@ -23,11 +23,13 @@ class ProfileFragmentPresenter :
             }
             is ProfileIntent.InitFavorites -> ProfileAction.InitFavorites(intent.activity)
             is ProfileIntent.SelectSex -> ProfileAction.SelectSex(intent.sex)
-            is ProfileIntent.Save -> ProfileAction.Save(
-                sex = intent.sex,
-                weight = intent.weight,
-                weightMeasurement = intent.weightMeasurement
-            )
+            is ProfileIntent.Save -> {
+                ProfileAction.Save(
+                    sex = intent.sex,
+                    weight = intent.weight,
+                    weightMeasurement = intent.weightMeasurement
+                )
+            }
             ProfileIntent.Settings -> ProfileAction.Settings
             ProfileIntent.ClearFavorites -> ProfileAction.ClearFavorites
             is ProfileIntent.RemoveFavorite -> ProfileAction.RemoveFavorite(intent.drink)
@@ -38,17 +40,29 @@ class ProfileFragmentPresenter :
             is ProfileAction.Init -> repo.getSharedPrefs().map<ProfileResult>(ProfileResult::Init)
             is ProfileAction.InitFavorites -> repo.getFavorites().map<ProfileResult>(ProfileResult::InitFavorites)
             is ProfileAction.SelectSex -> Observable.just(ProfileResult.SelectSex(action.sex))
-            is ProfileAction.Save -> repo.saveSharedPrefs(
-                sex = action.sex,
-                weight = action.weight,
-                weightMeasurement = action.weightMeasurement
-            ).map<ProfileResult>(ProfileResult::Save)
+            is ProfileAction.Save -> performSaveAction(action)
             is ProfileAction.Settings -> Observable.just(ProfileResult.Settings)
             is ProfileAction.ClearFavorites -> repo.clearFavorites().map { ProfileResult.ClearFavorites }
             is ProfileAction.RemoveFavorite -> repo.removeFavoriteDrink(action.drink).map {
                 ProfileResult.RemoveFavorite(action.drink)
             }
         }
+
+    private fun performSaveAction(action: ProfileAction.Save) =
+        if (action.sex == null || isValidWeight(action.weight)) {
+            Observable.just(ProfileResult.InvalidSave(
+                isInvalidSex = action.sex == null,
+                isInvalidWeight = isValidWeight(action.weight)
+            )).cast<ProfileResult>(ProfileResult::class.java)
+        } else {
+            repo.saveSharedPrefs(
+                sex = action.sex,
+                weight = action.weight,
+                weightMeasurement = action.weightMeasurement
+            ).map<ProfileResult>(ProfileResult::Save)
+        }
+
+    private fun isValidWeight(weight: Double) = weight.isNaN() || weight < 20
 
     override fun stateReducer(
         previousState: ProfileViewModel,
@@ -59,6 +73,10 @@ class ProfileFragmentPresenter :
             is ProfileResult.InitFavorites -> ProfileViewModel.InitFavorites(result.favorites)
             is ProfileResult.SelectSex -> ProfileViewModel.SelectSex(result.sex)
             is ProfileResult.Save -> ProfileViewModel.Save(result.sharedPreferences)
+            is ProfileResult.InvalidSave -> ProfileViewModel.InvalidSave(
+                isInvalidSex = result.isInvalidSex,
+                isInvalidWeight = result.isInvalidWeight
+            )
             is ProfileResult.Settings -> ProfileViewModel.Settings
             is ProfileResult.ClearFavorites -> ProfileViewModel.ClearFavorites
             is ProfileResult.RemoveFavorite -> ProfileViewModel.RemoveFavorite(result.drink)
@@ -74,8 +92,9 @@ sealed class ProfileIntent {
     data class SelectSex(val sex: Boolean) : ProfileIntent()
     data class Save(
         val activity: NightsOutActivity,
-        val sex: Boolean,
-        val weight: Double, val weightMeasurement: WeightMeasurement
+        val sex: Boolean?,
+        val weight: Double,
+        val weightMeasurement: WeightMeasurement
     ) : ProfileIntent()
 
     // options selected
@@ -94,7 +113,7 @@ sealed class ProfileAction {
     // button presses
     data class SelectSex(val sex: Boolean) : ProfileAction()
     data class Save(
-        val sex: Boolean,
+        val sex: Boolean?,
         val weight: Double,
         val weightMeasurement: WeightMeasurement
     ) : ProfileAction()
@@ -115,6 +134,7 @@ sealed class ProfileResult {
     // button presses
     data class SelectSex(val sex: Boolean) : ProfileResult()
     data class Save(val sharedPreferences: NightsOutSharedPreferences) : ProfileResult()
+    data class InvalidSave(val isInvalidSex: Boolean, val isInvalidWeight: Boolean) : ProfileResult()
 
     // options selected
     object Settings : ProfileResult()
@@ -133,6 +153,7 @@ sealed class ProfileViewModel {
     // button presses
     data class SelectSex(val sex: Boolean) : ProfileViewModel()
     data class Save(val sharedPreferences: NightsOutSharedPreferences) : ProfileViewModel()
+    data class InvalidSave(val isInvalidSex: Boolean, val isInvalidWeight: Boolean) : ProfileViewModel()
 
     // options selected
     object Settings : ProfileViewModel()

@@ -23,6 +23,8 @@ class ProfileFragment : Fragment() {
     private val presenter: ProfileFragmentPresenter = ProfileFragmentPresenter()
     private lateinit var viewManager: ProfileFragmentViewManager
 
+    var isProfileCreated: Boolean = false
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
         viewManager = ProfileFragmentViewManager(this)

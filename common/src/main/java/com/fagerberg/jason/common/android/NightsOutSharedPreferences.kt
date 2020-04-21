@@ -19,6 +19,7 @@ import com.fagerberg.jason.common.constants.START_TIME
 import com.fagerberg.jason.common.constants.USE_24_HOUR_TIME
 import com.fagerberg.jason.common.models.WeightMeasurement
 import com.fagerberg.jason.common.utils.getCurrentTimeInMinuets
+import com.fagerberg.jason.common.utils.isCountryThatUsesLbs
 import com.fagerberg.jason.common.utils.isCountryThatUses12HourTime
 
 data class NightsOutSharedPreferences(
@@ -26,7 +27,7 @@ data class NightsOutSharedPreferences(
     val profileInit: Boolean,
     val sex: Boolean?,
     val weight: Double,
-    val weightMeasurement: WeightMeasurement?,
+    val weightMeasurement: WeightMeasurement,
     val startTimeMin: Int,
     val endTimeMin: Int,
     val use24HourTime: Boolean,
@@ -44,7 +45,7 @@ data class NightsOutSharedPreferences(
         profileInit: Boolean = this.profileInit,
         sex: Boolean? = this.sex,
         weight: Double = this.weight,
-        weightMeasurement: WeightMeasurement? = this.weightMeasurement,
+        weightMeasurement: WeightMeasurement = this.weightMeasurement,
         startTimeMin: Int = this.startTimeMin,
         endTimeMin: Int = this.endTimeMin,
         use24HourTime: Boolean = this.use24HourTime,
@@ -103,9 +104,10 @@ fun NightsOutActivity.getNightsOutSharedPreferences() =
             profileInit = getBoolean(PROFILE_INIT, false),
             sex = all[PROFILE_SEX] as Boolean?,
             weight = getFloat(PROFILE_WEIGHT, 0F).toDouble(),
-            weightMeasurement = (all[PROFILE_WEIGHT_MEASUREMENT] as String?)?.let {
-                WeightMeasurement.fromLowercaseString(it)
-            },
+            weightMeasurement = WeightMeasurement.fromLowercaseString(
+                this.getString(PROFILE_WEIGHT_MEASUREMENT, null) ?:
+                (if(isCountryThatUsesLbs()) WeightMeasurement.LBS else WeightMeasurement.KG).displayName
+            ),
             startTimeMin = getInt(START_TIME, getCurrentTimeInMinuets()),
             endTimeMin = getInt(END_TIME, getCurrentTimeInMinuets()),
             use24HourTime = getBoolean(USE_24_HOUR_TIME, isCountryThatUses12HourTime().not()),

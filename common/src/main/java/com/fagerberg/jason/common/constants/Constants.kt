@@ -1,6 +1,7 @@
 package com.fagerberg.jason.common.constants
 
 import com.fagerberg.jason.common.models.VolumeMeasurement
+import com.fagerberg.jason.common.models.WeightMeasurement
 
 const val BACK_STACK = "BACK_STACK"
 const val MAX_BACK_STACK_SIZE = 10
@@ -8,6 +9,7 @@ const val FRAGMENT_ID = "FRAGMENT_ID"
 const val DB_NAME = "nights_out_db.db"
 const val DB_PATH = "data/data/com.wit.jasonfagerberg.nightsout/$DB_NAME"
 const val DB_VERSION = 40
+val WEIGHT_MEASUREMENTS = WeightMeasurement.values().map { it.displayName }
 val VOLUME_MEASUREMENTS = VolumeMeasurement.values().map { it.displayName }
 val VOLUME_MEASUREMENTS_METRIC_FIRST = arrayOf(
         VolumeMeasurement.ML.displayName,
