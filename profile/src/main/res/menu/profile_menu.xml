@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/btn_clear_favorites_list"
+        android:title="@string/clear_favorites_list"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/btn_toolbar_settings"
+        android:title="@string/settings"
+        app:showAsAction="never"/>
+
+</menu>

@@ -104,7 +104,7 @@ fun NightsOutActivity.getNightsOutSharedPreferences() =
             sex = all[PROFILE_SEX] as Boolean?,
             weight = getFloat(PROFILE_WEIGHT, 0F).toDouble(),
             weightMeasurement = (all[PROFILE_WEIGHT_MEASUREMENT] as String?)?.let {
-                WeightMeasurement.valueOf(it)
+                WeightMeasurement.fromLowercaseString(it)
             },
             startTimeMin = getInt(START_TIME, getCurrentTimeInMinuets()),
             endTimeMin = getInt(END_TIME, getCurrentTimeInMinuets()),

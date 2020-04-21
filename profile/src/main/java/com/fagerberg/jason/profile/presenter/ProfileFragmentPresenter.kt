@@ -8,17 +8,19 @@ import com.fagerberg.jason.common.models.WeightMeasurement
 import com.fagerberg.jason.profile.repository.ProfileFragmentRepository
 import io.reactivex.Observable
 
-class ProfileFragmentPresenter(
-    activity: NightsOutActivity,
-    private val repo: ProfileFragmentRepository = ProfileFragmentRepository(activity)
-) :
+class ProfileFragmentPresenter :
     AbstractPresenter<ProfileIntent, ProfileAction, ProfileResult, ProfileViewModel>(
         initialViewModel = ProfileViewModel.Empty
     ) {
 
+    private lateinit var repo: ProfileFragmentRepository
+
     override fun intentToAction(intent: ProfileIntent): ProfileAction =
         when (intent) {
-            is ProfileIntent.Init -> ProfileAction.Init(intent.activity)
+            is ProfileIntent.Init -> {
+                repo = ProfileFragmentRepository(intent.activity)
+                ProfileAction.Init(intent.activity)
+            }
             is ProfileIntent.InitFavorites -> ProfileAction.InitFavorites(intent.activity)
             is ProfileIntent.SelectSex -> ProfileAction.SelectSex(intent.sex)
             is ProfileIntent.Save -> ProfileAction.Save(
