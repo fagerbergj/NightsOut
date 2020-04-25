@@ -10,6 +10,7 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import com.fagerberg.jason.common.dialog.LightSimpleDialog
 import com.fagerberg.jason.profile.R
 import com.fagerberg.jason.profile.presenter.ProfileFragmentPresenter
 import com.fagerberg.jason.profile.presenter.ProfileIntent
@@ -50,9 +51,12 @@ class ProfileFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.btn_clear_favorites_list -> {
-                val confirmAction = { sendIntent(ProfileIntent.ClearFavorites) }
-                // TODO show light simple dialog that confirms choice
-                confirmAction.invoke()
+                LightSimpleDialog(
+                    context = requireContext(),
+                    positiveAction = { sendIntent(ProfileIntent.ClearFavorites) }
+                ).show(
+                    body = getString(R.string.clear_favorites_dialog_body)
+                )
             }
             R.id.btn_toolbar_settings -> {
                 // TODO create intent to switch to setting activity

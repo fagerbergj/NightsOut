@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
+import com.fagerberg.jason.common.dialog.LightSimpleDialog
 import com.fagerberg.jason.common.models.Drink
 import com.fagerberg.jason.profile.R
 import com.fagerberg.jason.profile.presenter.ProfileIntent
@@ -26,8 +27,12 @@ class ProfileFragmentFavoritesAdapter(private val fragment: ProfileFragment, val
         val drink = drinksList[position]
         holder.name.text = drink.name
         holder.card.setOnClickListener {
-            // TODO show simple dialog asking for conformation
-            val confirmAction = { fragment.sendIntent(ProfileIntent.RemoveFavorite(drink)) }
+            LightSimpleDialog(
+                context = fragment.requireContext(),
+                positiveAction = { fragment.sendIntent(ProfileIntent.RemoveFavorite(drink)) }
+            ).show(
+                body = fragment.getString(R.string.remove_favorites_dialog_body).format(drink.name)
+            )
         }
     }
 

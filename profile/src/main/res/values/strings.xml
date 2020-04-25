@@ -6,4 +6,6 @@
     <string name="male">Male</string>
     <string name="female">Female</string>
     <string name="add_favorite">Add Favorite</string>
+    <string name="clear_favorites_dialog_body">Are you sure you want to clear all favorites?</string>
+    <string name="remove_favorites_dialog_body">"Remove %s from favorites list?"</string>
 </resources>
