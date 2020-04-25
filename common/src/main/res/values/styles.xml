@@ -19,4 +19,9 @@
     <style name="DarkCheckBox" parent="Widget.AppCompat.CompoundButton.CheckBox">
         <item name="android:buttonTint" tools:targetApi="lollipop">@color/colorPrimary</item>
     </style>
+
+    <style name="HomeButtonTheme" parent="Theme.MaterialComponents.Light">
+        <item name="colorPrimary">@color/colorGreen</item>
+        <item name="android:padding">0dp</item>
+    </style>
 </resources>

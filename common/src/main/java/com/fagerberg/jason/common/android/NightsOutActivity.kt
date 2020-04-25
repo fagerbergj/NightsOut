@@ -26,7 +26,7 @@ abstract class NightsOutActivity : AppCompatActivity() {
 
     public override fun onCreate(savedInstanceState: Bundle?) {
         Log.i(logTag, "OnCreate")
-        sharedPreferences = getSharedPreferences()
+        sharedPreferences = getNightsOutSharedPreferences()
         Log.d(logTag, "Shared Preference Values: $sharedPreferences")
         setTheme(sharedPreferences.activeTheme)
         super.onCreate(savedInstanceState)

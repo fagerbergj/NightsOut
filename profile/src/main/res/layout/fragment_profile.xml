@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <Button
+        android:id="@+id/btn_profile_save"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:insetTop="0dp"
+        android:insetBottom="0dp"
+        android:padding="16dp"
+        android:text="@string/save_profile"
+        android:textSize="@dimen/profile_text_size"
+        android:theme="@style/HomeButtonTheme"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+    <EditText
+        android:id="@+id/edit_profile_weight"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:autofillHints=""
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:gravity="center_horizontal"
+        android:hint="@string/weight"
+        android:inputType="numberDecimal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/text_profile_weight" />
+
+    <Spinner
+        android:id="@+id/spinner_profile"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:padding="4dp"
+        android:spinnerMode="dropdown"
+        app:layout_constraintBottom_toBottomOf="@+id/edit_profile_weight"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/edit_profile_weight"
+        app:layout_constraintTop_toTopOf="@id/edit_profile_weight"
+        tools:listitem="@android:layout/simple_list_item_1" />
+
+    <TextView
+        android:id="@+id/text_profile_sex"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/sex"
+        android:textSize="@dimen/profile_text_size"
+        style="@style/ProfileLabel"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/text_profile_weight"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/weight"
+        android:textSize="@dimen/profile_text_size"
+        style="@style/ProfileLabel"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_profile_male" />
+
+    <TextView
+        android:id="@+id/text_profile_favorites"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="@string/favorites"
+        android:textSize="@dimen/profile_text_size"
+        style="@style/ProfileLabel"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/edit_profile_weight" />
+
+    <TextView
+        android:id="@+id/text_profile_favorites_empty_list"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:text="@string/no_favorite_drinks"
+        app:layout_constraintBottom_toTopOf="@+id/favoritesBottomLine"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/recycler_profile_favorites_list"
+        app:layout_constraintTop_toBottomOf="@+id/favoritesTopLine" />
+
+    <View
+        android:id="@+id/favoritesTopLine"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:background="@color/colorLightBlueGray"
+        app:layout_constraintEnd_toEndOf="@id/recycler_profile_favorites_list"
+        app:layout_constraintStart_toStartOf="@+id/recycler_profile_favorites_list"
+        app:layout_constraintTop_toBottomOf="@+id/text_profile_favorites" />
+
+    <View
+        android:id="@+id/favoritesBottomLine"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:background="@color/colorLightBlueGray"
+        app:layout_constraintBottom_toBottomOf="@+id/recycler_profile_favorites_list"
+        app:layout_constraintEnd_toEndOf="@id/recycler_profile_favorites_list"
+        app:layout_constraintStart_toStartOf="@+id/recycler_profile_favorites_list" />
+
+    <View
+        android:id="@+id/centerStrut"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_profile_sex"
+        app:layout_constraintWidth_percent="0.15" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_profile_favorites_list"
+        android:layout_width="match_parent"
+        android:layout_height="72dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:orientation="horizontal"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/favoritesTopLine"
+        tools:itemCount="1"
+        tools:listitem="@layout/item_favorite" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_profile_male"
+        android:layout_width="@dimen/profile_sex_button_width"
+        android:layout_height="@dimen/profile_sex_button_height"
+        android:text="@string/male"
+        android:theme="@style/ProfileSexButtonTheme"
+        app:layout_constraintEnd_toStartOf="@id/centerStrut"
+        app:layout_constraintTop_toBottomOf="@id/text_profile_sex" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_profile_female"
+        android:layout_width="@dimen/profile_sex_button_width"
+        android:layout_height="@dimen/profile_sex_button_height"
+        android:text="@string/female"
+        android:theme="@style/ProfileSexButtonTheme"
+        app:layout_constraintStart_toEndOf="@id/centerStrut"
+        app:layout_constraintTop_toTopOf="@+id/btn_profile_male" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_profile_add_favorite"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:text="@string/add_favorite"
+        android:textSize="12sp"
+        android:theme="@style/HomeButtonTheme"
+        app:icon="@drawable/add_white_18dp"
+        app:iconGravity="start"
+        app:layout_constraintBottom_toBottomOf="@+id/text_profile_favorites"
+        app:layout_constraintEnd_toEndOf="@+id/recycler_profile_favorites_list"
+        app:layout_constraintTop_toTopOf="@+id/text_profile_favorites" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

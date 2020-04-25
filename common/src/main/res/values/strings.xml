@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="empty"> </string>
+    <string name="no_favorite_drinks">No Favorite Drinks</string>
+    <string name="clear_favorites_list">Clear Favorites List</string>
+    <string name="settings">Settings</string>
+</resources>
