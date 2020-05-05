@@ -1,0 +1,8 @@
+<resources>
+    <string name="notifications">Notifications</string>
+    <string name="show_bac_notification">Show Current BAC Notification</string>
+    <string name="theme">Theme</string>
+    <string name="dark_theme">Dark Theme</string>
+    <string name="time">Time</string>
+    <string name="use_24_hour_time">Use 24 Hour Time</string>
+</resources>

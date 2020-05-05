@@ -37,8 +37,8 @@ class ProfileFragmentPresenter :
 
     override fun actionToResult(action: ProfileAction): Observable<ProfileResult> =
         when (action) {
-            is ProfileAction.Init -> repo.getSharedPrefs().map<ProfileResult>(ProfileResult::Init)
-            is ProfileAction.InitFavorites -> repo.getFavorites().map<ProfileResult>(ProfileResult::InitFavorites)
+            is ProfileAction.Init -> repo.getSharedPrefs().map(ProfileResult::Init)
+            is ProfileAction.InitFavorites -> repo.getFavorites().map(ProfileResult::InitFavorites)
             is ProfileAction.SelectSex -> Observable.just(ProfileResult.SelectSex(action.sex))
             is ProfileAction.Save -> performSaveAction(action)
             is ProfileAction.Settings -> Observable.just(ProfileResult.Settings)
