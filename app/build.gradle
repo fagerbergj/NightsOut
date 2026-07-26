@@ -28,10 +28,13 @@ dependencies {
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'com.google.android.material:material:1.1.0'
-    implementation 'com.jjoe64:graphview:4.2.2'
+    // jetified like the calendar AAR; core classes reference support ViewCompat/EdgeEffectCompat
+    implementation files('libs/graphview-4.2.2-androidx.aar')
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
     testImplementation 'junit:junit:4.12'
-    implementation 'com.github.prolificinteractive:material-calendarview:2.0.1'
+    // 2.0.1 AAR run through Jetifier once (upstream ships support-library
+    // bytecode); lets us drop android.enableJetifier
+    implementation files('libs/material-calendarview-2.0.1-androidx.aar')
     // declared runtime-scoped by material-calendarview; needed on compile classpath for AndroidThreeTen.init
     implementation 'com.jakewharton.threetenabp:threetenabp:1.1.1'
     androidTestImplementation 'androidx.test:runner:1.2.0'
