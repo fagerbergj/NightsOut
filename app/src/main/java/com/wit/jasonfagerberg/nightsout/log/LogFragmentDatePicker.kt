@@ -2,13 +2,14 @@ package com.wit.jasonfagerberg.nightsout.log
 
 import android.app.DatePickerDialog
 import android.view.ContextThemeWrapper
+import androidx.lifecycle.lifecycleScope
 import com.wit.jasonfagerberg.nightsout.R
 import com.wit.jasonfagerberg.nightsout.utils.Converter
-import com.wit.jasonfagerberg.nightsout.databaseHelper.LogDatabaseHelper
 import com.wit.jasonfagerberg.nightsout.dialogs.SimpleDialog
 import com.wit.jasonfagerberg.nightsout.main.MainActivity
 import com.wit.jasonfagerberg.nightsout.models.LogHeader
 import java.util.*
+import kotlinx.coroutines.launch
 
 class LogFragmentDatePicker(
         private val logFragment: LogFragment,
@@ -17,7 +18,7 @@ class LogFragmentDatePicker(
         private val header: LogHeader,
         private val activeTheme: Int
 ) {
-    private val logDatabaseHelper = LogDatabaseHelper(mainActivity.mDatabaseHelper, mainActivity)
+    private val repository = mainActivity.repository
 
     fun showDatePicker() {
         val calendar = Calendar.getInstance()
@@ -37,7 +38,7 @@ class LogFragmentDatePicker(
                 showOverrideLogDialog(logDate)
             } else {
                 mainActivity.mLogHeaders.add(LogHeader(logDate, header.bac, header.duration))
-                logDatabaseHelper.changeLogDate(header.date, logDate)
+                mainActivity.lifecycleScope.launch { repository.changeLogDate(header.date, logDate) }
                 mainActivity.mLogHeaders.remove(header)
                 val message = "Log moved to ${testHeader.monthName} ${testHeader.day}, ${testHeader.year}"
                 logFragment.resetCalendar()
@@ -67,9 +68,11 @@ class LogFragmentDatePicker(
 
         simpleDialog.setPositiveButtonText(mainActivity.resources.getString(R.string.update))
         simpleDialog.setPositiveFunction {
-            logDatabaseHelper.deleteLog(logDate)
             mainActivity.mLogHeaders.add(LogHeader(logDate, header.bac, header.duration))
-            logDatabaseHelper.changeLogDate(header.date, logDate)
+            mainActivity.lifecycleScope.launch {
+                repository.deleteLog(logDate)
+                repository.changeLogDate(header.date, logDate)
+            }
             mainActivity.mLogHeaders.remove(header)
             message = "Log on ${header.monthName} ${header.day}, ${header.year} was updated"
             mainActivity.showToast(message)

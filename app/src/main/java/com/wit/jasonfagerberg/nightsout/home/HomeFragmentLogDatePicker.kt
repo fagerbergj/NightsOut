@@ -3,14 +3,15 @@ package com.wit.jasonfagerberg.nightsout.home
 import android.app.DatePickerDialog
 import android.content.Context
 import android.view.ContextThemeWrapper
+import androidx.lifecycle.lifecycleScope
 import com.wit.jasonfagerberg.nightsout.R
 import com.wit.jasonfagerberg.nightsout.utils.Converter
-import com.wit.jasonfagerberg.nightsout.databaseHelper.LogDatabaseHelper
 import com.wit.jasonfagerberg.nightsout.dialogs.LightSimpleDialog
 import com.wit.jasonfagerberg.nightsout.dialogs.SimpleDialog
 import com.wit.jasonfagerberg.nightsout.models.LogHeader
 import com.wit.jasonfagerberg.nightsout.main.MainActivity
 import java.util.*
+import kotlinx.coroutines.launch
 
 class HomeFragmentLogDatePicker(
     private val context: Context
@@ -18,7 +19,7 @@ class HomeFragmentLogDatePicker(
     private val mainActivity = context as MainActivity
     private val homeFragment = mainActivity.homeFragment
     private val converter = homeFragment.mConverter
-    private val logDatabaseHelper = LogDatabaseHelper(mainActivity.mDatabaseHelper, mainActivity)
+    private val repository = mainActivity.repository
 
     fun showDatePicker() {
         val calendar = Calendar.getInstance()
@@ -37,14 +38,16 @@ class HomeFragmentLogDatePicker(
                 showOverrideLogDialog(logDate)
             } else {
                 mainActivity.mLogHeaders.add(LogHeader(logDate, homeFragment.bac, homeFragment.drinkingDuration))
-                logDatabaseHelper.pushDrinksToLogDrinks(logDate)
+                mainActivity.lifecycleScope.launch {
+                    repository.pushDrinksToLogDrinks(logDate, mainActivity.mDrinksList)
+                    repository.insertRowInLogTable(logDate, homeFragment.bac, homeFragment.drinkingDuration)
+                }
                 val message = "Log created on ${testHeader.monthName} ${testHeader.day}, ${testHeader.year}"
 
                 val dialog = LightSimpleDialog(context)
                 val posAction = { mainActivity.homeFragment.clearSession(); mainActivity.showToast(message) }
                 dialog.setActions(posAction, { mainActivity.showToast(message) })
                 dialog.show("Do you want to start a new drink list?")
-                mainActivity.mDatabaseHelper.insertRowInLogTable(logDate, homeFragment.bac, homeFragment.drinkingDuration)
             }
             dp.dismiss()
         }
@@ -72,10 +75,13 @@ class HomeFragmentLogDatePicker(
 
         simpleDialog.setPositiveButtonText(mainActivity.resources.getString(R.string.update))
         simpleDialog.setPositiveFunction {
-            logDatabaseHelper.deleteLog(header.date)
             mainActivity.mLogHeaders[headerIndex] = LogHeader(header.date, homeFragment.bac, homeFragment.drinkingDuration)
             homeFragment.mDrinkListAdapter.notifyDataSetChanged()
-            logDatabaseHelper.pushDrinksToLogDrinks(header.date)
+            mainActivity.lifecycleScope.launch {
+                repository.deleteLog(header.date)
+                repository.pushDrinksToLogDrinks(header.date, mainActivity.mDrinksList)
+                repository.insertRowInLogTable(logDate, homeFragment.bac, homeFragment.drinkingDuration)
+            }
             message = "Log on ${header.monthName} ${header.day}, ${header.year} was updated"
             simpleDialog.dismiss()
 
@@ -83,7 +89,6 @@ class HomeFragmentLogDatePicker(
             val posAction = { mainActivity.homeFragment.clearSession(); mainActivity.showToast(message) }
             dialog.setActions(posAction, { mainActivity.showToast(message) })
             dialog.show("Do you want to start a new drink list?")
-            mainActivity.mDatabaseHelper.insertRowInLogTable(logDate, homeFragment.bac, homeFragment.drinkingDuration)
         }
     }
 }

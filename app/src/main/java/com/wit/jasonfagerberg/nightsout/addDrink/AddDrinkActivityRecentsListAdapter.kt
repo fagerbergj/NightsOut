@@ -4,9 +4,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.cardview.widget.CardView
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.wit.jasonfagerberg.nightsout.R
 import com.wit.jasonfagerberg.nightsout.dialogs.LightSimpleDialog
+import kotlinx.coroutines.launch
 
 class AddDrinkActivityRecentsListAdapter(private val mActivity: AddDrinkActivity) :
         RecyclerView.Adapter<AddDrinkActivityRecentsListAdapter.ViewHolder>() {
@@ -27,13 +29,13 @@ class AddDrinkActivityRecentsListAdapter(private val mActivity: AddDrinkActivity
 
         holder.card.setOnLongClickListener { v: View ->
             val lightSimpleDialog = LightSimpleDialog(v.context!!)
-            val posAction = {
+            val posAction: () -> Unit = {
                 mActivity.mRecentsList.remove(drink)
                 this.notifyItemRemoved(position)
                 mActivity.showToast("Drink Removed")
                 mActivity.showOrHideEmptyTextViews()
                 drink.recent = false
-                mActivity.mDatabaseHelper.updateRowInDrinksTable(drink)
+                mActivity.lifecycleScope.launch { mActivity.repository.updateRowInDrinksTable(drink) }
             }
             lightSimpleDialog.setActions(posAction, {})
             lightSimpleDialog.show("Remove from recents?")

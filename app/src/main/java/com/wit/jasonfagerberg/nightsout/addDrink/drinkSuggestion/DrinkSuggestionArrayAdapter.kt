@@ -5,9 +5,11 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.lifecycle.lifecycleScope
 import com.wit.jasonfagerberg.nightsout.R
 import com.wit.jasonfagerberg.nightsout.addDrink.AddDrinkActivity
 import com.wit.jasonfagerberg.nightsout.models.Drink
+import kotlinx.coroutines.launch
 
 class DrinkSuggestionArrayAdapter(
     private var Activity: AddDrinkActivity,
@@ -60,6 +62,8 @@ class DrinkSuggestionArrayAdapter(
         }
         data.removeAt(i)
         notifyDataSetChanged()
-        Activity.mDatabaseHelper.updateDrinkSuggestionStatus(`object`!!.id, true)
+        Activity.lifecycleScope.launch {
+            Activity.repository.updateDrinkSuggestionStatus(`object`!!.id, true)
+        }
     }
 }

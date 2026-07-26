@@ -5,39 +5,40 @@ import android.content.Context
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.wit.jasonfagerberg.nightsout.R
-import com.wit.jasonfagerberg.nightsout.databaseHelper.AddDrinkDatabaseHelper
+import com.wit.jasonfagerberg.nightsout.database.NightsOutRepository
 import com.wit.jasonfagerberg.nightsout.dialogs.LightSimpleDialog
-import com.wit.jasonfagerberg.nightsout.constants.Constants
 import com.wit.jasonfagerberg.nightsout.models.Drink
 import com.wit.jasonfagerberg.nightsout.main.NightsOutActivity
 import androidx.appcompat.widget.SearchView
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
+import org.koin.android.ext.android.inject
 
 class ManageDBActivity : NightsOutActivity() {
     private lateinit var mDrinkListAdapter: ManageDBDrinkListAdapter
-    lateinit var mDrinksList: ArrayList<Drink>
-    lateinit var dbh: AddDrinkDatabaseHelper
+    val mDrinksList: ArrayList<Drink> = ArrayList()
+    val repository: NightsOutRepository by inject()
+    private var searchJob: Job? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_manage_db)
-        dbh = AddDrinkDatabaseHelper(this, Constants.DB_NAME, null, Constants.DB_VERSION)
-        dbh.openDatabase()
-        mDrinksList = dbh.getSuggestedDrinks("", true)
+        lifecycleScope.launch {
+            mDrinksList.clear()
+            mDrinksList.addAll(repository.getSuggestedDrinks("", true))
+            if (::mDrinkListAdapter.isInitialized) mDrinkListAdapter.notifyDataSetChanged()
+        }
     }
 
     override fun onStart() {
         setupToolbar()
         setupRecycler()
         super.onStart()
-    }
-
-    override fun onPause() {
-        dbh.closeDatabase()
-        super.onPause()
     }
 
     private fun setupToolbar() {
@@ -54,10 +55,12 @@ class ManageDBActivity : NightsOutActivity() {
         val searchView = searchItem.actionView as SearchView
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextChange(newText: String): Boolean {
-                // your text view here
-                mDrinksList.clear()
-                mDrinksList.addAll(dbh.getSuggestedDrinks(newText, true))
-                mDrinkListAdapter.notifyDataSetChanged()
+                searchJob?.cancel()
+                searchJob = lifecycleScope.launch {
+                    mDrinksList.clear()
+                    mDrinksList.addAll(repository.getSuggestedDrinks(newText, true))
+                    mDrinkListAdapter.notifyDataSetChanged()
+                }
                 return true
             }
 
@@ -72,16 +75,15 @@ class ManageDBActivity : NightsOutActivity() {
         when (item.itemId) {
             R.id.btn_reset_db -> {
                 val dialog = LightSimpleDialog(this)
-                val posAction = {
-                    dbh.copyDatabase()
-                    dbh.pullCurrentSessionDrinks()
-                    dbh.pullLogHeaders()
+                val posAction: () -> Unit = {
+                    lifecycleScope.launch {
+                        repository.resetDatabase(this@ManageDBActivity)
 
-                    mDrinksList.clear()
-                    mDrinksList.addAll(dbh.getSuggestedDrinks("", true))
-                    mDrinkListAdapter.notifyDataSetChanged()
-                    (getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).cancelAll()
-
+                        mDrinksList.clear()
+                        mDrinksList.addAll(repository.getSuggestedDrinks("", true))
+                        mDrinkListAdapter.notifyDataSetChanged()
+                        (getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).cancelAll()
+                    }
                 }
                 dialog.setActions(posAction, {})
                 dialog.show("Are you sure? You will lose everything.")
@@ -100,21 +102,23 @@ class ManageDBActivity : NightsOutActivity() {
     }
 
     private fun deleteDrinksWithNoReference() {
-        var size = mDrinksList.size
-        var offset = 0
-        for (position in 0 until size) {
-            val drink = mDrinksList[position - offset]
-            val loss = mDrinkListAdapter.getLostReferenceString(drink)
-            if (loss.isEmpty()) {
-                dbh.deleteRowsInTable("drinks", "id = \"${drink.id}\"")
-                mDrinksList.removeAt(position - offset)
-                mDrinkListAdapter.notifyItemRemoved(position - offset)
-                mDrinkListAdapter.notifyItemRangeChanged(position - offset, mDrinksList.size)
-                size --
-                offset ++
+        lifecycleScope.launch {
+            var size = mDrinksList.size
+            var offset = 0
+            for (position in 0 until size) {
+                val drink = mDrinksList[position - offset]
+                val loss = mDrinkListAdapter.getLostReferenceString(drink)
+                if (loss.isEmpty()) {
+                    repository.deleteDrinkById(drink.id)
+                    mDrinksList.removeAt(position - offset)
+                    mDrinkListAdapter.notifyItemRemoved(position - offset)
+                    mDrinkListAdapter.notifyItemRangeChanged(position - offset, mDrinksList.size)
+                    size --
+                    offset ++
+                }
             }
+            showToast("$offset drinks deleted from database")
         }
-        showToast("$offset drinks deleted from database")
     }
 
     private fun setupRecycler() {

@@ -29,9 +29,11 @@ import java.util.Collections
 import android.widget.AdapterView
 import android.widget.AdapterView.OnItemSelectedListener
 import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.lifecycle.lifecycleScope
 import com.wit.jasonfagerberg.nightsout.addDrink.AddDrinkActivity
 import com.wit.jasonfagerberg.nightsout.utils.Converter
 import com.wit.jasonfagerberg.nightsout.dialogs.LightSimpleDialog
+import kotlinx.coroutines.launch
 
 // private const val TAG = "ProfileFragment"
 
@@ -146,6 +148,15 @@ class ProfileFragment : Fragment() {
         if (sex == true) pressMaleButton() else if (sex == false) pressFemaleButton()
         if (weight > 0.0) view!!.findViewById<EditText>(R.id.edit_profile_weight).setText(weight.toString())
         mMainActivity.invalidateOptionsMenu()
+
+        // shared list is filled async by MainActivity; refresh the adapter once we have it
+        lifecycleScope.launch {
+            mMainActivity.mFavoritesList.clear()
+            mMainActivity.mFavoritesList.addAll(mMainActivity.repository.pullFavoriteDrinks())
+            if (view == null) return@launch
+            mFavoritesListAdapter.notifyDataSetChanged()
+            showOrHideEmptyTextViews(view!!)
+        }
         super.onResume()
     }
 
@@ -158,14 +169,14 @@ class ProfileFragment : Fragment() {
         when (item.itemId) {
             R.id.btn_clear_favorites_list -> {
                 if (mMainActivity.mFavoritesList.isEmpty()) return false
-                val posAction = {
+                val posAction: () -> Unit = {
                     mMainActivity.mFavoritesList.clear()
                     for (drink in mMainActivity.mDrinksList) {
                         drink.favorited = false
                     }
                     showOrHideEmptyTextViews(view!!)
                     mFavoritesListAdapter.notifyDataSetChanged()
-                    mMainActivity.mDatabaseHelper.deleteRowsInTable("favorites", null)
+                    lifecycleScope.launch { mMainActivity.repository.deleteAllFavorites() }
                 }
                 val lightSimpleDialog = LightSimpleDialog(context!!)
                 lightSimpleDialog.setActions(posAction, {})

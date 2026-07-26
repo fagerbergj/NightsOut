@@ -1,12 +1,14 @@
 package com.wit.jasonfagerberg.nightsout.addDrink
 
 import androidx.cardview.widget.CardView
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import com.wit.jasonfagerberg.nightsout.R
 import com.wit.jasonfagerberg.nightsout.dialogs.LightSimpleDialog
+import kotlinx.coroutines.launch
 
 class AddDrinkActivityFavoritesListAdapter(private val mActivity: AddDrinkActivity) :
         RecyclerView.Adapter<AddDrinkActivityFavoritesListAdapter.ViewHolder>() {
@@ -28,13 +30,13 @@ class AddDrinkActivityFavoritesListAdapter(private val mActivity: AddDrinkActivi
         // remove from favorites on long press
         holder.card.setOnLongClickListener { v: View ->
             val lightSimpleDialog = LightSimpleDialog(v.context!!)
-            val posAction = {
+            val posAction: () -> Unit = {
                 mActivity.showToast("${mActivity.mFavoritesList[position].name} Removed From Favorites List")
                 mActivity.mFavoritesList.remove(drink)
                 notifyItemRemoved(position)
                 notifyItemRangeChanged(position, mActivity.mFavoritesList.size)
                 mActivity.showOrHideEmptyTextViews()
-                mActivity.mDatabaseHelper.deleteRowsInTable("favorites", "drink_name = \"${drink.name}\"")
+                mActivity.lifecycleScope.launch { mActivity.repository.deleteFavoriteByName(drink.name) }
             }
             lightSimpleDialog.setActions(posAction, {})
             lightSimpleDialog.show("Remove from favorites?")

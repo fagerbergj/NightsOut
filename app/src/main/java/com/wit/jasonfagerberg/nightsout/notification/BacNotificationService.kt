@@ -10,11 +10,18 @@ import androidx.preference.PreferenceManager
 import com.wit.jasonfagerberg.nightsout.R
 import com.wit.jasonfagerberg.nightsout.addDrink.AddDrinkActivity
 import com.wit.jasonfagerberg.nightsout.utils.Converter
-import com.wit.jasonfagerberg.nightsout.databaseHelper.DatabaseHelper
+import com.wit.jasonfagerberg.nightsout.database.NightsOutRepository
 import com.wit.jasonfagerberg.nightsout.domain.BacCalculator
 import com.wit.jasonfagerberg.nightsout.constants.Constants
 import com.wit.jasonfagerberg.nightsout.main.MainActivity
 import com.wit.jasonfagerberg.nightsout.main.NightsOutApplication
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import org.koin.android.ext.android.inject
 
 
 class BacNotificationService : Service() {
@@ -29,6 +36,8 @@ class BacNotificationService : Service() {
 
     private lateinit var notificationHelper : NotificationHelper
     private val mConverter = Converter()
+    private val repository: NightsOutRepository by inject()
+    private val serviceScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
     override fun onCreate() {
         // when the service is created / rerun after app closes, build notification to keep intents fresh
@@ -71,22 +80,26 @@ class BacNotificationService : Service() {
             Constants.ACTION.REFRESH_BAC -> {
                 endTime = Constants.getCurrentTimeInMinuets()
                 saveEndTime()
-                val bac = calculateBAC()
-                notificationHelper.loadAndUpdate {
-                    Thread.sleep(500)
-                    val title = "BAC: ${"%.3f".format(bac)}"
-                    val body = "${mConverter.timeToString(startTime/60, startTime%60, use24HourTime)} - " +
-                            mConverter.timeToString(endTime/60, endTime%60, use24HourTime)
-                    Triple(title, body, false)
-                }
+                serviceScope.launch {
+                    val bac = calculateBAC()
+                    withContext(Dispatchers.Main) {
+                        notificationHelper.loadAndUpdate {
+                            Thread.sleep(500)
+                            val title = "BAC: ${"%.3f".format(bac)}"
+                            val body = "${mConverter.timeToString(startTime/60, startTime%60, use24HourTime)} - " +
+                                    mConverter.timeToString(endTime/60, endTime%60, use24HourTime)
+                            Triple(title, body, false)
+                        }
 
-                val currentActivity = (applicationContext as NightsOutApplication).mCurrentActivity
+                        val currentActivity = (applicationContext as NightsOutApplication).mCurrentActivity
 
-                if (currentActivity is MainActivity && currentActivity.homeFragment.isResumed) {
-                    currentActivity.showToast("End time updated by notification")
-                    currentActivity.homeFragment.updateBACText(bac)
-                    currentActivity.setPreference(endTimeMin = endTime)
-                    currentActivity.homeFragment.setupEditTexts(currentActivity.homeFragment.view!!)
+                        if (currentActivity is MainActivity && currentActivity.homeFragment.isResumed) {
+                            currentActivity.showToast("End time updated by notification")
+                            currentActivity.homeFragment.updateBACText(bac)
+                            currentActivity.setPreference(endTimeMin = endTime)
+                            currentActivity.homeFragment.setupEditTexts(currentActivity.homeFragment.view!!)
+                        }
+                    }
                 }
             }
 
@@ -105,9 +118,14 @@ class BacNotificationService : Service() {
 
     private fun updateNotification() {
         getPreferencesData()
-        notificationHelper.updateOrShow("BAC: ${"%.3f".format(calculateBAC())}",
-                "${mConverter.timeToString(startTime/60, startTime%60, use24HourTime)} - " +
-                        mConverter.timeToString(endTime/60, endTime%60, use24HourTime), false)
+        serviceScope.launch {
+            val bac = calculateBAC()
+            withContext(Dispatchers.Main) {
+                notificationHelper.updateOrShow("BAC: ${"%.3f".format(bac)}",
+                        "${mConverter.timeToString(startTime/60, startTime%60, use24HourTime)} - " +
+                                mConverter.timeToString(endTime/60, endTime%60, use24HourTime), false)
+            }
+        }
     }
 
     private fun getPreferencesData() {
@@ -126,15 +144,12 @@ class BacNotificationService : Service() {
         editor.apply()
     }
 
-    private fun calculateBAC() : Double{
-        val dbh = DatabaseHelper(this, Constants.DB_NAME, null, Constants.DB_VERSION)
-        dbh.openDatabase()
+    private suspend fun calculateBAC() : Double{
         getPreferencesData()
 
-        val drinks = dbh.pullCurrentSessionDrinks().map {
+        val drinks = repository.pullCurrentSessionDrinks().map {
             BacCalculator.Drink(mConverter.drinkVolumeToFluidOz(it.amount, it.measurement), it.abv)
         }
-        dbh.closeDatabase()
 
         val weightInLbs = mConverter.weightToLbs(weight, weightMeasurement)
         return BacCalculator.calculate(drinks, weightInLbs, sex, startTime, endTime)
@@ -143,6 +158,11 @@ class BacNotificationService : Service() {
     override fun onBind(intent: Intent): IBinder? {
         // Used only in case of bound services.
         return null
+    }
+
+    override fun onDestroy() {
+        serviceScope.cancel()
+        super.onDestroy()
     }
 
     private fun saveNotificationState(started : Boolean) {
