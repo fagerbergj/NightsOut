@@ -125,8 +125,9 @@ class LogFragment : Fragment() {
     }
 
     private fun showDatePicker(originalDate: Int) {
-        val calendar = java.util.Calendar.getInstance()
-        val dateStr = converter.currentDateTo8DigitString()
+        // Seed the picker with the log's OWN date, not today's - the menu item
+        // names that date, so opening on today contradicts what was tapped.
+        val dateStr = originalDate.toString()
         val year = dateStr.substring(0, 4).toIntOrNull() ?: 2026
         val month = dateStr.substring(4, 6).toIntOrNull()?.minus(1) ?: 0
         val dayOfMonth = dateStr.substring(6, 8).toIntOrNull() ?: 1
@@ -134,8 +135,7 @@ class LogFragment : Fragment() {
         val dp = DatePickerDialog(
             requireContext(),
             { _, newYear, newMonth, newDay ->
-                val newDateStr = "$newYear${if (newMonth + 1 < 10) "0" else ""}${newMonth + 1}${if (newDay < 10) "0" else ""}$newDay"
-                val logDate = newDateStr.toInt()
+                val logDate = converter.yearMonthDayTo8DigitString(newYear, newMonth, newDay).toInt()
 
                 val oldHeader = LogHeader(originalDate)
                 val testHeader = LogHeader(logDate)

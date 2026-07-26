@@ -20,6 +20,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.wit.jasonfagerberg.nightsout.models.LogHeader
+import androidx.compose.ui.res.stringResource
+import com.wit.jasonfagerberg.nightsout.R
 
 @Composable
 fun LogCalendarScreen(
@@ -62,7 +64,7 @@ fun LogCalendarScreen(
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
             ) {
-                Text(text = "You Did Not Drink This Day")
+                Text(text = stringResource(R.string.you_did_no_drink_this_day))
             }
         } else {
          Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 2.dp)) {

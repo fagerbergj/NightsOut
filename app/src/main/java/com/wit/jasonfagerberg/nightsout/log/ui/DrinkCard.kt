@@ -70,7 +70,7 @@ fun LogHeaderRow(logHeader: com.wit.jasonfagerberg.nightsout.models.LogHeader) {
                 Text(
                     text = "Bac: ${"%.3f".format(logHeader.bac)}",
                     style = MaterialTheme.typography.bodyMedium,
-                    color = Color(0xFF424242),
+                    color = Color.White,
                     modifier = Modifier.weight(1f)
                 )
             }
