@@ -35,11 +35,11 @@ class BacNotificationService : Service() {
         super.onCreate()
         val refreshIntent = Intent(this, BacNotificationService::class.java)
         refreshIntent.action = Constants.ACTION.REFRESH_BAC
-        val pendingRefreshIntent = PendingIntent.getService(this, 0 , refreshIntent, 0)
+        val pendingRefreshIntent = PendingIntent.getService(this, 0, refreshIntent, PendingIntent.FLAG_IMMUTABLE)
 
         val addDrinkIntent = Intent(this, AddDrinkActivity::class.java)
         refreshIntent.action = Constants.ACTION.ADD_DRINK
-        val pendingAddDrinkIntent = PendingIntent.getActivity(this, 0, addDrinkIntent, 0)
+        val pendingAddDrinkIntent = PendingIntent.getActivity(this, 0, addDrinkIntent, PendingIntent.FLAG_IMMUTABLE)
 
         // build notification
         notificationHelper = NotificationHelper(this, Constants.CHANNEL.BAC)

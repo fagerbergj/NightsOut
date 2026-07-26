@@ -63,6 +63,7 @@ class SettingsActivity : NightsOutActivity() {
                 if (!profileInit){
                     showToast("Must create a profile to show the BAC notification")
                 } else {
+                    requestNotificationPermissionIfNeeded()
                     val startIntent = Intent(this, BacNotificationService::class.java)
                     startIntent.action = Constants.ACTION.START_SERVICE
                     startService(startIntent)

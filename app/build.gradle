@@ -6,7 +6,7 @@ android {
     defaultConfig {
         applicationId "com.wit.jasonfagerberg.nightsout"
         minSdkVersion 19
-        targetSdkVersion 29
+        targetSdkVersion 36
         versionCode 1904
         versionName "Rattata"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -16,10 +16,6 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
-    }
-    lint {
-        // Play Store policy check; irrelevant until targetSdk is deliberately raised
-        disable 'ExpiredTargetSdkVersion'
     }
 }
 

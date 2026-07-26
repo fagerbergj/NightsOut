@@ -152,6 +152,8 @@ class MainActivity : NightsOutActivity() {
         showBacNotification = preferences.getBoolean(Constants.PREFERENCE.SHOW_BAC_NOTIFICATION, true)
         activeTheme = preferences.getInt(Constants.PREFERENCE.ACTIVE_THEME, R.style.AppTheme)
 
+        if (showBacNotification) requestNotificationPermissionIfNeeded()
+
         startTimeMin = Constants.getCurrentTimeInMinuets()
         endTimeMin = Constants.getCurrentTimeInMinuets()
         if (profileInit) {
