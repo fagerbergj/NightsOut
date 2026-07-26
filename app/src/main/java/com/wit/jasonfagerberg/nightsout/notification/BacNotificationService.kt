@@ -11,6 +11,7 @@ import com.wit.jasonfagerberg.nightsout.R
 import com.wit.jasonfagerberg.nightsout.addDrink.AddDrinkActivity
 import com.wit.jasonfagerberg.nightsout.utils.Converter
 import com.wit.jasonfagerberg.nightsout.databaseHelper.DatabaseHelper
+import com.wit.jasonfagerberg.nightsout.domain.BacCalculator
 import com.wit.jasonfagerberg.nightsout.constants.Constants
 import com.wit.jasonfagerberg.nightsout.main.MainActivity
 import com.wit.jasonfagerberg.nightsout.main.NightsOutApplication
@@ -130,32 +131,13 @@ class BacNotificationService : Service() {
         dbh.openDatabase()
         getPreferencesData()
 
-        var a = 0.0
-        for (drink in dbh.pullCurrentSessionDrinks()) {
-            val volume = mConverter.drinkVolumeToFluidOz(drink.amount, drink.measurement)
-            val abv = drink.abv / 100
-            a += (volume * abv)
+        val drinks = dbh.pullCurrentSessionDrinks().map {
+            BacCalculator.Drink(mConverter.drinkVolumeToFluidOz(it.amount, it.measurement), it.abv)
         }
-
-        val r = if (sex) .73 else .66
+        dbh.closeDatabase()
 
         val weightInLbs = mConverter.weightToLbs(weight, weightMeasurement)
-
-        val sexModifiedWeight = weightInLbs * r
-
-        val instantBAC = (a * 5.14) / sexModifiedWeight
-
-        var hoursElapsed = (endTime - startTime) / 60.0
-        if (endTime < startTime) {
-            val minInDay = 1440
-            hoursElapsed = ((endTime + minInDay) - startTime) / 60.0
-        }
-
-        val bacDecayPerHour = 0.015
-        var res = instantBAC - (hoursElapsed * bacDecayPerHour)
-        res = if (res < 0.0) 0.0 else res
-        dbh.closeDatabase()
-        return res
+        return BacCalculator.calculate(drinks, weightInLbs, sex, startTime, endTime)
     }
 
     override fun onBind(intent: Intent): IBinder? {
