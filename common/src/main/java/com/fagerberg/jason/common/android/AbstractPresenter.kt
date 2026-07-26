@@ -9,7 +9,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import androidx.lifecycle.ViewModel as AndroidViewModel
 
-abstract class AbstractPresenter <Intent, Action, Result, ViewModel>(
+abstract class AbstractPresenter <Intent : Any, Action : Any, Result : Any, ViewModel : Any>(
     initialViewModel: ViewModel
 ) : AndroidViewModel() {
 

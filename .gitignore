@@ -1,5 +1,6 @@
 # Built application files
 /*/build/
+/build/
 
 # ktlint binary (fetch locally if needed, don't commit it)
 /ktlint
