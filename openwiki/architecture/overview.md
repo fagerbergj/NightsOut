@@ -45,11 +45,11 @@ NightsOut is structured as a **5-module Android project** using Gradle subprojec
 
 | Setting | Value |
 |---------|-------|
-| **Compile SDK** | 29 |
+| **Compile SDK** | 36 (Android 16) |
 | **Min SDK** | 19 (Android 4.4 KitKat) |
-| **Target SDK** | 29 |
-| **Kotlin Version** | 1.3.72 |
-| **Build Tools** | 29.0.2 |
+| **Target SDK** | 36 (Android 16) |
+| **Kotlin Version** | 1.3.72 (older — may need upgrade to match AGP 9.x) |
+| **Build Tools / AGP** | 9.3.1 |
 | **Application ID** | `com.wit.jasonfagerberg.nightsout` |
 
 ### Key Dependencies (common to app)
@@ -60,8 +60,8 @@ NightsOut is structured as a **5-module Android project** using Gradle subprojec
 | `com.google.android.material:material:1.1.0` | Material Components (buttons, navigation bars, dialogs) |
 | `androidx.constraintlayout:constraintlayout:1.1.3` | Layout engine |
 | `androidx.preference:preference:1.1.1` | Settings UI |
-| `com.jjoe64:graphview:4.2.2` | BAC decline chart rendering |
-| `com.github.prolificinteractive:material-calendarview:1.6.0` | Calendar picker in Log fragment |
+| Local AAR `graphview-4.2.2-androidx.aar` (jetified) | BAC decline chart rendering |
+| Local AAR `material-calendarview-2.0.1-androidx.aar` (jetified) | Calendar picker in Log fragment |
 | `io.reactivex.rxjava2:rxjava:2.2.6` + `rxandroid:2.1.1` | Reactive streams for MVI (profile module) |
 | `com.jakewharton.rxrelay2:rxrelay:2.1.1` | Replay subject support for AbstractPresenter |
 

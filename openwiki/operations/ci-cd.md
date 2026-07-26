@@ -12,43 +12,37 @@ NightsOut uses **GitHub Actions** for continuous integration with two configured
 
 **Source Path:** [`.github/workflows/ci.yml`](/.github/workflows/ci.yml)
 
-### Triggers
-
-| Event | Branches / PRs |
-|-------|----------------|
-| `push` | `master` branch only |
-| `pull_request` | All branches |
-
 ### Job: build-and-test
 
 | Step | Details |
 |------|---------|
 | **Runner** | `ubuntu-latest` |
-| **Java** | Temurin JDK 8 (required by AGP 3.6.2 / Gradle wrapper constraints) |
+| **Java** | Temurin JDK 17 (required by AGP 9.3 / Gradle 9.x) |
 | **Cache** | Gradle dependency cache enabled |
 | **Assemble** | `./gradlew assembleDebug` — Builds debug APK |
 | **Test** | `./gradlew testDebugUnitTest` — Runs unit tests in the JVM (not instrumented) |
 
-### Java Version Constraint
+### Trigger Branches
 
-The workflow explicitly uses JDK 8 despite Gradle wrapper potentially supporting newer versions. This is because:
-- AGP 3.6.2 was designed for and tested against JDK 8
-- The Gradle wrapper version at project setup (5.6.4 equivalent) supports at most JDK 12
-- Using JDK 8 avoids compatibility issues with annotation processing and R8/ProGuard
-
-### Known Constraint: Recent Gradle Upgrade
-
-The commit `9570217 upgrade to gradle 9.6.1` indicates a significant Gradle version bump from the original wrapper (5.x era) to 9.6.1. However, the CI workflow still targets JDK 8 and references AGP 3.6.2. This suggests:
-- Either the upgrade was partial (Gradle only, not AGP)
-- Or the CI configuration is stale and needs updating for newer Gradle/AGP versions
-
-**Action needed:** Verify that `./gradlew testDebugUnitTest` actually passes with the current Gradle version on JDK 8. If tests fail, update the CI to use JDK 11+ or upgrade AGP/Kotlin to match Gradle 9.x.
+| Event | Branches / PRs |
+|-------|----------------|
+| `push` | `main` branch only |
+| `pull_request` | All branches |
 
 ## Wiki Update Workflow (openwiki-update.yml)
 
 **Source Path:** [`.github/workflows/openwiki-update.yml`](/.github/workflows/openwiki-update.yml)
 
 This workflow handles automated wiki regeneration by the OpenWiki tool. It runs on a schedule and after pushes to the repository, updating documentation pages under `/openwiki/` based on source code analysis.
+
+### Configuration
+
+| Setting | Value |
+|---------|-------|
+| **Schedule** | Daily at 8:00 UTC (`cron: "0 8 * * *"`) |
+| **Node.js** | v22 |
+| **OpenRouter model** | `z-ai/glm-5.2` |
+| **Tracked paths** | `openwiki/`, `AGENTS.md`, `CLAUDE.md`, `.github/workflows/openwiki-update.yml` |
 
 **Note:** Do not hand-edit generated OpenWiki pages. Instead, update source code/docs and let OpenWiki regenerate them. See [AGENTS.md](/AGENTS.md) for details.
 
@@ -68,32 +62,36 @@ This workflow handles automated wiki regeneration by the OpenWiki tool. It runs 
 
 ```groovy
 buildscript {
-    ext.kotlin_version = '1.3.72'
     repositories {
         google()
-        jcenter()  // Deprecated — should migrate to mavenCentral()
+        mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.6.2'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath 'com.android.tools.build:gradle:9.3.1'
     }
 }
 
 allprojects {
     repositories {
         google()
-        jcenter()  // Deprecated
-        maven { url 'https://jitpack.io' }  // For material-calendarview
+        mavenCentral()
     }
 }
 ```
 
 | Setting | Value | Notes |
 |---------|-------|-------|
-| **Kotlin** | 1.3.72 | Older version — newer Kotlin versions (1.5+, 1.9+) have improved coroutines and null-safety |
-| **AGP** | 3.6.2 | Older Android Gradle Plugin — consider upgrading to 8.x for modern compile SDK support |
-| **jcenter()** | Used in repositories | **DEPRECATED since Feb 2021** — should be replaced with `mavenCentral()` |
-| **jitpack.io** | Fetched via maven | Required by `com.github.prolificinteractive:material-calendarview:1.6.0` |
+| **AGP** | 9.3.1 | Modern Android Gradle Plugin — requires JDK 17+ to run |
+| **mavenCentral()** | Primary Maven repository | `jcenter()` and `jitpack.io` have been removed; external AARs are vendored locally |
+
+### Vendored Dependencies
+
+The `app/libs/` directory contains pre-jetified AAR files that replaced remote dependencies:
+
+| File | Replaces | Reason |
+|------|----------|--------|
+| `graphview-4.2.2-androidx.aar` | `com.jjoe64:graphview:4.2.2` | Requires jetification (uses support library `ViewCompat` / `EdgeEffectCompat`) |
+| `material-calendarview-2.0.1-androidx.aar` | `com.github.prolificinteractive:material-calendarview:2.0.1` | Jetified version; using local AAR lets us drop `android.enableJetifier` |
 
 ### ProGuard / Minification
 
@@ -115,6 +113,6 @@ Release builds are configured with `minifyEnabled false` across all modules. No 
 
 - **No instrumentation tests in CI:** The workflow runs only `testDebugUnitTest`, which excludes Android instrumented tests (`db/src/androidTest/`). These require a connected device or emulator and would need a separate job to run.
 - **No code coverage reporting:** Neither workflow generates test coverage reports. Adding JaCoCo or Android's built-in coverage could help track regressions as the codebase evolves.
-- **jcenter() deprecation:** All three `allprojects` repositories still reference jcenter(), which has been shut down since February 2021. Dependencies may fail to resolve in new environments unless they are cached locally. Migrate all `jcenter()` references to `mavenCentral()`.
+- **Jetifier dropped:** `android.enableJetifier` is no longer set; dependencies (graphview, material-calendarview) are vendored as pre-jetified AARs in `app/libs/` and resolved via `implementation files()`. This also removed the need for `jitpack.io` repository.
 - **No dependency vulnerability scanning:** The CI does not run tools like `dependabot`, `snyk`, or `OWASP Dependency-Check` to identify vulnerable transitive dependencies (e.g., older support library versions).
 - **No lint configuration:** No Android Lint checks are run in CI. Running `./gradlew lintDebug` would catch issues like missing permissions, unused resources, and potential crashes.
