@@ -84,9 +84,6 @@ class ManageDBDrinkListAdapter(private val mContext: Context, private val mDrink
         }
         notifyDataSetChanged()
 
-        for (d in mDrinksList) {
-            if (d == drink) d.favorited = drink.favorited
-        }
         if (drink.favorited) mActivity.showToast("${drink.name} favorited")
         else mActivity.showToast("${drink.name} unfavorited")
         return true
