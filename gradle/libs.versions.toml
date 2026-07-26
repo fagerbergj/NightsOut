@@ -1,0 +1,27 @@
+[versions]
+agp = "9.3.1"
+viewpager = "1.0.0"
+appcompat = "1.1.0"
+material = "1.1.0"
+constraintlayout = "1.1.3"
+preference = "1.1.1"
+threetenabp = "1.1.1"
+junit = "4.12"
+assertj = "3.12.2"
+androidx-test = "1.2.0"
+espresso = "3.2.0"
+
+[libraries]
+androidx-viewpager = { group = "androidx.viewpager", name = "viewpager", version.ref = "viewpager" }
+androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
+androidx-preference = { group = "androidx.preference", name = "preference", version.ref = "preference" }
+threetenabp = { group = "com.jakewharton.threetenabp", name = "threetenabp", version.ref = "threetenabp" }
+junit = { group = "junit", name = "junit", version.ref = "junit" }
+assertj-core = { group = "org.assertj", name = "assertj-core", version.ref = "assertj" }
+androidx-test-runner = { group = "androidx.test", name = "runner", version.ref = "androidx-test" }
+androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espresso" }
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "agp" }
