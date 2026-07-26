@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.DialogInterface
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
+import com.fagerberg.jason.common.R as CommonR
 
 class LightSimpleDialog(
     private val context: Context,
@@ -32,9 +33,9 @@ class LightSimpleDialog(
         builder.setNegativeButton(negativeButtonText, dialogClickListener)
         if (showNeutralButton) builder.setNeutralButton(neutralButtonText, dialogClickListener)
         val dialog = builder.show()
-        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(ContextCompat.getColor(context, R.color.colorPrimaryDark))
-        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(ContextCompat.getColor(context, R.color.colorPrimaryDark))
-        dialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(ContextCompat.getColor(context, R.color.colorPrimaryDark))
+        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(ContextCompat.getColor(context, CommonR.color.colorPrimaryDark))
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(ContextCompat.getColor(context, CommonR.color.colorPrimaryDark))
+        dialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(ContextCompat.getColor(context, CommonR.color.colorPrimaryDark))
     }
 }
 

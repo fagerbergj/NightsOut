@@ -21,7 +21,6 @@ import com.wit.jasonfagerberg.nightsout.dialogs.LightSimpleDialog
 import com.wit.jasonfagerberg.nightsout.main.MainActivity
 import com.wit.jasonfagerberg.nightsout.models.LogHeader
 import java.util.Calendar
-import java.util.Date
 import kotlin.collections.ArrayList
 import kotlin.collections.Collection
 import kotlin.collections.HashSet
@@ -69,11 +68,10 @@ class LogFragment : Fragment() {
     }
 
     override fun onResume() {
-        val myCalendar = Calendar.getInstance()
         logDatabaseHelper = LogDatabaseHelper(mMainActivity.mDatabaseHelper, mMainActivity)
         setAdapter()
         setupCalendar(view!!)
-        calendarView.selectedDate = CalendarDay.from(Date(myCalendar.time.time))
+        calendarView.selectedDate = CalendarDay.today()
         calendarView.selectionColor = if (mMainActivity.activeTheme == R.style.AppTheme) {
             ContextCompat.getColor(context!!, R.color.colorLightBlueGray)
         } else {
@@ -104,16 +102,19 @@ class LogFragment : Fragment() {
                 lightSimpleDialog.show("Are you sure you want to clear all logs?")
             }
             R.id.btn_clear_selected_day_log -> {
-                val date = converter.yearMonthDayTo8DigitString(calendarView.selectedDate.year,
-                        calendarView.selectedDate.month, calendarView.selectedDate.day).toInt()
+                // material-calendarview 2.x months are 1-based; app stores 0-based
+                val sel = calendarView.selectedDate ?: return false
+                val date = converter.yearMonthDayTo8DigitString(sel.year,
+                        sel.month - 1, sel.day).toInt()
                 if (mMainActivity.mLogHeaders.indexOf(LogHeader(date)) == -1) return false
                 mMainActivity.mLogHeaders.remove(LogHeader(date))
                 logDatabaseHelper.deleteLog(date)
                 resetCalendar()
             }
             R.id.btn_move_selected_log -> {
-                val date = converter.yearMonthDayTo8DigitString(calendarView.selectedDate.year,
-                        calendarView.selectedDate.month, calendarView.selectedDate.day).toInt()
+                val sel = calendarView.selectedDate ?: return false
+                val date = converter.yearMonthDayTo8DigitString(sel.year,
+                        sel.month - 1, sel.day).toInt()
                 val index = mMainActivity.mLogHeaders.indexOf(LogHeader(date))
                 if (index == -1) {
                     mMainActivity.showToast("Cannot move empty log")
@@ -147,35 +148,32 @@ class LogFragment : Fragment() {
 
     private fun setupCalendar(view: View) {
         calendarView = view.findViewById(R.id.calender_log)
-        calendarView.selectedDate = CalendarDay.today()
-        calendar.time = calendarView.selectedDate.date
+        val today = CalendarDay.today()
+        calendarView.selectedDate = today
+        calendar.set(today.year, today.month - 1, today.day)
 
-        // show or hide empty text
         showOrHideEmptyTextViews(view)
 
         // add blue dots to days you drank
         highlightDays()
-        val selectedDay = calendarView.selectedDate
-        val selectedDate = Integer.parseInt(converter.yearMonthDayTo8DigitString(selectedDay.year, selectedDay.month, selectedDay.day))
+        val selectedDay = calendarView.selectedDate ?: today
+        val selectedDate = Integer.parseInt(converter.yearMonthDayTo8DigitString(selectedDay.year, selectedDay.month - 1, selectedDay.day))
         setLogListBasedOnDay(selectedDate)
 
         // when date is changed, change recycler list
         calendarView.setOnDateChangedListener { _, day, _ ->
-            calendar.set(day.year, day.month, day.day)
+            calendar.set(day.year, day.month - 1, day.day)
             mLogList.clear()
 
-            val date = Integer.parseInt(converter.yearMonthDayTo8DigitString(day.year, day.month, day.day))
+            val date = Integer.parseInt(converter.yearMonthDayTo8DigitString(day.year, day.month - 1, day.day))
             setLogListBasedOnDay(date)
         }
     }
 
     private fun highlightDays() {
         val dates = ArrayList<CalendarDay>()
-        val calendar = Calendar.getInstance()
         for (log in mMainActivity.mLogHeaders) {
-            calendar.set(log.year, log.month, log.day)
-            val day = CalendarDay.from(Date(calendar.time.time))
-            dates.add(day)
+            dates.add(CalendarDay.from(log.year, log.month + 1, log.day))
         }
         calendarView.addDecorator(EventDecorator(ContextCompat.getColor(context!!,
                 R.color.colorPrimary), dates))

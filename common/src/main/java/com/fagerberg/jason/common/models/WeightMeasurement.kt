@@ -8,6 +8,6 @@ enum class WeightMeasurement(val displayName: String) {
 
     companion object {
         fun fromLowercaseString(string: String) =
-            valueOf(string.toUpperCase(getLocal()).replace(' ', '_'))
+            valueOf(string.uppercase(getLocal()).replace(' ', '_'))
     }
 }
