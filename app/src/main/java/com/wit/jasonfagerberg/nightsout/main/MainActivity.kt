@@ -29,8 +29,8 @@ import com.wit.jasonfagerberg.nightsout.models.LogHeader
 import com.wit.jasonfagerberg.nightsout.models.Drink
 import com.wit.jasonfagerberg.nightsout.notification.BacNotificationService
 import com.wit.jasonfagerberg.nightsout.profile.ProfileFragment
+import com.wit.jasonfagerberg.nightsout.utils.isCountryThatUses12HourTime
 import java.lang.Exception
-import java.util.Locale
 import kotlin.collections.ArrayList
 
 //private const val TAG = "MainActivity"
@@ -55,9 +55,7 @@ class MainActivity : NightsOutActivity() {
     var weightMeasurement = ""
     var startTimeMin: Int = Constants.getCurrentTimeInMinuets()
     var endTimeMin: Int = Constants.getCurrentTimeInMinuets()
-    private val country = Locale.getDefault().country
-    private val twelveHourCountries = arrayListOf("US", "UK", "PH", "CA", "AU", "NZ", "IN", "EG", "SA", "CO", "PK", "MY")
-    var use24HourTime = !twelveHourCountries.contains(country)
+    var use24HourTime = !isCountryThatUses12HourTime()
     private var dateInstalled: Long = 0
     var drinksAddedCount: Int = 0
     private var dontShowRateDialog: Boolean = false
