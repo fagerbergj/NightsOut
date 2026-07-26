@@ -1,6 +1,9 @@
 # Built application files
 /*/build/
 
+# ktlint binary (fetch locally if needed, don't commit it)
+/ktlint
+
 # Crashlytics configuations
 com_crashlytics_export_strings.xml
 
