@@ -14,7 +14,7 @@ jobs:
       # Gradle 5.6.4 (this project's wrapper version) supports at most JDK 12;
       # 8 is what AGP 3.6.2 / this project were actually built and tested against.
       # Expected to go red until the Gradle/AGP/Kotlin upgrade (#35/#37/#41) lands.
-      - uses: actions/setup-java@v6
+      - uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: '8'
