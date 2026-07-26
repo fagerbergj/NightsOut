@@ -63,6 +63,10 @@ interface DrinkDao {
     suspend fun getFavoriteDrinks(): List<DrinkEntity>
 
     @SkipQueryVerification
+    @Query("SELECT drink_name FROM favorites")
+    suspend fun getFavoriteNames(): List<String>
+
+    @SkipQueryVerification
     @Query("INSERT INTO favorites VALUES (:name, :originId)")
     suspend fun insertFavorite(name: String, originId: String)
 
