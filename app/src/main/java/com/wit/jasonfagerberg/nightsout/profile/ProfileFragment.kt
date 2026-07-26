@@ -3,7 +3,6 @@ package com.wit.jasonfagerberg.nightsout.profile
 import android.content.Intent
 import android.graphics.Typeface
 import android.os.Bundle
-import androidx.preference.PreferenceManager
 import com.google.android.material.button.MaterialButton
 import androidx.fragment.app.Fragment
 import androidx.core.content.ContextCompat
@@ -31,6 +30,7 @@ import android.widget.AdapterView.OnItemSelectedListener
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.lifecycle.lifecycleScope
 import com.wit.jasonfagerberg.nightsout.addDrink.AddDrinkActivity
+import com.wit.jasonfagerberg.nightsout.settings.SettingsShim
 import com.wit.jasonfagerberg.nightsout.utils.Converter
 import com.wit.jasonfagerberg.nightsout.dialogs.LightSimpleDialog
 import kotlinx.coroutines.launch
@@ -56,20 +56,22 @@ class ProfileFragment : Fragment() {
     private var weightMeasurement = if (country == "US" || country == "LR" || country == "MM") "lbs"
     else "kg"
 
+    // legacy draft cache; #54's profile ViewModel subsumes it via SettingsRepository
+    @Suppress("DEPRECATION")
     override fun onCreate(savedInstanceState: Bundle?) {
         mMainActivity = context as MainActivity
         mMainActivity.profileFragment = this
-        val preferences = PreferenceManager.getDefaultSharedPreferences(context)
-        val sexInt = preferences.getInt("SEX", -1)
+        val settings = SettingsShim(requireContext())
+        val sexInt = settings.getInt("SEX", -1)
         if (sexInt > 0) sex = sexInt == 1
-        weight = preferences.getFloat("WEIGHT", weight.toFloat()).toDouble()
-        weightMeasurement = preferences.getString("MEASUREMENT", weightMeasurement)!!
+        weight = settings.getFloat("WEIGHT", weight.toFloat()).toDouble()
+        weightMeasurement = settings.getString("MEASUREMENT", weightMeasurement)!!
         super.onCreate(savedInstanceState)
     }
 
+    @Suppress("DEPRECATION")
     override fun onPause() {
-        val preferences = PreferenceManager.getDefaultSharedPreferences(context)
-        val editor = preferences.edit()
+        val editor = SettingsShim(requireContext()).edit()
         val sexInt = if (sex == null) -1 else if (sex == true) 1 else 0
         editor.putInt("SEX", sexInt)
         editor.putFloat("WEIGHT", weight.toFloat())

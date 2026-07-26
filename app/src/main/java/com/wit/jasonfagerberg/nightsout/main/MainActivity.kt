@@ -3,7 +3,6 @@ package com.wit.jasonfagerberg.nightsout.main
 // import android.util.Log
 import android.content.ActivityNotFoundException
 import android.content.Intent
-import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Bundle
 import android.os.PersistableBundle
@@ -16,7 +15,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import androidx.lifecycle.lifecycleScope
-import androidx.preference.PreferenceManager
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.wit.jasonfagerberg.nightsout.R
@@ -30,6 +28,7 @@ import com.wit.jasonfagerberg.nightsout.models.LogHeader
 import com.wit.jasonfagerberg.nightsout.models.Drink
 import com.wit.jasonfagerberg.nightsout.notification.BacNotificationService
 import com.wit.jasonfagerberg.nightsout.profile.ProfileFragment
+import com.wit.jasonfagerberg.nightsout.settings.SettingsShim
 import com.wit.jasonfagerberg.nightsout.utils.isCountryThatUses12HourTime
 import java.lang.Exception
 import kotlin.collections.ArrayList
@@ -52,8 +51,9 @@ class MainActivity : NightsOutActivity() {
     private lateinit var pagerAdapter: MyPagerAdapter
     private var prevMenuItem: MenuItem? = null
 
-    // shared pref data
-    private lateinit var preferences: SharedPreferences
+    // persisted settings (blocking shim until #54 wires in SettingsRepository Flows)
+    @Suppress("DEPRECATION")
+    private lateinit var settings: SettingsShim
     var profileInit = false
     var sex: Boolean? = null
     var weight: Double = 0.0
@@ -146,15 +146,16 @@ class MainActivity : NightsOutActivity() {
         pushToBackStack(pager.currentItem)
     }
 
+    @Suppress("DEPRECATION") // shim phase; #54 replaces with SettingsRepository
     private fun getDataFromStorage() {
-        preferences = PreferenceManager.getDefaultSharedPreferences(this)
-        profileInit = preferences.getBoolean(Constants.PREFERENCE.PROFILE_INIT, false)
-        dateInstalled = preferences.getLong(Constants.PREFERENCE.DATE_INSTALLED, System.currentTimeMillis())
-        drinksAddedCount = preferences.getInt(Constants.PREFERENCE.DRINKS_ADDED_COUNT, 0)
-        dontShowRateDialog = preferences.getBoolean(Constants.PREFERENCE.DONT_SHOW_RATE_DIALOG, false)
-        dontShowCurrentBacNotification = preferences.getBoolean(Constants.PREFERENCE.DONT_SHOW_BAC_NOTIFICATION, dontShowCurrentBacNotification)
-        showBacNotification = preferences.getBoolean(Constants.PREFERENCE.SHOW_BAC_NOTIFICATION, true)
-        activeTheme = preferences.getInt(Constants.PREFERENCE.ACTIVE_THEME, R.style.AppTheme)
+        settings = SettingsShim(this)
+        profileInit = settings.getBoolean(Constants.PREFERENCE.PROFILE_INIT, false)
+        dateInstalled = settings.getLong(Constants.PREFERENCE.DATE_INSTALLED, System.currentTimeMillis())
+        drinksAddedCount = settings.getInt(Constants.PREFERENCE.DRINKS_ADDED_COUNT, 0)
+        dontShowRateDialog = settings.getBoolean(Constants.PREFERENCE.DONT_SHOW_RATE_DIALOG, false)
+        dontShowCurrentBacNotification = settings.getBoolean(Constants.PREFERENCE.DONT_SHOW_BAC_NOTIFICATION, dontShowCurrentBacNotification)
+        showBacNotification = settings.getBoolean(Constants.PREFERENCE.SHOW_BAC_NOTIFICATION, true)
+        activeTheme = settings.getInt(Constants.PREFERENCE.ACTIVE_THEME, R.style.AppTheme)
 
         if (showBacNotification) requestNotificationPermissionIfNeeded()
 
@@ -162,15 +163,15 @@ class MainActivity : NightsOutActivity() {
         endTimeMin = Constants.getCurrentTimeInMinuets()
         if (profileInit) {
             sex = true
-            sex = preferences.getBoolean(Constants.PREFERENCE.PROFILE_SEX, sex!!)
+            sex = settings.getBoolean(Constants.PREFERENCE.PROFILE_SEX, sex!!)
             var weightFloat: Float = 0.toFloat()
-            weightFloat = preferences.getFloat(Constants.PREFERENCE.PROFILE_WEIGHT, weightFloat)
+            weightFloat = settings.getFloat(Constants.PREFERENCE.PROFILE_WEIGHT, weightFloat)
             weight = weightFloat.toDouble()
-            weightMeasurement = preferences.getString(Constants.PREFERENCE.PROFILE_WEIGHT_MEASUREMENT, weightMeasurement)!!
+            weightMeasurement = settings.getString(Constants.PREFERENCE.PROFILE_WEIGHT_MEASUREMENT, weightMeasurement)!!
 
-            use24HourTime = preferences.getBoolean(Constants.PREFERENCE.USE_24_HOUR_TIME, use24HourTime)
-            startTimeMin = preferences.getInt(Constants.PREFERENCE.START_TIME, startTimeMin)
-            endTimeMin = preferences.getInt(Constants.PREFERENCE.END_TIME, endTimeMin)
+            use24HourTime = settings.getBoolean(Constants.PREFERENCE.USE_24_HOUR_TIME, use24HourTime)
+            startTimeMin = settings.getInt(Constants.PREFERENCE.START_TIME, startTimeMin)
+            endTimeMin = settings.getInt(Constants.PREFERENCE.END_TIME, endTimeMin)
         }
 
         if (drinksAddedCount > 10000) setPreference(drinksAddedCount = 10)
@@ -196,6 +197,7 @@ class MainActivity : NightsOutActivity() {
         super.onStop()
     }
 
+    @Suppress("DEPRECATION") // shim phase; #54 replaces with SettingsRepository
     fun setPreference(profileInit : Boolean = this.profileInit, sex : Boolean? = this.sex,
                       weight : Double = this.weight, weightMeasurement : String = this.weightMeasurement,
                       endTimeMin: Int = this.endTimeMin, startTimeMin : Int = this.startTimeMin,
@@ -217,7 +219,7 @@ class MainActivity : NightsOutActivity() {
         this.dontShowRateDialog = dontShowRateDialog
         this.activeTheme = activeTheme
 
-        val editor = preferences.edit()
+        val editor = settings.edit()
 
         editor.putBoolean(Constants.PREFERENCE.PROFILE_INIT, true)
         if (sex != null) editor.putBoolean(Constants.PREFERENCE.PROFILE_SEX, sex)

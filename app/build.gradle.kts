@@ -52,10 +52,10 @@ dependencies {
     implementation(libs.threetenabp)
     androidTestImplementation(libs.androidx.test.runner)
     androidTestImplementation(libs.androidx.espresso.core)
-    implementation(libs.androidx.preference)
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
     ksp(libs.androidx.room.compiler)
+    implementation(libs.androidx.datastore.preferences)
     implementation(libs.koin.android)
     implementation(libs.androidx.lifecycle.runtime.ktx)
 }

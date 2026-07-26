@@ -6,7 +6,6 @@ import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.os.IBinder
-import androidx.preference.PreferenceManager
 import com.wit.jasonfagerberg.nightsout.R
 import com.wit.jasonfagerberg.nightsout.addDrink.AddDrinkActivity
 import com.wit.jasonfagerberg.nightsout.utils.Converter
@@ -15,6 +14,7 @@ import com.wit.jasonfagerberg.nightsout.domain.BacCalculator
 import com.wit.jasonfagerberg.nightsout.constants.Constants
 import com.wit.jasonfagerberg.nightsout.main.MainActivity
 import com.wit.jasonfagerberg.nightsout.main.NightsOutApplication
+import com.wit.jasonfagerberg.nightsout.settings.SettingsShim
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -60,8 +60,9 @@ class BacNotificationService : Service() {
         isStarted = isNotificationActive()
     }
 
+    @Suppress("DEPRECATION") // shim phase; #54 replaces with SettingsRepository
     private fun isNotificationActive() : Boolean {
-        return PreferenceManager.getDefaultSharedPreferences(this).getBoolean("isBacNotificationStarted", false)
+        return SettingsShim(this).getBoolean(Constants.PREFERENCE.IS_BAC_NOTIFICATION_STARTED, false)
     }
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
@@ -128,18 +129,20 @@ class BacNotificationService : Service() {
         }
     }
 
+    @Suppress("DEPRECATION") // shim phase; #54 replaces with SettingsRepository
     private fun getPreferencesData() {
-        val preferences = PreferenceManager.getDefaultSharedPreferences(this)
-        startTime = preferences.getInt(Constants.PREFERENCE.START_TIME, 0)
-        endTime = preferences.getInt(Constants.PREFERENCE.END_TIME, 0)
-        use24HourTime = preferences.getBoolean(Constants.PREFERENCE.USE_24_HOUR_TIME, false)
-        sex = preferences.getBoolean(Constants.PREFERENCE.PROFILE_SEX, true)
-        weight = preferences.getFloat(Constants.PREFERENCE.PROFILE_WEIGHT, 0.toFloat()).toDouble()
-        weightMeasurement = preferences.getString(Constants.PREFERENCE.PROFILE_WEIGHT_MEASUREMENT, "oz")!!
+        val settings = SettingsShim(this)
+        startTime = settings.getInt(Constants.PREFERENCE.START_TIME, 0)
+        endTime = settings.getInt(Constants.PREFERENCE.END_TIME, 0)
+        use24HourTime = settings.getBoolean(Constants.PREFERENCE.USE_24_HOUR_TIME, false)
+        sex = settings.getBoolean(Constants.PREFERENCE.PROFILE_SEX, true)
+        weight = settings.getFloat(Constants.PREFERENCE.PROFILE_WEIGHT, 0.toFloat()).toDouble()
+        weightMeasurement = settings.getString(Constants.PREFERENCE.PROFILE_WEIGHT_MEASUREMENT, "oz")!!
     }
 
+    @Suppress("DEPRECATION") // shim phase; #54 replaces with SettingsRepository
     private fun saveEndTime() {
-        val editor = PreferenceManager.getDefaultSharedPreferences(this).edit()
+        val editor = SettingsShim(this).edit()
         editor.putInt(Constants.PREFERENCE.END_TIME, endTime)
         editor.apply()
     }
@@ -165,9 +168,10 @@ class BacNotificationService : Service() {
         super.onDestroy()
     }
 
+    @Suppress("DEPRECATION") // shim phase; #54 replaces with SettingsRepository
     private fun saveNotificationState(started : Boolean) {
-        val editor = PreferenceManager.getDefaultSharedPreferences(this).edit()
-        editor.putBoolean("isBacNotificationStarted", started)
+        val editor = SettingsShim(this).edit()
+        editor.putBoolean(Constants.PREFERENCE.IS_BAC_NOTIFICATION_STARTED, started)
         editor.apply()
     }
 }
