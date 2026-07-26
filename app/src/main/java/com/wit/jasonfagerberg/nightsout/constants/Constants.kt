@@ -61,6 +61,7 @@ class Constants {
             const val USE_24_HOUR_TIME = "homeUse24HourTime"
             const val START_TIME = "homeStartTimeMin"
             const val END_TIME = "homeEndTimeMin"
+            const val IS_BAC_NOTIFICATION_STARTED = "isBacNotificationStarted"
         }
     }
 }

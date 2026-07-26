@@ -43,5 +43,7 @@ dependencies {
     implementation(libs.threetenabp)
     androidTestImplementation(libs.androidx.test.runner)
     androidTestImplementation(libs.androidx.espresso.core)
-    implementation(libs.androidx.preference)
+    // issue #53: DataStore replaces SharedPreferences; koin-android matches the scaffolding PR
+    implementation(libs.androidx.datastore.preferences)
+    implementation(libs.koin.android)
 }

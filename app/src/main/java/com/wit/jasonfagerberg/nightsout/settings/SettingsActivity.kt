@@ -2,7 +2,6 @@ package com.wit.jasonfagerberg.nightsout.settings
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.preference.PreferenceManager
 import android.view.MenuItem
 import android.widget.CheckBox
 import android.widget.ImageButton
@@ -104,16 +103,18 @@ class SettingsActivity : NightsOutActivity() {
         }
     }
 
+    @Suppress("DEPRECATION") // shim phase; #54 replaces with SettingsRepository
     private fun getNotificationStatus() {
-        val pref = PreferenceManager.getDefaultSharedPreferences(this)
-        showCurrentBacNotification = pref.getBoolean(Constants.PREFERENCE.SHOW_BAC_NOTIFICATION, true)
-        use24HourTime = pref.getBoolean(Constants.PREFERENCE.USE_24_HOUR_TIME, false)
-        profileInit = pref.getBoolean(Constants.PREFERENCE.PROFILE_INIT, false)
+        val settings = SettingsShim(this)
+        showCurrentBacNotification = settings.getBoolean(Constants.PREFERENCE.SHOW_BAC_NOTIFICATION, true)
+        use24HourTime = settings.getBoolean(Constants.PREFERENCE.USE_24_HOUR_TIME, false)
+        profileInit = settings.getBoolean(Constants.PREFERENCE.PROFILE_INIT, false)
     }
 
 
+    @Suppress("DEPRECATION") // shim phase; #54 replaces with SettingsRepository
     private fun setSetting(showCurrentBacNotification : Boolean = true, activeTheme : Int = this.activeTheme, use24HourTime : Boolean = this.use24HourTime) {
-        val edit = PreferenceManager.getDefaultSharedPreferences(this).edit()
+        val edit = SettingsShim(this).edit()
         edit.putBoolean(Constants.PREFERENCE.SHOW_BAC_NOTIFICATION, showCurrentBacNotification)
         edit.putInt(Constants.PREFERENCE.ACTIVE_THEME, activeTheme)
         edit.putBoolean(Constants.PREFERENCE.USE_24_HOUR_TIME, use24HourTime)
