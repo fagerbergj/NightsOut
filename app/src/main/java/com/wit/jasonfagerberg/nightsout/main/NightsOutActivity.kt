@@ -11,7 +11,6 @@ import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.PersistableBundle
-import androidx.preference.PreferenceManager
 import android.view.Gravity
 import android.view.MenuItem
 import android.widget.Toast
@@ -21,6 +20,7 @@ import com.google.android.material.button.MaterialButton
 import com.wit.jasonfagerberg.nightsout.R
 import com.wit.jasonfagerberg.nightsout.constants.Constants
 import com.wit.jasonfagerberg.nightsout.settings.SettingsActivity
+import com.wit.jasonfagerberg.nightsout.settings.SettingsShim
 import java.util.*
 
 abstract class NightsOutActivity : AppCompatActivity() {
@@ -34,8 +34,9 @@ abstract class NightsOutActivity : AppCompatActivity() {
 
     private var mApp: NightsOutApplication? = null
 
+    @Suppress("DEPRECATION") // shim phase; theme read must stay synchronous pre-setTheme, #54 revisits
     public override fun onCreate(savedInstanceState: Bundle?) {
-        activeTheme = PreferenceManager.getDefaultSharedPreferences(this).getInt("activeTheme", activeTheme)
+        activeTheme = SettingsShim(this).getInt(Constants.PREFERENCE.ACTIVE_THEME, activeTheme)
         setTheme(activeTheme)
         super.onCreate(savedInstanceState)
         mApp = this.applicationContext as NightsOutApplication
