@@ -1,23 +1,11 @@
-# Add project specific ProGuard rules here.
-# You can control the set of applied configuration files using the
-# proguardFiles setting in show.gradle.
-#
-# For more details, see
-#   http://developer.android.com/guide/developing/tools/proguard.html
+# Issue #47 audit: no class keep rules required. App code uses no reflection
+# (no Class.forName/getDeclaredMethod) and no JSON/Java serialization
+# (SharedPreferences stores primitives only). Custom views in layouts and
+# manifest components are kept by AGP-generated rules. threetenabp reads
+# TZDB.dat from assets (exempt from resource shrinking) and registers its
+# ZoneRulesProvider directly, no ServiceLoader.
 
-# If your project uses WebView with JS, uncomment the following
-# and specify the fully qualified class name to the JavaScript interface
-# class:
-#-keepclassmembers class fqcn.of.javascript.interface.for.webview {
-#   public *;
-#}
-
-# Uncomment this to preserve the line number information for
-# debugging stack traces.
+# Keep file/line info so release stack traces stay debuggable
 -keepattributes SourceFile,LineNumberTable
-# rename the source files to something meaningless, but it must be retained
+# Collapse source file names since line numbers above are retained
 -renamesourcefileattribute ''
-
-# If you keep the line number information, uncomment this to
-# hide the original source file name.
-#-renamesourcefileattribute SourceFile
