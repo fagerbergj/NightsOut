@@ -21,8 +21,9 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.appcompat:appcompat:1.1.0'
+    // ViewPager was transitive via legacy-support-v4; MainActivity uses it
+    implementation 'androidx.viewpager:viewpager:1.0.0'
     implementation 'com.google.android.material:material:1.1.0'
     // jetified like the calendar AAR; core classes reference support ViewCompat/EdgeEffectCompat
     implementation files('libs/graphview-4.2.2-androidx.aar')
