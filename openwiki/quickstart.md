@@ -1,7 +1,10 @@
 ---
-type: "Reference"
-title: "NightsOut — Quickstart"
-openwiki_generated: true
+type: Reference
+title: NightsOut — Quickstart
+description: Entry point to the NightsOut Android BAC calculator wiki — quick overview, key facts, build instructions, and links to all documentation pages.
+resource: https://github.com/jasonfagerberg/NightsOut
+tags: [guide, setup]
+timestamp: 2025-07-26T04:00:00Z
 ---
 
 # NightsOut — Quickstart
@@ -10,35 +13,32 @@ openwiki_generated: true
 
 ## What This Wiki Covers
 
-- **[Architecture Overview](./architecture/overview.md)** — Module structure, dependency graph, build configuration, and architectural patterns used across the project
+- **[Architecture Overview](./architecture/overview.md)** — Single-module project structure, build configuration (Kotlin DSL + version catalog), and architectural patterns
 - **[Data Model](./domain/data-model.md)** — The `Drink`, `LogHeader`, `VolumeMeasurement`, and `WeightMeasurement` data types, plus the 5-table SQLite schema
-- **[BAC Calculation](./domain/bac-calculation.md)** — Widmark formula implementation, unit conversion chains, and complex-mix ABV weighting
+- **[BAC Calculation](./domain/bac-calculation.md)** — Widmark formula via `BacCalculator.Drink`/`calculate()`, unit conversion chains, and complex-mix ABV weighting
 - **[User Workflows](./workflows/user-flows.md)** — End-to-end flows: adding drinks, logging sessions, managing profile/favorites, and tracking BAC over time
-- **[App Module](./modules/app.md)** — The main Android app: activities, fragments, RecyclerView adapters, navigation, background services
-- **[Common Module](./modules/common.md)** — Shared domain models, utilities, MVI presenter base class, shared preferences wrapper
-- **[DB Module](./modules/db.md)** — Pre-populated SQLite database with 500+ drink entries and CRUD operations
-- **[Profile Module](./modules/profile.md)** — MVI architecture for user profile management (sex, weight, favorites)
-- **[Common Dialogs](./modules/common-dialog.md)** — Reusable `SimpleDialog` and `LightSimpleDialog` components
-- **[CI/CD](./operations/ci-cd.md)** — GitHub Actions build workflow and Gradle version constraints
-- **[Testing](./testing/overview.md)** — Unit tests (common module) and instrumented tests (db module)
+- **[App Module](./modules/app.md)** — The only Gradle module (`:app`): Activities, Fragments, RecyclerView adapters, navigation, background services
+- **[CI/CD](./operations/ci-cd.md)** — GitHub Actions build workflow, version catalog configuration, and Gradle constraints
+- **[Testing](./testing/overview.md)** — Unit tests for domain models, utility functions, and the `BacCalculator`
 
 ## Key Facts
 
 | Item | Detail |
 |------|--------|
 | **Package name** | `com.wit.jasonfagerberg.nightsout` |
-| **Min SDK** | API 19 (Android 4.4 KitKat) |
+| **Min SDK** | API 24 (Android 7.0 Nougat) |
 | **Target / Compile SDK** | API 36 (Android 16) |
-| **Language** | Kotlin 1.3.72 |
-| **Build system** | Gradle (5 modular projects) |
-| **Database** | SQLite (pre-populated, version 40) |
-| **BAC formula** | Widmark with elimination rate of 0.015 /hr |
+| **Language** | Kotlin |
+| **Build system** | Gradle Kotlin DSL (`build.gradle.kts`) + version catalog (`gradle/libs.versions.toml`), R8 shrinking for release |
+| **Database** | SQLite (pre-populated `nights_out_db.db`, version 40) |
+| **BAC formula** | Widmark with elimination rate of 0.015 /hr, computed by `domain.BacCalculator` |
 
 ## How to Build
 
 ```bash
-./gradlew assembleDebug   # Debug APK
-./gradlew testDebugUnitTest  # Run unit tests
+./gradlew assembleDebug       # Debug APK
+./gradlew testDebugUnitTest   # Run JVM unit tests
+./gradlew assembleRelease     # Release APK (R8 shrinking enabled)
 ```
 
 The CI workflow targets JDK 17 (Temurin), required by AGP 9.3. See **[CI/CD](./operations/ci-cd.md)** for details.
@@ -46,27 +46,31 @@ The CI workflow targets JDK 17 (Temurin), required by AGP 9.3. See **[CI/CD](./o
 ## Architecture at a Glance
 
 ```
-app (UI: Activities, Fragments, Adapters, Services)
-├── depends on → common   (models, utilities, base classes, MVI presenter)
-├── depends on → db       (SQLite data layer, 500+ drink database)
-└── depends on → profile  (MVI user profile screen)
-    └── depends on → common-dialog  (reusable dialog components)
+:app (single Gradle module)
+├── main/java/com/wit/jasonfagerberg/nightsout/
+│   ├── domain/      ← BacCalculator (pure Kotlin, no Android deps)
+│   ├── models/      ← Drink, LogHeader, VolumeMeasurement, WeightMeasurement
+│   ├── utils/       ← Converter, CountryUtils
+│   ├── home/        ← HomeFragment, drink list adapter
+│   ├── addDrink/    ← AddDrinkActivity, ComplexDrinkHelper, suggestions
+│   ├── log/         ← Session logging UI
+│   ├── profile/     ← ProfileFragment + favorites adapter (flat data binding)
+│   ├── notification ← BacNotificationService (foreground service)
+│   └── databaseHelper/ ← DatabaseHelper, AddDrinkDatabaseHelper, LogDatabaseHelper
+└── libs/            ← Local AARs: graphview, material-calendarview
 ```
 
-The app module uses a flat, direct-data-binding pattern for most screens — no ViewModels, LiveData, or Room. The **profile** module is the exception: it implements a full RxJava-based MVI architecture using the `AbstractPresenter` base class from `common`.
+The project is now a **single `:app` module** — the former `:common`, `:db`, `:profile`, and `:common-dialog` submodules were harvested into `:app` in v0.78 (#78). Most screens use direct data binding (no ViewModels, LiveData, or Room). The BAC calculation logic was extracted into a pure-Kotlin object (`domain.BacCalculator`) with dedicated JVM unit tests (#82).
 
 ## Source File Index
 
-| Module | Source Root |
-|--------|-------------|
-| app | `/app/src/main/java/com/wit/jasonfagerberg/nightsout/` |
-| common | `/common/src/main/java/com/fagerberg/jason/common/` |
-| db | `/db/src/main/java/com/wit/jasonfagerberg/nightsout/db/` |
-| profile | `/profile/src/main/java/com/fagerberg/jason/profile/` |
-| common-dialog | `/common-dialog/src/main/java/com/fagerberg/jason/common/dialog/` |
+| Package | Source Root |
+|---------|-------------|
+| All source | `/app/src/main/java/com/wit/jasonfagerberg/nightsout/` |
+| Unit tests | `/app/src/test/java/com/wit/jasonfagerberg/nightsout/` |
+| Version catalog | `gradle/libs.versions.toml` |
 
 ## Backlog
 
-- [ ] **Source map** — Detailed per-module file inventory with roles. Defer until needed.
-- [ ] **Database schema migration history** — Document the 5 version upgrades from v40 onward, including UUID migration. Requires reading `SimpleDatabaseManager.kt` upgrade logic in full.
+- [ ] **Database schema migration history** — Document the 5 version upgrades from v40 onward, including UUID migration. Requires reading `DatabaseHelper.kt` upgrade logic in full.
 - [ ] **Ad integration** — The codebase references rating dialogs (`DRINK_COUNT_TO_ASK_FOR_RATING`, `DAYS_UNTIL_ASK_FOR_RATING`) but the google-services.json was removed; no current ad platform is wired up.

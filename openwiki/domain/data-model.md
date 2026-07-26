@@ -1,16 +1,16 @@
 ---
 type: Reference
 title: NightsOut — Data Model
-description: Complete reference for the Drink, LogHeader, VolumeMeasurement, and WeightMeasurement data types used in NightsOut, plus the 5-table SQLite database schema managed by SimpleDatabaseManager.
+description: Complete reference for the Drink, LogHeader, VolumeMeasurement, and WeightMeasurement data types used in NightsOut, plus the 5-table SQLite database schema managed by DatabaseHelper (replacing former SimpleDatabaseManager).
 ---
 
 # Data Model
 
-This page documents all domain types and the database schema powering NightsOut. All model classes live in the `common` module (`/common/src/main/java/com/fagerberg/jason/common/models/`) so they are available to every other module.
+This page documents all domain types and the database schema powering NightsOut. All model classes live in the `:app` module (`/app/src/main/java/com/wit/jasonfagerberg/nightsout/models/`).
 
 ## Drink
 
-**Source:** [`Drink.kt`](/common/src/main/java/com/fagerberg/jason/common/models/Drink.kt)
+**Source:** [`Drink.kt`](/app/src/main/java/com/wit/jasonfagerberg/nightsout/models/Drink.kt)
 
 ```kotlin
 data class Drink (
@@ -30,7 +30,7 @@ The `Drink` data class is the central entity. The `id` is a UUID — introduced 
 
 ## VolumeMeasurement (Enum)
 
-**Source:** [`VolumeMeasurement.kt`](/common/src/main/java/com/fagerberg/jason/common/models/VolumeMeasurement.kt)
+**Source:** [`VolumeMeasurement.kt`](/app/src/main/java/com/wit/jasonfagerberg/nightsout/models/VolumeMeasurement.kt)
 
 ```kotlin
 enum class VolumeMeasurement(val displayName: String) {
@@ -43,7 +43,7 @@ enum class VolumeMeasurement(val displayName: String) {
 }
 ```
 
-Each enum value has a canonical display name and a conversion factor defined in [`ConversionUtils.kt`](/common/src/main/java/com/fagerberg/jason/common/utils/ConversionUtils.kt):
+Each enum value has a canonical display name and a conversion factor defined in [`Converter.kt`](/app/src/main/java/com/wit/jasonfagerberg/nightsout/utils/Converter.kt):
 
 | VolumeMeasurement | Conversion Factor (to fluid oz) | Standard Serving |
 |-------------------|---------------------------------|------------------|
@@ -87,7 +87,7 @@ Derived properties on `LogHeader` include `year`, `month`, `day`, `monthName`, `
 
 ## Database Schema
 
-**Source:** [`SimpleDatabaseManager.kt`](/db/src/main/java/com/wit/jasonfagerberg/nightsout/db/SimpleDatabaseManager.kt)
+**Source:** [`DatabaseHelper.kt`](/app/src/main/java/com/wit/jasonfagerberg/nightsout/databaseHelper/DatabaseHelper.kt)
 
 The database `nights_out_db.db` contains 5 tables:
 
