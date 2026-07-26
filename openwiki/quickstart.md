@@ -1,7 +1,7 @@
 ---
-type: Quickstart
-title: NightsOut — BAC Calculator App
-description: Entry point for the NightsOut Android application wiki. NightsOut is an ad-free Blood Alcohol Concentration calculator using the Widmark formula, with drink logging, session tracking, and a background BAC notification service. Covers 5 Gradle modules: app (UI), common (shared models & utilities), db (SQLite data layer), profile (MVI-powered user profile), and common-dialog (reusable UI dialogs).
+type: "Reference"
+title: "NightsOut — Quickstart"
+openwiki_generated: true
 ---
 
 # NightsOut — Quickstart
@@ -28,7 +28,7 @@ description: Entry point for the NightsOut Android application wiki. NightsOut i
 |------|--------|
 | **Package name** | `com.wit.jasonfagerberg.nightsout` |
 | **Min SDK** | API 19 (Android 4.4 KitKat) |
-| **Target / Compile SDK** | API 29 (Android 10) |
+| **Target / Compile SDK** | API 36 (Android 16) |
 | **Language** | Kotlin 1.3.72 |
 | **Build system** | Gradle (5 modular projects) |
 | **Database** | SQLite (pre-populated, version 40) |
@@ -41,7 +41,7 @@ description: Entry point for the NightsOut Android application wiki. NightsOut i
 ./gradlew testDebugUnitTest  # Run unit tests
 ```
 
-The CI workflow targets Java 8 (Temurin) due to AGP 3.6.2 / Gradle wrapper version constraints. See **[CI/CD](./operations/ci-cd.md)** for details.
+The CI workflow targets JDK 17 (Temurin), required by AGP 9.3. See **[CI/CD](./operations/ci-cd.md)** for details.
 
 ## Architecture at a Glance
 
