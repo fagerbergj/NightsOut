@@ -1,90 +1,71 @@
 package com.wit.jasonfagerberg.nightsout.log
 
-// import android.util.Log
 import android.os.Bundle
-import android.view.*
-import android.widget.TextView
-import androidx.core.content.ContextCompat
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
+import android.app.DatePickerDialog
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.prolificinteractive.materialcalendarview.CalendarDay
-import com.prolificinteractive.materialcalendarview.DayViewDecorator
-import com.prolificinteractive.materialcalendarview.DayViewFacade
-import com.prolificinteractive.materialcalendarview.MaterialCalendarView
-import com.prolificinteractive.materialcalendarview.spans.DotSpan
+import androidx.lifecycle.repeatOnLifecycle
 import com.wit.jasonfagerberg.nightsout.R
-import com.wit.jasonfagerberg.nightsout.utils.Converter
-import com.wit.jasonfagerberg.nightsout.dialogs.LightSimpleDialog
+import com.wit.jasonfagerberg.nightsout.dialogs.SimpleDialog
+import com.wit.jasonfagerberg.nightsout.log.ui.LogCalendarScreen
+import com.wit.jasonfagerberg.nightsout.log.ui.LogItem
 import com.wit.jasonfagerberg.nightsout.main.MainActivity
+import com.wit.jasonfagerberg.nightsout.models.Drink
 import com.wit.jasonfagerberg.nightsout.models.LogHeader
-import java.util.Calendar
-import kotlin.collections.ArrayList
-import kotlin.collections.Collection
-import kotlin.collections.HashSet
+import com.wit.jasonfagerberg.nightsout.utils.Converter
 import kotlinx.coroutines.launch
-
-// private const val TAG = "LogFragment"
 
 class LogFragment : Fragment() {
 
-    private lateinit var mLogFragmentAdapter: LogFragmentAdapter
-    private lateinit var calendarView: MaterialCalendarView
-    private lateinit var calendar: Calendar
-    private lateinit var mLogListView: RecyclerView
+    private val converter = Converter()
     private lateinit var mMainActivity: MainActivity
-    private lateinit var mLogList: ArrayList<Any>
-    private val converter: Converter = Converter()
-    private val repository by lazy { mMainActivity.repository }
+    private var selectedDate by mutableIntStateOf(20260101)
+    private val logListState = mutableStateListOf<LogItem>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        mMainActivity = context as MainActivity
-        mMainActivity.logFragment = this
-        calendar = Calendar.getInstance()
-        // take date from calender, pull correct session, pass to adapter
-        mLogList = ArrayList()
         super.onCreate(savedInstanceState)
+        mMainActivity = requireActivity() as MainActivity
+        mMainActivity.logFragment = this
+        selectedDate = converter.currentDateTo8DigitString().toInt()
     }
 
+    @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        val view = inflater.inflate(R.layout.fragment_log, container, false)
-        // recycler view
-        mLogListView = view.findViewById(R.id.recycler_log)
-        val linearLayoutManager = LinearLayoutManager(context)
-        linearLayoutManager.orientation = RecyclerView.VERTICAL
-        mLogListView.layoutManager = linearLayoutManager
-        val itemDecor = DividerItemDecoration(mLogListView.context, DividerItemDecoration.VERTICAL)
-        mLogListView.addItemDecoration(itemDecor)
-
+    ): View {
         setHasOptionsMenu(true)
-
-        return view
-    }
-
-    override fun onResume() {
-        // pull before binding; MainActivity's own fill of the shared list may lose the race
-        lifecycleScope.launch {
-            mMainActivity.mLogHeaders.clear()
-            mMainActivity.mLogHeaders.addAll(repository.pullLogHeaders())
-            if (view == null) return@launch
-            setAdapter()
-            setupCalendar(view!!)
-            calendarView.selectedDate = CalendarDay.today()
-            calendarView.selectionColor = if (mMainActivity.activeTheme == R.style.AppTheme) {
-                ContextCompat.getColor(context!!, R.color.colorLightBlueGray)
-            } else {
-                ContextCompat.getColor(context!!, R.color.colorGray)
+        val composeView = ComposeView(requireContext()).apply {
+            setContent {
+                LogCalendarScreen(
+                    logList = logListState,
+                    selectedDate = selectedDate,
+                    onMoveDayRequested = ::onMoveDayConfirmed
+                )
             }
         }
 
-        super.onResume()
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                loadLogData(selectedDate)
+            }
+        }
+
+        return composeView
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -94,137 +75,132 @@ class LogFragment : Fragment() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.btn_clear_all_logs -> {
-                if (mMainActivity.mLogHeaders.isEmpty()) return false
-                val lightSimpleDialog = LightSimpleDialog(context!!)
-                val posAction = {
-                    val dates = mMainActivity.mLogHeaders.map { it.date }
-                    lifecycleScope.launch {
-                        for (date in dates) {
-                            repository.deleteLog(date)
-                        }
-                    }
-                    mMainActivity.mLogHeaders.clear()
-                    resetCalendar()
-                }
-                lightSimpleDialog.setActions(posAction, {})
-                lightSimpleDialog.show("Are you sure you want to clear all logs?")
-            }
-            R.id.btn_clear_selected_day_log -> {
-                // material-calendarview 2.x months are 1-based; app stores 0-based
-                val sel = calendarView.selectedDate ?: return false
-                val date = converter.yearMonthDayTo8DigitString(sel.year,
-                        sel.month - 1, sel.day).toInt()
-                if (mMainActivity.mLogHeaders.indexOf(LogHeader(date)) == -1) return false
-                mMainActivity.mLogHeaders.remove(LogHeader(date))
-                lifecycleScope.launch { repository.deleteLog(date) }
-                resetCalendar()
-            }
-            R.id.btn_move_selected_log -> {
-                val sel = calendarView.selectedDate ?: return false
-                val date = converter.yearMonthDayTo8DigitString(sel.year,
-                        sel.month - 1, sel.day).toInt()
-                val index = mMainActivity.mLogHeaders.indexOf(LogHeader(date))
-                if (index == -1) {
-                    mMainActivity.showToast("Cannot move empty log")
-                    return false
-                }
-                val header = mMainActivity.mLogHeaders[index]
-                val datePicker = LogFragmentDatePicker(this, mMainActivity, Converter(), header, mMainActivity.activeTheme)
-                datePicker.showDatePicker()
-            }
+            R.id.btn_clear_all_logs -> clearAllLogs()
+            R.id.btn_clear_selected_day_log -> clearSelectedDayLog()
+            R.id.btn_move_selected_log -> onMoveFromMenu(selectedDate)
         }
         return mMainActivity.onOptionsItemSelected(item)
     }
 
-    fun resetCalendar() {
-        mLogList.clear()
-        calendarView.removeDecorators()
-        setAdapter()
-        mLogFragmentAdapter.notifyDataSetChanged()
-        highlightDays()
-    }
-
-    private fun setAdapter() {
-        mLogFragmentAdapter = LogFragmentAdapter(context!!, mLogList)
-        val year = calendar.get(Calendar.YEAR)
-        val month = calendar.get(Calendar.MONTH)
-        val day = calendar.get(Calendar.DAY_OF_MONTH)
-        val date = Integer.parseInt(converter.yearMonthDayTo8DigitString(year, month, day))
-        setLogListBasedOnDay(date)
-        mLogListView.adapter = mLogFragmentAdapter
-    }
-
-    private fun setupCalendar(view: View) {
-        calendarView = view.findViewById(R.id.calender_log)
-        val today = CalendarDay.today()
-        calendarView.selectedDate = today
-        calendar.set(today.year, today.month - 1, today.day)
-
-        showOrHideEmptyTextViews(view)
-
-        // add blue dots to days you drank
-        highlightDays()
-        val selectedDay = calendarView.selectedDate ?: today
-        val selectedDate = Integer.parseInt(converter.yearMonthDayTo8DigitString(selectedDay.year, selectedDay.month - 1, selectedDay.day))
-        setLogListBasedOnDay(selectedDate)
-
-        // when date is changed, change recycler list
-        calendarView.setOnDateChangedListener { _, day, _ ->
-            calendar.set(day.year, day.month - 1, day.day)
-            mLogList.clear()
-
-            val date = Integer.parseInt(converter.yearMonthDayTo8DigitString(day.year, day.month - 1, day.day))
-            setLogListBasedOnDay(date)
-        }
-    }
-
-    private fun highlightDays() {
-        val dates = ArrayList<CalendarDay>()
-        for (log in mMainActivity.mLogHeaders) {
-            dates.add(CalendarDay.from(log.year, log.month + 1, log.day))
-        }
-        calendarView.addDecorator(EventDecorator(ContextCompat.getColor(context!!,
-                R.color.colorPrimary), dates))
-    }
-
-    private fun setLogListBasedOnDay(date: Int) {
-        lifecycleScope.launch {
-            mLogList.clear()
-            val index = mMainActivity.mLogHeaders.indexOf(LogHeader(date))
-            if (index >= 0) {
-                val header = mMainActivity.mLogHeaders[index]
-                mLogList.add(header)
-                mLogList.addAll(repository.getLoggedDrinks(header.date))
-            } else {
-                mLogList.add(LogHeader(date))
+    private fun clearAllLogs() {
+        if (mMainActivity.mLogHeaders.isEmpty()) return
+        val light = com.wit.jasonfagerberg.nightsout.dialogs.LightSimpleDialog(context!!)
+        val posAction = {
+            lifecycleScope.launch {
+                for (date in mMainActivity.mLogHeaders.map { it.date }) {
+                    mMainActivity.repository.deleteLog(date)
+                }
             }
-            if (!::mLogFragmentAdapter.isInitialized) return@launch
-            mLogFragmentAdapter.notifyDataSetChanged()
-            mLogListView.layoutManager?.scrollToPosition(0)
-            showOrHideEmptyTextViews(mLogListView.parent as View)
+            mMainActivity.mLogHeaders.clear()
+            logListState.clear()
+        }
+        light.setActions(posAction, {})
+        light.show("Are you sure you want to clear all logs?")
+    }
+
+    private fun clearSelectedDayLog() {
+        val header = LogHeader(selectedDate)
+        if (mMainActivity.mLogHeaders.indexOf(header) == -1) return
+        mMainActivity.mLogHeaders.remove(header)
+        lifecycleScope.launch { mMainActivity.repository.deleteLog(selectedDate) }
+        logListState.clear()
+    }
+
+    private fun onMoveFromMenu(date: Int) {
+        val header = LogHeader(date)
+        if (mMainActivity.mLogHeaders.indexOf(header) == -1) {
+            mMainActivity.showToast("Cannot move empty log")
+            return
+        }
+        showDatePicker(date)
+    }
+
+    private fun onMoveDayConfirmed(date: Int) {
+        val header = LogHeader(date)
+        if (mMainActivity.mLogHeaders.indexOf(header) == -1) {
+            mMainActivity.showToast("Cannot move empty log")
+            return
+        }
+        showDatePicker(date)
+    }
+
+    private fun showDatePicker(originalDate: Int) {
+        // Seed the picker with the log's OWN date, not today's - the menu item
+        // names that date, so opening on today contradicts what was tapped.
+        val dateStr = originalDate.toString()
+        val year = dateStr.substring(0, 4).toIntOrNull() ?: 2026
+        val month = dateStr.substring(4, 6).toIntOrNull()?.minus(1) ?: 0
+        val dayOfMonth = dateStr.substring(6, 8).toIntOrNull() ?: 1
+
+        val dp = DatePickerDialog(
+            requireContext(),
+            { _, newYear, newMonth, newDay ->
+                val logDate = converter.yearMonthDayTo8DigitString(newYear, newMonth, newDay).toInt()
+
+                val oldHeader = LogHeader(originalDate)
+                val testHeader = LogHeader(logDate)
+
+                when {
+                    mMainActivity.mLogHeaders.contains(testHeader) -> showOverrideDialog(oldHeader, logDate)
+                    else -> moveToNewDate(oldHeader, logDate)
+                }
+            },
+            year,
+            month,
+            dayOfMonth
+        )
+
+        dp.setTitle("Move Log On $originalDate")
+    }
+
+    private fun showOverrideDialog(oldHeader: LogHeader, newDate: Int) {
+        val existing = mMainActivity.mLogHeaders.find { it.date == newDate } ?: return
+        val dialog = SimpleDialog(requireContext(), requireActivity().layoutInflater)
+        dialog.setTitle(resources.getString(R.string.update_log))
+        dialog.setBody("There is already a log on ${existing.monthName} ${existing.day},\n" +
+                "${existing.year}. Would you like to update the old log?")
+        dialog.setNegativeButtonText(resources.getString(R.string.cancel))
+        dialog.setNegativeFunction { dialog.dismiss() }
+        dialog.setPositiveButtonText(resources.getString(R.string.update))
+        dialog.setPositiveFunction {
+            val oldLogIndex = mMainActivity.mLogHeaders.indexOf(oldHeader)
+            if (oldLogIndex >= 0) {
+                mMainActivity.mLogHeaders.add(LogHeader(newDate, existing.bac, oldHeader.duration))
+                lifecycleScope.launch {
+                    mMainActivity.repository.deleteLog(newDate)
+                    mMainActivity.repository.changeLogDate(oldHeader.date, newDate)
+                }
+                mMainActivity.mLogHeaders.removeAt(oldLogIndex)
+            }
+            logListState.clear()
+            val toast = "Log on ${existing.monthName} ${existing.day}, ${existing.year} was updated"
+            mMainActivity.showToast(toast)
+            dialog.dismiss()
         }
     }
 
-    private fun showOrHideEmptyTextViews(view: View) {
-        val emptyLog = view.findViewById<TextView>(R.id.text_log_empty_list)
-        if (mLogList.size == 1) {
-            emptyLog.visibility = View.VISIBLE
+    private fun moveToNewDate(oldHeader: LogHeader, newDate: Int) {
+        mMainActivity.mLogHeaders.add(LogHeader(newDate, oldHeader.bac, oldHeader.duration))
+        lifecycleScope.launch { mMainActivity.repository.changeLogDate(oldHeader.date, newDate) }
+        mMainActivity.mLogHeaders.remove(oldHeader)
+        logListState.clear()
+    }
+
+    private fun loadLogData(date: Int) {
+        logListState.clear()
+        val headerIndex = mMainActivity.mLogHeaders.indexOf(LogHeader(date))
+        if (headerIndex >= 0) {
+            val header = mMainActivity.mLogHeaders[headerIndex]
+            logListState.add(LogItem.Header(header))
+            lifecycleScope.launch {
+                runCatching {
+                    mMainActivity.repository.getLoggedDrinks(header.date).forEach { drink ->
+                        logListState.add(LogItem.Drink(drink))
+                    }
+                }.getOrDefault(Unit)
+            }
         } else {
-            emptyLog.visibility = View.INVISIBLE
+            logListState.add(LogItem.Header(LogHeader(date)))
         }
-    }
-}
-
-// decorator that draws circle
-class EventDecorator(private val color: Int, dates: Collection<CalendarDay>) : DayViewDecorator {
-    private val dates: HashSet<CalendarDay> = HashSet(dates)
-
-    override fun shouldDecorate(day: CalendarDay): Boolean {
-        return dates.contains(day)
-    }
-
-    override fun decorate(view: DayViewFacade) {
-        view.addSpan(DotSpan(10f, color))
     }
 }
