@@ -44,7 +44,7 @@ class NightsOutSharedPreferencesTest {
             profileInit = false,
             sex = null,
             weight = 0.0,
-            weightMeasurement = null,
+            weightMeasurement = WeightMeasurement.LBS,
             startTimeMin = 0,
             endTimeMin = 0,
             use24HourTime = false,
