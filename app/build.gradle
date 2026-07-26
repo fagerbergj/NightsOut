@@ -5,7 +5,7 @@ android {
     compileSdk 36
     defaultConfig {
         applicationId "com.wit.jasonfagerberg.nightsout"
-        minSdkVersion 19
+        minSdkVersion 24
         targetSdkVersion 36
         versionCode 1904
         versionName "Rattata"
