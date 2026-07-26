@@ -3,6 +3,7 @@ package com.wit.jasonfagerberg.nightsout.utils
 import android.os.Build
 import android.util.SparseIntArray
 import com.wit.jasonfagerberg.nightsout.R
+import java.util.Calendar
 
 class Converter {
     private val weightConversionMap = HashMap<String, Double>()
@@ -109,6 +110,11 @@ class Converter {
         val monthString = if (month < 10) "0$month" else month.toString()
         val dayString = if (day < 10) "0$day" else day.toString()
         return "$year$monthString$dayString"
+    }
+
+    fun currentDateTo8DigitString(): String {
+        val cal = Calendar.getInstance()
+        return yearMonthDayTo8DigitString(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH))
     }
 
     fun stringToDouble(text: String): Double = when {
