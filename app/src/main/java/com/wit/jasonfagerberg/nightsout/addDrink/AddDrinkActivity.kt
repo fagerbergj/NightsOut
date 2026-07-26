@@ -2,7 +2,6 @@ package com.wit.jasonfagerberg.nightsout.addDrink
 
 // import android.util.Log
 import android.app.Activity
-import android.content.ContentValues
 import android.content.Intent
 import android.graphics.Typeface
 import android.os.Bundle
@@ -18,6 +17,7 @@ import android.widget.EditText
 import android.widget.Spinner
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.button.MaterialButton
@@ -25,7 +25,7 @@ import com.wit.jasonfagerberg.nightsout.R
 import com.wit.jasonfagerberg.nightsout.addDrink.drinkSuggestion.DrinkSuggestionArrayAdapter
 import com.wit.jasonfagerberg.nightsout.addDrink.drinkSuggestion.DrinkSuggestionAutoCompleteView
 import com.wit.jasonfagerberg.nightsout.utils.Converter
-import com.wit.jasonfagerberg.nightsout.databaseHelper.AddDrinkDatabaseHelper
+import com.wit.jasonfagerberg.nightsout.database.NightsOutRepository
 import com.wit.jasonfagerberg.nightsout.dialogs.LightSimpleDialog
 import com.wit.jasonfagerberg.nightsout.constants.Constants
 import com.wit.jasonfagerberg.nightsout.models.Drink
@@ -34,6 +34,9 @@ import com.wit.jasonfagerberg.nightsout.main.NightsOutActivity
 import com.wit.jasonfagerberg.nightsout.manageDB.ManageDBActivity
 import java.util.*
 import kotlin.collections.ArrayList
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
+import org.koin.android.ext.android.inject
 
 // private const val TAG = "AddDrinkActivity"
 
@@ -53,12 +56,13 @@ class AddDrinkActivity : NightsOutActivity() {
     private var canUnfavorite = true
     private var complexMode = false
 
-    lateinit var mRecentsList: ArrayList<Drink>
-    lateinit var mFavoritesList: ArrayList<Drink>
+    val mRecentsList: ArrayList<Drink> = ArrayList()
+    val mFavoritesList: ArrayList<Drink> = ArrayList()
 
     lateinit var autoCompleteView: DrinkSuggestionAutoCompleteView
 
-    lateinit var mDatabaseHelper: AddDrinkDatabaseHelper
+    val repository: NightsOutRepository by inject()
+    private var suggestJob: Job? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -87,27 +91,26 @@ class AddDrinkActivity : NightsOutActivity() {
         }
 
         setupComplexModeCheckbox()
-        mDatabaseHelper = AddDrinkDatabaseHelper(this, Constants.DB_NAME, null, Constants.DB_VERSION)
     }
 
     override fun onStart() {
         super.onStart()
-        mDatabaseHelper.openDatabase()
-        initData()
-        showOrHideEmptyTextViews()
+        lifecycleScope.launch {
+            mFavoritesList.clear()
+            mFavoritesList.addAll(repository.pullFavoriteDrinks())
+            mRecentsList.clear()
+            mRecentsList.addAll(repository.pullRecentDrinks())
+            mFavoritesListAdapter.notifyDataSetChanged()
+            mRecentsListAdapter.notifyDataSetChanged()
+            showOrHideEmptyTextViews()
+        }
         setupAddButton()
     }
 
     override fun onStop() {
         mRecentsList.clear()
         mFavoritesList.clear()
-        mDatabaseHelper.closeDatabase()
         super.onStop()
-    }
-
-    private fun initData() {
-        mFavoritesList = mDatabaseHelper.pullFavoriteDrinks()
-        mRecentsList = mDatabaseHelper.pullRecentDrinks()
     }
 
     private fun setupSpinner() {
@@ -240,11 +243,10 @@ class AddDrinkActivity : NightsOutActivity() {
     private fun clearFavoritesOptionSelected(): Boolean {
         if (mFavoritesList.isEmpty()) return false
         val posAction = {
-            mDatabaseHelper.deleteRowsInTable("favorites", null)
+            lifecycleScope.launch { repository.deleteAllFavorites() }
             mFavoritesList.clear()
             showOrHideEmptyTextViews()
             mFavoritesListAdapter.notifyDataSetChanged()
-            mDatabaseHelper.deleteRowsInTable("favorites", null)
         }
         val lightSimpleDialog = LightSimpleDialog(this)
         lightSimpleDialog.setActions(posAction, {})
@@ -255,7 +257,7 @@ class AddDrinkActivity : NightsOutActivity() {
     private fun clearRecentsOptionSelected(): Boolean {
         if (mRecentsList.isEmpty()) return false
         val posAction = {
-            mDatabaseHelper.deleteRowsInTable("drinks", "recent = 1")
+            lifecycleScope.launch { repository.deleteRecentDrinks() }
             mRecentsList.clear()
             // todo write UPDATE drinks WHERE recent = 1 SET recent = 0
             showOrHideEmptyTextViews()
@@ -310,12 +312,16 @@ class AddDrinkActivity : NightsOutActivity() {
             override fun afterTextChanged(s: Editable?) {}
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                // get new list an apply it
-                val temp = mDatabaseHelper.getSuggestedDrinks(s.toString())
-                drinks = if (temp.isNotEmpty() || count < 50) temp else drinks
-                adapter = DrinkSuggestionArrayAdapter(this@AddDrinkActivity, R.layout.activity_add_drink_suggestion_list, drinks)
-                autoCompleteView.setAdapter(adapter)
-                adapter.notifyDataSetChanged()
+                // latest keystroke wins; stale lookups are cancelled
+                suggestJob?.cancel()
+                suggestJob = lifecycleScope.launch {
+                    // get new list an apply it
+                    val temp = repository.getSuggestedDrinks(s.toString())
+                    drinks = if (temp.isNotEmpty() || count < 50) temp else drinks
+                    adapter = DrinkSuggestionArrayAdapter(this@AddDrinkActivity, R.layout.activity_add_drink_suggestion_list, drinks)
+                    autoCompleteView.setAdapter(adapter)
+                    adapter.notifyDataSetChanged()
+                }
             }
         })
 
@@ -386,39 +392,64 @@ class AddDrinkActivity : NightsOutActivity() {
         val abv = if (!complexMode) mEditAbv.text.toString().toDouble() else mComplexDrinkHelper.weightedAverageAbv()
         val amount = if (!complexMode) mEditAmount.text.toString().toDouble() else mComplexDrinkHelper.sumAmount()
         val measurement = if (!complexMode) mSpinnerAmount.selectedItem.toString() else "oz"
-        mDatabaseHelper.buildDrinkAndAddToList(name, abv, amount, measurement, mFavorited, canUnfavorite)
 
-        mEditName.text.clear()
-        mEditAbv.text.clear()
-        mEditAmount.text.clear()
-        complexMode = false
-        findViewById<CheckBox>(R.id.chkBox_complexDrink).isChecked = false
-        val intent = Intent(this, MainActivity::class.java)
-        fragmentId = if (canUnfavorite) 0 else 2
-        intent.putExtra("drinkAdded", true)
-        startActivity(intent)
+        lifecycleScope.launch {
+            buildDrinkAndAddToList(name, abv, amount, measurement, mFavorited, canUnfavorite)
+
+            mEditName.text.clear()
+            mEditAbv.text.clear()
+            mEditAmount.text.clear()
+            complexMode = false
+            findViewById<CheckBox>(R.id.chkBox_complexDrink).isChecked = false
+            val intent = Intent(this@AddDrinkActivity, MainActivity::class.java)
+            fragmentId = if (canUnfavorite) 0 else 2
+            intent.putExtra("drinkAdded", true)
+            startActivity(intent)
+        }
     }
 
-    fun addDrinkToCurrentSessionAndRecentsTables(drink: Drink) {
-        mDatabaseHelper.insertRowInCurrentSessionTable(drink.id, mDatabaseHelper.getNumberOfRows("current_session_drinks").toInt())
+    // formerly AddDrinkDatabaseHelper.buildDrinkAndAddToList
+    private suspend fun buildDrinkAndAddToList(
+        name: String,
+        abv: Double,
+        amount: Double,
+        measurement: String,
+        favorited: Boolean,
+        canUnfavorite: Boolean
+    ) {
+        val drink = Drink(UUID.randomUUID(), name, abv, amount, measurement, favorited, true, Constants.getLongTimeNow())
 
-        // UPDATE drinks WHERE name = drink.name SET recent = 0
-        val args = ContentValues()
-        args.put("recent", 0)
-        mDatabaseHelper.db.update("drinks", args, "name=?", arrayOf(drink.name))
+        // reuse the id of an identical drink already in the db, else insert a new row
+        val id = repository.getDrinkIdFromFullDrinkInfo(drink)
+        drink.id = id
+        if (!repository.idInDb(drink.id)) repository.insertDrinkIntoDrinksTable(drink)
+        repository.updateDrinkModifiedTime(drink.id, drink.modifiedTime)
+        repository.updateDrinkSuggestionStatus(drink.id, false)
+        drink.favorited = repository.isFavoritedInDB(drink.name) || drink.favorited
 
-        // UPDATE drinks WHERE id = drink.id SET recent = 1
-        args.clear()
-        args.put("recent", 1)
-        mDatabaseHelper.db.update("drinks", args, "id=?", arrayOf(drink.id.toString()))
+        // depending on which fragment called add drink depends what method gets called
+        if (canUnfavorite) {
+            addDrinkToCurrentSessionAndRecentsTables(drink)
+        } else {
+            drink.recent = false
+            addToFavoritesTable(drink)
+        }
+    }
+
+    suspend fun addDrinkToCurrentSessionAndRecentsTables(drink: Drink) {
+        repository.insertRowInCurrentSessionTable(drink.id, repository.currentSessionCount())
+
+        // only the newest entry of a name stays recent
+        repository.setRecentByName(drink.name, false)
+        repository.setRecentById(drink.id, true)
 
         if (drink.favorited) {
             addToFavoritesTable(drink)
         }
     }
 
-    fun addToFavoritesTable(drink: Drink) {
-        mDatabaseHelper.updateDrinkFavoriteStatus(drink)
+    suspend fun addToFavoritesTable(drink: Drink) {
+        repository.updateDrinkFavoriteStatus(drink)
     }
 
     fun isInputErrors(): Boolean {

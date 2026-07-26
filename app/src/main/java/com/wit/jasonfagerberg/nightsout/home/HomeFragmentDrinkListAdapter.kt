@@ -9,12 +9,14 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
 import com.google.android.material.snackbar.Snackbar
 import com.wit.jasonfagerberg.nightsout.R
 import com.wit.jasonfagerberg.nightsout.dialogs.EditDrinkDialog
 import com.wit.jasonfagerberg.nightsout.constants.Constants
 import com.wit.jasonfagerberg.nightsout.models.Drink
 import com.wit.jasonfagerberg.nightsout.main.MainActivity
+import kotlinx.coroutines.launch
 
 class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: ArrayList<Drink>) :
         androidx.recyclerview.widget.RecyclerView.Adapter<HomeFragmentDrinkListAdapter.ViewHolder>() {
@@ -126,13 +128,16 @@ class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: Ar
             mDrinksList.add(position, copy)
             notifyItemInserted(position)
             notifyItemRangeChanged(position, mDrinksList.size)
-            mMainActivity.mDatabaseHelper.insertRowInCurrentSessionTable(copy.id, position + 1)
-
+            mMainActivity.lifecycleScope.launch {
+                mMainActivity.repository.insertRowInCurrentSessionTable(copy.id, position + 1)
+            }
         } else {
             mDrinksList.add(position, copy)
             notifyItemInserted(position)
             notifyItemRangeChanged(position, mDrinksList.size)
-            mMainActivity.mDatabaseHelper.insertRowInCurrentSessionTable(copy.id, position)
+            mMainActivity.lifecycleScope.launch {
+                mMainActivity.repository.insertRowInCurrentSessionTable(copy.id, position)
+            }
         }
     }
 
@@ -140,10 +145,14 @@ class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: Ar
         drink.favorited = !drink.favorited
         if (drink.favorited) {
             mMainActivity.mFavoritesList.add(drink)
-            mMainActivity.mDatabaseHelper.insertRowInFavoritesTable(drink.name, drink.id)
+            mMainActivity.lifecycleScope.launch {
+                mMainActivity.repository.insertRowInFavoritesTable(drink.name, drink.id)
+            }
         } else {
             mMainActivity.mFavoritesList.remove(drink)
-            mMainActivity.mDatabaseHelper.deleteRowsInTable("favorites", "drink_name = \"${drink.name}\"")
+            mMainActivity.lifecycleScope.launch {
+                mMainActivity.repository.deleteFavoriteByName(drink.name)
+            }
         }
 
         for (i in mMainActivity.mDrinksList.indices) {
@@ -161,7 +170,9 @@ class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: Ar
         val snackbar = Snackbar.make(mMainActivity.findViewById(R.id.placeSnackBar), "${mMainActivity.mDrinksList[position].name} removed", Snackbar.LENGTH_LONG)
         val undoAction: (v: View) -> Unit = {
             mMainActivity.mDrinksList.add(position, deletedDrink)
-            mMainActivity.mDatabaseHelper.insertRowInCurrentSessionTable(deletedDrink.id, position)
+            mMainActivity.lifecycleScope.launch {
+                mMainActivity.repository.insertRowInCurrentSessionTable(deletedDrink.id, position)
+            }
             notifyItemInserted(position)
             notifyItemRangeChanged(position, mMainActivity.mDrinksList.size)
             mMainActivity.homeFragment.showOrHideEmptyListText(mMainActivity.homeFragment.view!!)
@@ -170,7 +181,7 @@ class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: Ar
         snackbar.setAction("Undo", undoAction)
         snackbar.setActionTextColor(ContextCompat.getColor(mMainActivity.homeFragment.context!!, R.color.colorWhite))
         mDrinksList.removeAt(position)
-        mMainActivity.mDatabaseHelper.deleteRowsInTable("current_session_drinks", "position=$position")
+        mMainActivity.lifecycleScope.launch { mMainActivity.repository.deleteCurrentSessionAt(position) }
         notifyItemRemoved(position)
         notifyItemRangeChanged(position, mDrinksList.size)
         mMainActivity.homeFragment.updateBACText(mMainActivity.homeFragment.calculateBAC())
@@ -230,17 +241,19 @@ class HomeFragmentDrinkListAdapter(private val mContext: Context, drinksList: Ar
         }
         drink.measurement = dropdown.selectedItem.toString()
 
-        val id = mMainActivity.mDatabaseHelper.getDrinkIdFromFullDrinkInfo(drink)
-        drink.id = id
-        mMainActivity.mDatabaseHelper.deleteRowsInTable("current_session_drinks", "position=$position")
+        mMainActivity.lifecycleScope.launch {
+            val id = mMainActivity.repository.getDrinkIdFromFullDrinkInfo(drink)
+            drink.id = id
+            mMainActivity.repository.deleteCurrentSessionAt(position)
 
-        if (!drink.isExactDrink(other) && !mMainActivity.mDatabaseHelper.idInDb(id)) {
-            if (drink.name != other.name) drink.favorited = false
-            mMainActivity.mDatabaseHelper.insertDrinkIntoDrinksTable(drink)
-            drink.id = mMainActivity.mDatabaseHelper.getDrinkIdFromFullDrinkInfo(drink)
+            if (!drink.isExactDrink(other) && !mMainActivity.repository.idInDb(id)) {
+                if (drink.name != other.name) drink.favorited = false
+                mMainActivity.repository.insertDrinkIntoDrinksTable(drink)
+                drink.id = mMainActivity.repository.getDrinkIdFromFullDrinkInfo(drink)
+            }
+            mMainActivity.repository.updateDrinkModifiedTime(drink.id, drink.modifiedTime)
+            mMainActivity.repository.insertRowInCurrentSessionTable(drink.id, position)
         }
-        mMainActivity.mDatabaseHelper.updateDrinkModifiedTime(drink.id, drink.modifiedTime)
-        mMainActivity.mDatabaseHelper.insertRowInCurrentSessionTable(drink.id, position)
     }
 
     private fun dismissDialog(dialog: AlertDialog) {

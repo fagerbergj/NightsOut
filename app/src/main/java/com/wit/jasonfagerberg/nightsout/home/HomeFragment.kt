@@ -11,6 +11,7 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -27,6 +28,7 @@ import com.wit.jasonfagerberg.nightsout.domain.BacCalculator
 import com.wit.jasonfagerberg.nightsout.main.MainActivity
 import com.wit.jasonfagerberg.nightsout.manageDB.ManageDBActivity
 import java.util.*
+import kotlinx.coroutines.launch
 
 // private const val TAG = "HomeFragment"
 
@@ -71,13 +73,16 @@ class HomeFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        // setup list
-        setupRecycler(view!!)
-        // set edit texts
-        setupEditTexts(view!!)
-        // update BAC
-        updateBACText(calculateBAC())
-        showOrHideEmptyListText(view!!)
+        // pull before binding; MainActivity's own fill of the shared list may lose the race
+        lifecycleScope.launch {
+            mMainActivity.mDrinksList.clear()
+            mMainActivity.mDrinksList.addAll(mMainActivity.repository.pullCurrentSessionDrinks())
+            val view = view ?: return@launch
+            setupRecycler(view)
+            setupEditTexts(view)
+            updateBACText(calculateBAC())
+            showOrHideEmptyListText(view)
+        }
     }
 
     override fun onStart() {
@@ -102,10 +107,7 @@ class HomeFragment : Fragment() {
             R.id.btn_clear_drink_list -> {
                 if (mMainActivity.mDrinksList.isEmpty()) return false
                 val lightSimpleDialog = LightSimpleDialog(context!!)
-                val posAction = {
-                    clearSession()
-                    mMainActivity.mDatabaseHelper.deleteRowsInTable("current_session_drinks", null)
-                }
+                val posAction = { clearSession() }
                 lightSimpleDialog.setActions(posAction, {})
                 lightSimpleDialog.show("Are you sure you want to clear all drinks?")
             }
@@ -324,7 +326,7 @@ class HomeFragment : Fragment() {
         showOrHideEmptyListText(view!!)
         mMainActivity.resetTime()
         setupEditTexts(view!!)
-        mMainActivity.mDatabaseHelper.deleteRowsInTable("current_session_drinks", null)
+        lifecycleScope.launch { mMainActivity.repository.clearCurrentSession() }
         mMainActivity.sendActionToBacNotificationService(Constants.ACTION.STOP_SERVICE)
     }
 }

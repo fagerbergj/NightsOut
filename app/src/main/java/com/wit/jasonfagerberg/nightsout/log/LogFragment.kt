@@ -6,6 +6,7 @@ import android.view.*
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -16,7 +17,6 @@ import com.prolificinteractive.materialcalendarview.MaterialCalendarView
 import com.prolificinteractive.materialcalendarview.spans.DotSpan
 import com.wit.jasonfagerberg.nightsout.R
 import com.wit.jasonfagerberg.nightsout.utils.Converter
-import com.wit.jasonfagerberg.nightsout.databaseHelper.LogDatabaseHelper
 import com.wit.jasonfagerberg.nightsout.dialogs.LightSimpleDialog
 import com.wit.jasonfagerberg.nightsout.main.MainActivity
 import com.wit.jasonfagerberg.nightsout.models.LogHeader
@@ -24,6 +24,7 @@ import java.util.Calendar
 import kotlin.collections.ArrayList
 import kotlin.collections.Collection
 import kotlin.collections.HashSet
+import kotlinx.coroutines.launch
 
 // private const val TAG = "LogFragment"
 
@@ -36,7 +37,7 @@ class LogFragment : Fragment() {
     private lateinit var mMainActivity: MainActivity
     private lateinit var mLogList: ArrayList<Any>
     private val converter: Converter = Converter()
-    private lateinit var logDatabaseHelper: LogDatabaseHelper
+    private val repository by lazy { mMainActivity.repository }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         mMainActivity = context as MainActivity
@@ -68,14 +69,19 @@ class LogFragment : Fragment() {
     }
 
     override fun onResume() {
-        logDatabaseHelper = LogDatabaseHelper(mMainActivity.mDatabaseHelper, mMainActivity)
-        setAdapter()
-        setupCalendar(view!!)
-        calendarView.selectedDate = CalendarDay.today()
-        calendarView.selectionColor = if (mMainActivity.activeTheme == R.style.AppTheme) {
-            ContextCompat.getColor(context!!, R.color.colorLightBlueGray)
-        } else {
-            ContextCompat.getColor(context!!, R.color.colorGray)
+        // pull before binding; MainActivity's own fill of the shared list may lose the race
+        lifecycleScope.launch {
+            mMainActivity.mLogHeaders.clear()
+            mMainActivity.mLogHeaders.addAll(repository.pullLogHeaders())
+            if (view == null) return@launch
+            setAdapter()
+            setupCalendar(view!!)
+            calendarView.selectedDate = CalendarDay.today()
+            calendarView.selectionColor = if (mMainActivity.activeTheme == R.style.AppTheme) {
+                ContextCompat.getColor(context!!, R.color.colorLightBlueGray)
+            } else {
+                ContextCompat.getColor(context!!, R.color.colorGray)
+            }
         }
 
         super.onResume()
@@ -92,8 +98,11 @@ class LogFragment : Fragment() {
                 if (mMainActivity.mLogHeaders.isEmpty()) return false
                 val lightSimpleDialog = LightSimpleDialog(context!!)
                 val posAction = {
-                    for (header in mMainActivity.mLogHeaders) {
-                        logDatabaseHelper.deleteLog(header.date)
+                    val dates = mMainActivity.mLogHeaders.map { it.date }
+                    lifecycleScope.launch {
+                        for (date in dates) {
+                            repository.deleteLog(date)
+                        }
                     }
                     mMainActivity.mLogHeaders.clear()
                     resetCalendar()
@@ -108,7 +117,7 @@ class LogFragment : Fragment() {
                         sel.month - 1, sel.day).toInt()
                 if (mMainActivity.mLogHeaders.indexOf(LogHeader(date)) == -1) return false
                 mMainActivity.mLogHeaders.remove(LogHeader(date))
-                logDatabaseHelper.deleteLog(date)
+                lifecycleScope.launch { repository.deleteLog(date) }
                 resetCalendar()
             }
             R.id.btn_move_selected_log -> {
@@ -180,18 +189,21 @@ class LogFragment : Fragment() {
     }
 
     private fun setLogListBasedOnDay(date: Int) {
-        mLogList.clear()
-        val index = mMainActivity.mLogHeaders.indexOf(LogHeader(date))
-        if (index >= 0) {
-            val header = mMainActivity.mLogHeaders[index]
-            mLogList.add(header)
-            mLogList.addAll(logDatabaseHelper.getLoggedDrinks(header.date))
-        } else {
-            mLogList.add(LogHeader(date))
+        lifecycleScope.launch {
+            mLogList.clear()
+            val index = mMainActivity.mLogHeaders.indexOf(LogHeader(date))
+            if (index >= 0) {
+                val header = mMainActivity.mLogHeaders[index]
+                mLogList.add(header)
+                mLogList.addAll(repository.getLoggedDrinks(header.date))
+            } else {
+                mLogList.add(LogHeader(date))
+            }
+            if (!::mLogFragmentAdapter.isInitialized) return@launch
+            mLogFragmentAdapter.notifyDataSetChanged()
+            mLogListView.layoutManager?.scrollToPosition(0)
+            showOrHideEmptyTextViews(mLogListView.parent as View)
         }
-        mLogFragmentAdapter.notifyDataSetChanged()
-        mLogListView.layoutManager?.scrollToPosition(0)
-        showOrHideEmptyTextViews(mLogListView.parent as View)
     }
 
     private fun showOrHideEmptyTextViews(view: View) {

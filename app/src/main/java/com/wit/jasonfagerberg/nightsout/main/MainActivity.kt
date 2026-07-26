@@ -14,12 +14,13 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
+import androidx.lifecycle.lifecycleScope
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.wit.jasonfagerberg.nightsout.R
 import com.wit.jasonfagerberg.nightsout.addDrink.AddDrinkActivity
 import com.wit.jasonfagerberg.nightsout.constants.Constants
-import com.wit.jasonfagerberg.nightsout.databaseHelper.DatabaseHelper
+import com.wit.jasonfagerberg.nightsout.database.NightsOutRepository
 import com.wit.jasonfagerberg.nightsout.dialogs.SimpleDialog
 import com.wit.jasonfagerberg.nightsout.home.HomeFragment
 import com.wit.jasonfagerberg.nightsout.log.LogFragment
@@ -31,6 +32,10 @@ import com.wit.jasonfagerberg.nightsout.settings.SettingsShim
 import com.wit.jasonfagerberg.nightsout.utils.isCountryThatUses12HourTime
 import java.lang.Exception
 import kotlin.collections.ArrayList
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.NonCancellable
+import kotlinx.coroutines.launch
+import org.koin.android.ext.android.inject
 
 //private const val TAG = "MainActivity"
 
@@ -63,7 +68,7 @@ class MainActivity : NightsOutActivity() {
     private var showBacNotification: Boolean = true
 
     // database entries as lists
-    lateinit var mDatabaseHelper: DatabaseHelper
+    val repository: NightsOutRepository by inject()
 
     var mDrinksList: ArrayList<Drink> = ArrayList()
     var mFavoritesList: ArrayList<Drink> = ArrayList()
@@ -83,8 +88,6 @@ class MainActivity : NightsOutActivity() {
                 else -> false
             }
         }
-        mDatabaseHelper = DatabaseHelper(this, Constants.DB_NAME, null, Constants.DB_VERSION)
-
         pager = findViewById(R.id.main_frame)
         pagerAdapter = MyPagerAdapter(supportFragmentManager)
         pager.adapter = pagerAdapter
@@ -115,7 +118,15 @@ class MainActivity : NightsOutActivity() {
     }
 
     override fun onStart() {
-        mDatabaseHelper.openDatabase()
+        // fragments re-fill and re-bind from the same shared lists in their own onResume
+        lifecycleScope.launch {
+            mDrinksList.clear()
+            mDrinksList.addAll(repository.pullCurrentSessionDrinks())
+            mFavoritesList.clear()
+            mFavoritesList.addAll(repository.pullFavoriteDrinks())
+            mLogHeaders.clear()
+            mLogHeaders.addAll(repository.pullLogHeaders())
+        }
         initData()
         super.onStart()
     }
@@ -133,11 +144,6 @@ class MainActivity : NightsOutActivity() {
             pager.currentItem = 1
         }
         pushToBackStack(pager.currentItem)
-
-        // init data
-        mDrinksList = mDatabaseHelper.pullCurrentSessionDrinks()
-        mFavoritesList = mDatabaseHelper.pullFavoriteDrinks()
-        mLogHeaders = mDatabaseHelper.pullLogHeaders()
     }
 
     @Suppress("DEPRECATION") // shim phase; #54 replaces with SettingsRepository
@@ -179,12 +185,15 @@ class MainActivity : NightsOutActivity() {
     }
 
     override fun onStop() {
-        mDatabaseHelper.deleteRowsInTable("current_session_drinks", null)
-        mDatabaseHelper.pushDrinks(mDrinksList, mFavoritesList)
+        // snapshot: the lists are cleared below, before the write coroutine would read them
+        val drinks = ArrayList(mDrinksList)
+        val favorites = ArrayList(mFavoritesList)
+        lifecycleScope.launch(Dispatchers.IO + NonCancellable) {
+            repository.pushDrinks(drinks, favorites)
+        }
 
         mFavoritesList.clear()
         mLogHeaders.clear()
-        mDatabaseHelper.closeDatabase()
         super.onStop()
     }
 

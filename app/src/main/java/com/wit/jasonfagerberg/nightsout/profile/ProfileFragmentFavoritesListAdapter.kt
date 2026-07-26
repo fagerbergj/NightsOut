@@ -6,11 +6,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.cardview.widget.CardView
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.wit.jasonfagerberg.nightsout.R
 import com.wit.jasonfagerberg.nightsout.dialogs.LightSimpleDialog
 import com.wit.jasonfagerberg.nightsout.models.Drink
 import com.wit.jasonfagerberg.nightsout.main.MainActivity
+import kotlinx.coroutines.launch
 
 class ProfileFragmentFavoritesListAdapter(private val mContext: Context, drinksList: ArrayList<Drink>) :
         RecyclerView.Adapter<ProfileFragmentFavoritesListAdapter.ViewHolder>() {
@@ -39,7 +41,7 @@ class ProfileFragmentFavoritesListAdapter(private val mContext: Context, drinksL
                 mFavoriteDrinksList.remove(drink)
                 notifyItemRemoved(i)
                 notifyItemRangeChanged(0, mFavoriteDrinksList.size)
-                mContext.mDatabaseHelper.deleteRowsInTable("favorites", "drink_name=\"${drink.name}\"")
+                mContext.lifecycleScope.launch { mContext.repository.deleteFavoriteByName(drink.name) }
                 mContext.profileFragment.showOrHideEmptyTextViews(mContext.profileFragment.requireView())
             }
             dialog.setActions(posAction, {})
