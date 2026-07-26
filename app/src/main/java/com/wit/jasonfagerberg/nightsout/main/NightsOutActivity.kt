@@ -1,6 +1,8 @@
 package com.wit.jasonfagerberg.nightsout.main
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.BlendMode
 import android.graphics.BlendModeColorFilter
 import android.graphics.PorterDuff
@@ -13,6 +15,7 @@ import androidx.preference.PreferenceManager
 import android.view.Gravity
 import android.view.MenuItem
 import android.widget.Toast
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.google.android.material.button.MaterialButton
 import com.wit.jasonfagerberg.nightsout.R
@@ -21,6 +24,10 @@ import com.wit.jasonfagerberg.nightsout.settings.SettingsActivity
 import java.util.*
 
 abstract class NightsOutActivity : AppCompatActivity() {
+    companion object {
+        private const val REQUEST_CODE_POST_NOTIFICATIONS = 4201
+    }
+
     val mBackStack = Stack<Int>()
     var fragmentId = -1
     var activeTheme: Int = R.style.AppTheme
@@ -96,6 +103,19 @@ abstract class NightsOutActivity : AppCompatActivity() {
 
     fun setButtonColor(target: MaterialButton, color : Int) {
         target.backgroundTintList = ContextCompat.getColorStateList(this, color)
+    }
+
+    // POST_NOTIFICATIONS is a runtime permission from API 33 (targetSdk 33+)
+    fun hasNotificationPermission(): Boolean =
+        Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU ||
+            ContextCompat.checkSelfPermission(this,
+                Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED
+
+    fun requestNotificationPermissionIfNeeded() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && !hasNotificationPermission()) {
+            ActivityCompat.requestPermissions(this,
+                arrayOf(Manifest.permission.POST_NOTIFICATIONS), REQUEST_CODE_POST_NOTIFICATIONS)
+        }
     }
 
     fun showToast(message: String, isLongToast: Boolean = false) {

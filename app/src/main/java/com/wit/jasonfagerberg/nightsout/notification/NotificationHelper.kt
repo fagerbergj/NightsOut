@@ -40,11 +40,12 @@ class NotificationHelper (private val mContext: Context, private val CHANNEL_ID:
         val intent = Intent(mContext, MainActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         }
-        val pendingIntent: PendingIntent = PendingIntent.getActivity(mContext, id, intent, 0)
+        val pendingIntent: PendingIntent = PendingIntent.getActivity(mContext, id, intent, PendingIntent.FLAG_IMMUTABLE)
 
         val deleteIntent = Intent(mContext, BacNotificationService::class.java)
         deleteIntent.action = Constants.ACTION.STOP_SERVICE
-        val deletePendingIntent = PendingIntent.getService(mContext, id, deleteIntent, PendingIntent.FLAG_CANCEL_CURRENT)
+        val deletePendingIntent = PendingIntent.getService(mContext, id, deleteIntent,
+                PendingIntent.FLAG_CANCEL_CURRENT or PendingIntent.FLAG_IMMUTABLE)
 
         return NotificationCompat.Builder(mContext, CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_stat_name)
