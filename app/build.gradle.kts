@@ -1,12 +1,14 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.compose.compiler)
     alias(libs.plugins.ksp)
 }
 
 android {
     namespace = "com.wit.jasonfagerberg.nightsout"
     compileSdk = 36
+    buildFeatures { compose = true }
     defaultConfig {
         applicationId = "com.wit.jasonfagerberg.nightsout"
         minSdk = 24
@@ -58,4 +60,10 @@ dependencies {
     implementation(libs.androidx.datastore.preferences)
     implementation(libs.koin.android)
     implementation(libs.androidx.lifecycle.runtime.ktx)
+    // Compose
+    implementation(platform(libs.compose.bom))
+    implementation(libs.material3)
+    debugImplementation(libs.ui.tooling)
+    debugImplementation(libs.ui.tooling.preview)
+    debugImplementation(libs.ui.test.manifest)
 }
