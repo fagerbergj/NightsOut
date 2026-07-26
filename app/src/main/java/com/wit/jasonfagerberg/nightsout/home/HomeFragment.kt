@@ -23,6 +23,7 @@ import com.wit.jasonfagerberg.nightsout.dialogs.BacInfoDialog
 import com.wit.jasonfagerberg.nightsout.dialogs.LightSimpleDialog
 import com.wit.jasonfagerberg.nightsout.dialogs.SimpleDialog
 import com.wit.jasonfagerberg.nightsout.constants.Constants
+import com.wit.jasonfagerberg.nightsout.domain.BacCalculator
 import com.wit.jasonfagerberg.nightsout.main.MainActivity
 import com.wit.jasonfagerberg.nightsout.manageDB.ManageDBActivity
 import java.util.*
@@ -254,37 +255,20 @@ class HomeFragment : Fragment() {
         dialog.setNeutralFunction { dialog.dismiss() }
     }
 
-    // Widemark formula, imperial due to better floating point accuracy
+    // Widmark formula lives in BacCalculator; side effects (stats, notification) stay here
     fun calculateBAC(): Double {
-        var a = 0.0
-        for (drink in mMainActivity.mDrinksList) {
-            val volume = mConverter.drinkVolumeToFluidOz(drink.amount, drink.measurement)
-            val abv = drink.abv / 100
-            a += (volume * abv)
+        val drinks = mMainActivity.mDrinksList.map {
+            BacCalculator.Drink(mConverter.drinkVolumeToFluidOz(it.amount, it.measurement), it.abv)
         }
-        standardDrinksConsumed = mConverter.fluidOzToGrams(a) / 14.0
-
-        val r = if (mMainActivity.sex!!) .73 else .66
+        standardDrinksConsumed = mConverter.fluidOzToGrams(BacCalculator.alcoholOz(drinks)) / 14.0
+        drinkingDuration = BacCalculator.hoursElapsed(mMainActivity.startTimeMin, mMainActivity.endTimeMin)
 
         val weightInLbs = mConverter.weightToLbs(mMainActivity.weight, mMainActivity.weightMeasurement)
+        val bac = BacCalculator.calculate(drinks, weightInLbs, mMainActivity.sex!!,
+                mMainActivity.startTimeMin, mMainActivity.endTimeMin)
 
-        val sexModifiedWeight = weightInLbs * r
-
-        val instantBAC = (a * 5.14) / sexModifiedWeight
-
-        var hoursElapsed = (mMainActivity.endTimeMin - mMainActivity.startTimeMin) / 60.0
-        if (mMainActivity.endTimeMin < mMainActivity.startTimeMin) {
-            val minInDay = 1440
-            hoursElapsed = ((mMainActivity.endTimeMin + minInDay) - mMainActivity.startTimeMin) / 60.0
-        }
-
-        drinkingDuration = hoursElapsed
-
-        val bacDecayPerHour = 0.015
-        var res = instantBAC - (hoursElapsed * bacDecayPerHour)
-        res = if (res < 0.0) 0.0 else res
         mMainActivity.sendActionToBacNotificationService(Constants.ACTION.UPDATE_NOTIFICATION)
-        return res
+        return bac
     }
 
     fun updateBACText(update: Double) {
