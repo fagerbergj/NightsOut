@@ -66,4 +66,5 @@ dependencies {
     debugImplementation(libs.ui.tooling)
     debugImplementation(libs.ui.tooling.preview)
     debugImplementation(libs.ui.test.manifest)
+    implementation(libs.lifecycle.viewmodel.compose)
 }
