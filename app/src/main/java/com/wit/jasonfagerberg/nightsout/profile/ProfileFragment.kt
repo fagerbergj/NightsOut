@@ -9,25 +9,15 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import com.wit.jasonfagerberg.nightsout.addDrink.AddDrinkActivity
 import com.wit.jasonfagerberg.nightsout.main.MainActivity
-import com.wit.jasonfagerberg.nightsout.settings.SettingsRepository
-import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 /** Fragment shell — hosts the Compose ProfileScreen via a ComposeView. */
 class ProfileFragment : Fragment() {
 
     private lateinit var mMainActivity: MainActivity
-    private val settingsRepo by inject<SettingsRepository>()
-
-    private val profileViewModel: ProfileViewModel = ViewModelProvider(
-        this,
-        object : ViewModelProvider.Factory {
-            @Suppress("UNCHECKED_CAST") override fun <T : androidx.lifecycle.ViewModel> create(modelClass: Class<T>): T =
-                ProfileViewModel(settingsRepo) as T
-        }
-    )[ProfileViewModel::class.java]
+    private val profileViewModel: ProfileViewModel by viewModel()
 
     @Suppress("DEPRECATION")
     override fun onCreate(savedInstanceState: Bundle?) {

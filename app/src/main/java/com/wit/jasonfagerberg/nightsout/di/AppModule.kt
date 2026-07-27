@@ -33,4 +33,5 @@ val appModule = module {
     single { get<NightsOutDatabase>().drinkDao() }
     single { get<NightsOutDatabase>().logDao() }
     single { NightsOutRepository(get(), get(), get()) }
+    viewModel { ProfileViewModel(get()) }
 }

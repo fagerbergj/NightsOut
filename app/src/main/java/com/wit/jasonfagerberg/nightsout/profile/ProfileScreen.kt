@@ -14,12 +14,15 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
@@ -95,7 +98,7 @@ fun ProfileScreen(viewModel: ProfileViewModel) {
             }
 
             Column(
-                modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp).weight(1f),
+                modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp).weight(1f).verticalScroll(rememberScrollState()),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 _SexRow(uiState, viewModel)
@@ -110,7 +113,7 @@ fun ProfileScreen(viewModel: ProfileViewModel) {
 
                 if (favoritesSnapshot.isEmpty()) {
                     TextButton(onClick = acts.onAddFavorite, modifier = Modifier.padding(vertical = 16.dp)) {
-                        androidx.compose.material3.Icon(painterResource(R.drawable.favorite_white_24dp), contentDescription = null)
+                        androidx.compose.material3.Icon(painterResource(R.drawable.favorite_white_24dp), contentDescription = ctx.getString(R.string.add_favorite))
                         Spacer(modifier = Modifier.width(4.dp))
                         Text(ctx.getString(R.string.add_favorite))
                     }
@@ -190,7 +193,7 @@ private fun FavoritesRow(favorites: List<Drink>, onClick: (Drink) -> Unit) {
         items(favorites, key = { it.id }) { drink ->
             Card(
                 modifier = Modifier.width(140.dp).padding(8.dp).clickable(onClick = { onClick(drink) }),
-                colors = CardDefaults.cardColors(containerColor = Color(0xFFF44336))
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.error)
             ) {
                 Text(
                     text = drink.name, color = Color.White, textAlign = TextAlign.Center,
