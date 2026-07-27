@@ -28,6 +28,10 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -38,12 +42,15 @@ import androidx.compose.ui.unit.dp
 import com.wit.jasonfagerberg.nightsout.R
 import com.wit.jasonfagerberg.nightsout.dialogs.LightSimpleDialog
 import com.wit.jasonfagerberg.nightsout.models.Drink
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 data class ProfileActions(
     val context: android.content.Context,
     val favoritesList: MutableList<Drink>,
     val drinksList: MutableList<Drink>,
     val onAddFavorite: () -> Unit,
+    val onRemoveFavorite: suspend (Drink) -> Unit,
     val clearFavorites: suspend () -> Unit,
 )
 
@@ -53,6 +60,7 @@ val LocalProfileActions = androidx.compose.runtime.compositionLocalOf { ProfileA
     favoritesList = java.util.ArrayList(),
     drinksList = java.util.ArrayList(),
     onAddFavorite = {},
+    onRemoveFavorite = {},
     clearFavorites = {}
 )}
 
@@ -69,6 +77,12 @@ fun ProfileScreen(viewModel: ProfileViewModel) {
     val uiState by viewModel.uiState.collectAsState()
     val acts = LocalProfileActions.current
     val ctx = acts.context
+    val scope = rememberCoroutineScope()
+
+    // bumped after a favorites mutation to force recomposition of the plain shared lists below
+    var favoritesVersion by remember { mutableStateOf(0) }
+    val favoritesSnapshot = remember(favoritesVersion) { acts.favoritesList.toList() }
+    val onFavoritesChanged: () -> Unit = { favoritesVersion++ }
 
     Surface(modifier = Modifier.fillMaxSize()) {
         Column(modifier = Modifier.fillMaxSize()) {
@@ -76,7 +90,7 @@ fun ProfileScreen(viewModel: ProfileViewModel) {
             if (uiState.sex != null) {
                 androidx.compose.material3.TopAppBar(
                     title = { Text(ctx.getString(R.string.fragment_profile_name)) },
-                    actions = { _OverflowMenuButton(ctx, acts) }
+                    actions = { _OverflowMenuButton(ctx, acts, scope, onFavoritesChanged) }
                 )
             }
 
@@ -94,7 +108,7 @@ fun ProfileScreen(viewModel: ProfileViewModel) {
 
                 HorizontalDivider(color = Color(0xFFCFD8DC), modifier = Modifier.fillMaxWidth())
 
-                if (acts.favoritesList.isEmpty()) {
+                if (favoritesSnapshot.isEmpty()) {
                     TextButton(onClick = acts.onAddFavorite, modifier = Modifier.padding(vertical = 16.dp)) {
                         androidx.compose.material3.Icon(painterResource(R.drawable.favorite_white_24dp), contentDescription = null)
                         Spacer(modifier = Modifier.width(4.dp))
@@ -107,7 +121,7 @@ fun ProfileScreen(viewModel: ProfileViewModel) {
                         style = androidx.compose.material3.MaterialTheme.typography.bodyMedium.copy(color = Color.Gray)
                     )
                 } else {
-                    FavoritesRow(acts.favoritesList) { drink -> _showRemoveDialog(ctx, acts, drink) }
+                    FavoritesRow(favoritesSnapshot) { drink -> _showRemoveDialog(ctx, acts, scope, drink, onFavoritesChanged) }
                 }
 
                 Spacer(modifier = Modifier.height(16.dp))
@@ -188,26 +202,40 @@ private fun FavoritesRow(favorites: List<Drink>, onClick: (Drink) -> Unit) {
     }
 }
 
-private fun _showRemoveDialog(ctx: android.content.Context, acts: ProfileActions, drink: Drink) {
+private fun _showRemoveDialog(
+    ctx: android.content.Context,
+    acts: ProfileActions,
+    scope: CoroutineScope,
+    drink: Drink,
+    onChanged: () -> Unit,
+) {
     val dialog = LightSimpleDialog(ctx)
-    val targetId = drink.id
-    val drinksToRemove = java.util.ArrayList<Drink>()
-    for (d in acts.drinksList) if (d.id == targetId) drinksToRemove.add(d)
-    for (d in drinksToRemove) acts.drinksList.remove(d)
-    dialog.setActions(posAction = {}, negAction = {})
+    val posAction: () -> Unit = {
+        acts.favoritesList.removeAll { it.id == drink.id }
+        for (d in acts.drinksList) if (d.id == drink.id) d.favorited = false
+        onChanged()
+        scope.launch { acts.onRemoveFavorite(drink) }
+    }
+    dialog.setActions(posAction = posAction, negAction = {})
     dialog.show("Remove ${drink.name} from favorites list?")
 }
 
 
-private fun _showClearDialog(ctx: android.content.Context, acts: ProfileActions) {
+private fun _showClearDialog(ctx: android.content.Context, acts: ProfileActions, scope: CoroutineScope, onChanged: () -> Unit) {
     val dialog = LightSimpleDialog(ctx)
-    dialog.setActions(posAction = {}, negAction = {})
+    val posAction: () -> Unit = {
+        acts.favoritesList.clear()
+        for (d in acts.drinksList) d.favorited = false
+        onChanged()
+        scope.launch { acts.clearFavorites() }
+    }
+    dialog.setActions(posAction = posAction, negAction = {})
     dialog.show("Are you sure you want to clear all favorites?")
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun _OverflowMenuButton(ctx: android.content.Context, acts: ProfileActions) {
+private fun _OverflowMenuButton(ctx: android.content.Context, acts: ProfileActions, scope: CoroutineScope, onChanged: () -> Unit) {
     val expanded = androidx.compose.runtime.mutableStateOf(false)
     Box(modifier = Modifier.padding(4.dp)) {
         TextButton(onClick = { expanded.value = !expanded.value }) {
@@ -216,7 +244,7 @@ private fun _OverflowMenuButton(ctx: android.content.Context, acts: ProfileActio
         if (expanded.value) {
             DropdownMenu(expanded = true, onDismissRequest = { expanded.value = false }) {
                 DropdownMenuItem(text = { Text(ctx.getString(R.string.clear_favorites_list)) }, onClick = {
-                    expanded.value = false; _showClearDialog(ctx, acts)
+                    expanded.value = false; _showClearDialog(ctx, acts, scope, onChanged)
                 })
             }
         }

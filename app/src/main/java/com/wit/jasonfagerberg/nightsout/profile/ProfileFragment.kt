@@ -52,7 +52,8 @@ class ProfileFragment : Fragment() {
                 mMainActivity.pushToBackStack(4)
                 startActivity(intent)
             },
-            clearFavorites = {}
+            onRemoveFavorite = { drink -> mMainActivity.repository.deleteFavoriteByName(drink.name) },
+            clearFavorites = { mMainActivity.repository.deleteAllFavorites() }
         )
         composeView.setContent {
             CompositionLocalProvider(
