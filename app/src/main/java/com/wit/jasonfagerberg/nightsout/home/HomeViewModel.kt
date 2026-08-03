@@ -103,12 +103,16 @@ class HomeViewModel(
         }
     }
 
-    fun updateTimeSettings(startTimeMin: Int, endTimeMin: Int) {
+    fun updateTimeSettings(
+        startTimeMin: Int,
+        endTimeMin: Int,
+        use24HourTime: Boolean = _uiState.value.timeSettings.use24HourTime
+    ) {
         viewModelScope.launch {
             val current = _uiState.value
             val newBac = calculateBACInternal(current.drinks)
             _uiState.value = current.copy(
-                timeSettings = TimeSettings(startTimeMin, endTimeMin, current.timeSettings.use24HourTime),
+                timeSettings = TimeSettings(startTimeMin, endTimeMin, use24HourTime),
                 bacValue = newBac,
                 bacState = determineBacState(newBac)
             )

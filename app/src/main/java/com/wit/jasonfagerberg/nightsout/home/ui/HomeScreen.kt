@@ -31,16 +31,19 @@ import java.util.Calendar
 @Composable
 fun HomeScreen(
     viewModel: HomeViewModel,
-    drinks: List<Drink>,
-    bacValue: Double,
-    bacState: BacState,
-    timeSettings: TimeSettings,
     onAddDrinkClicked: () -> Unit,
-    onStartTimeChanged: (Int) -> Unit,
-    onEndTimeChanged: (Int) -> Unit,
-    onDeleteDrinkAt: (Int) -> Unit,
-    onFavoriteToggle: (Drink) -> Unit
+    onDrinksLoadFailed: () -> Unit = {}
 ) {
+    val uiState by viewModel.uiState.collectAsState()
+    val drinks = uiState.drinks
+    val bacValue = uiState.bacValue
+    val bacState = uiState.bacState
+    val timeSettings = uiState.timeSettings
+
+    LaunchedEffect(uiState.loadError) {
+        if (uiState.loadError) onDrinksLoadFailed()
+    }
+
     var showStartPicker by remember { mutableStateOf(false) }
     var showEndPicker by remember { mutableStateOf(false) }
 
@@ -51,7 +54,10 @@ fun HomeScreen(
             initialMinute = convertToMinutes(timeSettings.startTimeMin),
             use24HourTime = timeSettings.use24HourTime,
             onTimeSet = { hour, minute ->
-                onStartTimeChanged(hour * 60 + minute)
+                val startMin = hour * 60 + minute
+                // first time set: seed the end time too, so BAC has a non-degenerate window
+                val endMin = if (timeSettings.endTimeMin == -1) startMin else timeSettings.endTimeMin
+                viewModel.updateTimeSettings(startTimeMin = startMin, endTimeMin = endMin)
                 showStartPicker = false
             },
             onDismiss = { showStartPicker = false }
@@ -65,7 +71,10 @@ fun HomeScreen(
             initialMinute = convertToMinutes(timeSettings.endTimeMin),
             use24HourTime = timeSettings.use24HourTime,
             onTimeSet = { hour, minute ->
-                onEndTimeChanged(hour * 60 + minute)
+                viewModel.updateTimeSettings(
+                    startTimeMin = timeSettings.startTimeMin,
+                    endTimeMin = hour * 60 + minute
+                )
                 showEndPicker = false
             },
             onDismiss = { showEndPicker = false }
@@ -142,8 +151,8 @@ fun HomeScreen(
                 itemsIndexed(drinks, key = { _, drink -> drink.id }) { index, drink ->
                     DrinkListItem(
                         drink = drink,
-                        onDelete = { onDeleteDrinkAt(index) },
-                        onFavoriteToggle = onFavoriteToggle
+                        onDelete = { viewModel.deleteDrinkAt(index) },
+                        onFavoriteToggle = { viewModel.onFavoriteClicked(it) }
                     )
                 }
             }
@@ -163,8 +172,16 @@ fun DrinkListItem(
     onDelete: () -> Unit,
     onFavoriteToggle: (Drink) -> Unit
 ) {
+    // swipe start-to-end is the only delete path; a tap is reserved for a future edit action
+    val dismissState = rememberSwipeToDismissBoxState(
+        confirmValueChange = { value ->
+            if (value == SwipeToDismissBoxValue.StartToEnd) onDelete()
+            true
+        }
+    )
+
     SwipeToDismissBox(
-        state = rememberSwipeToDismissBoxState(),
+        state = dismissState,
         backgroundContent = {
             Box(
                 modifier = Modifier.fillMaxSize().background(Color.Red.copy(alpha = 0.7f)),
@@ -177,7 +194,7 @@ fun DrinkListItem(
         enableDismissFromEndToStart = false
     ) {
         Card(
-            modifier = Modifier.fillMaxWidth().padding(vertical = 2.dp).clickable(onClick = onDelete)
+            modifier = Modifier.fillMaxWidth().padding(vertical = 2.dp)
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp, vertical = 6.dp),
