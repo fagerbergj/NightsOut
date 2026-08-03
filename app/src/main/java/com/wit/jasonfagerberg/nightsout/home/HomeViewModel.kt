@@ -167,13 +167,15 @@ class HomeViewModel(
     }
 
     fun onFavoriteClicked(drink: Drink) {
-        drink.favorited = !drink.favorited
+        val wasFavorited = drink.favorited
         viewModelScope.launch {
-            if (drink.favorited) {
+            if (!wasFavorited) {
                 repository.insertRowInFavoritesTable(drink.name, drink.id)
             } else {
                 repository.deleteFavoriteByName(drink.name)
             }
+            // only flip once the write succeeds - a failed write must leave the UI matching the DB
+            drink.favorited = !wasFavorited
         }
     }
 
