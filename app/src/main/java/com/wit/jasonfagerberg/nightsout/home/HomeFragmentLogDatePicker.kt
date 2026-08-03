@@ -76,7 +76,6 @@ class HomeFragmentLogDatePicker(
         simpleDialog.setPositiveButtonText(mainActivity.resources.getString(R.string.update))
         simpleDialog.setPositiveFunction {
             mainActivity.mLogHeaders[headerIndex] = LogHeader(header.date, homeFragment.bac, homeFragment.drinkingDuration)
-            homeFragment.mDrinkListAdapter.notifyDataSetChanged()
             mainActivity.lifecycleScope.launch {
                 repository.deleteLog(header.date)
                 repository.pushDrinksToLogDrinks(header.date, mainActivity.mDrinksList)

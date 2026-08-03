@@ -96,9 +96,8 @@ class BacNotificationService : Service() {
 
                         if (currentActivity is MainActivity && currentActivity.homeFragment.isResumed) {
                             currentActivity.showToast("End time updated by notification")
-                            currentActivity.homeFragment.updateBACText(bac)
                             currentActivity.setPreference(endTimeMin = endTime)
-                            currentActivity.homeFragment.setupEditTexts(currentActivity.homeFragment.view!!)
+                            currentActivity.homeFragment.refreshBacFromTimeChange()
                         }
                     }
                 }
