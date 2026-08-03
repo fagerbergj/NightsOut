@@ -33,16 +33,18 @@ NightsOut uses **GitHub Actions** for continuous integration with two configured
 
 **Source Path:** [`.github/workflows/openwiki-update.yml`](/.github/workflows/openwiki-update.yml)
 
-This workflow handles automated wiki regeneration by the OpenWiki tool. It runs on a schedule (every two days), updating documentation pages under `/openwiki/` based on source code analysis.
+This workflow handles automated wiki regeneration by the OpenWiki tool. It runs daily, updating documentation pages under `/openwiki/` based on source code analysis.
 
 ### Configuration
 
 | Setting | Value |
 |---------|-------|
-| **Schedule** | Every 2 days at 7:00 UTC (`cron: "0 7 */2 * *"`) |
-| **Node.js** | v24 |
-| **Model** | `qwen3.6-35b` via OpenAI-compatible API |
-| **Tracked paths** | `openwiki/` only (AGENTS.md / CLAUDE.md are hand-maintained) |
+| **Schedule** | Daily at 8:00 UTC (`cron: "0 8 * * *"`) |
+| **Node.js** | v22 |
+| **OpenWiki version** | Unpinned (installed via `npm install --global openwiki`) |
+| **Model** | `z-ai/glm-5.2` via OpenRouter API |
+| **Tracked paths** | `openwiki/`, `AGENTS.md`, `CLAUDE.md`, `.github/workflows/openwiki-update.yml` |
+| **Observability** | LangSmith tracing enabled (`LANGSMITH_API_KEY`, `LANGCHAIN_PROJECT: openwiki`) |
 
 **Note:** Do not hand-edit generated OpenWiki pages. Instead, update source code/docs and let OpenWiki regenerate them. See [AGENTS.md](/AGENTS.md) for details.
 
