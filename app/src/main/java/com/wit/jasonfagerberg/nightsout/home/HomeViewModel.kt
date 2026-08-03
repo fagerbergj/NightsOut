@@ -37,7 +37,9 @@ data class HomeUiState(
     val bacValue: Double = 0.0,
     val timeSettings: TimeSettings = TimeSettings(-1, -1, false),
     val standardDrinksConsumed: Double = 0.0,
-    val drinkingDuration: Double = 0.0
+    val drinkingDuration: Double = 0.0,
+    // set once if the initial repository load throws; surfaced as a toast, never cleared back
+    val loadError: Boolean = false
 )
 
 class HomeViewModel(
@@ -53,16 +55,24 @@ class HomeViewModel(
 
     init {
         viewModelScope.launch {
-            repository.pullCurrentSessionDrinks().forEach { drink ->
-                _uiState.value = HomeUiState(
-                    drinks = _uiState.value.drinks + drink,
-                    bacValue = calculateBACInternal(_uiState.value.drinks + drink),
-                    bacState = determineBacState(calculateBACInternal(_uiState.value.drinks + drink)),
-                    standardDrinksConsumed = calcStandardDrinks(_uiState.value.drinks + drink),
-                    drinkingDuration = calcDuration()
-                )
+            try {
+                applyLoadedDrinks(repository.pullCurrentSessionDrinks())
+            } catch (_: Exception) {
+                _uiState.value = _uiState.value.copy(loadError = true)
             }
         }
+    }
+
+    // shared by init (repository load) and addCurrentSessionDrinks (manual refresh) - one emit, not one per drink
+    private fun applyLoadedDrinks(drinks: List<Drink>) {
+        val newBac = calculateBACInternal(drinks)
+        _uiState.value = _uiState.value.copy(
+            drinks = drinks,
+            bacValue = newBac,
+            bacState = determineBacState(newBac),
+            standardDrinksConsumed = calcStandardDrinks(drinks),
+            drinkingDuration = calcDuration()
+        )
     }
 
     fun addDrink(drink: Drink) {
@@ -120,16 +130,7 @@ class HomeViewModel(
     }
 
     fun addCurrentSessionDrinks(drinks: List<Drink>) {
-        viewModelScope.launch {
-            val newBac = calculateBACInternal(drinks)
-            _uiState.value = HomeUiState(
-                drinks = drinks.toList(),
-                bacValue = newBac,
-                bacState = determineBacState(newBac),
-                standardDrinksConsumed = calcStandardDrinks(drinks),
-                drinkingDuration = calcDuration()
-            )
-        }
+        viewModelScope.launch { applyLoadedDrinks(drinks.toList()) }
     }
 
     fun recalibrate() {
