@@ -47,4 +47,16 @@ class LogHeaderTest {
     fun `duration string with padded 0s`() {
         assertThat(LogHeader(date = 20190005, bac = 15.0, duration = 1.05).durationString).isEqualTo("1:03")
     }
+
+    @Test
+    fun `date string ordinal suffix edge cases for 11th 12th 13th and 21st 22nd 23rd`() {
+        Locale.setDefault(Locale.US)
+        assertThat(LogHeader(date = 20190011, bac = 15.0, duration = 112.0).dateString).isEqualTo("January 11th")
+        assertThat(LogHeader(date = 20190012, bac = 15.0, duration = 112.0).dateString).isEqualTo("January 12th")
+        assertThat(LogHeader(date = 20190013, bac = 15.0, duration = 112.0).dateString).isEqualTo("January 13th")
+        assertThat(LogHeader(date = 20190021, bac = 15.0, duration = 112.0).dateString).isEqualTo("January 21st")
+        assertThat(LogHeader(date = 20190022, bac = 15.0, duration = 112.0).dateString).isEqualTo("January 22nd")
+        assertThat(LogHeader(date = 20190023, bac = 15.0, duration = 112.0).dateString).isEqualTo("January 23rd")
+        assertThat(LogHeader(date = 20190031, bac = 15.0, duration = 112.0).dateString).isEqualTo("January 31st")
+    }
 }

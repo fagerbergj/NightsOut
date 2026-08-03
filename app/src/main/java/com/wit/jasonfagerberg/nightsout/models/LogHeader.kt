@@ -21,7 +21,13 @@ class LogHeader(val date: Int, val bac: Double = 0.0, val duration: Double = 0.0
 
     init {
         val locale = Locale.getDefault()
-        val suffix: String = if (day == 1) "st" else if (day == 2) "nd" else if (day == 3) "rd" else "th"
+        val suffix: String = when {
+            day in 11..13 -> "th"
+            day % 10 == 1 -> "st"
+            day % 10 == 2 -> "nd"
+            day % 10 == 3 -> "rd"
+            else -> "th"
+        }
         dateString = if (locale != Locale.US) "$day$suffix of $monthName" else "$monthName $day$suffix"
 
         if (durationMinuets < 10) durationString = "$durationHours:0$durationMinuets"
