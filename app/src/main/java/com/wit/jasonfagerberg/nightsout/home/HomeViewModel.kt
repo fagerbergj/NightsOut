@@ -57,6 +57,7 @@ class HomeViewModel(
         viewModelScope.launch {
             try {
                 applyLoadedDrinks(repository.pullCurrentSessionDrinks())
+                _existingHeaders = repository.pullLogHeaders().toMutableList()
             } catch (_: Exception) {
                 _uiState.value = _uiState.value.copy(loadError = true)
             }
@@ -194,7 +195,46 @@ class HomeViewModel(
     fun calculateBACValue(): Double = calculateBACInternal(_uiState.value.drinks)
     fun getStandardDrinksConsumed(): Double = _uiState.value.standardDrinksConsumed
     fun getDrinkingDuration(): Double = _uiState.value.drinkingDuration
-    fun getConverter(): Converter = Converter()
+   fun getConverter(): Converter = Converter()
+
+    sealed interface LogAction {
+        data class UpdateExistingLog(val logDate: Int, val existingBac: Double, val existingDuration: Double) : LogAction
+        data object CreateNewLog : LogAction
+    }
+
+    fun checkOrCreateLog(logDate: Int): LogAction? {
+        val existingHeader = _existingHeaders.find { it.date == logDate }
+        return if (existingHeader != null) {
+            LogAction.UpdateExistingLog(logDate, existingHeader.bac, existingHeader.duration)
+        } else {
+            LogAction.CreateNewLog
+        }
+    }
+
+    suspend fun logSessionWithDate(logDate: Int): Boolean {
+        val current = _uiState.value
+        if (current.drinks.isEmpty()) return false
+        
+        val result = runCatching {
+            val existing = _existingHeaders.find { it.date == logDate }
+            if (existing != null) {
+                repository.deleteLog(existing.date)
+                repository.insertRowInLogTable(logDate, current.bacValue, current.drinkingDuration)
+                repository.pushDrinksToLogDrinks(logDate, current.drinks)
+                _existingHeaders = _existingHeaders.map { if (it.date == existing.date) com.wit.jasonfagerberg.nightsout.models.LogHeader(logDate, current.bacValue, current.drinkingDuration) else it }.toMutableList()
+            } else {
+                repository.insertRowInLogTable(logDate, current.bacValue, current.drinkingDuration)
+                repository.pushDrinksToLogDrinks(logDate, current.drinks)
+                _existingHeaders.add(com.wit.jasonfagerberg.nightsout.models.LogHeader(logDate, current.bacValue, current.drinkingDuration))
+            }
+        }
+        if (result.isSuccess) clearSession()
+        return result.isSuccess
+    }
+
+    fun getExistingHeaders(): List<com.wit.jasonfagerberg.nightsout.models.LogHeader> = _existingHeaders.toList()
+
+ private var _existingHeaders: MutableList<com.wit.jasonfagerberg.nightsout.models.LogHeader> = ArrayList()
 
     private fun calcStandardDrinks(drinks: List<Drink>): Double {
         val converter = Converter()

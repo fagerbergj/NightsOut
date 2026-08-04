@@ -1,5 +1,6 @@
 package com.wit.jasonfagerberg.nightsout.log
 
+import android.app.DatePickerDialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
@@ -7,7 +8,6 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.app.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -19,57 +19,53 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.wit.jasonfagerberg.nightsout.R
+import com.wit.jasonfagerberg.nightsout.database.NightsOutRepository
 import com.wit.jasonfagerberg.nightsout.dialogs.SimpleDialog
 import com.wit.jasonfagerberg.nightsout.log.ui.LogCalendarScreen
 import com.wit.jasonfagerberg.nightsout.log.ui.LogItem
-import com.wit.jasonfagerberg.nightsout.main.MainActivity
-import com.wit.jasonfagerberg.nightsout.models.Drink
 import com.wit.jasonfagerberg.nightsout.models.LogHeader
+import com.wit.jasonfagerberg.nightsout.profile.showToast
 import com.wit.jasonfagerberg.nightsout.utils.Converter
 import kotlinx.coroutines.launch
+import org.koin.android.ext.android.inject
 
 class LogFragment : Fragment() {
 
     private val converter = Converter()
-    private lateinit var mMainActivity: MainActivity
+    private val repository: NightsOutRepository by inject()
     private var selectedDate by mutableIntStateOf(20260101)
     private val logListState = mutableStateListOf<LogItem>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mMainActivity = requireActivity() as MainActivity
-        mMainActivity.logFragment = this
         selectedDate = converter.currentDateTo8DigitString().toInt()
     }
 
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         setHasOptionsMenu(true)
         val composeView = ComposeView(requireContext()).apply {
             setContent {
                 LogCalendarScreen(
-                    logList = logListState,
-                    selectedDate = selectedDate,
+                    logList = logListState, selectedDate = selectedDate,
                     onMoveDayRequested = ::onMoveDayConfirmed
                 )
             }
         }
 
         lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                loadLogData(selectedDate)
-            }
+            repeatOnLifecycle(Lifecycle.State.STARTED) { loadLogData(selectedDate) }
         }
 
         return composeView
     }
 
+    override fun onResume() { super.onResume(); lifecycleScope.launch { loadLogData(selectedDate) } }
+
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        mMainActivity.supportActionBar?.title = "Log"
+        (requireActivity() as? com.wit.jasonfagerberg.nightsout.main.MainActivity)?.supportActionBar?.title = "Log"
         inflater.inflate(R.menu.log_menu, menu)
     }
 
@@ -79,128 +75,95 @@ class LogFragment : Fragment() {
             R.id.btn_clear_selected_day_log -> clearSelectedDayLog()
             R.id.btn_move_selected_log -> onMoveFromMenu(selectedDate)
         }
-        return mMainActivity.onOptionsItemSelected(item)
+        return (activity as? android.app.Activity)?.onOptionsItemSelected(item) ?: false
     }
 
     private fun clearAllLogs() {
-        if (mMainActivity.mLogHeaders.isEmpty()) return
         val light = com.wit.jasonfagerberg.nightsout.dialogs.LightSimpleDialog(context!!)
-        val posAction = {
-            lifecycleScope.launch {
-                for (date in mMainActivity.mLogHeaders.map { it.date }) {
-                    mMainActivity.repository.deleteLog(date)
-                }
-            }
-            mMainActivity.mLogHeaders.clear()
-            logListState.clear()
-        }
-        light.setActions(posAction, {})
+        light.setActions({ lifecycleScope.launch { deleteAllLogHeaders(); logListState.clear(); context?.showToast("All logs cleared") } }, {})
         light.show("Are you sure you want to clear all logs?")
     }
 
+    private suspend fun deleteAllLogHeaders() {
+        val headers = repository.pullLogHeaders()
+        for (header in headers) repository.deleteLog(header.date)
+    }
+
     private fun clearSelectedDayLog() {
-        val header = LogHeader(selectedDate)
-        if (mMainActivity.mLogHeaders.indexOf(header) == -1) return
-        mMainActivity.mLogHeaders.remove(header)
-        lifecycleScope.launch { mMainActivity.repository.deleteLog(selectedDate) }
-        logListState.clear()
+        lifecycleScope.launch { try { repository.deleteLog(selectedDate) } catch (_: Exception) {} ; logListState.clear() }
     }
 
     private fun onMoveFromMenu(date: Int) {
-        val header = LogHeader(date)
-        if (mMainActivity.mLogHeaders.indexOf(header) == -1) {
-            mMainActivity.showToast("Cannot move empty log")
-            return
-        }
-        showDatePicker(date)
+        lifecycleScope.launch { doCheckAndShowPicker(date) }
     }
 
     private fun onMoveDayConfirmed(date: Int) {
-        val header = LogHeader(date)
-        if (mMainActivity.mLogHeaders.indexOf(header) == -1) {
-            mMainActivity.showToast("Cannot move empty log")
-            return
-        }
-        showDatePicker(date)
+        lifecycleScope.launch { doCheckAndShowPicker(date) }
+    }
+
+    private suspend fun doCheckAndShowPicker(date: Int) {
+        val hasLog = try { repository.pullLogHeaders().any { it.date == date } } catch (_: Exception) { false }
+        if (hasLog) showDatePicker(date) else context?.showToast("Cannot move empty log")
     }
 
     private fun showDatePicker(originalDate: Int) {
-        // Seed the picker with the log's OWN date, not today's - the menu item
-        // names that date, so opening on today contradicts what was tapped.
         val dateStr = originalDate.toString()
         val year = dateStr.substring(0, 4).toIntOrNull() ?: 2026
         val month = dateStr.substring(4, 6).toIntOrNull()?.minus(1) ?: 0
         val dayOfMonth = dateStr.substring(6, 8).toIntOrNull() ?: 1
 
-        val dp = DatePickerDialog(
-            requireContext(),
-            { _, newYear, newMonth, newDay ->
-                val logDate = converter.yearMonthDayTo8DigitString(newYear, newMonth, newDay).toInt()
-
-                val oldHeader = LogHeader(originalDate)
-                val testHeader = LogHeader(logDate)
-
-                when {
-                    mMainActivity.mLogHeaders.contains(testHeader) -> showOverrideDialog(oldHeader, logDate)
-                    else -> moveToNewDate(oldHeader, logDate)
-                }
-            },
-            year,
-            month,
-            dayOfMonth
-        )
-
-        dp.setTitle("Move Log On $originalDate")
+        DatePickerDialog(requireContext(), { _, newYear, newMonth, newDay ->
+            val logDate = converter.yearMonthDayTo8DigitString(newYear, newMonth, newDay).toInt()
+            doMoveLog(originalDate, logDate)
+        }, year, month, dayOfMonth).apply { setTitle("Move Log On $originalDate"); show() }
     }
 
-    private fun showOverrideDialog(oldHeader: LogHeader, newDate: Int) {
-        val existing = mMainActivity.mLogHeaders.find { it.date == newDate } ?: return
-        val dialog = SimpleDialog(requireContext(), requireActivity().layoutInflater)
+    private fun doMoveLog(oldDate: Int, newDate: Int) {
+        lifecycleScope.launch {
+            val headers = repository.pullLogHeaders()
+            val oldHeader = headers.find { it.date == oldDate } ?: run { context?.showToast("Cannot move empty log"); return@launch }
+            when (val existingAtNewDate = headers.find { it.date == newDate }) {
+                null -> doDoMove(oldHeader, newDate)
+                else -> doShowOverrideDialog(oldHeader, newDate, existingAtNewDate)
+            }
+        }
+    }
+
+    private suspend fun doDoMove(oldHeader: LogHeader, newDate: Int) {
+        repository.insertRowInLogTable(newDate, oldHeader.bac, oldHeader.duration)
+        repository.changeLogDate(oldHeader.date, newDate)
+        logListState.clear()
+        context?.showToast("Log moved")
+    }
+
+    private suspend fun doShowOverrideDialog(oldHeader: LogHeader, newDate: Int, existing: LogHeader) {
+        val dialog = SimpleDialog(requireContext(), (requireActivity() as? android.app.Activity)?.layoutInflater ?: layoutInflater)
         dialog.setTitle(resources.getString(R.string.update_log))
         dialog.setBody("There is already a log on ${existing.monthName} ${existing.day},\n" +
                 "${existing.year}. Would you like to update the old log?")
         dialog.setNegativeButtonText(resources.getString(R.string.cancel))
-        dialog.setNegativeFunction { dialog.dismiss() }
+        dialog.setNegativeFunction { _ -> /* Auto-dismissed */ }
         dialog.setPositiveButtonText(resources.getString(R.string.update))
-        dialog.setPositiveFunction {
-            val oldLogIndex = mMainActivity.mLogHeaders.indexOf(oldHeader)
-            if (oldLogIndex >= 0) {
-                mMainActivity.mLogHeaders.add(LogHeader(newDate, existing.bac, oldHeader.duration))
-                lifecycleScope.launch {
-                    mMainActivity.repository.deleteLog(newDate)
-                    mMainActivity.repository.changeLogDate(oldHeader.date, newDate)
-                }
-                mMainActivity.mLogHeaders.removeAt(oldLogIndex)
-            }
+        val thisOldHeader = oldHeader; val thisNewDate = newDate; val thisExisting = existing
+        dialog.setPositiveFunction { _ ->
+            context?.showToast("Log on ${thisExisting.monthName} ${thisExisting.day}, ${thisExisting.year} was updated")
+            lifecycleScope.launch { repository.deleteLog(thisNewDate); repository.changeLogDate(thisOldHeader.date, thisNewDate); logListState.clear() }
+        }
+    }
+
+    private suspend fun loadLogData(date: Int) {
+        runCatching {
             logListState.clear()
-            val toast = "Log on ${existing.monthName} ${existing.day}, ${existing.year} was updated"
-            mMainActivity.showToast(toast)
-            dialog.dismiss()
-        }
-    }
-
-    private fun moveToNewDate(oldHeader: LogHeader, newDate: Int) {
-        mMainActivity.mLogHeaders.add(LogHeader(newDate, oldHeader.bac, oldHeader.duration))
-        lifecycleScope.launch { mMainActivity.repository.changeLogDate(oldHeader.date, newDate) }
-        mMainActivity.mLogHeaders.remove(oldHeader)
-        logListState.clear()
-    }
-
-    private fun loadLogData(date: Int) {
-        logListState.clear()
-        val headerIndex = mMainActivity.mLogHeaders.indexOf(LogHeader(date))
-        if (headerIndex >= 0) {
-            val header = mMainActivity.mLogHeaders[headerIndex]
-            logListState.add(LogItem.Header(header))
-            lifecycleScope.launch {
-                runCatching {
-                    mMainActivity.repository.getLoggedDrinks(header.date).forEach { drink ->
-                        logListState.add(LogItem.Drink(drink))
-                    }
-                }.getOrDefault(Unit)
+            val headers = repository.pullLogHeaders()
+            val headerIndex = headers.indexOf(LogHeader(date))
+            if (headerIndex >= 0) {
+                val header = headers[headerIndex]
+                logListState.add(LogItem.Header(header))
+                val drinks = repository.getLoggedDrinks(header.date)
+                for (drink in drinks) logListState.add(LogItem.Drink(drink))
+            } else {
+                logListState.add(LogItem.Header(LogHeader(date)))
             }
-        } else {
-            logListState.add(LogItem.Header(LogHeader(date)))
-        }
+        }.getOrDefault(Unit)
     }
 }
