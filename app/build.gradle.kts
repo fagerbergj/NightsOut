@@ -67,4 +67,5 @@ dependencies {
     debugImplementation(libs.ui.tooling.preview)
     debugImplementation(libs.ui.test.manifest)
     implementation(libs.lifecycle.viewmodel.compose)
+    implementation("androidx.compose.material:material-icons-extended:1.7.8")
 }

@@ -1,5 +1,6 @@
 package com.wit.jasonfagerberg.nightsout.manageDB
 
+import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
 import androidx.compose.ui.platform.ComposeView
 import androidx.lifecycle.ViewModel
@@ -9,6 +10,7 @@ import com.wit.jasonfagerberg.nightsout.R
 import com.wit.jasonfagerberg.nightsout.database.NightsOutRepository
 import com.wit.jasonfagerberg.nightsout.main.NightsOutActivity
 import com.wit.jasonfagerberg.nightsout.manageDB.ui.ManageDBScreen
+import com.wit.jasonfagerberg.nightsout.manageDB.ui.ManageDBViewModel
 import com.wit.jasonfagerberg.nightsout.models.Drink
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
@@ -23,10 +25,10 @@ class ManageDBActivity : NightsOutActivity() {
         val factory = ManageDBViewModelFactory(repository)
         setContentView(ComposeView(this).apply {
             setContent {
-                ManageDBScreen(viewModel(factory = factory), ::onBack, ::onDeleteConfirmed)
+                ManageDBScreen(ManageDBViewModel(repository), ::onBack, ::onDeleteConfirmed)
             }
         })
-        _viewModel = viewModel(factory = factory)
+        _viewModel = ManageDBViewModel(repository)
     }
 
     private fun onBack() {

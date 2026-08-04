@@ -8,6 +8,8 @@ import com.wit.jasonfagerberg.nightsout.models.Drink
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.util.UUID
 
@@ -48,7 +50,7 @@ class ManageDBViewModel(
 
     val filteredDrinks: StateFlow<List<Drink>> = combine(_searchQuery, _allDrinks) { query, drinks ->
         if (query.isEmpty()) drinks else drinks.filter { it.name.contains(query, ignoreCase = true) }
-    }
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
     val searchQuery: StateFlow<String> get() = _searchQuery
 
