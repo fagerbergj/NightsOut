@@ -45,6 +45,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.wit.jasonfagerberg.nightsout.R
 import com.wit.jasonfagerberg.nightsout.models.Drink
+import com.wit.jasonfagerberg.nightsout.ui.theme.ThemeShades
 import java.util.UUID
 
 /** Main ManageDB Compose screen: toolbar, search bar, drink list, clean/reset buttons. */
@@ -82,9 +83,9 @@ fun ManageDBScreen(
                     modifier = Modifier.weight(1f),
                     decorationBox = { innerTextField ->
                         Box(Modifier.fillMaxWidth()
-                            .background(Color.LightGray.copy(alpha = 0.4f), MaterialTheme.shapes.medium)
+                            .background(ThemeShades.SearchBarBg, MaterialTheme.shapes.medium)
                             .padding(horizontal = 16.dp, vertical = 10.dp)) {
-                            if (searchQuery.isEmpty()) Text(stringResource(R.string.search), style = MaterialTheme.typography.bodyMedium, color = Color.Gray)
+           if (searchQuery.isEmpty()) Text(stringResource(R.string.search), style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
                             innerTextField()
                         }
                     })
@@ -94,8 +95,8 @@ fun ManageDBScreen(
             LazyColumn(Modifier.weight(1f)) {
                 itemsIndexed(drinks) { idx: Int, drink: Drink ->
                     ManageDBDrinkListItem(drink, viewModel, suggestedIds, onDeleteConfirmed)
-                    if (idx < drinks.size - 1) HorizontalDivider(
-                        Modifier.padding(horizontal = 16.dp), color = Color.LightGray.copy(alpha = 0.5f))
+                         if (idx < drinks.size - 1) HorizontalDivider(
+                Modifier.padding(horizontal = 16.dp), color = ThemeShades.ListDivider)
                 }
             }
 
@@ -109,7 +110,7 @@ fun ManageDBScreen(
             // Reset DB button
             Row(Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 4.dp), horizontalArrangement = Arrangement.End) {
                 androidx.compose.material3.TextButton(onClick = { showResetDialog(context, viewModel) }) {
-                    Text(stringResource(id = R.string.reset_db), color = Color.Red)
+                              Text(stringResource(id = R.string.reset_db), color = MaterialTheme.colorScheme.error)
                 }
             }
         }

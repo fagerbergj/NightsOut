@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.wit.jasonfagerberg.nightsout.models.Drink
+import com.wit.jasonfagerberg.nightsout.ui.theme.ThemeShades
 
 @Composable
 fun DrinkCard(drink: Drink) {
@@ -50,7 +51,7 @@ fun LogHeaderRow(logHeader: com.wit.jasonfagerberg.nightsout.models.LogHeader) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .background(Color(0xFF40C4FF))
+            .background(ThemeShades.LightBlueHeader)
             .padding(horizontal = 8.dp, vertical = 4.dp),
         contentAlignment = Alignment.Center
     ) {
@@ -58,19 +59,19 @@ fun LogHeaderRow(logHeader: com.wit.jasonfagerberg.nightsout.models.LogHeader) {
             Text(
                 text = logHeader.dateString,
                 style = MaterialTheme.typography.bodyLarge,
-                color = Color.White
+                color = MaterialTheme.colorScheme.onSurface
             )
             Row {
                 Text(
                     text = "Duration: ${logHeader.durationString}",
                     style = MaterialTheme.typography.bodyMedium,
-                    color = Color.White,
+                    color = MaterialTheme.colorScheme.onSurface,
                     modifier = Modifier.weight(1f)
                 )
                 Text(
                     text = "Bac: ${"%.3f".format(logHeader.bac)}",
                     style = MaterialTheme.typography.bodyMedium,
-                    color = Color.White,
+                    color = MaterialTheme.colorScheme.onSurface,
                     modifier = Modifier.weight(1f)
                 )
             }

@@ -25,6 +25,8 @@ import com.wit.jasonfagerberg.nightsout.home.BacState
 import com.wit.jasonfagerberg.nightsout.home.TimeSettings
 import com.wit.jasonfagerberg.nightsout.home.HomeViewModel
 import com.wit.jasonfagerberg.nightsout.models.Drink
+import com.wit.jasonfagerberg.nightsout.ui.theme.BacStateColors
+import com.wit.jasonfagerberg.nightsout.ui.theme.ThemeShades
 import java.util.Calendar
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -140,7 +142,7 @@ fun HomeScreen(
             ) {
                 Text(
                     text = stringResource(R.string.no_drinks_yet),
-                    style = MaterialTheme.typography.bodyLarge.copy(color = Color.Gray)
+                    style = MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.colorScheme.onSurfaceVariant)
                 )
             }
         } else {
@@ -184,10 +186,10 @@ fun DrinkListItem(
         state = dismissState,
         backgroundContent = {
             Box(
-                modifier = Modifier.fillMaxSize().background(Color.Red.copy(alpha = 0.7f)),
+                modifier = Modifier.fillMaxSize().background(ThemeShades.DeleteSwipe),
                 contentAlignment = Alignment.Center
             ) {
-                Text(text = "Delete", color = Color.White, style = MaterialTheme.typography.bodyLarge)
+                Text(text = "Delete", color = MaterialTheme.colorScheme.onPrimary, style = MaterialTheme.typography.bodyLarge)
             }
         },
         enableDismissFromStartToEnd = true,
@@ -300,11 +302,11 @@ fun BacReadout(
     }
 
     val bacColor = when (bacState) {
-        BacState.Dead, BacState.InDanger -> Color(0xFF000000)
-        BacState.ShitFaced -> Color(0xFFF44336)
-        BacState.Drunk -> Color(0xFFFF9800)
-        BacState.Tipsy -> Color(0xFFCDDC39)
-        BacState.Sober -> Color(0xFF4CAF50)
+        BacState.Dead, BacState.InDanger -> BacStateColors.Dead
+        BacState.ShitFaced -> BacStateColors.ShitFaced
+        BacState.Drunk -> BacStateColors.Drunk
+        BacState.Tipsy -> BacStateColors.Tipsy
+        BacState.Sober -> BacStateColors.Sober
     }
 
     Row(

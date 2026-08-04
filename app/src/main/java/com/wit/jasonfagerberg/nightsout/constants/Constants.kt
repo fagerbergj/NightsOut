@@ -55,6 +55,7 @@ class Constants {
             const val DONT_SHOW_BAC_NOTIFICATION = "dontShowCurrentBacNotification"
             const val SHOW_BAC_NOTIFICATION = "showCurrentBacNotification"
             const val ACTIVE_THEME = "activeTheme"
+            const val ACTIVE_THEME_MODE = "active_theme_mode"
             const val PROFILE_SEX = "profileSex"
             const val PROFILE_WEIGHT = "profileWeight"
             const val PROFILE_WEIGHT_MEASUREMENT = "profileWeightMeasurement"

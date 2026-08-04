@@ -21,8 +21,11 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.wit.jasonfagerberg.nightsout.R
 import com.wit.jasonfagerberg.nightsout.database.NightsOutRepository
 import com.wit.jasonfagerberg.nightsout.dialogs.SimpleDialog
+import com.wit.jasonfagerberg.nightsout.constants.Constants
 import com.wit.jasonfagerberg.nightsout.log.ui.LogCalendarScreen
 import com.wit.jasonfagerberg.nightsout.log.ui.LogItem
+import com.wit.jasonfagerberg.nightsout.settings.SettingsShim
+import com.wit.jasonfagerberg.nightsout.ui.theme.NightsOutTheme
 import com.wit.jasonfagerberg.nightsout.models.LogHeader
 import com.wit.jasonfagerberg.nightsout.profile.showToast
 import com.wit.jasonfagerberg.nightsout.utils.Converter
@@ -46,12 +49,15 @@ class LogFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         setHasOptionsMenu(true)
-        val composeView = ComposeView(requireContext()).apply {
+        val themeMode = runCatching { SettingsShim(requireContext()).getString(Constants.PREFERENCE.ACTIVE_THEME_MODE, "light") }.getOrDefault("light")
+         val composeView = ComposeView(requireContext()).apply {
             setContent {
-                LogCalendarScreen(
-                    logList = logListState, selectedDate = selectedDate,
-                    onMoveDayRequested = ::onMoveDayConfirmed
-                )
+                NightsOutTheme(darkMode = themeMode == "dark") {
+                    LogCalendarScreen(
+                        logList = logListState, selectedDate = selectedDate,
+                        onMoveDayRequested = ::onMoveDayConfirmed
+                    )
+                }
             }
         }
 
