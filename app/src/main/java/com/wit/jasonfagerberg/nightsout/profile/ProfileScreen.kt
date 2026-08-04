@@ -105,7 +105,7 @@ fun ProfileScreen(viewModel: ProfileViewModel) {
                 _SexRow(uiState, viewModel)
                 Spacer(modifier = Modifier.height(24.dp))
                 _WeightRow(uiState, viewModel)
-      Spacer(modifier = Modifier.height(32.dp))
+                Spacer(modifier = Modifier.height(32.dp))
                 HorizontalDivider(color = ThemeShades.DividerGray, modifier = Modifier.fillMaxWidth())
                 Spacer(modifier = Modifier.height(16.dp))
                _FavoritesHeader(ctx)
@@ -133,7 +133,7 @@ fun ProfileScreen(viewModel: ProfileViewModel) {
                     onClick = { viewModel.saveProfile(ctx) },
                     modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp).padding(horizontal = 16.dp),
                 ) {
-                                   Text(ctx.getString(R.string.save_profile), color = ThemeShades.ButtonActiveRed)
+                     Text(ctx.getString(R.string.save_profile), color = ThemeShades.ButtonActiveRed)
                 }
             }
         }

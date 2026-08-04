@@ -116,7 +116,7 @@ private val BlueGrayColor = Color(0xFFB0BEC5)
                         modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)
                     ) {
                         IconButton(onClick = viewModel::toggleFavorite) {
-                          Text(
+                            Text(
                                 if (uiState.favorited) "\uD83D\uDC96" else "\u2661",
                                 fontSize = 28.sp,
                                 color = if (uiState.favorited) StatusColors.LightRedColor else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
@@ -126,9 +126,9 @@ private val BlueGrayColor = Color(0xFFB0BEC5)
                     Button(
                         onClick = { viewModel.submitDrinkAsync() },
                         modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
-                         colors = ButtonDefaults.buttonColors(containerColor = if (uiState.favorited) StatusColors.LightRedColor else StatusColors.GreenColor)
-                    ) { 
-                        Text(if (uiState.favorited) stringResource(R.string.add_and_favorite) else stringResource(R.string.add), fontSize = 18.sp) 
+                        colors = ButtonDefaults.buttonColors(containerColor = if (uiState.favorited) StatusColors.LightRedColor else StatusColors.GreenColor)
+                    ) {
+                        Text(if (uiState.favorited) stringResource(R.string.add_and_favorite) else stringResource(R.string.add), fontSize = 18.sp)
                     }
                 }
             }

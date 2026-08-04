@@ -50,7 +50,7 @@ class LogFragment : Fragment() {
     ): View {
         setHasOptionsMenu(true)
         val themeMode = runCatching { SettingsShim(requireContext()).getString(Constants.PREFERENCE.ACTIVE_THEME_MODE, "light") }.getOrDefault("light")
-         val composeView = ComposeView(requireContext()).apply {
+        val composeView = ComposeView(requireContext()).apply {
             setContent {
                 NightsOutTheme(darkMode = themeMode == "dark") {
                     LogCalendarScreen(

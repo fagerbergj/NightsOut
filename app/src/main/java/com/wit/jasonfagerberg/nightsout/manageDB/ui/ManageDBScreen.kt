@@ -37,7 +37,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -85,8 +84,8 @@ fun ManageDBScreen(
                         Box(Modifier.fillMaxWidth()
                             .background(ThemeShades.SearchBarBg, MaterialTheme.shapes.medium)
                             .padding(horizontal = 16.dp, vertical = 10.dp)) {
-           if (searchQuery.isEmpty()) Text(stringResource(R.string.search), style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                            innerTextField()
+                                if (searchQuery.isEmpty()) Text(stringResource(R.string.search), style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                                    innerTextField()
                         }
                     })
             }
