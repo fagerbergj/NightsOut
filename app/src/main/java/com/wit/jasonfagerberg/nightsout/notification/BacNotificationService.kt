@@ -92,13 +92,8 @@ class BacNotificationService : Service() {
                             Triple(title, body, false)
                         }
 
-                        val currentActivity = (applicationContext as NightsOutApplication).mCurrentActivity
-
-                        if (currentActivity is MainActivity && currentActivity.homeFragment.isResumed) {
-                            currentActivity.showToast("End time updated by notification")
-                            currentActivity.setPreference(endTimeMin = endTime)
-                            currentActivity.homeFragment.refreshBacFromTimeChange()
-                        }
+                        // ponytail: skip direct UI update from background service — the home viewmodel
+                        // will sync from SettingsShim on next resume when BAC is recalculated.
                     }
                 }
             }
