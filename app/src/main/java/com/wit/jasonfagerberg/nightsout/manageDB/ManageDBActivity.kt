@@ -1,140 +1,74 @@
 package com.wit.jasonfagerberg.nightsout.manageDB
 
-import android.app.NotificationManager
-import android.content.Context
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuItem
+import androidx.appcompat.app.AlertDialog
+import androidx.compose.ui.platform.ComposeView
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.wit.jasonfagerberg.nightsout.R
 import com.wit.jasonfagerberg.nightsout.database.NightsOutRepository
-import com.wit.jasonfagerberg.nightsout.dialogs.LightSimpleDialog
-import com.wit.jasonfagerberg.nightsout.models.Drink
 import com.wit.jasonfagerberg.nightsout.main.NightsOutActivity
-import androidx.appcompat.widget.SearchView
-import kotlinx.coroutines.Job
+import com.wit.jasonfagerberg.nightsout.manageDB.ui.ManageDBScreen
+import com.wit.jasonfagerberg.nightsout.manageDB.ui.ManageDBViewModel
+import com.wit.jasonfagerberg.nightsout.models.Drink
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 
 class ManageDBActivity : NightsOutActivity() {
-    private lateinit var mDrinkListAdapter: ManageDBDrinkListAdapter
-    val mDrinksList: ArrayList<Drink> = ArrayList()
-    val repository: NightsOutRepository by inject()
-    private var searchJob: Job? = null
+
+    private val repository: NightsOutRepository by inject()
+    private var _viewModel: ManageDBViewModel? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_manage_db)
+        val factory = ManageDBViewModelFactory(repository)
+        setContentView(ComposeView(this).apply {
+            setContent {
+                ManageDBScreen(ManageDBViewModel(repository), ::onBack, ::onDeleteConfirmed)
+            }
+        })
+        _viewModel = ManageDBViewModel(repository)
+    }
+
+    private fun onBack() {
+        onBackPressedDispatcher.onBackPressed()
+    }
+
+    /** Handles async delete: computes reference-loss string then shows alert dialog. */
+    private fun onDeleteConfirmed(drink: Drink) {
         lifecycleScope.launch {
-            mDrinksList.clear()
-            mDrinksList.addAll(repository.getSuggestedDrinks("", true))
-            if (::mDrinkListAdapter.isInitialized) mDrinkListAdapter.notifyDataSetChanged()
+            val vm = _viewModel!!
+            val loss = vm.getLostReferenceString(drink)
+            AlertDialog.Builder(this@ManageDBActivity).run {
+                setTitle(getString(R.string.delete_drink))
+                setMessage(
+                    getString(R.string.delete_drink) + " \"" + drink.name + "\" from database, " +
+                            "this will remove all references to the drink.\n\nReferences Lost:\n" + loss
+                )
+                setPositiveButton(getString(R.string.yes)) { _, _ -> vm.deleteDrink(drink) }
+                setNegativeButton(getString(R.string.no), null)
+                show()
+            }
         }
     }
 
     override fun onStart() {
-        setupToolbar()
-        setupRecycler()
-        super.onStart()
-    }
-
-    private fun setupToolbar() {
         supportActionBar?.title = "Manage Database"
-        // adds back button to action bar
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
         supportActionBar?.setHomeAsUpIndicator(R.drawable.arrow_back_white_24dp)
+        super.onStart()
     }
+}
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.manage_db_menu, menu)
-        val searchItem = menu!!.findItem(R.id.btn_search)
-        val searchView = searchItem.actionView as SearchView
-        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextChange(newText: String): Boolean {
-                searchJob?.cancel()
-                searchJob = lifecycleScope.launch {
-                    mDrinksList.clear()
-                    mDrinksList.addAll(repository.getSuggestedDrinks(newText, true))
-                    mDrinkListAdapter.notifyDataSetChanged()
-                }
-                return true
-            }
-
-            override fun onQueryTextSubmit(query: String): Boolean {
-                return true
-            }
-        })
-        return super.onCreateOptionsMenu(menu)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.btn_reset_db -> {
-                val dialog = LightSimpleDialog(this)
-                val posAction: () -> Unit = {
-                    lifecycleScope.launch {
-                        repository.resetDatabase(this@ManageDBActivity)
-
-                        mDrinksList.clear()
-                        mDrinksList.addAll(repository.getSuggestedDrinks("", true))
-                        mDrinkListAdapter.notifyDataSetChanged()
-                        (getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).cancelAll()
-                    }
-                }
-                dialog.setActions(posAction, {})
-                dialog.show("Are you sure? You will lose everything.")
-            }
-            R.id.btn_clean_db -> {
-                val dialog = LightSimpleDialog(this)
-                dialog.setActions({ deleteDrinksWithNoReference() }, {})
-                dialog.show("Are you sure you want to clean your database? This will permanently delete all drinks:" +
-                        "\n    Not Currently in Use\n    Not in Favorited\n    Not Recently Used\n    Not Logged")
-            }
-            android.R.id.home -> {
-                onBackPressed()
-            }
+/** Factory for ManageDBViewModel since it has a non-default constructor. */
+class ManageDBViewModelFactory(private val repository: NightsOutRepository) : ViewModelProvider.Factory {
+    @Suppress("UNCHECKED_CAST")
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        if (modelClass.isAssignableFrom(ManageDBViewModel::class.java)) {
+            return ManageDBViewModel(repository) as T
         }
-        return super.onOptionsItemSelected(item)
-    }
-
-    private fun deleteDrinksWithNoReference() {
-        lifecycleScope.launch {
-            var size = mDrinksList.size
-            var offset = 0
-            for (position in 0 until size) {
-                val drink = mDrinksList[position - offset]
-                val loss = mDrinkListAdapter.getLostReferenceString(drink)
-                if (loss.isEmpty()) {
-                    repository.deleteDrinkById(drink.id)
-                    mDrinksList.removeAt(position - offset)
-                    mDrinkListAdapter.notifyItemRemoved(position - offset)
-                    mDrinkListAdapter.notifyItemRangeChanged(position - offset, mDrinksList.size)
-                    size --
-                    offset ++
-                }
-            }
-            showToast("$offset drinks deleted from database")
-        }
-    }
-
-    private fun setupRecycler() {
-        // mDrinkList recycler view setup
-        val drinksListView: RecyclerView = findViewById(R.id.recycler_manage_db_list)
-        val linearLayoutManager = LinearLayoutManager(this)
-        linearLayoutManager.orientation = RecyclerView.VERTICAL
-        drinksListView.layoutManager = linearLayoutManager
-
-        val itemDecor = DividerItemDecoration(drinksListView.context, DividerItemDecoration.VERTICAL)
-        drinksListView.addItemDecoration(itemDecor)
-
-        // set adapter
-        mDrinkListAdapter = ManageDBDrinkListAdapter(this, mDrinksList)
-        // update list
-        drinksListView.adapter = mDrinkListAdapter // Update display with new list
-        drinksListView.layoutManager!!.scrollToPosition(mDrinksList.size - 1) // Nav to end of list
+        throw IllegalArgumentException("Unknown ViewModel class")
     }
 }
