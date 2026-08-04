@@ -130,6 +130,10 @@ class AddDrinkViewModel(
         _uiState.value = _uiState.value.copy(measurement = measurement, inputErrors = emptyList())
     }
 
+    fun setFavorited(favorite: Boolean) {
+        _uiState.value = _uiState.value.copy(favorited = favorite)
+    }
+
     fun toggleFavorite() {
         _uiState.value = _uiState.value.copy(favorited = !_uiState.value.favorited)
     }

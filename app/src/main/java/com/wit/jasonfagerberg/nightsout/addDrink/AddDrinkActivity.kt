@@ -37,6 +37,11 @@ class AddDrinkActivity : ComponentActivity() {
             startActivity(intent)
         }
 
+        if (isFavorited) {
+            viewModel.setFavorited(true)
+        }
+        viewModel.setVolumeMeasurementLocale()
+
         setContent {
             AddDrinkScreen(viewModel)
         }
