@@ -11,6 +11,7 @@ import com.wit.jasonfagerberg.nightsout.database.NightsOutDatabase
 import com.wit.jasonfagerberg.nightsout.database.NightsOutRepository
 import com.wit.jasonfagerberg.nightsout.database.UuidMigration
 import com.wit.jasonfagerberg.nightsout.home.HomeViewModel
+import com.wit.jasonfagerberg.nightsout.manageDB.ui.ManageDBViewModel
 import com.wit.jasonfagerberg.nightsout.profile.ProfileViewModel
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -33,7 +34,8 @@ val appModule = module {
     }
     single { get<NightsOutDatabase>().drinkDao() }
     single { get<NightsOutDatabase>().logDao() }
-    single { NightsOutRepository(get(), get(), get()) }
+    single { NightsOutRepository(get(), get(), get(), androidContext()) }
     viewModel { HomeViewModel(get()) }
     viewModel { ProfileViewModel(get()) }
+    viewModel { ManageDBViewModel(get()) }
 }

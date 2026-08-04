@@ -13,8 +13,12 @@ import kotlinx.coroutines.sync.withLock
 class NightsOutRepository(
     private val db: NightsOutDatabase,
     private val drinkDao: DrinkDao,
-    private val logDao: LogDao
+    private val logDao: LogDao,
+    appContext: Context
 ) {
+    // Kept as a field so resetDatabase() (a suspend function, no Context param needed) can
+    // access it without the Activity having to pass its own Context every time.
+    private val applicationContext = appContext.applicationContext
     // Serializes every DB-touching call against resetDatabase(): Room reopens its connection
     // lazily after close(), so a DAO call racing the file swap in resetDatabase() would either
     // hit a closed database or read a half-copied file without this.
@@ -242,13 +246,29 @@ class NightsOutRepository(
         logDao.countLogDrinksById(id.toString()) != 0
     }
 
-    // ManageDB reset: replace the live file with the pre-populated asset. Held under dbMutex so
-    // no other DAO call can observe the database between close() and the file being rewritten;
-    // Room reopens (and re-adopts) lazily on the next DAO call once the lock is released.
+   // Legacy reset with external Context (used by pre-Compose code paths).
     suspend fun resetDatabase(context: Context) = dbMutex.withLock {
+        doReset(
+            readAsset = { context.assets.open(it) },
+            writeDest = { context.getDatabasePath(it).outputStream() }
+        )
+    }
+
+    // Compose-compatible reset that uses internally injected app context.
+    suspend fun resetDatabase() = dbMutex.withLock {
+        doReset(
+            readAsset = { applicationContext.assets.open(it) },
+            writeDest = { applicationContext.getDatabasePath(it).outputStream() }
+        )
+    }
+
+    private inline fun doReset(
+        crossinline readAsset: (String) -> java.io.InputStream,
+        crossinline writeDest: (String) -> java.io.OutputStream
+    ) {
         db.close()
-        context.assets.open(Constants.DB_NAME).use { input ->
-            context.getDatabasePath(Constants.DB_NAME).outputStream().use { output ->
+        readAsset(Constants.DB_NAME).use { input ->
+            writeDest(Constants.DB_NAME).use { output ->
                 input.copyTo(output)
             }
         }
