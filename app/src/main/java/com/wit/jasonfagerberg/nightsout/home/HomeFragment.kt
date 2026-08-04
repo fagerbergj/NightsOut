@@ -26,6 +26,7 @@ import com.wit.jasonfagerberg.nightsout.home.ui.HomeScreen
 import com.wit.jasonfagerberg.nightsout.main.MainActivity
 import com.wit.jasonfagerberg.nightsout.manageDB.ManageDBActivity
 import com.wit.jasonfagerberg.nightsout.models.LogHeader
+import com.wit.jasonfagerberg.nightsout.ui.theme.NightsOutTheme
 import com.wit.jasonfagerberg.nightsout.profile.showToast
 import com.wit.jasonfagerberg.nightsout.settings.SettingsShim
 import com.wit.jasonfagerberg.nightsout.utils.Converter
@@ -59,13 +60,16 @@ class HomeFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
+        val themeMode = runCatching { settingsShim.getString(Constants.PREFERENCE.ACTIVE_THEME_MODE, "light") }.getOrDefault("light")
         val composeView = ComposeView(requireContext()).apply {
             setContent {
-                HomeScreen(
-                    viewModel = homeViewModel!!,
-                    onAddDrinkClicked = { homeViewModel!!.onAddDrinkClicked(requireContext()) },
-                    onDrinksLoadFailed = { context?.showToast("Couldn't load your drinks - try reopening the app", true) }
-                )
+                NightsOutTheme(darkMode = themeMode == "dark") {
+                    HomeScreen(
+                        viewModel = homeViewModel!!,
+                        onAddDrinkClicked = { homeViewModel!!.onAddDrinkClicked(requireContext()) },
+                        onDrinksLoadFailed = { context?.showToast("Couldn't load your drinks - try reopening the app", true) }
+                    )
+                }
             }
         }
 

@@ -45,6 +45,7 @@ import androidx.compose.ui.unit.dp
 import com.wit.jasonfagerberg.nightsout.R
 import com.wit.jasonfagerberg.nightsout.dialogs.LightSimpleDialog
 import com.wit.jasonfagerberg.nightsout.models.Drink
+import com.wit.jasonfagerberg.nightsout.ui.theme.ThemeShades
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -105,11 +106,11 @@ fun ProfileScreen(viewModel: ProfileViewModel) {
                 Spacer(modifier = Modifier.height(24.dp))
                 _WeightRow(uiState, viewModel)
                 Spacer(modifier = Modifier.height(32.dp))
-                HorizontalDivider(color = Color(0xFFCFD8DC), modifier = Modifier.fillMaxWidth())
+                HorizontalDivider(color = ThemeShades.DividerGray, modifier = Modifier.fillMaxWidth())
                 Spacer(modifier = Modifier.height(16.dp))
-                _FavoritesHeader(ctx)
+               _FavoritesHeader(ctx)
 
-                HorizontalDivider(color = Color(0xFFCFD8DC), modifier = Modifier.fillMaxWidth())
+                HorizontalDivider(color = ThemeShades.DividerGray, modifier = Modifier.fillMaxWidth())
 
                 if (favoritesSnapshot.isEmpty()) {
                     TextButton(onClick = acts.onAddFavorite, modifier = Modifier.padding(vertical = 16.dp)) {
@@ -121,7 +122,7 @@ fun ProfileScreen(viewModel: ProfileViewModel) {
                         text = ctx.getString(R.string.no_favorite_drinks),
                         modifier = Modifier.fillMaxWidth().padding(vertical = 24.dp),
                         textAlign = TextAlign.Center,
-                        style = androidx.compose.material3.MaterialTheme.typography.bodyMedium.copy(color = Color.Gray)
+                      style = androidx.compose.material3.MaterialTheme.typography.bodyMedium.copy(color = MaterialTheme.colorScheme.onSurfaceVariant)
                     )
                 } else {
                     FavoritesRow(favoritesSnapshot) { drink -> _showRemoveDialog(ctx, acts, scope, drink, onFavoritesChanged) }
@@ -132,7 +133,7 @@ fun ProfileScreen(viewModel: ProfileViewModel) {
                     onClick = { viewModel.saveProfile(ctx) },
                     modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp).padding(horizontal = 16.dp),
                 ) {
-                    Text(ctx.getString(R.string.save_profile), color = Color(0xFF4CAF50))
+                     Text(ctx.getString(R.string.save_profile), color = ThemeShades.ButtonActiveRed)
                 }
             }
         }
@@ -157,7 +158,7 @@ private fun _SexRow(state: ProfileUiState, vm: ProfileViewModel) {
 @Composable
 private fun _SexButton(pressed: Boolean, label: String, onClick: () -> Unit) {
     OutlinedButton(onClick = onClick, modifier = Modifier.width(136.dp).height(60.dp)) {
-        val bgColor = if (pressed) Color(0xFFE57373) else Color(0xFFBDBDBD)
+         val bgColor = if (pressed) ThemeShades.ButtonActiveRed else ThemeShades.ButtonInactiveBg
         Box(modifier = Modifier.fillMaxSize().background(bgColor)) {
             Text(label, color = Color.White, modifier = Modifier.align(Alignment.Center))
         }
@@ -256,7 +257,7 @@ private fun _OverflowMenuButton(ctx: android.content.Context, acts: ProfileActio
 
 @Composable
 private fun _UnitChip(unit: String, selected: Boolean, onClick: () -> Unit) {
-    val bgColor = if (selected) Color(0xFFE57373) else Color(0xFFBDBDBD)
+    val bgColor = if (selected) ThemeShades.ButtonActiveRed else ThemeShades.ButtonInactiveBg
     OutlinedButton(onClick = onClick, modifier = Modifier.width(48.dp).height(32.dp)) {
         Box(modifier = Modifier.fillMaxSize().background(bgColor)) {
             Text(unit.uppercase(), color = Color.White, modifier = Modifier.align(Alignment.Center))

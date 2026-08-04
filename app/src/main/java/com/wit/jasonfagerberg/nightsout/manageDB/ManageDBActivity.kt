@@ -12,6 +12,9 @@ import com.wit.jasonfagerberg.nightsout.main.NightsOutActivity
 import com.wit.jasonfagerberg.nightsout.manageDB.ui.ManageDBScreen
 import com.wit.jasonfagerberg.nightsout.manageDB.ui.ManageDBViewModel
 import com.wit.jasonfagerberg.nightsout.models.Drink
+import com.wit.jasonfagerberg.nightsout.constants.Constants
+import com.wit.jasonfagerberg.nightsout.settings.SettingsShim
+import com.wit.jasonfagerberg.nightsout.ui.theme.NightsOutTheme
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 
@@ -22,10 +25,13 @@ class ManageDBActivity : NightsOutActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val themeMode = runCatching { SettingsShim(this).getString(Constants.PREFERENCE.ACTIVE_THEME_MODE, "light") }.getOrDefault("light")
         val factory = ManageDBViewModelFactory(repository)
         setContentView(ComposeView(this).apply {
             setContent {
-                ManageDBScreen(ManageDBViewModel(repository), ::onBack, ::onDeleteConfirmed)
+                NightsOutTheme(darkMode = themeMode == "dark") {
+                    ManageDBScreen(ManageDBViewModel(repository), ::onBack, ::onDeleteConfirmed)
+                }
             }
         })
         _viewModel = ManageDBViewModel(repository)

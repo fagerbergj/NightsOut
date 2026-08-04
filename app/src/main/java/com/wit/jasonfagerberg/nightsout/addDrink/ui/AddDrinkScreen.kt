@@ -29,6 +29,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -46,10 +47,9 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.wit.jasonfagerberg.nightsout.R
+import com.wit.jasonfagerberg.nightsout.ui.theme.StatusColors
 
 private val PrimaryColor = Color(0xFF2196F3)
-private val GreenColor = Color(0xFF4CAF50)
-private val LightRedColor = Color(0xFFF44336)
 private val BlueGrayColor = Color(0xFFB0BEC5)
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -119,16 +119,16 @@ private val BlueGrayColor = Color(0xFFB0BEC5)
                             Text(
                                 if (uiState.favorited) "\uD83D\uDC96" else "\u2661",
                                 fontSize = 28.sp,
-                                color = if (uiState.favorited) LightRedColor else Color.Gray
+                                color = if (uiState.favorited) StatusColors.LightRedColor else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
                             )
                         }
                     }
                     Button(
                         onClick = { viewModel.submitDrinkAsync() },
                         modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
-                        colors = ButtonDefaults.buttonColors(containerColor = if (uiState.favorited) LightRedColor else GreenColor)
-                    ) { 
-                        Text(if (uiState.favorited) stringResource(R.string.add_and_favorite) else stringResource(R.string.add), fontSize = 18.sp) 
+                        colors = ButtonDefaults.buttonColors(containerColor = if (uiState.favorited) StatusColors.LightRedColor else StatusColors.GreenColor)
+                    ) {
+                        Text(if (uiState.favorited) stringResource(R.string.add_and_favorite) else stringResource(R.string.add), fontSize = 18.sp)
                     }
                 }
             }

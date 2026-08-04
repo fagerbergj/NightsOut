@@ -16,6 +16,7 @@ import com.wit.jasonfagerberg.nightsout.database.NightsOutRepository
 import com.wit.jasonfagerberg.nightsout.main.MainActivity
 import com.wit.jasonfagerberg.nightsout.models.Drink
 import com.wit.jasonfagerberg.nightsout.settings.SettingsShim
+import com.wit.jasonfagerberg.nightsout.ui.theme.NightsOutTheme
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -60,8 +61,11 @@ class ProfileFragment : Fragment() {
                 lifecycleScope.launch { repository.deleteAllFavorites(); loadFavorites() }
             }
         )
+        val themeMode = runCatching { settingsShim.getString(Constants.PREFERENCE.ACTIVE_THEME_MODE, "light") }.getOrDefault("light")
         composeView.setContent {
-            CompositionLocalProvider(LocalProfileActions provides acts, content = { ProfileScreen(viewModel = profileViewModel) })
+            NightsOutTheme(darkMode = themeMode == "dark") {
+                CompositionLocalProvider(LocalProfileActions provides acts, content = { ProfileScreen(viewModel = profileViewModel) })
+            }
         }
     }
 

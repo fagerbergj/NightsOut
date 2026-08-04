@@ -17,6 +17,7 @@ object SettingsKeys {
     val DONT_SHOW_BAC_NOTIFICATION = booleanPreferencesKey(Constants.PREFERENCE.DONT_SHOW_BAC_NOTIFICATION)
     val SHOW_BAC_NOTIFICATION = booleanPreferencesKey(Constants.PREFERENCE.SHOW_BAC_NOTIFICATION)
     val ACTIVE_THEME = intPreferencesKey(Constants.PREFERENCE.ACTIVE_THEME)
+    val ACTIVE_THEME_MODE = stringPreferencesKey(Constants.PREFERENCE.ACTIVE_THEME_MODE)
     val PROFILE_SEX = booleanPreferencesKey(Constants.PREFERENCE.PROFILE_SEX)
     val PROFILE_WEIGHT = floatPreferencesKey(Constants.PREFERENCE.PROFILE_WEIGHT)
     val PROFILE_WEIGHT_MEASUREMENT = stringPreferencesKey(Constants.PREFERENCE.PROFILE_WEIGHT_MEASUREMENT)
