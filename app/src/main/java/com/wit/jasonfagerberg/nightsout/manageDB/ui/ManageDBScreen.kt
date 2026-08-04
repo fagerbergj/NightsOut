@@ -1,5 +1,7 @@
 package com.wit.jasonfagerberg.nightsout.manageDB.ui
 
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 import androidx.appcompat.app.AlertDialog
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -18,7 +20,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -38,6 +39,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.wit.jasonfagerberg.nightsout.R
 import com.wit.jasonfagerberg.nightsout.models.Drink
+import java.util.UUID
 
 /** Main ManageDB Compose screen: toolbar, search bar, drink list, clean/reset buttons. */
 @Composable
@@ -48,6 +50,7 @@ fun ManageDBScreen(
 ) {
     val drinks by viewModel.filteredDrinks.collectAsState()
     val searchQuery by viewModel.searchQuery.collectAsState()
+    val suggestedIds by viewModel.suggestedDrinkIds.collectAsState()
     val context = LocalContext.current
 
     Scaffold(
@@ -75,7 +78,7 @@ fun ManageDBScreen(
                         Box(Modifier.fillMaxWidth()
                             .background(Color.LightGray.copy(alpha = 0.4f), MaterialTheme.shapes.medium)
                             .padding(horizontal = 16.dp, vertical = 10.dp)) {
-                            if (searchQuery.isEmpty()) Text("Search", style = MaterialTheme.typography.bodyMedium, color = Color.Gray)
+                            if (searchQuery.isEmpty()) Text(stringResource(R.string.search), style = MaterialTheme.typography.bodyMedium, color = Color.Gray)
                             innerTextField()
                         }
                     })
@@ -84,7 +87,7 @@ fun ManageDBScreen(
             // Drink list
             LazyColumn(Modifier.weight(1f)) {
                 itemsIndexed(drinks) { idx: Int, drink: Drink ->
-                    ManageDBDrinkListItem(drink, viewModel, onDeleteConfirmed)
+                    ManageDBDrinkListItem(drink, viewModel, suggestedIds, onDeleteConfirmed)
                     if (idx < drinks.size - 1) HorizontalDivider(
                         Modifier.padding(horizontal = 16.dp), color = Color.LightGray.copy(alpha = 0.5f))
                 }
@@ -122,7 +125,7 @@ private fun showCleanDialog(ctx: android.content.Context, vm: ManageDBViewModel)
 
 private fun showResetDialog(ctx: android.content.Context, vm: ManageDBViewModel) {
     AlertDialog.Builder(ctx).run {
-        setMessage("Are you sure? You will lose everything.")
+        setMessage(ctx.getString(R.string.reset_db_confirmation))
         setPositiveButton(ctx.getString(R.string.yes)) { _, _ -> vm.resetDatabase() }
         setNegativeButton(ctx.getString(R.string.no), null)
         show()
@@ -131,7 +134,7 @@ private fun showResetDialog(ctx: android.content.Context, vm: ManageDBViewModel)
 
 /** Single drink row with name/abv/amount and trailing more-options menu. */
 @Composable
-private fun ManageDBDrinkListItem(drink: Drink, vm: ManageDBViewModel, onDeleteConfirmed: (Drink) -> Unit) {
+private fun ManageDBDrinkListItem(drink: Drink, vm: ManageDBViewModel, suggestedIds: Set<UUID>, onDeleteConfirmed: (Drink) -> Unit) {
     var expanded by mutableStateOf(false)
     val ctx = LocalContext.current
 
@@ -155,7 +158,7 @@ private fun ManageDBDrinkListItem(drink: Drink, vm: ManageDBViewModel, onDeleteC
                     else ctx.getString(R.string.favorite_drink)
                 DropdownMenuItem(text = { Text(favLabel) }, onClick = { vm.toggleFavorite(drink); expanded = false })
 
-                val dontSuggest = !drink.recent  // mirror original adapter's dontSuggest
+                val dontSuggest = drink.id !in suggestedIds
                 val sugLabel = if (dontSuggest) ctx.getString(R.string.show_auto_complete_suggestion)
                     else ctx.getString(R.string.hide_auto_complete_suggestion)
                 DropdownMenuItem(
