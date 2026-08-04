@@ -10,6 +10,7 @@ import com.wit.jasonfagerberg.nightsout.database.DatabaseAdoption
 import com.wit.jasonfagerberg.nightsout.database.NightsOutDatabase
 import com.wit.jasonfagerberg.nightsout.database.NightsOutRepository
 import com.wit.jasonfagerberg.nightsout.database.UuidMigration
+import com.wit.jasonfagerberg.nightsout.addDrink.AddDrinkViewModel
 import com.wit.jasonfagerberg.nightsout.home.HomeViewModel
 import com.wit.jasonfagerberg.nightsout.manageDB.ui.ManageDBViewModel
 import com.wit.jasonfagerberg.nightsout.profile.ProfileViewModel
@@ -38,4 +39,5 @@ val appModule = module {
     viewModel { HomeViewModel(get()) }
     viewModel { ProfileViewModel(get()) }
     viewModel { ManageDBViewModel(get()) }
+    viewModel { AddDrinkViewModel(get()) }
 }

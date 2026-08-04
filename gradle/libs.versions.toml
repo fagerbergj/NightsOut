@@ -16,6 +16,7 @@ room = "2.8.4"
 datastore = "1.2.1"
 koin = "4.2.2"
 lifecycle = "2.10.0"
+activity = "1.10.1"
 
 [libraries]
 androidx-viewpager = { group = "androidx.viewpager", name = "viewpager", version.ref = "viewpager" }
@@ -39,6 +40,7 @@ lifecycle-viewmodel-compose = { group = "androidx.lifecycle", name = "lifecycle-
 ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
 ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
+androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activity" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
