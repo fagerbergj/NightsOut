@@ -46,13 +46,18 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     testImplementation(libs.junit)
     testImplementation(libs.assertj.core)
+
+    // Compose UI test infrastructure
+    androidTestImplementation(platform(libs.compose.bom))
+    androidTestImplementation(libs.androidx.compose.test.junit4)
+    androidTestImplementation(libs.androidx.test.runner)
+    androidTestImplementation(libs.androidx.espresso.core)
+
     // 2.0.1 AAR run through Jetifier once (upstream ships support-library
     // bytecode); lets us drop android.enableJetifier
     implementation(files("libs/material-calendarview-2.0.1-androidx.aar"))
     // declared runtime-scoped by material-calendarview; needed on compile classpath for AndroidThreeTen.init
     implementation(libs.threetenabp)
-    androidTestImplementation(libs.androidx.test.runner)
-    androidTestImplementation(libs.androidx.espresso.core)
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
     ksp(libs.androidx.room.compiler)
