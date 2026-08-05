@@ -120,8 +120,7 @@ fun SettingsScreen(
     if (showTimeInfoDialog) TimeFormatDialog(onDismiss = { showTimeInfoDialog = false })
 }
 
-@Composable
-private fun getCurrentTimePreview(use24h: Boolean): String {
+fun getCurrentTimePreview(use24h: Boolean): String {
     val converter = Converter()
     val minutes = Constants.getCurrentTimeInMinuets() ?: System.currentTimeMillis().run { (this / 60000).toInt() % 1440 }
     return if (use24h) "Current time: ${converter.timeToString(minutes, true)}" else "Current time: ${converter.timeToString(minutes, false)}"
