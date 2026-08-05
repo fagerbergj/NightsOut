@@ -2,132 +2,95 @@ package com.wit.jasonfagerberg.nightsout.settings
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.MenuItem
-import android.widget.CheckBox
-import android.widget.ImageButton
+import androidx.activity.compose.setContent
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.platform.ComposeView
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.CreationExtras
 import com.wit.jasonfagerberg.nightsout.R
 import com.wit.jasonfagerberg.nightsout.addDrink.AddDrinkActivity
-import com.wit.jasonfagerberg.nightsout.dialogs.SimpleDialog
 import com.wit.jasonfagerberg.nightsout.constants.Constants
-import com.wit.jasonfagerberg.nightsout.dialogs.LightSimpleDialog
 import com.wit.jasonfagerberg.nightsout.main.MainActivity
 import com.wit.jasonfagerberg.nightsout.main.NightsOutActivity
+import com.wit.jasonfagerberg.nightsout.ui.theme.NightsOutTheme
 import com.wit.jasonfagerberg.nightsout.notification.BacNotificationService
-import com.wit.jasonfagerberg.nightsout.utils.Converter
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
+import org.koin.android.ext.android.inject
+import androidx.lifecycle.lifecycleScope
 
 class SettingsActivity : NightsOutActivity() {
 
-    private var showCurrentBacNotification: Boolean = true
-    private var use24HourTime = false
-    private var profileInit = false
-
-    private lateinit var showCurrentBacNotificationBox : CheckBox
-    private lateinit var darkThemeBox : CheckBox
-    private lateinit var use24HourBox : CheckBox
+    private val repository: SettingsRepository by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        getNotificationStatus()
-        setContentView(R.layout.activity_setting)
-    }
 
-    override fun onStart() {
-        setupToolbar()
-        setupCheckBoxes()
-        super.onStart()
-    }
-
-    private fun setupToolbar() {
-        supportActionBar?.title = getString(R.string.settings)
-        // adds back button to action bar
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.setDisplayShowHomeEnabled(true)
-        supportActionBar?.setHomeAsUpIndicator(R.drawable.arrow_back_white_24dp)
-    }
-
-    private fun setupCheckBoxes() {
-        showCurrentBacNotificationBox = findViewById(R.id.checkbox_show_current_bac_notification)
-        showCurrentBacNotificationBox.isChecked = showCurrentBacNotification
-        showCurrentBacNotificationBox.setOnClickListener {
-            setSetting(showCurrentBacNotification = showCurrentBacNotificationBox.isChecked)
+        supportActionBar?.let { actionBar ->
+            actionBar.title = getString(R.string.settings)
+            actionBar.setDisplayHomeAsUpEnabled(true)
+            actionBar.setDisplayShowHomeEnabled(true)
+            actionBar.setHomeAsUpIndicator(R.drawable.arrow_back_white_24dp)
         }
-        findViewById<ImageButton>(R.id.btn_current_bac_notification_info).setOnClickListener {
-            val dialog = SimpleDialog(this, layoutInflater)
-            dialog.setTitle("Current BAC Notification")
-            dialog.setBody("This notification appears when the user sets either the start or end time to" +
-                    " within 5 minuets of the current time. It is meant to allow the user to see their" +
-                    " current BAC without having to open Nights Out." )
-            dialog.setPositiveButtonText("Show")
-            dialog.setPositiveFunction {
-                if (!profileInit){
-                    showToast("Must create a profile to show the BAC notification")
-                } else {
-                    requestNotificationPermissionIfNeeded()
-                    val startIntent = Intent(this, BacNotificationService::class.java)
-                    startIntent.action = Constants.ACTION.START_SERVICE
-                    startService(startIntent)
-                    dialog.dismiss()
-                    showToast("Notification Created")
+
+        val viewModel: SettingsViewModel by lazy {
+            val factory = object : ViewModelProvider.Factory {
+                override fun <T : androidx.lifecycle.ViewModel> create(
+                    modelClass: Class<T>,
+                    extras: CreationExtras
+                ): T {
+                    if (modelClass.isAssignableFrom(SettingsViewModel::class.java)) {
+                        @Suppress("UNCHECKED_CAST")
+                        return SettingsViewModel(application, repository) as T
+                    }
+                    throw IllegalArgumentException("Unknown ViewModel class")
                 }
             }
-            dialog.setNegativeButtonText(getString(R.string.dismiss))
-            dialog.setNegativeFunction()
+            ViewModelProvider(this, factory)[SettingsViewModel::class.java]
         }
 
-        darkThemeBox = findViewById(R.id.checkbox_dark_mode)
-        darkThemeBox.isChecked = this.activeTheme == R.style.DarkAppTheme
-        darkThemeBox.setOnClickListener {
-            if (this.activeTheme == R.style.DarkAppTheme) {
-                this.setSetting(activeTheme = R.style.AppTheme)
-            } else {
-                this.setSetting(activeTheme = R.style.DarkAppTheme)
+        setContentView(ComposeView(this).apply {
+            setContent {
+                val darkMode by viewModel.showDarkMode.collectAsStateWithLifecycle()
+                NightsOutTheme(darkMode = darkMode, dynamicColor = true) {
+                    SettingsScreen(
+                        showBac = viewModel.showBacNotification.value,
+                        isDarkMode = darkMode,
+                        use24h = viewModel.use24HourTime.value,
+                        onToggleBac = { enabled ->
+                            lifecycleScope.launch {
+                                repository.setShowBacNotification(enabled)
+                                val isInit = repository.profileInit.first()
+                                if (enabled && isInit) {
+                                    requestNotificationPermissionIfNeeded()
+                                    val startIntent = Intent(this@SettingsActivity, BacNotificationService::class.java).apply {
+                                        action = Constants.ACTION.START_SERVICE
+                                    }
+                                    startService(startIntent)
+                                } else if (!enabled) {
+                                    val stopIntent = Intent(application, BacNotificationService::class.java).apply {
+                                        action = Constants.ACTION.UPDATE_NOTIFICATION
+                                    }
+                                    stopService(stopIntent)
+                                }
+                            }
+                        },
+                        onToggleDarkMode = viewModel::toggleDarkTheme,
+                        onToggle24h = { enabled ->
+                            lifecycleScope.launch {
+                                repository.setUse24HourTime(enabled)
+                                val intent = Intent(application, BacNotificationService::class.java).apply {
+                                    action = Constants.ACTION.UPDATE_NOTIFICATION
+                                }
+                                startService(intent)
+                            }
+                        },
+                        onProfileInitCheck = { false }
+                    )
+                }
             }
-            this.finish()
-            this.startActivity(this.intent)
-        }
-
-        use24HourBox = findViewById(R.id.checkbox_use_24_hour)
-        use24HourBox.isChecked = this.use24HourTime
-        use24HourBox.setOnClickListener {
-            use24HourTime = !use24HourTime
-            this.setSetting(use24HourTime = use24HourTime)
-            val startIntent = Intent(this, BacNotificationService::class.java)
-            startIntent.action = Constants.ACTION.UPDATE_NOTIFICATION
-            startService(startIntent)
-        }
-        findViewById<ImageButton>(R.id.btn_use_24_hour_info).setOnClickListener {
-            val dialog = LightSimpleDialog(this)
-            dialog.setActions({}, {})
-            dialog.show("12 Hour Time:    ${Converter().timeToString(Constants.getCurrentTimeInMinuets(), false)}\n" +
-                    "24 Hour Time:     ${Converter().timeToString(Constants.getCurrentTimeInMinuets(), true)}", "Dismiss", "")
-        }
-    }
-
-    @Suppress("DEPRECATION") // shim phase; #54 replaces with SettingsRepository
-    private fun getNotificationStatus() {
-        val settings = SettingsShim(this)
-        showCurrentBacNotification = settings.getBoolean(Constants.PREFERENCE.SHOW_BAC_NOTIFICATION, true)
-        use24HourTime = settings.getBoolean(Constants.PREFERENCE.USE_24_HOUR_TIME, false)
-        profileInit = settings.getBoolean(Constants.PREFERENCE.PROFILE_INIT, false)
-    }
-
-
-    @Suppress("DEPRECATION") // shim phase; #54 replaces with SettingsRepository
-    private fun setSetting(showCurrentBacNotification : Boolean = true, activeTheme : Int = this.activeTheme, use24HourTime : Boolean = this.use24HourTime) {
-        val edit = SettingsShim(this).edit()
-        edit.putBoolean(Constants.PREFERENCE.SHOW_BAC_NOTIFICATION, showCurrentBacNotification)
-        edit.putInt(Constants.PREFERENCE.ACTIVE_THEME, activeTheme)
-        edit.putBoolean(Constants.PREFERENCE.USE_24_HOUR_TIME, use24HourTime)
-        edit.apply()
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            android.R.id.home -> {
-                onBackPressed()
-            }
-        }
-        return true
+        })
     }
 
     override fun onBackPressed() {
@@ -135,8 +98,8 @@ class SettingsActivity : NightsOutActivity() {
             mBackStack.pop()
             Intent(this, AddDrinkActivity::class.java)
         } else {
-            Intent(this,MainActivity::class.java)
+            Intent(this, MainActivity::class.java)
         }
-        this.startActivity(intent)
+        startActivity(intent)
     }
 }
