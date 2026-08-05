@@ -61,7 +61,7 @@ fun SettingsScreen(
             modifier = Modifier.padding(horizontal = 8.dp),
             colors = androidx.compose.material3.CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
         ) {
-            Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
+            Column {
                 Spacer(Modifier.height(16.dp))
 
                 PrefRow(
