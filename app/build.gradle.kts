@@ -69,4 +69,5 @@ dependencies {
     implementation(libs.lifecycle.viewmodel.compose)
     implementation(libs.androidx.activity.compose)
     implementation("androidx.compose.material:material-icons-extended:1.7.8")
+    implementation(libs.navigation.compose)
 }
