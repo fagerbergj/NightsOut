@@ -14,12 +14,16 @@ import com.wit.jasonfagerberg.nightsout.domain.BacCalculator
 import com.wit.jasonfagerberg.nightsout.constants.Constants
 import com.wit.jasonfagerberg.nightsout.main.MainActivity
 import com.wit.jasonfagerberg.nightsout.main.NightsOutApplication
-import com.wit.jasonfagerberg.nightsout.settings.SettingsShim
+import com.wit.jasonfagerberg.nightsout.settings.SettingsRepository
 import kotlinx.coroutines.CoroutineScope
+
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.inject
 
@@ -37,7 +41,9 @@ class BacNotificationService : Service() {
     private lateinit var notificationHelper : NotificationHelper
     private val mConverter = Converter()
     private val repository: NightsOutRepository by inject()
+    private val settingsRepository: SettingsRepository by inject()
     private val serviceScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+
 
     override fun onCreate() {
         // when the service is created / rerun after app closes, build notification to keep intents fresh
@@ -60,9 +66,8 @@ class BacNotificationService : Service() {
         isStarted = isNotificationActive()
     }
 
-    @Suppress("DEPRECATION") // shim phase; #54 replaces with SettingsRepository
     private fun isNotificationActive() : Boolean {
-        return SettingsShim(this).getBoolean(Constants.PREFERENCE.IS_BAC_NOTIFICATION_STARTED, false)
+        return runBlocking { settingsRepository.isBacNotificationStarted.first() }
     }
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
@@ -123,22 +128,20 @@ class BacNotificationService : Service() {
         }
     }
 
-    @Suppress("DEPRECATION") // shim phase; #54 replaces with SettingsRepository
     private fun getPreferencesData() {
-        val settings = SettingsShim(this)
-        startTime = settings.getInt(Constants.PREFERENCE.START_TIME, 0)
-        endTime = settings.getInt(Constants.PREFERENCE.END_TIME, 0)
-        use24HourTime = settings.getBoolean(Constants.PREFERENCE.USE_24_HOUR_TIME, false)
-        sex = settings.getBoolean(Constants.PREFERENCE.PROFILE_SEX, true)
-        weight = settings.getFloat(Constants.PREFERENCE.PROFILE_WEIGHT, 0.toFloat()).toDouble()
-        weightMeasurement = settings.getString(Constants.PREFERENCE.PROFILE_WEIGHT_MEASUREMENT, "oz")!!
+        startTime = runBlocking { settingsRepository.startTimeMin.first() ?: 0 }
+        endTime = runBlocking { settingsRepository.endTimeMin.first() ?: 0 }
+        use24HourTime = runBlocking { settingsRepository.use24HourTime.first() }
+        sex = runBlocking { settingsRepository.profileSex.first() }
+        weight = runBlocking { settingsRepository.profileWeight.first().toDouble() }
+        weightMeasurement = runBlocking { 
+            val m = settingsRepository.profileWeightMeasurement.firstOrNull() ?: ""
+            if (m.isEmpty()) "lbs" else m
+        }
     }
 
-    @Suppress("DEPRECATION") // shim phase; #54 replaces with SettingsRepository
     private fun saveEndTime() {
-        val editor = SettingsShim(this).edit()
-        editor.putInt(Constants.PREFERENCE.END_TIME, endTime)
-        editor.apply()
+        runBlocking { settingsRepository.setEndTimeMin(endTime) }
     }
 
     private suspend fun calculateBAC() : Double{
@@ -162,10 +165,7 @@ class BacNotificationService : Service() {
         super.onDestroy()
     }
 
-    @Suppress("DEPRECATION") // shim phase; #54 replaces with SettingsRepository
     private fun saveNotificationState(started : Boolean) {
-        val editor = SettingsShim(this).edit()
-        editor.putBoolean(Constants.PREFERENCE.IS_BAC_NOTIFICATION_STARTED, started)
-        editor.apply()
+        runBlocking { settingsRepository.setIsBacNotificationStarted(started) }
     }
 }

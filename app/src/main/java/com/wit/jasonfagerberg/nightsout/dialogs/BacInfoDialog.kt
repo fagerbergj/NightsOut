@@ -14,11 +14,20 @@ import com.jjoe64.graphview.series.LineGraphSeries
 class BacInfoDialog(
     context: Context
 ) {
+    private var _currentDialog: AlertDialog? = null
+
     private var _bac: Double = 0.0
     private var _drinkingDuration: Double = 0.0
     private var _standardDrinksConsumed: Double = 0.0
     private lateinit var _converter: com.wit.jasonfagerberg.nightsout.utils.Converter
     private lateinit var _context: Context
+
+    fun dismiss() {
+        _currentDialog?.dismiss()
+        _currentDialog = null
+    }
+
+    fun isShowing(): Boolean = _currentDialog?.isShowing ?: false
 
     fun setParams(
         bac: Double,
@@ -41,28 +50,28 @@ class BacInfoDialog(
                 .inflate(R.layout.dialog_bac_info, parent, false)
 
         builder.setView(dialogView)
-        val dialog = builder.create()
-        dialog.show()
-        setupBacDeclineChart(dialog)
+        _currentDialog = builder.create()
+        _currentDialog!!.show()
+        setupBacDeclineChart(_currentDialog!!)
 
-        dialog.findViewById<TextView>(R.id.text_bac_info_title).text = "BAC Level: " + String.format("%.3f", _bac)
+        _currentDialog!!.findViewById<TextView>(R.id.text_bac_info_title).text = "BAC Level: " + String.format("%.3f", _bac)
 
         var hoursMin = _converter.decimalTimeToHoursAndMinuets(_drinkingDuration)
         var hoursMinStrings = _converter.hoursAndMinuetsToTwoDigitStrings(hoursMin)
         val durationString = "${hoursMinStrings.first} hours  ${hoursMinStrings.second} min"
-        dialog.findViewById<TextView>(R.id.text_bac_info_duration).text = durationString
+        _currentDialog!!.findViewById<TextView>(R.id.text_bac_info_duration).text = durationString
 
         val standardDrinksString = String.format("%.2f", _standardDrinksConsumed) + " drinks"
-        dialog.findViewById<TextView>(R.id.text_bac_info_standard_drinks).text = standardDrinksString
+        _currentDialog!!.findViewById<TextView>(R.id.text_bac_info_standard_drinks).text = standardDrinksString
 
         val hoursToSober = if ((_bac - 0.04) / 0.015 < 0) 0.0 else (_bac - 0.04) / 0.015
         hoursMin = _converter.decimalTimeToHoursAndMinuets(hoursToSober)
         hoursMinStrings = _converter.hoursAndMinuetsToTwoDigitStrings(hoursMin)
         val hoursToSoberString = "${hoursMinStrings.first} hours  ${hoursMinStrings.second} min"
-        dialog.findViewById<TextView>(R.id.text_bac_info_time_to_sober).text = hoursToSoberString
+        _currentDialog!!.findViewById<TextView>(R.id.text_bac_info_time_to_sober).text = hoursToSoberString
 
-        dialog.findViewById<ImageView>(R.id.btn_bac_info_dismiss).setOnClickListener {
-            dialog.dismiss()
+        _currentDialog!!.findViewById<ImageView>(R.id.btn_bac_info_dismiss).setOnClickListener {
+            _currentDialog?.dismiss()
         }
     }
 

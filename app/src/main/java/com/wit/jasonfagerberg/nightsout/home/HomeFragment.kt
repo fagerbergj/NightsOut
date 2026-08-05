@@ -30,43 +30,49 @@ import com.wit.jasonfagerberg.nightsout.ui.theme.NightsOutTheme
 import com.wit.jasonfagerberg.nightsout.profile.showToast
 import com.wit.jasonfagerberg.nightsout.settings.SettingsShim
 import com.wit.jasonfagerberg.nightsout.utils.Converter
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import com.wit.jasonfagerberg.nightsout.settings.SettingsRepository
 import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class HomeFragment : Fragment() {
     private lateinit var mLayout: View
     private val repository: NightsOutRepository by inject()
+    private val settingsRepository: SettingsRepository by inject()
     private var _settingsShim: SettingsShim? = null
-    @Suppress("DEPRECATION")
+    @Suppress("DEPRECATION") // ponytail: onCreateView theme read still synchronous; #54 revisit
     private val settingsShim: SettingsShim get() = _settingsShim!!
 
     val mConverter = Converter()
 
-    val bac: Double get() = homeViewModel?.uiState?.value?.bacValue ?: 0.0
-    val drinkingDuration: Double get() = homeViewModel?.uiState?.value?.drinkingDuration ?: 0.0
-    val standardDrinksConsumed: Double get() = homeViewModel?.uiState?.value?.standardDrinksConsumed ?: 0.0
+    private val homeViewModel: HomeViewModel by viewModel()
 
-    private var homeViewModel: HomeViewModel? = null
+    val bac: Double get() = homeViewModel.uiState.value.bacValue
+    val drinkingDuration: Double get() = homeViewModel.uiState.value.drinkingDuration
+    val standardDrinksConsumed: Double get() = homeViewModel.uiState.value.standardDrinksConsumed
+
+    private var bacDialog: BacInfoDialog? = null
 
     @Suppress("DEPRECATION") // shim phase; #54 replaces with SettingsRepository
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         _settingsShim = try { SettingsShim(requireContext()) } catch (_: Exception) { SettingsShim(requireActivity().applicationContext) }
-        setHasOptionsMenu(true)
-        @Suppress("UNCHECKED_CAST")
-        homeViewModel = org.koin.core.context.GlobalContext.get().get(HomeViewModel::class) as HomeViewModel
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
+        bacDialog = BacInfoDialog(requireContext())
         val themeMode = runCatching { settingsShim.getString(Constants.PREFERENCE.ACTIVE_THEME_MODE, "light") }.getOrDefault("light")
+
         val composeView = ComposeView(requireContext()).apply {
             setContent {
                 NightsOutTheme(darkMode = themeMode == "dark") {
                     HomeScreen(
-                        viewModel = homeViewModel!!,
-                        onAddDrinkClicked = { homeViewModel!!.onAddDrinkClicked(requireContext()) },
+                        viewModel = homeViewModel,
+                        onAddDrinkClicked = { homeViewModel.onAddDrinkClicked(requireContext()) },
                         onDrinksLoadFailed = { context?.showToast("Couldn't load your drinks - try reopening the app", true) }
                     )
                 }
@@ -82,18 +88,19 @@ class HomeFragment : Fragment() {
         return composeView
     }
 
-    private fun syncViewModelFromSettings(): kotlin.Unit = run {
-        val vm = homeViewModel ?: return@run
+    private suspend fun syncViewModelFromSettings(): kotlin.Unit = run {
+        val vm = homeViewModel
         try {
             vm.updateProfile(
-                sex = settingsShim.getBoolean(Constants.PREFERENCE.PROFILE_SEX, true),
-                weight = settingsShim.getFloat(Constants.PREFERENCE.PROFILE_WEIGHT, 0f).toDouble(),
-                weightMeasurement = settingsShim.getString(Constants.PREFERENCE.PROFILE_WEIGHT_MEASUREMENT, "lbs") ?: "lbs"
+                sex = settingsRepository.profileSex.first(),
+                weight = settingsRepository.profileWeight.first().toDouble(),
+                weightMeasurement = if (settingsRepository.profileWeightMeasurement.first().isEmpty()) "lbs" else settingsRepository.profileWeightMeasurement.first()
             )
+            val currentTimeInMinutes = Constants.getCurrentTimeInMinuets()
             vm.updateTimeSettings(
-                startTimeMin = settingsShim.getInt(Constants.PREFERENCE.START_TIME, Constants.getCurrentTimeInMinuets()),
-                endTimeMin = settingsShim.getInt(Constants.PREFERENCE.END_TIME, Constants.getCurrentTimeInMinuets()),
-                use24HourTime = settingsShim.getBoolean(Constants.PREFERENCE.USE_24_HOUR_TIME, true)
+                startTimeMin = settingsRepository.startTimeMin.first() ?: currentTimeInMinutes,
+                endTimeMin = settingsRepository.endTimeMin.first() ?: currentTimeInMinutes,
+                use24HourTime = settingsRepository.use24HourTime.first()
             )
         } catch (_: Exception) {}
     }
@@ -103,7 +110,7 @@ class HomeFragment : Fragment() {
             syncViewModelFromSettings()
             try {
                 val drinks = repository.pullCurrentSessionDrinks()
-                homeViewModel?.addCurrentSessionDrinks(drinks)
+               homeViewModel.addCurrentSessionDrinks(drinks)
             } catch (_: Exception) {}
         }
     }
@@ -115,9 +122,23 @@ class HomeFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
-        val bacInfoDialog = BacInfoDialog(context!!)
-        view?.findViewById<TextView>(R.id.text_home_bac_value)?.setOnClickListener { showBacInfo(bacInfoDialog) }
-        view?.findViewById<TextView>(R.id.text_home_bac_result)?.setOnClickListener { showBacInfo(bacInfoDialog) }
+        bacDialog?.let { dialog ->
+            if (dialog.isShowing()) dialog.dismiss()
+            view?.findViewById<TextView>(R.id.text_home_bac_value)?.setOnClickListener { showBacInfo(dialog) }
+            view?.findViewById<TextView>(R.id.text_home_bac_result)?.setOnClickListener { showBacInfo(dialog) }
+            dialog.showBacInfoDialog()
+        } ?: run {
+            bacDialog = BacInfoDialog(context!!)
+            val d = bacDialog!!
+            view?.findViewById<TextView>(R.id.text_home_bac_value)?.setOnClickListener { showBacInfo(d) }
+            view?.findViewById<TextView>(R.id.text_home_bac_result)?.setOnClickListener { showBacInfo(d) }
+        }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        bacDialog?.dismiss()
+        bacDialog = null
     }
 
     private fun showBacInfo(dialog: BacInfoDialog) {
@@ -134,36 +155,40 @@ class HomeFragment : Fragment() {
         when (item.itemId) {
             R.id.btn_toolbar_home_done -> showDatePicker()
             R.id.btn_clear_drink_list -> clearSessionConfirmation()
-            R.id.btn_disclaimer -> homeViewModel?.showDisclaimer(requireContext())
+            R.id.btn_disclaimer -> homeViewModel.showDisclaimer(requireContext())
             R.id.btn_toolbar_manage_db -> startActivity(Intent(activity, ManageDBActivity::class.java))
         }
         return (activity as? MainActivity)?.onOptionsItemSelected(item) ?: false
     }
 
     fun showOrHideEmptyListText(view: View) {}
-    fun refreshBacFromTimeChange() { syncViewModelFromSettings() }
+    fun refreshBacFromTimeChange() { try { runBlocking { syncViewModelFromSettings() } } catch (_: Exception) {} }
 
     private fun clearSessionConfirmation() {
-        if (homeViewModel?.uiState?.value?.drinks?.isEmpty() == true) return
+        if (homeViewModel.uiState.value.drinks.isEmpty()) return
         val light = LightSimpleDialog(context!!)
         light.setActions({ clearSession() }, { })
         light.show("Are you sure you want to clear all drinks?")
     }
 
-    @Suppress("DEPRECATION") // shim phase; #54 replaces with SettingsRepository
-    private fun clearSession() {
-        homeViewModel?.clearSession()
-        val editor = SettingsShim(requireContext()).edit()
-        editor.putInt(Constants.PREFERENCE.START_TIME, Constants.getCurrentTimeInMinuets())
-        editor.putInt(Constants.PREFERENCE.END_TIME, Constants.getCurrentTimeInMinuets())
-        editor.apply()
-        syncViewModelFromSettings()
+    @Suppress("DEPRECATION") // ponytail: theme read in onCreateView still synchronous; #54 revisit
+    private fun clearSession() = run {
+        homeViewModel.clearSession()
+        try {
+            val currentTimeInMinutes = Constants.getCurrentTimeInMinuets()
+            runBlocking {
+                settingsRepository.setStartTimeMin(currentTimeInMinutes)
+                settingsRepository.setEndTimeMin(currentTimeInMinutes)
+            }
+        } catch (_: Exception) {}
+        try { runBlocking { syncViewModelFromSettings() } } catch (_: Exception) {}
         sendBacNotificationAction(Constants.ACTION.STOP_SERVICE)
     }
 
     private fun sendBacNotificationAction(action: String) {
         try {
-            if (settingsShim.getBoolean(Constants.PREFERENCE.SHOW_BAC_NOTIFICATION, true)) {
+            val showNotif = runCatching { runBlocking { settingsRepository.showBacNotification.first() } }.getOrDefault(true)
+            if (showNotif) {
                 val intent = Intent(requireContext(), com.wit.jasonfagerberg.nightsout.notification.BacNotificationService::class.java).apply { this.action = action }
                 requireContext().startService(intent)
             }
@@ -185,7 +210,7 @@ class HomeFragment : Fragment() {
     }
 
     private fun handleLogDateSelection(logDate: Int) {
-        when (val action = homeViewModel?.checkOrCreateLog(logDate)) {
+        when (val action = homeViewModel.checkOrCreateLog(logDate)) {
             is HomeViewModel.LogAction.CreateNewLog -> confirmCreateLogDialog(logDate)
             is HomeViewModel.LogAction.UpdateExistingLog -> showUpdateLogConfirmationDialog(logDate, action.existingBac, action.existingDuration)
             null -> {}
@@ -200,7 +225,7 @@ class HomeFragment : Fragment() {
     }
 
     private suspend fun doLogSession(logDate: Int) {
-        val success = homeViewModel?.logSessionWithDate(logDate) ?: false
+        val success = homeViewModel.logSessionWithDate(logDate)
         if (success) context?.showToast("Logged", false) else context?.showToast("Nothing to log", true)
     }
 
@@ -217,7 +242,7 @@ class HomeFragment : Fragment() {
         val thisDate = logDate
         simpleDialog.setPositiveButtonText(resources.getString(R.string.update))
         simpleDialog.setPositiveFunction {
-            lifecycleScope.launch { homeViewModel?.logSessionWithDate(thisDate) }
+            lifecycleScope.launch { homeViewModel.logSessionWithDate(thisDate) }
             // Auto-show, auto-dismiss pattern handled by SimpleDialog
         }
     }

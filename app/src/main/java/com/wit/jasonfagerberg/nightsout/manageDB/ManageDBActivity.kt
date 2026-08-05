@@ -10,7 +10,6 @@ import com.wit.jasonfagerberg.nightsout.manageDB.ui.ManageDBScreen
 import com.wit.jasonfagerberg.nightsout.manageDB.ui.ManageDBViewModel
 import com.wit.jasonfagerberg.nightsout.models.Drink
 import com.wit.jasonfagerberg.nightsout.constants.Constants
-import com.wit.jasonfagerberg.nightsout.settings.SettingsShim
 import com.wit.jasonfagerberg.nightsout.ui.theme.NightsOutTheme
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -19,9 +18,10 @@ class ManageDBActivity : NightsOutActivity() {
 
     private val viewModel: ManageDBViewModel by viewModel()
 
+    @Suppress("DEPRECATION") // ponytail: theme_mode is String key; SettingsRepository.activeTheme returns Int style — phase 3+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val themeMode = runCatching { SettingsShim(this).getString(Constants.PREFERENCE.ACTIVE_THEME_MODE, "light") }.getOrDefault("light")
+        val themeMode = runCatching { com.wit.jasonfagerberg.nightsout.settings.SettingsShim(this).getString(Constants.PREFERENCE.ACTIVE_THEME_MODE, "light") }.getOrDefault("light")
         setContentView(ComposeView(this).apply {
             setContent {
                 NightsOutTheme(darkMode = themeMode == "dark") {

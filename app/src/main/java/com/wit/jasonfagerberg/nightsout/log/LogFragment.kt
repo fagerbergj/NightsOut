@@ -29,6 +29,7 @@ import com.wit.jasonfagerberg.nightsout.ui.theme.NightsOutTheme
 import com.wit.jasonfagerberg.nightsout.models.LogHeader
 import com.wit.jasonfagerberg.nightsout.profile.showToast
 import com.wit.jasonfagerberg.nightsout.utils.Converter
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 
@@ -38,6 +39,7 @@ class LogFragment : Fragment() {
     private val repository: NightsOutRepository by inject()
     private var selectedDate by mutableIntStateOf(20260101)
     private val logListState = mutableStateListOf<LogItem>()
+    private var logLoadJob: Job? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -68,7 +70,21 @@ class LogFragment : Fragment() {
         return composeView
     }
 
-    override fun onResume() { super.onResume(); lifecycleScope.launch { loadLogData(selectedDate) } }
+    override fun onResume() {
+        super.onResume()
+        logLoadJob?.cancel()
+        logLoadJob = lifecycleScope.launch { loadLogData(selectedDate) }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        logLoadJob?.cancel()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        logLoadJob?.cancel()
+    }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         (requireActivity() as? com.wit.jasonfagerberg.nightsout.main.MainActivity)?.supportActionBar?.title = "Log"
