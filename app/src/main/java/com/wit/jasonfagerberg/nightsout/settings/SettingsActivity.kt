@@ -5,24 +5,24 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.ComposeView
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.CreationExtras
+import androidx.lifecycle.lifecycleScope
 import com.wit.jasonfagerberg.nightsout.R
 import com.wit.jasonfagerberg.nightsout.addDrink.AddDrinkActivity
 import com.wit.jasonfagerberg.nightsout.constants.Constants
 import com.wit.jasonfagerberg.nightsout.main.MainActivity
 import com.wit.jasonfagerberg.nightsout.main.NightsOutActivity
-import com.wit.jasonfagerberg.nightsout.ui.theme.NightsOutTheme
 import com.wit.jasonfagerberg.nightsout.notification.BacNotificationService
+import com.wit.jasonfagerberg.nightsout.ui.theme.NightsOutTheme
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
-import androidx.lifecycle.lifecycleScope
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SettingsActivity : NightsOutActivity() {
 
     private val repository: SettingsRepository by inject()
+    private val viewModel: SettingsViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,30 +34,16 @@ class SettingsActivity : NightsOutActivity() {
             actionBar.setHomeAsUpIndicator(R.drawable.arrow_back_white_24dp)
         }
 
-        val viewModel: SettingsViewModel by lazy {
-            val factory = object : ViewModelProvider.Factory {
-                override fun <T : androidx.lifecycle.ViewModel> create(
-                    modelClass: Class<T>,
-                    extras: CreationExtras
-                ): T {
-                    if (modelClass.isAssignableFrom(SettingsViewModel::class.java)) {
-                        @Suppress("UNCHECKED_CAST")
-                        return SettingsViewModel(application, repository) as T
-                    }
-                    throw IllegalArgumentException("Unknown ViewModel class")
-                }
-            }
-            ViewModelProvider(this, factory)[SettingsViewModel::class.java]
-        }
-
         setContentView(ComposeView(this).apply {
             setContent {
                 val darkMode by viewModel.showDarkMode.collectAsStateWithLifecycle()
+                val showBac by viewModel.showBacNotification.collectAsStateWithLifecycle()
+                val use24h by viewModel.use24HourTime.collectAsStateWithLifecycle()
                 NightsOutTheme(darkMode = darkMode, dynamicColor = true) {
                     SettingsScreen(
-                        showBac = viewModel.showBacNotification.value,
+                        showBac = showBac,
                         isDarkMode = darkMode,
-                        use24h = viewModel.use24HourTime.value,
+                        use24h = use24h,
                         onToggleBac = { enabled ->
                             lifecycleScope.launch {
                                 repository.setShowBacNotification(enabled)
