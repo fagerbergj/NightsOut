@@ -16,7 +16,7 @@ class SettingsScreenTest {
     @get:Rule val composeTestRule = createComposeRule()
 
     /** Regression #62 guard — verifies settings toggles fire callbacks (proving recomposition works). */
-    @Test fun `toggling BAC notification fires callback`() {
+    @Test fun togglingBacNotificationFiresCallback() {
         var called = false
         composeTestRule.setContent {
             NightsOutTheme(darkMode = false) {
@@ -31,7 +31,7 @@ class SettingsScreenTest {
         assert(called) { "onToggleBac callback must fire" }
     }
 
-    @Test fun `toggling dark mode fires callback`() {
+    @Test fun togglingDarkModeFiresCallback() {
         var called = false
         composeTestRule.setContent {
             NightsOutTheme(darkMode = false) {
@@ -47,7 +47,7 @@ class SettingsScreenTest {
         assert(called) { "onToggleDarkMode callback must fire" }
     }
 
-    @Test fun `toggling 24-hour time fires callback`() {
+    @Test fun toggling24HourTimeFiresCallback() {
         var called = false
         composeTestRule.setContent {
             NightsOutTheme(darkMode = true) {
