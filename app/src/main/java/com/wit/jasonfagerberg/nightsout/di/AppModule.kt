@@ -12,6 +12,7 @@ import com.wit.jasonfagerberg.nightsout.database.NightsOutRepository
 import com.wit.jasonfagerberg.nightsout.database.UuidMigration
 import com.wit.jasonfagerberg.nightsout.addDrink.AddDrinkViewModel
 import com.wit.jasonfagerberg.nightsout.home.HomeViewModel
+import com.wit.jasonfagerberg.nightsout.log.ui.LogViewModel
 import com.wit.jasonfagerberg.nightsout.manageDB.ui.ManageDBViewModel
 import com.wit.jasonfagerberg.nightsout.profile.ProfileViewModel
 import org.koin.android.ext.koin.androidContext
@@ -40,4 +41,5 @@ val appModule = module {
     viewModel { ProfileViewModel(get()) }
     viewModel { ManageDBViewModel(get()) }
     viewModel { AddDrinkViewModel(get()) }
+    viewModel { LogViewModel(get()) }
 }

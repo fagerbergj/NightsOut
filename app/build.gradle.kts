@@ -39,7 +39,6 @@ kotlin {
 
 dependencies {
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
-    implementation(libs.androidx.viewpager)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
     // jetified like the calendar AAR; core classes reference support ViewCompat/EdgeEffectCompat
@@ -53,8 +52,6 @@ dependencies {
     androidTestImplementation(libs.androidx.compose.test.junit4)
     androidTestImplementation(libs.androidx.test.runner)
     androidTestImplementation(libs.androidx.espresso.core)
-    androidTestImplementation(libs.mockk.android)
-    androidTestImplementation(libs.koin.test)
 
     // 2.0.1 AAR run through Jetifier once (upstream ships support-library
     // bytecode); lets us drop android.enableJetifier
@@ -76,4 +73,5 @@ dependencies {
     implementation(libs.lifecycle.viewmodel.compose)
     implementation(libs.androidx.activity.compose)
     implementation("androidx.compose.material:material-icons-extended:1.7.8")
+    implementation(libs.navigation.compose)
 }
