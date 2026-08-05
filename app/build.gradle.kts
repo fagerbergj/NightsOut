@@ -47,6 +47,15 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     testImplementation(libs.junit)
     testImplementation(libs.assertj.core)
+
+    // Compose UI test infrastructure
+    androidTestImplementation(platform(libs.compose.bom))
+    androidTestImplementation(libs.androidx.compose.test.junit4)
+    androidTestImplementation(libs.androidx.test.runner)
+    androidTestImplementation(libs.androidx.espresso.core)
+    androidTestImplementation(libs.mockk.android)
+    androidTestImplementation(libs.koin.test)
+
     // 2.0.1 AAR run through Jetifier once (upstream ships support-library
     // bytecode); lets us drop android.enableJetifier
     implementation(files("libs/material-calendarview-2.0.1-androidx.aar"))
