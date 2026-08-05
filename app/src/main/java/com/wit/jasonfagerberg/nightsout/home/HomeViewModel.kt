@@ -171,9 +171,6 @@ class HomeViewModel(
         val intent = Intent(activity, AddDrinkActivity::class.java)
         intent.putExtra("CAN_UNFAVORITE", true)
         intent.putExtra("FAVORITED", false)
-        if (activity is com.wit.jasonfagerberg.nightsout.main.MainActivity) {
-            activity.pushToBackStack(4)
-        }
         activity.startActivity(intent)
     }
 

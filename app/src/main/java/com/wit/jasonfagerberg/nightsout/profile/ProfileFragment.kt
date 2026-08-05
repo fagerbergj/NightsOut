@@ -56,7 +56,6 @@ class ProfileFragment : Fragment() {
                 val intent = Intent(requireContext(), AddDrinkActivity::class.java)
                 intent.putExtra("CAN_UNFAVORITE", false)
                 intent.putExtra("FAVORITED", true)
-                (activity as? MainActivity)?.pushToBackStack(4)
                 startActivity(intent)
             },
             onRemoveFavorite = { drink ->

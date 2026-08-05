@@ -267,8 +267,7 @@ fun TimePickerDialogWrapper(
     if (activity != null) {
         val converter = com.wit.jasonfagerberg.nightsout.utils.Converter()
         val themeRes = converter.appThemeToDialogTheme[
-            (activity as? com.wit.jasonfagerberg.nightsout.main.MainActivity)?.activeTheme
-                ?: R.style.AppTheme
+            R.style.AppTheme
         ]
         TimePickerDialog(
             android.view.ContextThemeWrapper(context, themeRes),
