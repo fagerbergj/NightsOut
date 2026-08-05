@@ -5,7 +5,6 @@ import androidx.appcompat.app.AlertDialog
 import androidx.compose.ui.platform.ComposeView
 import androidx.lifecycle.lifecycleScope
 import com.wit.jasonfagerberg.nightsout.R
-import com.wit.jasonfagerberg.nightsout.database.NightsOutRepository
 import com.wit.jasonfagerberg.nightsout.main.NightsOutActivity
 import com.wit.jasonfagerberg.nightsout.manageDB.ui.ManageDBScreen
 import com.wit.jasonfagerberg.nightsout.manageDB.ui.ManageDBViewModel
@@ -14,12 +13,10 @@ import com.wit.jasonfagerberg.nightsout.constants.Constants
 import com.wit.jasonfagerberg.nightsout.settings.SettingsShim
 import com.wit.jasonfagerberg.nightsout.ui.theme.NightsOutTheme
 import kotlinx.coroutines.launch
-import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class ManageDBActivity : NightsOutActivity() {
 
-    private val repository: NightsOutRepository by inject()
     private val viewModel: ManageDBViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
