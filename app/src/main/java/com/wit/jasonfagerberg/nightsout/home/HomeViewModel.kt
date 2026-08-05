@@ -12,8 +12,9 @@ import com.wit.jasonfagerberg.nightsout.dialogs.SimpleDialog
 import com.wit.jasonfagerberg.nightsout.domain.BacCalculator
 import com.wit.jasonfagerberg.nightsout.models.Drink
 import com.wit.jasonfagerberg.nightsout.utils.Converter
-import kotlinx.coroutines.flow.MutableStateFlow
+ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 data class TimeSettings(
@@ -53,6 +54,9 @@ class HomeViewModel(
     val weight: MutableStateFlow<Double> = MutableStateFlow(0.0)
     val weightMeasurement: MutableStateFlow<String> = MutableStateFlow("lbs")
 
+    private val _initialLoadComplete = MutableStateFlow(false)
+    val initialLoadComplete: StateFlow<Boolean> = _initialLoadComplete
+
     init {
         viewModelScope.launch {
             try {
@@ -60,6 +64,8 @@ class HomeViewModel(
                 _existingHeaders = repository.pullLogHeaders().toMutableList()
             } catch (_: Exception) {
                 _uiState.value = _uiState.value.copy(loadError = true)
+            } finally {
+                _initialLoadComplete.value = true
             }
         }
     }
@@ -203,6 +209,7 @@ class HomeViewModel(
     }
 
     fun checkOrCreateLog(logDate: Int): LogAction? {
+        if (!_initialLoadComplete.value) return null
         val existingHeader = _existingHeaders.find { it.date == logDate }
         return if (existingHeader != null) {
             LogAction.UpdateExistingLog(logDate, existingHeader.bac, existingHeader.duration)
@@ -212,6 +219,7 @@ class HomeViewModel(
     }
 
     suspend fun logSessionWithDate(logDate: Int): Boolean {
+        _initialLoadComplete.first { it }
         val current = _uiState.value
         if (current.drinks.isEmpty()) return false
         

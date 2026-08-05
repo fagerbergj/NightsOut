@@ -15,9 +15,13 @@ import com.wit.jasonfagerberg.nightsout.constants.Constants
 import com.wit.jasonfagerberg.nightsout.database.NightsOutRepository
 import com.wit.jasonfagerberg.nightsout.main.MainActivity
 import com.wit.jasonfagerberg.nightsout.models.Drink
+import com.wit.jasonfagerberg.nightsout.settings.SettingsRepository
 import com.wit.jasonfagerberg.nightsout.settings.SettingsShim
 import com.wit.jasonfagerberg.nightsout.ui.theme.NightsOutTheme
+  import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -26,8 +30,9 @@ class ProfileFragment : Fragment() {
 
     private val profileViewModel: ProfileViewModel by viewModel()
     private val repository: NightsOutRepository by inject()
+    private val settingsRepository: SettingsRepository by inject()
     private var _settingsShim: SettingsShim? = null
-    @Suppress("DEPRECATION") // shim phase; #54 replaces with SettingsRepository Flow reads
+    @Suppress("DEPRECATION") // ponytail: onCreateView theme read still synchronous; #54 revisit
     private val settingsShim: SettingsShim get() = _settingsShim!!
 
     // ponytail: mutable snapshots refreshed from repository on resume. ProFileScreen reads them.
@@ -76,14 +81,19 @@ class ProfileFragment : Fragment() {
     }
 
     /** Mirror of the former Fragment method for MainActivity navigation guard. */
-    fun hasUnsavedData(): Boolean =
-        settingsShim.getBoolean(Constants.PREFERENCE.PROFILE_INIT, false) &&
+    fun hasUnsavedData(): Boolean = run {
+        val profileInit = runCatching { runBlocking { settingsRepository.profileInit.first() } }.getOrDefault(false)
+        val sexSetting = runCatching { runBlocking { settingsRepository.profileSex.first() } }.getOrDefault(true)
+        val weightSetting = runCatching { runBlocking { settingsRepository.profileWeight.first() } }.getOrDefault(0f).toDouble()
+        val measSetting = runCatching { runBlocking { settingsRepository.profileWeightMeasurement.first() } }.getOrElse { "lbs" }.takeIf { it.isNotEmpty() } ?: "lbs"
+        profileInit &&
         profileViewModel.uiState.value.sex != null &&
         profileViewModel.hasUnsavedData(
-            currentSex = if (settingsShim.getBoolean(Constants.PREFERENCE.PROFILE_SEX, true)) true else false,
-            currentWeight = settingsShim.getFloat(Constants.PREFERENCE.PROFILE_WEIGHT, 0f).toDouble(),
-            currentMeas = settingsShim.getString(Constants.PREFERENCE.PROFILE_WEIGHT_MEASUREMENT, "lbs") ?: "lbs"
+            currentSex = sexSetting,
+            currentWeight = weightSetting,
+            currentMeas = measSetting
         )
+    }
 
     override fun onResume() {
         super.onResume()
