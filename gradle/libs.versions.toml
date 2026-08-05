@@ -9,6 +9,7 @@ junit = "4.12"
 assertj = "3.12.2"
 androidx-test = "1.2.0"
 espresso = "3.2.0"
+mockk = "1.13.16"
 kotlin = "2.2.10"
 compose-bom = "2026.06.01"
 ksp = "2.2.10-2.0.2"
@@ -41,6 +42,9 @@ ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
 ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activity" }
+androidx-compose-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
+mockk-android = { group = "io.mockk", name = "mockk-android", version.ref = "mockk" }
+koin-test = { group = "io.insert-koin", name = "koin-test", version.ref = "koin" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

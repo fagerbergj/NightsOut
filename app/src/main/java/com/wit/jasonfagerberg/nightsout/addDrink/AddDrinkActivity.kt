@@ -9,6 +9,7 @@ import com.wit.jasonfagerberg.nightsout.constants.Constants
 import com.wit.jasonfagerberg.nightsout.main.MainActivity
 import android.widget.Toast
 import com.wit.jasonfagerberg.nightsout.addDrink.ui.AddDrinkScreen
+import com.wit.jasonfagerberg.nightsout.ui.theme.NightsOutTheme
 
 class AddDrinkActivity : ComponentActivity() {
 
@@ -43,7 +44,9 @@ class AddDrinkActivity : ComponentActivity() {
         viewModel.setVolumeMeasurementLocale()
 
         setContent {
-            AddDrinkScreen(viewModel)
+            NightsOutTheme(darkMode = false) {
+                AddDrinkScreen(viewModel)
+            }
         }
     }
 
