@@ -1,6 +1,6 @@
 [versions]
-agp = "9.3.1"
-appcompat = "1.1.0"
+agp = "9.4.0"
+appcompat = "1.8.0"
 material = "1.14.0"
 constraintlayout = "2.2.2"
 threetenabp = "1.4.9"
@@ -9,14 +9,14 @@ assertj = "3.27.7"
 androidx-test = "1.7.0"
 espresso = "3.7.0"
 kotlin = "2.4.10"
-compose-bom = "2026.06.01"
+compose-bom = "2026.08.00"
 ksp = "2.3.11"
 room = "2.8.4"
 datastore = "1.2.1"
 koin = "4.2.2"
 lifecycle = "2.10.0"
 activity = "1.13.0"
-navigation-compose = "2.8.9"
+navigation-compose = "2.10.0"
 
 [libraries]
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
