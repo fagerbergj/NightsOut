@@ -12,7 +12,7 @@ jobs:
       - uses: actions/checkout@v7
 
       # AGP 9.3 / Gradle 9.6.1 require JDK 17+ to run.
-      - uses: actions/setup-java@v5
+      - uses: actions/setup-java@v6
         with:
           distribution: temurin
           java-version: '17'
@@ -31,7 +31,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      - uses: actions/setup-java@v5
+      - uses: actions/setup-java@v6
         with:
           distribution: temurin
           java-version: '17'
