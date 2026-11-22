@@ -1,5 +1,7 @@
 package com.wit.jasonfagerberg.nightsout.log.ui
 
+import android.util.Log
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.icons.Icons
@@ -17,7 +19,10 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import com.wit.jasonfagerberg.nightsout.R
 import com.wit.jasonfagerberg.nightsout.database.NightsOutRepository
 import com.wit.jasonfagerberg.nightsout.models.Drink
 import com.wit.jasonfagerberg.nightsout.models.LogHeader
@@ -33,16 +38,22 @@ private object KoinRepo : KoinComponent {
     val repository: NightsOutRepository get() = get()
 }
 
+private const val TAG = "LogNavScreen"
+
 /** NavHost entry-point for the Log screen. Populates calendar headers and log items from repo. */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LogNavScreen(onBack: () -> Unit = {}) {
     var headers by remember { mutableStateOf<List<LogHeader>>(emptyList()) }
-    
+    var headerLoadError by remember { mutableStateOf(false) }
+
     LaunchedEffect(Unit) {
         withContext(Dispatchers.IO) {
-            try { headers = KoinRepo.repository.pullLogHeaders().toList() } 
-            catch (_: Exception) { headers = emptyList() }
+            try { headers = KoinRepo.repository.pullLogHeaders().toList() }
+            catch (e: Exception) {
+                Log.e(TAG, "Failed to load log headers", e)
+                headerLoadError = true
+            }
         }
     }
 
@@ -81,11 +92,20 @@ fun LogNavScreen(onBack: () -> Unit = {}) {
                 }
             }
         )
-        LogCalendarScreen(
-            logList = logItems.toList(),
-            selectedDate = selectedDate,
-            onMoveDayRequested = { newDate -> selectedDate = newDate }
-        )
+        if (headerLoadError) {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(text = stringResource(R.string.log_load_failed))
+            }
+        } else {
+            LogCalendarScreen(
+                logList = logItems.toList(),
+                selectedDate = selectedDate,
+                onMoveDayRequested = { newDate -> selectedDate = newDate }
+            )
+        }
     }
 }
 

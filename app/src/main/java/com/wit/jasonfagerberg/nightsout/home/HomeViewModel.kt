@@ -2,6 +2,7 @@ package com.wit.jasonfagerberg.nightsout.home
 
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.wit.jasonfagerberg.nightsout.R
@@ -16,6 +17,8 @@ import com.wit.jasonfagerberg.nightsout.utils.Converter
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+
+private const val TAG = "HomeViewModel"
 
 data class TimeSettings(
     val startTimeMin: Int,
@@ -234,6 +237,7 @@ class HomeViewModel(
             }
         }
         if (result.isSuccess) clearSession()
+        else Log.e(TAG, "Failed to log session for $logDate", result.exceptionOrNull())
         return result.isSuccess
     }
 

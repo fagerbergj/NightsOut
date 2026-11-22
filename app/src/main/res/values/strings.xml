@@ -28,6 +28,7 @@
     <string name="no_recent_drinks">No Recent Drinks</string>
     <string name="no_favorite_drinks">No Favorite Drinks</string>
     <string name="you_did_no_drink_this_day">You Did Not Drink This Day</string>
+    <string name="log_load_failed">Couldn\'t Load Logs</string>
     <string name="add_favorite">Add Favorite</string>
     <string name="add_another">Add Another</string>
     <string name="favorite_drink">Favorite Drink</string>

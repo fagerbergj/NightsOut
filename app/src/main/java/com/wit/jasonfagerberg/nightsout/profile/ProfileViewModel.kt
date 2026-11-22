@@ -1,5 +1,6 @@
 package com.wit.jasonfagerberg.nightsout.profile
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.wit.jasonfagerberg.nightsout.settings.SettingsRepository
@@ -18,6 +19,10 @@ class ProfileViewModel(
     private val settingsRepo: SettingsRepository
 ) : ViewModel() {
 
+    private companion object {
+        const val TAG = "ProfileViewModel"
+    }
+
     private val _uiState = MutableStateFlow(ProfileUiState())
     val uiState: StateFlow<ProfileUiState> = _uiState.asStateFlow()
 
@@ -33,26 +38,37 @@ class ProfileViewModel(
 
     fun saveProfile(context: android.content.Context) {
         viewModelScope.launch {
-            val ok = doSave()
-            if (ok) context.showToast("Profile Saved!")
-            else context.showToast("Please fill in all fields", true)
+            when (val result = doSave()) {
+                is SaveResult.Success -> context.showToast("Profile Saved!")
+                is SaveResult.Invalid -> context.showToast("Please fill in all fields", true)
+                is SaveResult.Error -> {
+                    Log.e(TAG, "Failed to save profile", result.error)
+                    context.showToast("Couldn't Save Profile", true)
+                }
+            }
         }
     }
 
-    private suspend fun doSave(): Boolean {
+    private sealed interface SaveResult {
+        data object Success : SaveResult
+        data object Invalid : SaveResult
+        data class Error(val error: Throwable) : SaveResult
+    }
+
+    private suspend fun doSave(): SaveResult {
         val uis = _uiState.value
         val sex = uis.sex
         val weightStr = uis.weightText
-        if (sex == null || weightStr.isEmpty()) return false
-        val w = try { weightStr.toDouble() } catch (_: Exception) { return false }
-        if (w < 20) return false
+        if (sex == null || weightStr.isEmpty()) return SaveResult.Invalid
+        val w = try { weightStr.toDouble() } catch (_: Exception) { return SaveResult.Invalid }
+        if (w < 20) return SaveResult.Invalid
         return try {
             settingsRepo.setProfileInit(true)
             settingsRepo.setProfileSex(sex)
             settingsRepo.setProfileWeight(w.toFloat())
             settingsRepo.setProfileWeightMeasurement(uis.weightMeasurement)
-            true
-        } catch (_: Exception) { false }
+            SaveResult.Success
+        } catch (e: Exception) { SaveResult.Error(e) }
     }
 
     fun hasUnsavedData(currentSex: Boolean?, currentWeight: Double, currentMeas: String): Boolean =
