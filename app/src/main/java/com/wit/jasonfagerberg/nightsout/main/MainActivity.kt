@@ -46,7 +46,6 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : AppCompatActivity() {
 
-    @Suppress("DEPRECATION") // ponytail: theme_mode is String key; SettingsRepository returns Int — phase 3+
     private val settingsRepo: SettingsRepository by inject()
 
     private val homeViewModel           : HomeViewModel       by viewModel()
