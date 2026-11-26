@@ -47,7 +47,6 @@ class BacNotificationService : Service() {
 
     override fun onCreate() {
         // when the service is created / rerun after app closes, build notification to keep intents fresh
-        // create intents for actions
         super.onCreate()
         val refreshIntent = Intent(this, BacNotificationService::class.java)
         refreshIntent.action = Constants.ACTION.REFRESH_BAC
@@ -117,7 +116,7 @@ class BacNotificationService : Service() {
     }
 
     private fun updateNotification() {
-        getPreferencesData()
+        loadPreferences()
         serviceScope.launch {
             val bac = calculateBAC()
             withContext(Dispatchers.Main) {
@@ -128,7 +127,7 @@ class BacNotificationService : Service() {
         }
     }
 
-    private fun getPreferencesData() {
+    private fun loadPreferences() {
         startTime = runBlocking { settingsRepository.startTimeMin.first() ?: 0 }
         endTime = runBlocking { settingsRepository.endTimeMin.first() ?: 0 }
         use24HourTime = runBlocking { settingsRepository.use24HourTime.first() }
@@ -145,7 +144,7 @@ class BacNotificationService : Service() {
     }
 
     private suspend fun calculateBAC() : Double{
-        getPreferencesData()
+        loadPreferences()
 
         val drinks = repository.pullCurrentSessionDrinks().map {
             BacCalculator.Drink(mConverter.drinkVolumeToFluidOz(it.amount, it.measurement), it.abv)

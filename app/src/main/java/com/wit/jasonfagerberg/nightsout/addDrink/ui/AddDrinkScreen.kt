@@ -225,7 +225,6 @@ private val BlueGrayColor = Color(0xFFB0BEC5)
                 }
             }
 
-            // Complex mode checkbox
             item {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Checkbox(checked = complexChecked, onCheckedChange = {
