@@ -1,11 +1,14 @@
 package com.wit.jasonfagerberg.nightsout.notification
 
+import android.Manifest
 import android.app.*
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import androidx.core.content.ContextCompat
 import com.wit.jasonfagerberg.nightsout.R
 import com.wit.jasonfagerberg.nightsout.constants.Constants
 import com.wit.jasonfagerberg.nightsout.main.MainActivity
@@ -67,6 +70,15 @@ class NotificationHelper (private val mContext: Context, private val CHANNEL_ID:
                 .build()
     }
 
+    private fun safeNotify(notification: Notification) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+            ContextCompat.checkSelfPermission(mContext, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED
+        ) {
+            return
+        }
+        NotificationManagerCompat.from(mContext).notify(id, notification)
+    }
+
     fun updateOrShow(title: String, body: String, autoCancel: Boolean = true) {
         builder.setContentTitle(title)
                 .setContentText(body)
@@ -74,9 +86,7 @@ class NotificationHelper (private val mContext: Context, private val CHANNEL_ID:
                         .bigText(body))
                 .setAutoCancel(autoCancel)
 
-        with(NotificationManagerCompat.from(mContext)) {
-            notify(id, builder.build())
-        }
+        safeNotify(builder.build())
     }
 
     fun loadAndUpdate(title: String = "Calculating...", body: String = "", function: () -> Triple<String, String, Boolean>) {
@@ -86,9 +96,7 @@ class NotificationHelper (private val mContext: Context, private val CHANNEL_ID:
                         .bigText(body))
                 .setProgress(0,0, true)
 
-        with(NotificationManagerCompat.from(mContext)) {
-            notify(id, builder.build())
-        }
+        safeNotify(builder.build())
 
         val result = function()
         builder.setProgress(0,0,false)
