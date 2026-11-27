@@ -28,6 +28,10 @@ android {
         // Converter's init touches android.util.SparseIntArray; JVM tests need stub defaults
         unitTests.isReturnDefaultValues = true
     }
+    lint {
+        abortOnError = true
+        checkReleaseBuilds = false
+    }
 }
 
 // match AGP's Java 11 compile target; built-in Kotlin used to align this for us
