@@ -31,6 +31,8 @@ android {
     lint {
         abortOnError = true
         checkReleaseBuilds = false
+        textReport = true
+        textOutput = file("stdout")
     }
 }
 
