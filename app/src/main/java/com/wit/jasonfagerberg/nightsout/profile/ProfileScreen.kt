@@ -38,8 +38,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.wit.jasonfagerberg.nightsout.R
@@ -142,9 +142,8 @@ fun ProfileScreen(viewModel: ProfileViewModel) {
 
 @Composable
 private fun _SexRow(state: ProfileUiState, vm: ProfileViewModel) {
-    val ctx = LocalContext.current
     Text(
-        text = ctx.getString(R.string.sex),
+        text = stringResource(R.string.sex),
         modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp).padding(top = 24.dp),
         textAlign = TextAlign.Start
     )
@@ -167,8 +166,7 @@ private fun _SexButton(pressed: Boolean, label: String, onClick: () -> Unit) {
 
 @Composable
 private fun _WeightRow(state: ProfileUiState, vm: ProfileViewModel) {
-    val ctx = LocalContext.current
-    Text(text = ctx.getString(R.string.weight), modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp))
+    Text(text = stringResource(R.string.weight), modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp))
     Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
         OutlinedTextField(value = state.weightText, onValueChange = vm::setWeightText, modifier = Modifier.weight(3f), singleLine = true)
         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -240,7 +238,7 @@ private fun _showClearDialog(ctx: android.content.Context, acts: ProfileActions,
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun _OverflowMenuButton(ctx: android.content.Context, acts: ProfileActions, scope: CoroutineScope, onChanged: () -> Unit) {
-    val expanded = androidx.compose.runtime.mutableStateOf(false)
+    val expanded = remember { mutableStateOf(false) }
     Box(modifier = Modifier.padding(4.dp)) {
         TextButton(onClick = { expanded.value = !expanded.value }) {
             androidx.compose.material3.Icon(painterResource(R.drawable.favorite_white_24dp), contentDescription = ctx.getString(R.string.clear_favorites_list))

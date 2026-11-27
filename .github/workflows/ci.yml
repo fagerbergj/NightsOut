@@ -27,10 +27,6 @@ jobs:
       - name: Run Android Lint
         run: ./gradlew lintDebug
 
-      - name: Upload Android Lint report on failure
-        if: failure()
-        run: cat app/build/intermediates/lint_intermediate_text_report/debug/lintReportDebug/lint-results-debug.txt || true
-
   # Compose UI tests live in app/src/androidTest and need a real device, so they
   # cannot run in build-and-test. KVM keeps the emulator to a few minutes.
   instrumentation-tests:

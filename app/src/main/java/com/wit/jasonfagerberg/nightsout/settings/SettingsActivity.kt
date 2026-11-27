@@ -2,6 +2,7 @@ package com.wit.jasonfagerberg.nightsout.settings
 
 import android.content.Intent
 import android.os.Bundle
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.ComposeView
@@ -77,15 +78,16 @@ class SettingsActivity : NightsOutActivity() {
                 }
             }
         })
-    }
-
-    override fun onBackPressed() {
-        val intent = if (mBackStack.peek() == 4) {
-            mBackStack.pop()
-            Intent(this, AddDrinkActivity::class.java)
-        } else {
-            Intent(this, MainActivity::class.java)
-        }
-        startActivity(intent)
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                val intent = if (mBackStack.peek() == 4) {
+                    mBackStack.pop()
+                    Intent(this@SettingsActivity, AddDrinkActivity::class.java)
+                } else {
+                    Intent(this@SettingsActivity, MainActivity::class.java)
+                }
+                startActivity(intent)
+            }
+        })
     }
 }

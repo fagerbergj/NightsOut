@@ -142,7 +142,6 @@ private fun showResetDialog(ctx: android.content.Context, vm: ManageDBViewModel)
 @Composable
 private fun ManageDBDrinkListItem(drink: Drink, vm: ManageDBViewModel, suggestedIds: Set<UUID>, onDeleteConfirmed: (Drink) -> Unit) {
     var expanded by remember { mutableStateOf(false) }
-    val ctx = LocalContext.current
 
     Row(Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -160,19 +159,19 @@ private fun ManageDBDrinkListItem(drink: Drink, vm: ManageDBViewModel, suggested
             Image(painter = painterResource(R.drawable.more_vert_gray_24dp), contentDescription = "Options",
                modifier = Modifier.size(24.dp).clickable { expanded = true })
             DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
-                val favLabel = if (drink.favorited) ctx.getString(R.string.unfavorite_drink)
-                    else ctx.getString(R.string.favorite_drink)
+                val favLabel = if (drink.favorited) stringResource(R.string.unfavorite_drink)
+                    else stringResource(R.string.favorite_drink)
                 DropdownMenuItem(text = { Text(favLabel) }, onClick = { vm.toggleFavorite(drink); expanded = false })
 
                 val dontSuggest = drink.id !in suggestedIds
-                val sugLabel = if (dontSuggest) ctx.getString(R.string.show_auto_complete_suggestion)
-                    else ctx.getString(R.string.hide_auto_complete_suggestion)
+                val sugLabel = if (dontSuggest) stringResource(R.string.show_auto_complete_suggestion)
+                    else stringResource(R.string.hide_auto_complete_suggestion)
                 DropdownMenuItem(
                     text = { Text(sugLabel) },
                     onClick = { vm.toggleSuggestion(drink); expanded = false })
 
                 DropdownMenuItem(
-                    text = { Text(ctx.getString(R.string.delete_drink)) },
+                    text = { Text(stringResource(R.string.delete_drink)) },
                     onClick = { onDeleteConfirmed(drink); expanded = false })
             }
         }
